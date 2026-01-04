@@ -43,8 +43,8 @@ apps/
 | 0     | Day 0 Setup (scaffold, tools) | ✅ Complete |
 | 1     | Core Contracts (IDs, schemas) | ✅ Complete |
 | 2     | Storage Schema + Migrations   | ✅ Complete |
-| 3     | applyBlockPatch() core write  | 🔲 Pending  |
-| 4     | Indexing Side Effects (FTS)   | 🔲 Pending  |
+| 3     | applyBlockPatch() core write  | ✅ Complete |
+| 4     | Indexing Side Effects (FTS)   | ✅ Complete |
 | 5     | Object Types + Daily Notes    | 🔲 Pending  |
 | 6     | Export/Import (backup)        | 🔲 Pending  |
 | 7     | Wire Desktop Shell            | 🔲 Pending  |

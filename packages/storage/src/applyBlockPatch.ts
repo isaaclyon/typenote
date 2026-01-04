@@ -29,6 +29,22 @@ import type { TypenoteDb } from './db.js';
 import { objects, blocks, idempotency } from './schema.js';
 import { generateOrderKey, type SiblingInfo } from './orderKeys.js';
 import { wouldCreateCycle } from './cycleDetection.js';
+import {
+  updateRefsForBlock,
+  updateFtsForBlock,
+  deleteRefsForBlocks,
+  deleteFtsForBlocks,
+} from './indexing.js';
+
+/**
+ * Tracks affected blocks for indexing updates.
+ */
+type AffectedBlocks = {
+  /** Blocks that were inserted or updated (need ref/FTS extraction) */
+  upserted: Map<string, { blockType: BlockType; content: unknown }>;
+  /** Block IDs that were deleted (need ref/FTS cleanup) */
+  deleted: string[];
+};
 
 /**
  * Result of applyBlockPatch.
@@ -110,84 +126,129 @@ export function applyBlockPatch(
     }
   }
 
-  // 5. Apply ops
-  const applied = {
-    insertedBlockIds: [] as string[],
-    updatedBlockIds: [] as string[],
-    movedBlockIds: [] as string[],
-    deletedBlockIds: [] as string[],
-  };
-
-  // Process each operation
-  for (const op of input.ops) {
-    switch (op.op) {
-      case 'block.insert': {
-        const insertResult = applyInsert(db, op, input.objectId);
-        if (!insertResult.success) {
-          return insertResult;
-        }
-        applied.insertedBlockIds.push(op.blockId);
-        break;
-      }
-      case 'block.update': {
-        const updateResult = applyUpdate(db, op, input.objectId);
-        if (!updateResult.success) {
-          return updateResult;
-        }
-        applied.updatedBlockIds.push(op.blockId);
-        break;
-      }
-      case 'block.move': {
-        const moveResult = applyMove(db, op, input.objectId);
-        if (!moveResult.success) {
-          return moveResult;
-        }
-        applied.movedBlockIds.push(op.blockId);
-        break;
-      }
-      case 'block.delete': {
-        const deleteResult = applyDelete(db, op, input.objectId);
-        if (!deleteResult.success) {
-          return deleteResult;
-        }
-        applied.deletedBlockIds.push(...deleteResult.deletedIds);
-        break;
-      }
-    }
-  }
-
-  // 6. Increment version
+  // 5. Apply ops within a transaction (includes indexing side effects)
   const previousDocVersion = obj.docVersion;
   const newDocVersion = previousDocVersion + 1;
 
-  db.run('UPDATE objects SET doc_version = ?, updated_at = ? WHERE id = ?', [
-    newDocVersion,
-    Date.now(),
-    input.objectId,
-  ]);
+  // Execute all mutations atomically
+  const txResult = db.atomic((): ApplyBlockPatchOutcome => {
+    const applied = {
+      insertedBlockIds: [] as string[],
+      updatedBlockIds: [] as string[],
+      movedBlockIds: [] as string[],
+      deletedBlockIds: [] as string[],
+    };
 
-  // 7. Build result
-  const result: ApplyBlockPatchResult = {
-    apiVersion: 'v1',
-    objectId: input.objectId,
-    previousDocVersion,
-    newDocVersion,
-    applied,
-  };
+    // Track affected blocks for indexing
+    const affectedBlocks: AffectedBlocks = {
+      upserted: new Map(),
+      deleted: [],
+    };
 
-  // 8. Store idempotency result
-  if (input.idempotencyKey) {
-    db.insert(idempotency)
-      .values({
-        objectId: input.objectId,
-        key: input.idempotencyKey,
-        resultJson: JSON.stringify(result),
-        createdAt: new Date(),
-      })
-      .run();
-  }
+    // Process each operation
+    for (const op of input.ops) {
+      switch (op.op) {
+        case 'block.insert': {
+          const insertResult = applyInsert(db, op, input.objectId);
+          if (!insertResult.success) {
+            return insertResult;
+          }
+          applied.insertedBlockIds.push(op.blockId);
+          // Track for indexing
+          affectedBlocks.upserted.set(op.blockId, {
+            blockType: op.blockType as BlockType,
+            content: op.content,
+          });
+          break;
+        }
+        case 'block.update': {
+          const updateResult = applyUpdate(db, op, input.objectId);
+          if (!updateResult.success) {
+            return updateResult;
+          }
+          applied.updatedBlockIds.push(op.blockId);
+          // Track for indexing if content was updated
+          if (op.patch.content !== undefined) {
+            // Get the block type from the database
+            const block = db
+              .select({ blockType: blocks.blockType })
+              .from(blocks)
+              .where(eq(blocks.id, op.blockId))
+              .limit(1)
+              .all()[0];
+            if (block) {
+              affectedBlocks.upserted.set(op.blockId, {
+                blockType: block.blockType as BlockType,
+                content: op.patch.content,
+              });
+            }
+          }
+          break;
+        }
+        case 'block.move': {
+          const moveResult = applyMove(db, op, input.objectId);
+          if (!moveResult.success) {
+            return moveResult;
+          }
+          applied.movedBlockIds.push(op.blockId);
+          // Move doesn't affect refs/FTS (content unchanged)
+          break;
+        }
+        case 'block.delete': {
+          const deleteResult = applyDelete(db, op, input.objectId);
+          if (!deleteResult.success) {
+            return deleteResult;
+          }
+          applied.deletedBlockIds.push(...deleteResult.deletedIds);
+          // Track for indexing cleanup
+          affectedBlocks.deleted.push(...deleteResult.deletedIds);
+          break;
+        }
+      }
+    }
 
-  return { success: true, result };
+    // 6. Update indexes for affected blocks
+    for (const [blockId, info] of affectedBlocks.upserted) {
+      updateRefsForBlock(db, blockId, input.objectId, info.blockType, info.content);
+      updateFtsForBlock(db, blockId, input.objectId, info.blockType, info.content);
+    }
+    if (affectedBlocks.deleted.length > 0) {
+      deleteRefsForBlocks(db, affectedBlocks.deleted);
+      deleteFtsForBlocks(db, affectedBlocks.deleted);
+    }
+
+    // 7. Increment version
+    db.run('UPDATE objects SET doc_version = ?, updated_at = ? WHERE id = ?', [
+      newDocVersion,
+      Date.now(),
+      input.objectId,
+    ]);
+
+    // 8. Build result
+    const result: ApplyBlockPatchResult = {
+      apiVersion: 'v1',
+      objectId: input.objectId,
+      previousDocVersion,
+      newDocVersion,
+      applied,
+    };
+
+    // 9. Store idempotency result
+    if (input.idempotencyKey) {
+      db.insert(idempotency)
+        .values({
+          objectId: input.objectId,
+          key: input.idempotencyKey,
+          resultJson: JSON.stringify(result),
+          createdAt: new Date(),
+        })
+        .run();
+    }
+
+    return { success: true, result };
+  });
+
+  return txResult;
 }
 
 /**

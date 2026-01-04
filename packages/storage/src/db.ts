@@ -29,6 +29,14 @@ export interface TypenoteDb extends BetterSQLite3Database<typeof schema> {
   run(sql: string, params?: unknown[]): RunResult;
 
   /**
+   * Execute a function within a SQLite transaction.
+   * Uses better-sqlite3's native transaction support (synchronous).
+   * If the function throws, the transaction is rolled back.
+   * Returns the result of the function.
+   */
+  atomic<T>(fn: () => T): T;
+
+  /**
    * Get the underlying better-sqlite3 database
    */
   readonly sqlite: BetterSqlite3Database;
@@ -40,7 +48,7 @@ export interface TypenoteDb extends BetterSQLite3Database<typeof schema> {
 function createDb(sqlite: BetterSqlite3Database): TypenoteDb {
   const db = drizzle(sqlite, { schema });
 
-  // Create the drizzle wrapper with a raw query helper
+  // Create the drizzle wrapper with raw query helpers
   return Object.assign(db, {
     all<T>(sql: string, params?: unknown[]): T[] {
       const stmt = sqlite.prepare(sql);
@@ -50,6 +58,12 @@ function createDb(sqlite: BetterSqlite3Database): TypenoteDb {
     run(sql: string, params?: unknown[]): RunResult {
       const stmt = sqlite.prepare(sql);
       return params ? stmt.run(...params) : stmt.run();
+    },
+
+    atomic<T>(fn: () => T): T {
+      // better-sqlite3's transaction() returns a function that executes the transaction
+      const txFn = sqlite.transaction(fn);
+      return txFn();
     },
 
     get sqlite() {

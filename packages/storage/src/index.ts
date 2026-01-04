@@ -15,3 +15,19 @@ export {
 
 // Database
 export { createTestDb, createFileDb, closeDb, type TypenoteDb } from './db.js';
+
+// Block Patch Operations
+export { applyBlockPatch, type ApplyBlockPatchOutcome } from './applyBlockPatch.js';
+
+// Document Queries
+export {
+  getDocument,
+  type DocumentBlock,
+  type GetDocumentResult,
+  type GetDocumentOptions,
+  DocumentNotFoundError,
+} from './getDocument.js';
+
+// Backlinks & Search
+export { getBacklinks, type BacklinkResult } from './backlinks.js';
+export { searchBlocks, type SearchResult, type SearchFilters } from './search.js';

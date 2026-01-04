@@ -100,6 +100,80 @@ describe('database migrations', () => {
   });
 });
 
+describe('atomic transactions', () => {
+  let db: TypenoteDb;
+  const now = Date.now();
+
+  afterEach(() => {
+    if (db) {
+      closeDb(db);
+    }
+  });
+
+  it('commits changes on success', () => {
+    db = createTestDb();
+
+    db.atomic(() => {
+      db.run(
+        `INSERT INTO object_types (id, key, name, built_in, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+        ['type1', 'Page', 'Page', 0, now, now]
+      );
+    });
+
+    const result = db.all<{ count: number }>(`SELECT COUNT(*) as count FROM object_types`);
+    expect(result[0]?.count).toBe(1);
+  });
+
+  it('rolls back changes on error', () => {
+    db = createTestDb();
+
+    expect(() => {
+      db.atomic(() => {
+        db.run(
+          `INSERT INTO object_types (id, key, name, built_in, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+          ['type1', 'Page', 'Page', 0, now, now]
+        );
+        throw new Error('Simulated failure');
+      });
+    }).toThrow('Simulated failure');
+
+    // Changes should be rolled back
+    const result = db.all<{ count: number }>(`SELECT COUNT(*) as count FROM object_types`);
+    expect(result[0]?.count).toBe(0);
+  });
+
+  it('returns the value from the transaction function', () => {
+    db = createTestDb();
+
+    const result = db.atomic(() => {
+      db.run(
+        `INSERT INTO object_types (id, key, name, built_in, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+        ['type1', 'Page', 'Page', 0, now, now]
+      );
+      return 'success';
+    });
+
+    expect(result).toBe('success');
+  });
+
+  it('supports nested reads within transaction', () => {
+    db = createTestDb();
+
+    const result = db.atomic(() => {
+      db.run(
+        `INSERT INTO object_types (id, key, name, built_in, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+        ['type1', 'Page', 'Page', 0, now, now]
+      );
+
+      // Read within the same transaction should see uncommitted data
+      const rows = db.all<{ id: string }>(`SELECT id FROM object_types`);
+      return rows.length;
+    });
+
+    expect(result).toBe(1);
+  });
+});
+
 describe('schema constraints', () => {
   let db: TypenoteDb;
   const now = Date.now();
