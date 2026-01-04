@@ -11,6 +11,7 @@
     "frontend-design@claude-plugins-official": false,
     "code-review@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": true,
-    "vtsls@claude-code-lsps": true
+    "vtsls@claude-code-lsps": true,
+    "pyright@claude-code-lsps": true
   }
 }
