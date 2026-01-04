@@ -13,5 +13,45 @@
     "security-guidance@claude-plugins-official": true,
     "vtsls@claude-code-lsps": true,
     "pyright@claude-code-lsps": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/file-protection.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/git-force-push-protection.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/package-boundary-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/zod-schema-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/core-purity-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/storage-transaction-validation.sh"
+          }
+        ]
+      }
+    ]
   }
 }
