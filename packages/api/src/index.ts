@@ -104,3 +104,31 @@ export {
   type PatchValidationResult,
   type ContentValidationResult,
 } from './patchValidation.js';
+
+// Object Types
+export {
+  // Built-in types
+  BuiltInTypeKeySchema,
+  BUILT_IN_TYPE_KEYS,
+  type BuiltInTypeKey,
+  // Property definitions
+  PropertyTypeSchema,
+  PropertyDefinitionSchema,
+  TypeSchemaSchema,
+  type PropertyType,
+  type PropertyDefinition,
+  type TypeSchema,
+  // Entity
+  ObjectTypeSchema,
+  type ObjectType,
+  // API operations
+  CreateObjectTypeInputSchema,
+  UpdateObjectTypeInputSchema,
+  ListObjectTypesOptionsSchema,
+  type CreateObjectTypeInput,
+  type UpdateObjectTypeInput,
+  type ListObjectTypesOptions,
+  // Error codes
+  ObjectTypeErrorCodeSchema,
+  type ObjectTypeErrorCode,
+} from './objectType.js';

@@ -31,3 +31,26 @@ export {
 // Backlinks & Search
 export { getBacklinks, type BacklinkResult } from './backlinks.js';
 export { searchBlocks, type SearchResult, type SearchFilters } from './search.js';
+
+// Object Type Service
+export {
+  createObjectType,
+  getObjectType,
+  getObjectTypeByKey,
+  listObjectTypes,
+  updateObjectType,
+  deleteObjectType,
+  seedBuiltInTypes,
+  isBuiltInTypeKey,
+  ObjectTypeError,
+  BUILT_IN_TYPES,
+} from './objectTypeService.js';
+
+// Property Validation
+export {
+  validateProperties,
+  getDefaultProperties,
+  mergeWithDefaults,
+  type PropertyValidationError,
+  type PropertyValidationResult,
+} from './propertyValidation.js';
