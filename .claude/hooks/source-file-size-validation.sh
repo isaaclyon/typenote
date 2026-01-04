@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# Test File Size Validation Hook
-# Warns when test files exceed 500 lines to encourage splitting by concern
-# Supports @maxsize-N decorator for exceptions (e.g., // @maxsize-700)
+# Source File Size Validation Hook
+# Warns when source files exceed 400 lines to encourage modular design
+# Supports @maxsize-N decorator for exceptions (e.g., // @maxsize-600)
 
-DEFAULT_MAX_LINES=500
+DEFAULT_MAX_LINES=400
 
 # Read JSON input from stdin
 input=$(cat)
@@ -17,8 +17,23 @@ if [[ -z "$file_path" ]]; then
   exit 0
 fi
 
-# Only validate test files
-if [[ ! $file_path =~ \.(test|spec)\.(ts|tsx|js|jsx)$ ]]; then
+# Only validate TypeScript/JavaScript source files
+if [[ ! $file_path =~ \.(ts|tsx|js|jsx)$ ]]; then
+  exit 0
+fi
+
+# Skip test files (handled by test-file-size-validation.sh)
+if [[ $file_path =~ \.(test|spec)\.(ts|tsx|js|jsx)$ ]]; then
+  exit 0
+fi
+
+# Skip type definition files
+if [[ $file_path =~ \.d\.ts$ ]]; then
+  exit 0
+fi
+
+# Skip config files
+if [[ $file_path =~ \.(config)\.(ts|js)$ ]]; then
   exit 0
 fi
 
@@ -53,25 +68,25 @@ if [[ "$has_decorator" == true ]]; then
     # Over custom limit - show warning
     cat <<EOF
 
-Warning: Test file exceeds custom limit of $max_lines lines (currently: $line_count lines)
+Warning: Source file exceeds custom limit of $max_lines lines (currently: $line_count lines)
     File: $file_path
 
     This file has an adjusted size limit via @maxsize-$custom_limit decorator.
-    Even with the custom limit, consider splitting by:
-    - Operation type (insert/update/delete)
-    - Function under test
-    - Unit vs integration tests
+    Even with the custom limit, consider:
+    - Extracting helper functions to separate modules
+    - Separating types/interfaces to a types.ts file
+    - Breaking into smaller, focused modules
 
 EOF
   else
     # Under custom limit - show reminder
     cat <<EOF
 
-Reminder: This test file has an adjusted size limit (@maxsize-$custom_limit, currently: $line_count lines)
+Reminder: This file has an adjusted size limit (@maxsize-$custom_limit, currently: $line_count lines)
     File: $file_path
 
     Ensure as you edit that you are appropriately refactoring or writing
-    tests to avoid monolithic files. Custom limits should be rare exceptions.
+    code to avoid monolithic files. Custom limits should be rare exceptions.
 
 EOF
   fi
@@ -82,18 +97,16 @@ fi
 if [[ $line_count -gt $max_lines ]]; then
   cat <<EOF
 
-Warning: Test file exceeds $max_lines lines (currently: $line_count lines)
+Warning: Source file exceeds $max_lines lines (currently: $line_count lines)
     File: $file_path
 
-    You likely need to split this into multiple test files.
-    Consider splitting by:
-    - Operation type (insert/update/delete)
-    - Function under test
-    - Unit vs integration tests
+    You likely need to refactor it into multiple smaller files.
+    Consider:
+    - Extracting helper functions to separate modules
+    - Separating types/interfaces to a types.ts file
+    - Breaking into smaller, focused modules
 
-    See existing pattern: applyBlockPatch.*.test.ts
-
-    Alternatively, in rare situations where tests benefit from being
+    Alternatively, in rare situations where this code benefits from being
     in a single file, add a decorator to the top of the file:
     // @maxsize-N  (where N is the desired line limit)
 

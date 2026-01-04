@@ -65,6 +65,10 @@
           {
             "type": "command",
             "command": "./.claude/hooks/test-file-size-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/source-file-size-validation.sh"
           }
         ]
       }
