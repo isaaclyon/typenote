@@ -6,7 +6,14 @@ import prettier from 'eslint-config-prettier';
 export default [
   eslint.configs.recommended,
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/*.js', '**/*.mjs'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/*.js',
+      '**/*.mjs',
+      '**/drizzle.config.ts', // Config file outside src, not in tsconfig
+    ],
   },
   // Base TypeScript config for all TS files
   {
