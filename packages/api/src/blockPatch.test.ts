@@ -10,429 +10,274 @@ import {
   ApplyBlockPatchInputSchema,
   ApplyBlockPatchResultSchema,
   type BlockOp,
-  type ApplyBlockPatchInput,
-  type ApplyBlockPatchResult,
 } from './blockPatch.js';
+import {
+  VALID_ULID,
+  VALID_ULID_2,
+  expectValid,
+  expectInvalid,
+  parseWith,
+  makeInsertOp,
+  makeUpdateOp,
+  makeMoveOp,
+  makeDeleteOp,
+  makePatchInput,
+  makePatchResult,
+} from './test-utils.js';
 
-const VALID_ULID = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
-const VALID_ULID_2 = '01ARZ3NDEKTSV4RRFFQ69G5FAW';
+// =============================================================================
+// PlaceSchema Tests
+// =============================================================================
 
 describe('PlaceSchema', () => {
-  it('accepts { where: "start" }', () => {
-    const result = PlaceSchema.safeParse({ where: 'start' });
-    expect(result.success).toBe(true);
+  const validPlaces = [
+    ['start', { where: 'start' }],
+    ['end', { where: 'end' }],
+    ['before with siblingBlockId', { where: 'before', siblingBlockId: VALID_ULID }],
+    ['after with siblingBlockId', { where: 'after', siblingBlockId: VALID_ULID }],
+  ] as const;
+
+  it.each(validPlaces)('accepts %s', (_, place) => {
+    expectValid(PlaceSchema, place);
   });
 
-  it('accepts { where: "end" }', () => {
-    const result = PlaceSchema.safeParse({ where: 'end' });
-    expect(result.success).toBe(true);
-  });
+  const invalidPlaces = [
+    ['before without siblingBlockId', { where: 'before' }],
+    ['after without siblingBlockId', { where: 'after' }],
+  ] as const;
 
-  it('accepts { where: "before", siblingBlockId }', () => {
-    const result = PlaceSchema.safeParse({ where: 'before', siblingBlockId: VALID_ULID });
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts { where: "after", siblingBlockId }', () => {
-    const result = PlaceSchema.safeParse({ where: 'after', siblingBlockId: VALID_ULID });
-    expect(result.success).toBe(true);
-  });
-
-  it('rejects before/after without siblingBlockId', () => {
-    const result = PlaceSchema.safeParse({ where: 'before' });
-    expect(result.success).toBe(false);
+  it.each(invalidPlaces)('rejects %s', (_, place) => {
+    expectInvalid(PlaceSchema, place);
   });
 });
+
+// =============================================================================
+// InsertBlockOpSchema Tests
+// =============================================================================
 
 describe('InsertBlockOpSchema', () => {
-  it('accepts valid insert op with place', () => {
-    const op = {
-      op: 'block.insert',
-      blockId: VALID_ULID,
-      parentBlockId: null,
-      place: { where: 'end' },
-      blockType: 'paragraph',
-      content: { inline: [] },
-    };
+  const validInsertOps = [
+    ['with place', makeInsertOp({ place: { where: 'end' } })],
+    [
+      'with parent and orderKey',
+      makeInsertOp({
+        parentBlockId: VALID_ULID_2,
+        orderKey: 'aaa',
+        blockType: 'heading',
+        content: { level: 1, inline: [] },
+        meta: { collapsed: true },
+      }),
+    ],
+  ] as const;
 
-    const result = InsertBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
+  it.each(validInsertOps)('accepts insert %s', (_, op) => {
+    expectValid(InsertBlockOpSchema, op);
   });
 
-  it('accepts insert with parent and orderKey', () => {
-    const op = {
-      op: 'block.insert',
-      blockId: VALID_ULID,
-      parentBlockId: VALID_ULID_2,
-      orderKey: 'aaa',
-      blockType: 'heading',
-      content: { level: 1, inline: [] },
-      meta: { collapsed: true },
-    };
+  const invalidInsertOps = [
+    ['without blockId', { ...makeInsertOp(), blockId: undefined }],
+    ['with invalid blockId length', makeInsertOp({ blockId: 'short' })],
+  ] as const;
 
-    const result = InsertBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('rejects insert without blockId', () => {
-    const op = {
-      op: 'block.insert',
-      parentBlockId: null,
-      blockType: 'paragraph',
-      content: {},
-    };
-
-    const result = InsertBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(false);
-  });
-
-  it('rejects insert with invalid blockId length', () => {
-    const op = {
-      op: 'block.insert',
-      blockId: 'short',
-      parentBlockId: null,
-      blockType: 'paragraph',
-      content: {},
-    };
-
-    const result = InsertBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(false);
+  it.each(invalidInsertOps)('rejects insert %s', (_, op) => {
+    expectInvalid(InsertBlockOpSchema, op);
   });
 });
 
+// =============================================================================
+// UpdateBlockOpSchema Tests
+// =============================================================================
+
 describe('UpdateBlockOpSchema', () => {
-  it('accepts valid update op with content', () => {
-    const op = {
-      op: 'block.update',
-      blockId: VALID_ULID,
-      patch: {
-        content: { inline: [{ t: 'text', text: 'hello' }] },
-      },
-    };
+  const validUpdateOps = [
+    [
+      'with content',
+      makeUpdateOp({ patch: { content: { inline: [{ t: 'text', text: 'hello' }] } } }),
+    ],
+    [
+      'with blockType change',
+      makeUpdateOp({
+        patch: { blockType: 'heading', content: { level: 2, inline: [] } },
+      }),
+    ],
+    ['with meta only', makeUpdateOp({ patch: { meta: { collapsed: false } } })],
+  ] as const;
 
-    const result = UpdateBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts update with blockType change', () => {
-    const op = {
-      op: 'block.update',
-      blockId: VALID_ULID,
-      patch: {
-        blockType: 'heading',
-        content: { level: 2, inline: [] },
-      },
-    };
-
-    const result = UpdateBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts update with meta only', () => {
-    const op = {
-      op: 'block.update',
-      blockId: VALID_ULID,
-      patch: {
-        meta: { collapsed: false },
-      },
-    };
-
-    const result = UpdateBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
+  it.each(validUpdateOps)('accepts update %s', (_, op) => {
+    expectValid(UpdateBlockOpSchema, op);
   });
 
   it('rejects update without patch', () => {
-    const op = {
-      op: 'block.update',
-      blockId: VALID_ULID,
-    };
-
-    const result = UpdateBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(false);
+    const op = { op: 'block.update', blockId: VALID_ULID };
+    expectInvalid(UpdateBlockOpSchema, op);
   });
 });
+
+// =============================================================================
+// MoveBlockOpSchema Tests
+// =============================================================================
 
 describe('MoveBlockOpSchema', () => {
-  it('accepts valid move op with place', () => {
-    const op = {
-      op: 'block.move',
-      blockId: VALID_ULID,
-      newParentBlockId: VALID_ULID_2,
-      place: { where: 'start' },
-    };
+  const validMoveOps = [
+    ['with place', makeMoveOp({ newParentBlockId: VALID_ULID_2, place: { where: 'start' } })],
+    ['to root', makeMoveOp({ place: { where: 'end' } })],
+    ['with orderKey', makeMoveOp({ orderKey: 'bbb' })],
+    ['with subtree flag', makeMoveOp({ place: { where: 'end' }, subtree: true })],
+  ] as const;
 
-    const result = MoveBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts move to root', () => {
-    const op = {
-      op: 'block.move',
-      blockId: VALID_ULID,
-      newParentBlockId: null,
-      place: { where: 'end' },
-    };
-
-    const result = MoveBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts move with orderKey', () => {
-    const op = {
-      op: 'block.move',
-      blockId: VALID_ULID,
-      newParentBlockId: null,
-      orderKey: 'bbb',
-    };
-
-    const result = MoveBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts move with subtree flag', () => {
-    const op = {
-      op: 'block.move',
-      blockId: VALID_ULID,
-      newParentBlockId: null,
-      place: { where: 'end' },
-      subtree: true,
-    };
-
-    const result = MoveBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
+  it.each(validMoveOps)('accepts move %s', (_, op) => {
+    expectValid(MoveBlockOpSchema, op);
   });
 });
+
+// =============================================================================
+// DeleteBlockOpSchema Tests
+// =============================================================================
 
 describe('DeleteBlockOpSchema', () => {
-  it('accepts valid delete op', () => {
-    const op = {
-      op: 'block.delete',
-      blockId: VALID_ULID,
-    };
+  const validDeleteOps = [
+    ['basic', makeDeleteOp()],
+    ['with subtree flag', makeDeleteOp({ subtree: true })],
+  ] as const;
 
-    const result = DeleteBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts delete with subtree flag', () => {
-    const op = {
-      op: 'block.delete',
-      blockId: VALID_ULID,
-      subtree: true,
-    };
-
-    const result = DeleteBlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
+  it.each(validDeleteOps)('accepts delete %s', (_, op) => {
+    expectValid(DeleteBlockOpSchema, op);
   });
 });
 
-describe('BlockOpSchema (discriminated union)', () => {
-  it('correctly discriminates insert op', () => {
-    const op: BlockOp = {
-      op: 'block.insert',
-      blockId: VALID_ULID,
-      parentBlockId: null,
-      blockType: 'paragraph',
-      content: {},
-    };
+// =============================================================================
+// BlockOpSchema (Discriminated Union) Tests
+// =============================================================================
 
-    const result = BlockOpSchema.safeParse(op);
+describe('BlockOpSchema (discriminated union)', () => {
+  const validOps: [string, BlockOp][] = [
+    ['insert', makeInsertOp() as BlockOp],
+    ['update', makeUpdateOp() as BlockOp],
+    ['move', makeMoveOp() as BlockOp],
+    ['delete', makeDeleteOp() as BlockOp],
+  ];
+
+  it.each(validOps)('correctly discriminates %s op', (opType, op) => {
+    const result = parseWith(BlockOpSchema, op);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.op).toBe(`block.${opType}`);
+    }
+  });
+
+  it('correctly parses insert op and allows field access', () => {
+    const result = parseWith(BlockOpSchema, makeInsertOp());
     expect(result.success).toBe(true);
     if (result.success && result.data.op === 'block.insert') {
       expect(result.data.blockType).toBe('paragraph');
     }
   });
 
-  it('correctly discriminates update op', () => {
-    const op: BlockOp = {
-      op: 'block.update',
-      blockId: VALID_ULID,
-      patch: { content: {} },
-    };
-
-    const result = BlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('correctly discriminates move op', () => {
-    const op: BlockOp = {
-      op: 'block.move',
-      blockId: VALID_ULID,
-      newParentBlockId: null,
-    };
-
-    const result = BlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
-  it('correctly discriminates delete op', () => {
-    const op: BlockOp = {
-      op: 'block.delete',
-      blockId: VALID_ULID,
-    };
-
-    const result = BlockOpSchema.safeParse(op);
-    expect(result.success).toBe(true);
-  });
-
   it('rejects unknown op type', () => {
-    const op = {
-      op: 'block.unknown',
-      blockId: VALID_ULID,
-    };
-
-    const result = BlockOpSchema.safeParse(op);
-    expect(result.success).toBe(false);
+    expectInvalid(BlockOpSchema, { op: 'block.unknown', blockId: VALID_ULID });
   });
 });
 
-describe('ApplyBlockPatchInputSchema', () => {
-  it('accepts minimal valid input', () => {
-    const input: ApplyBlockPatchInput = {
-      apiVersion: 'v1',
-      objectId: VALID_ULID,
-      ops: [],
-    };
+// =============================================================================
+// ApplyBlockPatchInputSchema Tests
+// =============================================================================
 
-    const result = ApplyBlockPatchInputSchema.safeParse(input);
-    expect(result.success).toBe(true);
+describe('ApplyBlockPatchInputSchema', () => {
+  const validInputs = [
+    ['minimal', makePatchInput()],
+    [
+      'complete with all optional fields',
+      makePatchInput({
+        baseDocVersion: 5,
+        idempotencyKey: 'unique-key-123',
+        ops: [
+          makeInsertOp({
+            blockId: VALID_ULID_2,
+            place: { where: 'end' },
+            content: { inline: [] },
+          }),
+        ],
+        client: {
+          actorId: 'user-1',
+          deviceId: 'device-1',
+          appVersion: '1.0.0',
+          ts: '2024-01-01T00:00:00Z',
+        },
+      }),
+    ],
+  ] as const;
+
+  it.each(validInputs)('accepts %s input', (_, input) => {
+    expectValid(ApplyBlockPatchInputSchema, input);
   });
 
-  it('accepts complete input with all optional fields', () => {
-    const input: ApplyBlockPatchInput = {
-      apiVersion: 'v1',
-      objectId: VALID_ULID,
-      baseDocVersion: 5,
-      idempotencyKey: 'unique-key-123',
-      ops: [
-        {
-          op: 'block.insert',
-          blockId: VALID_ULID_2,
-          parentBlockId: null,
-          place: { where: 'end' },
-          blockType: 'paragraph',
-          content: { inline: [] },
+  const invalidInputs = [
+    ['wrong apiVersion', makePatchInput({ apiVersion: 'v2' }), 'apiVersion'],
+    ['invalid objectId', makePatchInput({ objectId: 'short' }), 'objectId'],
+    ['negative baseDocVersion', makePatchInput({ baseDocVersion: -1 }), 'baseDocVersion'],
+  ] as const;
+
+  it.each(invalidInputs)('rejects %s', (_, input, expectedPath) => {
+    expectInvalid(ApplyBlockPatchInputSchema, input, expectedPath);
+  });
+});
+
+// =============================================================================
+// ApplyBlockPatchResultSchema Tests
+// =============================================================================
+
+describe('ApplyBlockPatchResultSchema', () => {
+  const validResults = [
+    [
+      'basic',
+      makePatchResult({
+        previousDocVersion: 5,
+        newDocVersion: 6,
+        applied: {
+          insertedBlockIds: [VALID_ULID_2],
+          updatedBlockIds: [],
+          movedBlockIds: [],
+          deletedBlockIds: [],
         },
-      ],
-      client: {
+      }),
+    ],
+    [
+      'with warnings',
+      makePatchResult({
+        warnings: [{ code: 'ORDER_KEY_REBALANCED', message: 'Order keys were rebalanced' }],
+      }),
+    ],
+  ] as const;
+
+  it.each(validResults)('accepts %s result', (_, result) => {
+    expectValid(ApplyBlockPatchResultSchema, result);
+  });
+});
+
+// =============================================================================
+// ClientContextSchema Tests
+// =============================================================================
+
+describe('ClientContextSchema', () => {
+  const validContexts = [
+    [
+      'all fields',
+      {
         actorId: 'user-1',
         deviceId: 'device-1',
         appVersion: '1.0.0',
-        ts: '2024-01-01T00:00:00Z',
+        ts: '2024-01-01T12:00:00Z',
       },
-    };
+    ],
+    ['partial fields', { actorId: 'user-1' }],
+    ['empty object', {}],
+  ] as const;
 
-    const result = ApplyBlockPatchInputSchema.safeParse(input);
-    expect(result.success).toBe(true);
-  });
-
-  it('rejects wrong apiVersion', () => {
-    const input = {
-      apiVersion: 'v2',
-      objectId: VALID_ULID,
-      ops: [],
-    };
-
-    const result = ApplyBlockPatchInputSchema.safeParse(input);
-    expect(result.success).toBe(false);
-  });
-
-  it('rejects invalid objectId', () => {
-    const input = {
-      apiVersion: 'v1',
-      objectId: 'short',
-      ops: [],
-    };
-
-    const result = ApplyBlockPatchInputSchema.safeParse(input);
-    expect(result.success).toBe(false);
-  });
-
-  it('rejects negative baseDocVersion', () => {
-    const input = {
-      apiVersion: 'v1',
-      objectId: VALID_ULID,
-      baseDocVersion: -1,
-      ops: [],
-    };
-
-    const result = ApplyBlockPatchInputSchema.safeParse(input);
-    expect(result.success).toBe(false);
-  });
-});
-
-describe('ApplyBlockPatchResultSchema', () => {
-  it('accepts valid result', () => {
-    const result: ApplyBlockPatchResult = {
-      apiVersion: 'v1',
-      objectId: VALID_ULID,
-      previousDocVersion: 5,
-      newDocVersion: 6,
-      applied: {
-        insertedBlockIds: [VALID_ULID_2],
-        updatedBlockIds: [],
-        movedBlockIds: [],
-        deletedBlockIds: [],
-      },
-    };
-
-    const parseResult = ApplyBlockPatchResultSchema.safeParse(result);
-    expect(parseResult.success).toBe(true);
-  });
-
-  it('accepts result with warnings', () => {
-    const result: ApplyBlockPatchResult = {
-      apiVersion: 'v1',
-      objectId: VALID_ULID,
-      previousDocVersion: 0,
-      newDocVersion: 1,
-      applied: {
-        insertedBlockIds: [],
-        updatedBlockIds: [],
-        movedBlockIds: [],
-        deletedBlockIds: [],
-      },
-      warnings: [{ code: 'ORDER_KEY_REBALANCED', message: 'Order keys were rebalanced' }],
-    };
-
-    const parseResult = ApplyBlockPatchResultSchema.safeParse(result);
-    expect(parseResult.success).toBe(true);
-  });
-});
-
-describe('ClientContextSchema', () => {
-  it('accepts all fields', () => {
-    const ctx = {
-      actorId: 'user-1',
-      deviceId: 'device-1',
-      appVersion: '1.0.0',
-      ts: '2024-01-01T12:00:00Z',
-    };
-
-    const result = ClientContextSchema.safeParse(ctx);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts partial fields', () => {
-    const ctx = {
-      actorId: 'user-1',
-    };
-
-    const result = ClientContextSchema.safeParse(ctx);
-    expect(result.success).toBe(true);
-  });
-
-  it('accepts empty object', () => {
-    const result = ClientContextSchema.safeParse({});
-    expect(result.success).toBe(true);
+  it.each(validContexts)('accepts %s', (_, ctx) => {
+    expectValid(ClientContextSchema, ctx);
   });
 
   it('rejects invalid timestamp format', () => {
-    const ctx = {
-      ts: 'not-a-date',
-    };
-
-    const result = ClientContextSchema.safeParse(ctx);
-    expect(result.success).toBe(false);
+    expectInvalid(ClientContextSchema, { ts: 'not-a-date' }, 'ts');
   });
 });

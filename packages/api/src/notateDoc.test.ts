@@ -15,357 +15,311 @@ import {
   MathBlockContentSchema,
   FootnoteDefContentSchema,
   getContentSchemaForBlockType,
-  type InlineNode,
   type BlockType,
 } from './notateDoc.js';
+import { expectValid, expectInvalid, VALID_ULID, VALID_ULID_2 } from './test-utils.js';
+
+// =============================================================================
+// Test Data
+// =============================================================================
+
+const VALID_MARKS = ['em', 'strong', 'code', 'strike', 'highlight'] as const;
+
+const VALID_BLOCK_TYPES: BlockType[] = [
+  'paragraph',
+  'heading',
+  'list',
+  'list_item',
+  'blockquote',
+  'callout',
+  'code_block',
+  'thematic_break',
+  'table',
+  'math_block',
+  'footnote_def',
+];
+
+// Inline node test data
+const INLINE_NODE_TEST_CASES = {
+  text: {
+    valid: [
+      { name: 'plain text', data: { t: 'text', text: 'Hello world' } },
+      { name: 'text with marks', data: { t: 'text', text: 'Bold', marks: ['strong'] } },
+      {
+        name: 'text with multiple marks',
+        data: { t: 'text', text: 'Bold italic', marks: ['strong', 'em'] },
+      },
+    ],
+  },
+  hard_break: {
+    valid: [{ name: 'hard break', data: { t: 'hard_break' } }],
+  },
+  link: {
+    valid: [
+      {
+        name: 'link with text children',
+        data: {
+          t: 'link',
+          href: 'https://example.com',
+          children: [{ t: 'text', text: 'Example' }],
+        },
+      },
+      {
+        name: 'link with marked text',
+        data: {
+          t: 'link',
+          href: 'https://example.com',
+          children: [{ t: 'text', text: 'Bold link', marks: ['strong'] }],
+        },
+      },
+    ],
+  },
+  ref_object: {
+    valid: [
+      {
+        name: 'object link ref',
+        data: { t: 'ref', mode: 'link', target: { kind: 'object', objectId: VALID_ULID } },
+      },
+      {
+        name: 'object embed ref (transclusion)',
+        data: { t: 'ref', mode: 'embed', target: { kind: 'object', objectId: VALID_ULID } },
+      },
+      {
+        name: 'ref with alias',
+        data: {
+          t: 'ref',
+          mode: 'link',
+          target: { kind: 'object', objectId: VALID_ULID },
+          alias: 'My Note',
+        },
+      },
+    ],
+  },
+  ref_block: {
+    valid: [
+      {
+        name: 'block link ref',
+        data: {
+          t: 'ref',
+          mode: 'link',
+          target: { kind: 'block', objectId: VALID_ULID, blockId: VALID_ULID_2 },
+        },
+      },
+    ],
+  },
+  tag: {
+    valid: [{ name: 'tag', data: { t: 'tag', value: 'project-alpha' } }],
+  },
+  math_inline: {
+    valid: [{ name: 'inline math', data: { t: 'math_inline', latex: 'E = mc^2' } }],
+  },
+  footnote_ref: {
+    valid: [{ name: 'footnote reference', data: { t: 'footnote_ref', key: '1' } }],
+  },
+} as const;
+
+// Block content schemas with test data
+type TestCase = { name: string; data: unknown };
+type BlockContentTestEntry = {
+  blockType: string;
+  schema: Parameters<typeof expectValid>[0];
+  valid: TestCase[];
+  invalid: TestCase[];
+};
+
+const BLOCK_CONTENT_TEST_DATA: BlockContentTestEntry[] = [
+  {
+    blockType: 'paragraph',
+    schema: ParagraphContentSchema,
+    valid: [
+      {
+        name: 'paragraph with inline content',
+        data: { inline: [{ t: 'text', text: 'Hello world' }] },
+      },
+      { name: 'empty paragraph', data: { inline: [] } },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'heading',
+    schema: HeadingContentSchema,
+    valid: [
+      {
+        name: 'heading with level and inline',
+        data: { level: 2, inline: [{ t: 'text', text: 'Heading' }] },
+      },
+      ...([1, 2, 3, 4, 5, 6] as const).map((level) => ({
+        name: `heading level ${level}`,
+        data: { level, inline: [] },
+      })),
+    ],
+    invalid: [{ name: 'invalid heading level', data: { level: 7, inline: [] } }],
+  },
+  {
+    blockType: 'list',
+    schema: ListContentSchema,
+    valid: [
+      { name: 'bullet list', data: { kind: 'bullet' } },
+      { name: 'ordered list with start', data: { kind: 'ordered', start: 5 } },
+      { name: 'task list', data: { kind: 'task', tight: true } },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'list_item',
+    schema: ListItemContentSchema,
+    valid: [
+      { name: 'list item with inline', data: { inline: [{ t: 'text', text: 'Item' }] } },
+      {
+        name: 'task list item with checked',
+        data: { inline: [{ t: 'text', text: 'Task' }], checked: true },
+      },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'blockquote',
+    schema: BlockquoteContentSchema,
+    valid: [{ name: 'empty blockquote content', data: {} }],
+    invalid: [],
+  },
+  {
+    blockType: 'callout',
+    schema: CalloutContentSchema,
+    valid: [
+      { name: 'callout with kind', data: { kind: 'NOTE' } },
+      {
+        name: 'callout with title and collapsed',
+        data: { kind: 'WARNING', title: 'Be careful', collapsed: true },
+      },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'code_block',
+    schema: CodeBlockContentSchema,
+    valid: [
+      { name: 'code block with language', data: { language: 'typescript', code: 'const x = 1;' } },
+      { name: 'code block without language', data: { code: 'plain text' } },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'thematic_break',
+    schema: ThematicBreakContentSchema,
+    valid: [{ name: 'empty thematic break content', data: {} }],
+    invalid: [],
+  },
+  {
+    blockType: 'table',
+    schema: TableContentSchema,
+    valid: [
+      {
+        name: 'table with rows',
+        data: {
+          rows: [
+            { cells: [[{ t: 'text', text: 'Header' }]] },
+            { cells: [[{ t: 'text', text: 'Cell' }]] },
+          ],
+        },
+      },
+      {
+        name: 'table with alignment',
+        data: { align: ['left', 'center', 'right', null], rows: [{ cells: [] }] },
+      },
+    ],
+    invalid: [],
+  },
+  {
+    blockType: 'math_block',
+    schema: MathBlockContentSchema,
+    valid: [{ name: 'math block with latex', data: { latex: '\\int_0^\\infty e^{-x} dx = 1' } }],
+    invalid: [],
+  },
+  {
+    blockType: 'footnote_def',
+    schema: FootnoteDefContentSchema,
+    valid: [
+      {
+        name: 'footnote with key and inline',
+        data: { key: '1', inline: [{ t: 'text', text: 'Footnote text' }] },
+      },
+      { name: 'footnote with key only', data: { key: 'note1' } },
+    ],
+    invalid: [],
+  },
+];
+
+// Schema mapping for getContentSchemaForBlockType tests
+const SCHEMA_MAPPINGS = [
+  { type: 'paragraph' as const, schema: ParagraphContentSchema },
+  { type: 'heading' as const, schema: HeadingContentSchema },
+  { type: 'list' as const, schema: ListContentSchema },
+  { type: 'list_item' as const, schema: ListItemContentSchema },
+  { type: 'blockquote' as const, schema: BlockquoteContentSchema },
+  { type: 'callout' as const, schema: CalloutContentSchema },
+  { type: 'code_block' as const, schema: CodeBlockContentSchema },
+  { type: 'thematic_break' as const, schema: ThematicBreakContentSchema },
+  { type: 'table' as const, schema: TableContentSchema },
+  { type: 'math_block' as const, schema: MathBlockContentSchema },
+  { type: 'footnote_def' as const, schema: FootnoteDefContentSchema },
+];
+
+// =============================================================================
+// Tests
+// =============================================================================
 
 describe('MarkSchema', () => {
-  const validMarks = ['em', 'strong', 'code', 'strike', 'highlight'];
-
-  it.each(validMarks)('accepts valid mark: %s', (mark) => {
-    const result = MarkSchema.safeParse(mark);
-    expect(result.success).toBe(true);
+  it.each(VALID_MARKS)('accepts valid mark: %s', (mark) => {
+    expectValid(MarkSchema, mark);
   });
 
   it('rejects invalid mark', () => {
-    const result = MarkSchema.safeParse('underline');
-    expect(result.success).toBe(false);
+    expectInvalid(MarkSchema, 'underline');
   });
 });
 
 describe('InlineNodeSchema', () => {
-  describe('text node', () => {
-    it('accepts plain text', () => {
-      const node: InlineNode = { t: 'text', text: 'Hello world' };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
+  // Flatten all inline node test cases into a single array for data-driven testing
+  const allInlineNodeCases = Object.entries(INLINE_NODE_TEST_CASES).flatMap(
+    ([nodeType, { valid }]) => valid.map((testCase) => ({ nodeType, ...testCase }))
+  );
 
-    it('accepts text with marks', () => {
-      const node: InlineNode = { t: 'text', text: 'Bold', marks: ['strong'] };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts text with multiple marks', () => {
-      const node: InlineNode = { t: 'text', text: 'Bold italic', marks: ['strong', 'em'] };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('hard_break node', () => {
-    it('accepts hard break', () => {
-      const node: InlineNode = { t: 'hard_break' };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('link node', () => {
-    it('accepts link with text children', () => {
-      const node: InlineNode = {
-        t: 'link',
-        href: 'https://example.com',
-        children: [{ t: 'text', text: 'Example' }],
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts link with marked text', () => {
-      const node: InlineNode = {
-        t: 'link',
-        href: 'https://example.com',
-        children: [{ t: 'text', text: 'Bold link', marks: ['strong'] }],
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('ref node (object reference)', () => {
-    it('accepts object link ref', () => {
-      const node: InlineNode = {
-        t: 'ref',
-        mode: 'link',
-        target: { kind: 'object', objectId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' },
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts object embed ref (transclusion)', () => {
-      const node: InlineNode = {
-        t: 'ref',
-        mode: 'embed',
-        target: { kind: 'object', objectId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' },
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts ref with alias', () => {
-      const node: InlineNode = {
-        t: 'ref',
-        mode: 'link',
-        target: { kind: 'object', objectId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' },
-        alias: 'My Note',
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('ref node (block reference)', () => {
-    it('accepts block link ref', () => {
-      const node: InlineNode = {
-        t: 'ref',
-        mode: 'link',
-        target: {
-          kind: 'block',
-          objectId: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
-          blockId: '01ARZ3NDEKTSV4RRFFQ69G5FAW',
-        },
-      };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('tag node', () => {
-    it('accepts tag', () => {
-      const node: InlineNode = { t: 'tag', value: 'project-alpha' };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('math_inline node', () => {
-    it('accepts inline math', () => {
-      const node: InlineNode = { t: 'math_inline', latex: 'E = mc^2' };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('footnote_ref node', () => {
-    it('accepts footnote reference', () => {
-      const node: InlineNode = { t: 'footnote_ref', key: '1' };
-      const result = InlineNodeSchema.safeParse(node);
-      expect(result.success).toBe(true);
-    });
+  it.each(allInlineNodeCases)('accepts $nodeType: $name', ({ data }) => {
+    expectValid(InlineNodeSchema, data);
   });
 });
 
 describe('BlockTypeSchema', () => {
-  const validTypes: BlockType[] = [
-    'paragraph',
-    'heading',
-    'list',
-    'list_item',
-    'blockquote',
-    'callout',
-    'code_block',
-    'thematic_break',
-    'table',
-    'math_block',
-    'footnote_def',
-  ];
-
-  it.each(validTypes)('accepts valid block type: %s', (type) => {
-    const result = BlockTypeSchema.safeParse(type);
-    expect(result.success).toBe(true);
+  it.each(VALID_BLOCK_TYPES)('accepts valid block type: %s', (type) => {
+    expectValid(BlockTypeSchema, type);
   });
 
   it('rejects invalid block type', () => {
-    const result = BlockTypeSchema.safeParse('image');
-    expect(result.success).toBe(false);
+    expectInvalid(BlockTypeSchema, 'image');
   });
 });
 
 describe('Block content schemas', () => {
-  describe('ParagraphContentSchema', () => {
-    it('accepts paragraph with inline content', () => {
-      const content = {
-        inline: [{ t: 'text', text: 'Hello world' }],
-      };
-      const result = ParagraphContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
+  // Generate data-driven tests for each block type
+  describe.each(BLOCK_CONTENT_TEST_DATA)('$blockType', ({ schema, valid, invalid }) => {
+    if (valid.length > 0) {
+      it.each(valid)('accepts $name', ({ data }) => {
+        expectValid(schema, data);
+      });
+    }
 
-    it('accepts empty paragraph', () => {
-      const content = { inline: [] };
-      const result = ParagraphContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('HeadingContentSchema', () => {
-    it('accepts heading with level and inline', () => {
-      const content = {
-        level: 2,
-        inline: [{ t: 'text', text: 'Heading' }],
-      };
-      const result = HeadingContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts all valid heading levels', () => {
-      for (let level = 1; level <= 6; level++) {
-        const content = { level, inline: [] };
-        const result = HeadingContentSchema.safeParse(content);
-        expect(result.success).toBe(true);
-      }
-    });
-
-    it('rejects invalid heading level', () => {
-      const content = { level: 7, inline: [] };
-      const result = HeadingContentSchema.safeParse(content);
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('ListContentSchema', () => {
-    it('accepts bullet list', () => {
-      const content = { kind: 'bullet' };
-      const result = ListContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts ordered list with start', () => {
-      const content = { kind: 'ordered', start: 5 };
-      const result = ListContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts task list', () => {
-      const content = { kind: 'task', tight: true };
-      const result = ListContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('ListItemContentSchema', () => {
-    it('accepts list item with inline', () => {
-      const content = {
-        inline: [{ t: 'text', text: 'Item' }],
-      };
-      const result = ListItemContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts task list item with checked', () => {
-      const content = {
-        inline: [{ t: 'text', text: 'Task' }],
-        checked: true,
-      };
-      const result = ListItemContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('BlockquoteContentSchema', () => {
-    it('accepts empty blockquote content', () => {
-      const content = {};
-      const result = BlockquoteContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('CalloutContentSchema', () => {
-    it('accepts callout with kind', () => {
-      const content = { kind: 'NOTE' };
-      const result = CalloutContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts callout with title and collapsed', () => {
-      const content = { kind: 'WARNING', title: 'Be careful', collapsed: true };
-      const result = CalloutContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('CodeBlockContentSchema', () => {
-    it('accepts code block with language', () => {
-      const content = { language: 'typescript', code: 'const x = 1;' };
-      const result = CodeBlockContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts code block without language', () => {
-      const content = { code: 'plain text' };
-      const result = CodeBlockContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('ThematicBreakContentSchema', () => {
-    it('accepts empty thematic break content', () => {
-      const content = {};
-      const result = ThematicBreakContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('TableContentSchema', () => {
-    it('accepts table with rows', () => {
-      const content = {
-        rows: [
-          { cells: [[{ t: 'text', text: 'Header' }]] },
-          { cells: [[{ t: 'text', text: 'Cell' }]] },
-        ],
-      };
-      const result = TableContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts table with alignment', () => {
-      const content = {
-        align: ['left', 'center', 'right', null],
-        rows: [{ cells: [] }],
-      };
-      const result = TableContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('MathBlockContentSchema', () => {
-    it('accepts math block with latex', () => {
-      const content = { latex: '\\int_0^\\infty e^{-x} dx = 1' };
-      const result = MathBlockContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('FootnoteDefContentSchema', () => {
-    it('accepts footnote with key and inline', () => {
-      const content = {
-        key: '1',
-        inline: [{ t: 'text', text: 'Footnote text' }],
-      };
-      const result = FootnoteDefContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
-
-    it('accepts footnote with key only', () => {
-      const content = { key: 'note1' };
-      const result = FootnoteDefContentSchema.safeParse(content);
-      expect(result.success).toBe(true);
-    });
+    if (invalid.length > 0) {
+      it.each(invalid)('rejects $name', ({ data }) => {
+        expectInvalid(schema, data);
+      });
+    }
   });
 });
 
 describe('getContentSchemaForBlockType', () => {
-  it('returns ParagraphContentSchema for paragraph', () => {
-    const schema = getContentSchemaForBlockType('paragraph');
-    expect(schema).toBe(ParagraphContentSchema);
-  });
-
-  it('returns HeadingContentSchema for heading', () => {
-    const schema = getContentSchemaForBlockType('heading');
-    expect(schema).toBe(HeadingContentSchema);
+  it.each(SCHEMA_MAPPINGS)('returns correct schema for $type', ({ type, schema }) => {
+    expect(getContentSchemaForBlockType(type)).toBe(schema);
   });
 
   it('returns undefined for unknown block type', () => {
