@@ -54,3 +54,17 @@ export {
   type PropertyValidationError,
   type PropertyValidationResult,
 } from './propertyValidation.js';
+
+// DailyNote Service
+export {
+  getOrCreateDailyNoteByDate,
+  getOrCreateTodayDailyNote,
+  listDailyNotes,
+  getDailyNoteBySlug,
+  getDailyNoteSlug,
+  DailyNoteError,
+  type DailyNote,
+  type GetOrCreateResult,
+  type ListDailyNotesOptions,
+  type ListDailyNotesResult,
+} from './dailyNoteService.js';
