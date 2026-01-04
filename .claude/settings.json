@@ -49,6 +49,28 @@
           {
             "type": "command",
             "command": "./.claude/hooks/storage-transaction-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/ulid-format-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/notate-doc-schema-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/block-patch-spec-validation.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/format-lint-on-stop.sh"
           }
         ]
       }

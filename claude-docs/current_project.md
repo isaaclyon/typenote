@@ -41,8 +41,8 @@ apps/
 | Phase | Description                   | Status      |
 | ----- | ----------------------------- | ----------- |
 | 0     | Day 0 Setup (scaffold, tools) | ✅ Complete |
-| 1     | Core Contracts (IDs, schemas) | 🔲 Pending  |
-| 2     | Storage Schema + Migrations   | 🔲 Pending  |
+| 1     | Core Contracts (IDs, schemas) | ✅ Complete |
+| 2     | Storage Schema + Migrations   | ✅ Complete |
 | 3     | applyBlockPatch() core write  | 🔲 Pending  |
 | 4     | Indexing Side Effects (FTS)   | 🔲 Pending  |
 | 5     | Object Types + Daily Notes    | 🔲 Pending  |

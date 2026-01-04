@@ -1,35 +1,38 @@
 # Recent Work
 
-## Latest Session (2026-01-04 - Phase 0 Setup)
+## Latest Session (2026-01-04 - Phase 2 Schema Fixes)
 
-### Day 0 Scaffold Complete
+### Schema Critical Issues Fixed (Post Code Review)
 
-Set up the complete TypeNote monorepo from scratch (manual setup, not template).
+After code review identified 4 critical issues, fixed all of them:
 
-**Created:**
+1. **Idempotency primary key** — Added composite `primaryKey({ columns: [objectId, key] })` to enforce uniqueness
+2. **Unique sibling order keys** — Changed `index()` to `uniqueIndex()` on `(object_id, parent_block_id, order_key)`
+3. **FTS5 delete support** — Removed contentless mode (`content=''`) so DELETE by block_id works
+4. **Self-referential FK** — Removed (TypeScript circular reference issue); parent validity enforced in app code
 
-- Root workspace config (pnpm-workspace.yaml, package.json, tsconfig.base.json)
-- packages/api — API contracts placeholder
-- packages/core — Domain logic placeholder
-- packages/storage — SQLite/Drizzle placeholder
-- apps/cli — Commander CLI with hello command
-- apps/desktop — Electron + React + Vite scaffold
+**Known limitation:** SQLite unique indexes don't enforce uniqueness on NULL values. Root blocks (parent=NULL) need app-level enforcement in Phase 3.
 
-**Tooling configured:**
+**Test coverage:** 177 tests total (143 api, 11 core, 21 storage, 2 apps)
 
-- TypeScript strict mode (all recommended flags)
-- ESLint with architectural boundary rules
-- Prettier formatting
-- Husky pre-commit/pre-push hooks
+---
 
-**Commits:**
+## Previous Session (2026-01-04 - Phase 2 Storage Schema)
 
-- `913e42d feat: Phase 0 - Day 0 setup complete`
+Created storage schema: object_types, objects, blocks, refs, idempotency, fts_blocks tables. Added db.ts with createTestDb(), createFileDb(), closeDb(). Generated initial migration.
+
+---
+
+## Previous Session (2026-01-04 - Phase 1 Core Contracts)
+
+Implemented Phase 1: errors.ts, blockPatch.ts, notateDoc.ts, patchValidation.ts in api; ids.ts in core.
 
 ---
 
 ## Completed Milestones
 
-| Phase | Description | Date       |
-| ----- | ----------- | ---------- |
-| 0     | Day 0 Setup | 2026-01-04 |
+| Phase | Description                 | Date       |
+| ----- | --------------------------- | ---------- |
+| 0     | Day 0 Setup                 | 2026-01-04 |
+| 1     | Core Contracts              | 2026-01-04 |
+| 2     | Storage Schema + Migrations | 2026-01-04 |
