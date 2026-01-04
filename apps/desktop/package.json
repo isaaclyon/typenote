@@ -1,0 +1,50 @@
+{
+  "name": "@typenote/desktop",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc --build && vite build",
+    "clean": "rm -rf dist out *.tsbuildinfo",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "vite",
+    "dev:electron": "electron .",
+    "package": "electron-builder"
+  },
+  "dependencies": {
+    "@typenote/api": "workspace:*",
+    "@typenote/core": "workspace:*",
+    "@typenote/storage": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.6",
+    "vitest": "^2.1.8"
+  },
+  "build": {
+    "appId": "com.typenote.app",
+    "productName": "TypeNote",
+    "directories": {
+      "output": "out"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
+  }
+}
