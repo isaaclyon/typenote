@@ -4,6 +4,7 @@ import {
   applyBlockPatch as applyBlockPatchStorage,
   getOrCreateTodayDailyNote as getOrCreateTodayDailyNoteStorage,
   listObjects as listObjectsStorage,
+  getObject as getObjectStorage,
   searchBlocks as searchBlocksStorage,
   getBacklinks as getBacklinksStorage,
   createObject as createObjectStorage,
@@ -14,6 +15,7 @@ import {
   type ApplyBlockPatchOutcome,
   type GetOrCreateResult,
   type ObjectSummary,
+  type ObjectDetails,
   type SearchResult,
   type SearchFilters,
   type BacklinkResult,
@@ -41,6 +43,7 @@ export interface IpcHandlers {
   applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
   getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
   listObjects: () => IpcOutcome<ObjectSummary[]>;
+  getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
   searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
   getBacklinks: (objectId: string) => IpcOutcome<BacklinkResult[]>;
   createObject: (
@@ -97,6 +100,10 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
     },
     listObjects: (): IpcOutcome<ObjectSummary[]> => {
       const result = listObjectsStorage(db);
+      return { success: true, result };
+    },
+    getObject: (objectId: string): IpcOutcome<ObjectDetails | null> => {
+      const result = getObjectStorage(db, objectId);
       return { success: true, result };
     },
     searchBlocks: (query: string, filters?: SearchFilters): IpcOutcome<SearchResult[]> => {

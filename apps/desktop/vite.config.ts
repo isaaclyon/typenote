@@ -10,6 +10,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src/renderer'),
     },
   },
+  server: {
+    port: 5173,
+    strictPort: true, // Fail if port is in use (Electron expects this port)
+  },
   build: {
     outDir: '../../dist/renderer',
     emptyOutDir: true,

@@ -14,7 +14,7 @@ export {
 } from './schema.js';
 
 // Database
-export { createTestDb, createFileDb, closeDb, type TypenoteDb } from './db.js';
+export { createTestDb, createFileDb, closeDb, getDbPath, type TypenoteDb } from './db.js';
 
 // Block Patch Operations
 export { applyBlockPatch, type ApplyBlockPatchOutcome } from './applyBlockPatch.js';
@@ -72,9 +72,11 @@ export {
 // Object Service
 export {
   listObjects,
+  getObject,
   createObject,
   CreateObjectError,
   type ObjectSummary,
+  type ObjectDetails,
   type CreatedObject,
 } from './objectService.js';
 

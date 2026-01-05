@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card.js';
 import { ScrollArea } from './ui/scroll-area.js';
+import { cn } from '../lib/utils.js';
 import type { ObjectSummary } from '@typenote/storage';
 
 type LoadState =
@@ -8,7 +9,12 @@ type LoadState =
   | { status: 'error'; message: string }
   | { status: 'loaded'; objects: ObjectSummary[] };
 
-export function ObjectList() {
+interface ObjectListProps {
+  onSelect: (id: string) => void;
+  selectedId: string | null;
+}
+
+export function ObjectList({ onSelect, selectedId }: ObjectListProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
 
   useEffect(() => {
@@ -58,7 +64,14 @@ export function ObjectList() {
     <ScrollArea className="h-full">
       <div className="p-4 space-y-2">
         {state.objects.map((obj) => (
-          <Card key={obj.id} className="cursor-pointer hover:bg-accent transition-colors">
+          <Card
+            key={obj.id}
+            className={cn(
+              'cursor-pointer hover:bg-accent transition-colors',
+              selectedId === obj.id && 'ring-2 ring-primary'
+            )}
+            onClick={() => onSelect(obj.id)}
+          >
             <CardHeader className="p-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="truncate">{obj.title}</CardTitle>

@@ -2,7 +2,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { app, BrowserWindow } from 'electron';
-import { createFileDb, seedBuiltInTypes, closeDb, type TypenoteDb } from '@typenote/storage';
+import {
+  createFileDb,
+  seedBuiltInTypes,
+  closeDb,
+  getDbPath,
+  type TypenoteDb,
+} from '@typenote/storage';
 import { setupIpcHandlers } from './ipc.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,8 +41,8 @@ function createWindow(): void {
 }
 
 function initDatabase(): void {
-  const userDataPath = app.getPath('userData');
-  const dbPath = path.join(userDataPath, 'typenote.db');
+  const dbPath = getDbPath();
+  console.log(`[TypeNote] Using database: ${dbPath}`);
   db = createFileDb(dbPath);
   seedBuiltInTypes(db);
 }

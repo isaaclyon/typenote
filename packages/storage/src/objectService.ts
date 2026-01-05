@@ -13,6 +13,17 @@ export interface ObjectSummary {
   updatedAt: Date;
 }
 
+export interface ObjectDetails {
+  id: string;
+  title: string;
+  typeId: string;
+  typeKey: string;
+  properties: Record<string, unknown>;
+  docVersion: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // ============================================================================
 // Error Types
 // ============================================================================
@@ -69,6 +80,56 @@ export function listObjects(db: TypenoteDb): ObjectSummary[] {
     typeKey: row.typeKey ?? 'Unknown',
     updatedAt: row.updatedAt,
   }));
+}
+
+/**
+ * Get a single object by ID with its type information.
+ *
+ * @param db - Database connection
+ * @param objectId - The object ID to look up
+ * @returns The object details or null if not found
+ */
+export function getObject(db: TypenoteDb, objectId: string): ObjectDetails | null {
+  const row = db
+    .select({
+      id: objects.id,
+      title: objects.title,
+      typeId: objects.typeId,
+      typeKey: objectTypes.key,
+      properties: objects.properties,
+      docVersion: objects.docVersion,
+      createdAt: objects.createdAt,
+      updatedAt: objects.updatedAt,
+    })
+    .from(objects)
+    .leftJoin(objectTypes, eq(objects.typeId, objectTypes.id))
+    .where(eq(objects.id, objectId))
+    .get();
+
+  if (!row) {
+    return null;
+  }
+
+  // Parse properties from JSON string
+  let parsedProperties: Record<string, unknown> = {};
+  if (row.properties) {
+    try {
+      parsedProperties = JSON.parse(row.properties) as Record<string, unknown>;
+    } catch {
+      // If parsing fails, use empty object
+    }
+  }
+
+  return {
+    id: row.id,
+    title: row.title,
+    typeId: row.typeId,
+    typeKey: row.typeKey ?? 'Unknown',
+    properties: parsedProperties,
+    docVersion: row.docVersion,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
 }
 
 /**

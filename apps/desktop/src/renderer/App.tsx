@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
+import { NoteEditor } from './components/NoteEditor.js';
 import { Button } from './components/ui/button.js';
 
 function App(): ReactElement {
+  const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+
   const handleCreateDailyNote = async () => {
     const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
     if (result.success) {
-      // For now just reload - later we'll have proper state management
-      window.location.reload();
+      // Select the newly created/retrieved daily note
+      setSelectedObjectId(result.result.dailyNote.id);
     }
   };
 
@@ -29,13 +33,19 @@ function App(): ReactElement {
           </Button>
         </div>
         <div className="flex-1 overflow-hidden">
-          <ObjectList />
+          <ObjectList onSelect={setSelectedObjectId} selectedId={selectedObjectId} />
         </div>
       </aside>
 
       {/* Main content area */}
-      <main className="flex-1 flex items-center justify-center text-muted-foreground">
-        Select an object to view
+      <main className="flex-1">
+        {selectedObjectId ? (
+          <NoteEditor objectId={selectedObjectId} />
+        ) : (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Select an object to view
+          </div>
+        )}
       </main>
     </div>
   );

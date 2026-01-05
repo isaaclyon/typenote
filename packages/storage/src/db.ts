@@ -6,6 +6,8 @@ import * as schema from './schema.js';
 import { FTS_BLOCKS_CREATE_SQL } from './schema.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { homedir } from 'os';
+import { mkdirSync, existsSync } from 'fs';
 
 // Get the directory containing this file
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +15,37 @@ const __dirname = dirname(__filename);
 
 // Drizzle migrations directory (relative to package root)
 const MIGRATIONS_PATH = join(__dirname, '..', 'drizzle');
+
+// Default database directory and file
+const DEFAULT_DB_DIR = join(homedir(), '.typenote');
+const DEFAULT_DB_FILE = 'typenote.db';
+
+/**
+ * Get the database file path.
+ *
+ * Priority:
+ * 1. TYPENOTE_DB_PATH environment variable (if set)
+ * 2. Default: ~/.typenote/typenote.db
+ *
+ * Creates the parent directory if it doesn't exist.
+ */
+export function getDbPath(): string {
+  const envPath = process.env['TYPENOTE_DB_PATH'];
+  if (envPath) {
+    // Ensure parent directory exists for env-specified path
+    const parentDir = dirname(envPath);
+    if (!existsSync(parentDir)) {
+      mkdirSync(parentDir, { recursive: true });
+    }
+    return envPath;
+  }
+
+  // Use default path
+  if (!existsSync(DEFAULT_DB_DIR)) {
+    mkdirSync(DEFAULT_DB_DIR, { recursive: true });
+  }
+  return join(DEFAULT_DB_DIR, DEFAULT_DB_FILE);
+}
 
 /**
  * TypeNote database type - Drizzle ORM with schema + raw query helpers

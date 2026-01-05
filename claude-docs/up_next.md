@@ -15,8 +15,19 @@ Status: **Active**
 - [x] CLI commands for backend proof of life (create, list, get, search, patch-\*)
 - [x] IPC handlers for searchBlocks, getBacklinks, createObject (10 tests)
 - [x] Generic createObject() with property validation
-- [ ] Simple block editor (read-only initially)
+- [ ] **Simple block editor (read-only)** — TipTap setup done, empty doc issue to debug
 - [ ] Daily note navigation
+
+### In Progress (uncommitted)
+
+TipTap editor implementation ~90% complete:
+
+- ✅ TipTap + extensions installed
+- ✅ NotateDoc→TipTap converter
+- ✅ Custom nodes (Ref, Tag, Callout, Math)
+- ✅ NoteEditor component
+- ✅ Selection wiring
+- ⚠️ Empty document not showing placeholder (debug next)
 
 ---
 

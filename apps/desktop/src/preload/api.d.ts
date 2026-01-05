@@ -1,4 +1,12 @@
-import type { GetDocumentResult, GetOrCreateResult, ObjectSummary } from '@typenote/storage';
+import type {
+  GetDocumentResult,
+  GetOrCreateResult,
+  ObjectSummary,
+  ObjectDetails,
+  SearchResult,
+  BacklinkResult,
+  CreatedObject,
+} from '@typenote/storage';
 import type { ApplyBlockPatchResult } from '@typenote/api';
 
 interface IpcSuccess<T> {
@@ -22,6 +30,17 @@ export interface TypenoteAPI {
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
   getOrCreateTodayDailyNote: () => Promise<IpcOutcome<GetOrCreateResult>>;
   listObjects: () => Promise<IpcOutcome<ObjectSummary[]>>;
+  getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
+  searchBlocks: (
+    query: string,
+    filters?: { objectId?: string; limit?: number }
+  ) => Promise<IpcOutcome<SearchResult[]>>;
+  getBacklinks: (objectId: string) => Promise<IpcOutcome<BacklinkResult[]>>;
+  createObject: (
+    typeKey: string,
+    title: string,
+    properties?: Record<string, unknown>
+  ) => Promise<IpcOutcome<CreatedObject>>;
 }
 
 declare global {

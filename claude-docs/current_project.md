@@ -13,16 +13,16 @@ Key concepts:
 
 ## Tech Stack
 
-| Layer      | Technology                  |
-| ---------- | --------------------------- |
-| Runtime    | Electron (desktop)          |
-| Language   | TypeScript (strict mode)    |
-| Database   | SQLite + Drizzle ORM        |
-| Search     | SQLite FTS5                 |
-| Editor     | TipTap/ProseMirror (future) |
-| Packages   | pnpm workspaces             |
-| Testing    | Vitest + Stryker            |
-| Validation | Zod                         |
+| Layer      | Technology               |
+| ---------- | ------------------------ |
+| Runtime    | Electron (desktop)       |
+| Language   | TypeScript (strict mode) |
+| Database   | SQLite + Drizzle ORM     |
+| Search     | SQLite FTS5              |
+| Editor     | TipTap/ProseMirror       |
+| Packages   | pnpm workspaces          |
+| Testing    | Vitest + Stryker         |
+| Validation | Zod                      |
 
 ## Monorepo Structure
 

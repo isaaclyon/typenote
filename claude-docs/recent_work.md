@@ -1,6 +1,46 @@
 # Recent Work
 
-## Latest Session (2026-01-05 - CLI & IPC Proof of Life)
+## Latest Session (2026-01-05 - TipTap Editor Setup)
+
+### TipTap Read-Only Editor Implementation
+
+Set up TipTap as the document renderer for Phase 7 "Simple block editor" task. **NOT YET COMMITTED** — work in progress with some issues to resolve.
+
+**Completed:**
+
+- TipTap packages installed (@tiptap/react, starter-kit, table, task-list, placeholder)
+- NotateDoc → TipTap converter (`notateToTiptap.ts`)
+- Custom extensions: RefNode, TagNode, CalloutNode, MathBlock, MathInline, Highlight
+- NoteEditor component with document fetching
+- Selection wiring (App.tsx + ObjectList click handlers)
+- getObject IPC handler for ref type lookup
+- Fixed Tailwind v4 PostCSS migration (`@tailwindcss/postcss`)
+- Fixed Electron preload CommonJS requirement (esbuild bundling)
+- Fixed `electron-rebuild` for better-sqlite3 native module
+
+**Known Issues (to fix next session):**
+
+- Empty document shows blank instead of placeholder
+- May need to verify TipTap content is being set correctly
+
+**Key new files:**
+
+- `apps/desktop/src/renderer/lib/notateToTiptap.ts` — NotateDoc→TipTap converter
+- `apps/desktop/src/renderer/extensions/` — RefNode, TagNode, CalloutNode, MathBlock, MathInline, Highlight
+- `apps/desktop/src/renderer/components/NoteEditor.tsx` — TipTap editor component
+- `packages/storage/src/objectService.ts` — Added `getObject()` function
+
+**Build changes:**
+
+- `apps/desktop/package.json` — Added esbuild preload bundling to build script
+- `apps/desktop/postcss.config.js` — Updated for Tailwind v4
+- `apps/desktop/src/renderer/index.css` — Tailwind v4 @theme syntax + TipTap styles
+
+**Reference added:** `_reference/shadcn-admin/` — Cloned for UI pattern reference (not used in code)
+
+---
+
+## Previous Session (2026-01-05 - CLI & IPC Proof of Life)
 
 ### Full Backend Exercisability via CLI
 

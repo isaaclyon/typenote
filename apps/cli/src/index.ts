@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { join } from 'path';
-import { homedir } from 'os';
-import { mkdirSync, existsSync } from 'fs';
 import {
   createFileDb,
   closeDb,
@@ -12,6 +9,7 @@ import {
   getDocument,
   searchBlocks,
   applyBlockPatch,
+  getDbPath,
   type TypenoteDb,
 } from '@typenote/storage';
 import { generateId } from '@typenote/core';
@@ -20,18 +18,10 @@ import { generateId } from '@typenote/core';
 // Database Setup
 // ============================================================================
 
-const TYPENOTE_DIR = join(homedir(), '.typenote');
-const DB_PATH = join(TYPENOTE_DIR, 'typenote.db');
-
-function ensureDbDirectory(): void {
-  if (!existsSync(TYPENOTE_DIR)) {
-    mkdirSync(TYPENOTE_DIR, { recursive: true });
-  }
-}
-
 function initDb(): TypenoteDb {
-  ensureDbDirectory();
-  const db = createFileDb(DB_PATH);
+  const dbPath = getDbPath();
+  console.log(`Using database: ${dbPath}`);
+  const db = createFileDb(dbPath);
   seedBuiltInTypes(db);
   return db;
 }

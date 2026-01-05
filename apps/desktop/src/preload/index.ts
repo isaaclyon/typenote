@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   listObjects: () => ipcRenderer.invoke('typenote:listObjects'),
 
+  getObject: (objectId: string) => ipcRenderer.invoke('typenote:getObject', objectId),
+
   searchBlocks: (query: string, filters?: { objectId?: string; limit?: number }) =>
     ipcRenderer.invoke('typenote:searchBlocks', query, filters),
 
