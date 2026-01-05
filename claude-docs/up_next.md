@@ -12,6 +12,9 @@ Status: **Active**
 - [x] Tailwind CSS + Shadcn UI setup with tooling exclusions
 - [x] Basic React shell with object list (TDD for listObjects)
 - [x] IPC auto-registration refactor (single source of truth pattern)
+- [x] CLI commands for backend proof of life (create, list, get, search, patch-\*)
+- [x] IPC handlers for searchBlocks, getBacklinks, createObject (10 tests)
+- [x] Generic createObject() with property validation
 - [ ] Simple block editor (read-only initially)
 - [ ] Daily note navigation
 

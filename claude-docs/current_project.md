@@ -63,8 +63,10 @@ apps/
 ```bash
 pnpm typecheck     # Type check all packages
 pnpm lint          # Lint all packages
-pnpm test          # Run all tests (360 tests)
+pnpm test          # Run all tests (574 tests)
 pnpm build         # Build all packages
 pnpm mutate        # Run mutation testing
-pnpm --filter @typenote/cli dev hello  # Test CLI
+pnpm --filter @typenote/cli dev create Page "Test"  # Create object
+pnpm --filter @typenote/cli dev list                  # List objects
+pnpm --filter @typenote/cli dev patch-insert <id> paragraph "Hello"  # Add block
 ```

@@ -1,36 +1,48 @@
 # Recent Work
 
-## Latest Session (2026-01-04 night - IPC Refactor)
+## Latest Session (2026-01-05 - CLI & IPC Proof of Life)
 
-### IPC Auto-Registration Pattern
+### Full Backend Exercisability via CLI
 
-Discovered missing `listObjects` IPC registration (unit tests passed but integration would fail). Refactored to "single source of truth" pattern.
+Completed Phase 7 "proof of life" by implementing generic object creation with property validation, 3 new IPC handlers, and a full CLI command set.
 
-**Bug fixes:**
+**New functionality:**
 
-- Added missing `ipcMain.handle('typenote:listObjects', ...)` registration
-- Fixed Date serialization in ObjectList (IPC sends strings, not Date objects)
+- `createObject(db, typeKey, title, properties)` — Generic object creation with property validation
+- 3 new IPC handlers: `searchBlocks`, `getBacklinks`, `createObject`
+- CLI commands: `create`, `list`, `get`, `search`, `patch-insert`, `patch-update`, `patch-delete`
 
-**Architectural refactor:**
+**Key files:**
 
-- New `setupIpcHandlers(db)` auto-registers all handlers via loop
-- Adding a handler to `createIpcHandlers()` now automatically registers it
-- Removed 19 lines of manual registration from `main/index.ts`
-- Pattern: "Don't remember, automate"
+- `packages/storage/src/objectService.ts` — Added `createObject()` with `CreateObjectError`
+- `apps/desktop/src/main/ipc.ts` — 3 new handlers (+30 lines)
+- `apps/desktop/src/main/ipc.test.ts` — 10 new tests (+130 lines)
+- `apps/desktop/src/preload/index.ts` — 3 new bridge methods
+- `apps/cli/src/index.ts` — Full CLI implementation (+280 lines)
 
-**Lesson learned:**
+**TDD cycles:**
 
-- Unit tests verify pieces work in isolation, but don't verify they're connected
-- Need integration/E2E tests to catch "wiring" issues
-- Architectural constraints (single source of truth) prevent classes of bugs
+1. IPC handler tests (RED) for searchBlocks, getBacklinks, createObject
+2. IPC handler implementation (GREEN)
+3. Preload bridge wiring
+4. CLI patch command implementation
+
+**Commits:**
+
+- `c140b10 feat: Phase 7 - CLI commands and IPC handlers for proof of life`
+- `6ebb6ca feat: add integration test suite for backend confidence`
+
+---
+
+## Previous Session (2026-01-04 night - IPC Refactor)
+
+Discovered missing `listObjects` IPC registration. Refactored to "single source of truth" pattern where adding a handler to `createIpcHandlers()` automatically registers it.
 
 **Commit:** `4e077f3 fix: IPC auto-registration and Date serialization`
 
 ---
 
 ## Previous Session (2026-01-04 night - Shadcn + Object List)
-
-### Shadcn UI + Object List Shell via TDD
 
 Set up frontend stack and built object list with strict TDD for backend.
 
