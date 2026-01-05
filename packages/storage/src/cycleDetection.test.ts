@@ -116,6 +116,17 @@ describe('wouldCreateCycle', () => {
     expect(result).toBe(false);
   });
 
+  it('returns false when new parent does not exist', () => {
+    const block = createTestBlock(db, objectId, null, 'a', 'paragraph', {
+      inline: [],
+    });
+
+    // Moving to a non-existent parent - can't create cycle if parent doesn't exist
+    const result = wouldCreateCycle(db, block, 'non-existent-id', objectId);
+
+    expect(result).toBe(false);
+  });
+
   it('handles complex tree structures correctly', () => {
     // Create a more complex tree:
     //       root
@@ -166,6 +177,12 @@ describe('getAncestors', () => {
 
   afterEach(() => {
     closeDb(db);
+  });
+
+  it('returns empty array for non-existent block', () => {
+    const ancestors = getAncestors(db, 'non-existent-id', objectId);
+
+    expect(ancestors).toEqual([]);
   });
 
   it('returns empty array for root block', () => {

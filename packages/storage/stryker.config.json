@@ -1,0 +1,23 @@
+{
+  "packageManager": "pnpm",
+  "plugins": ["@stryker-mutator/vitest-runner", "@stryker-mutator/typescript-checker"],
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.config.mjs"
+  },
+  "mutate": ["src/**/*.ts", "!src/**/*.test.ts", "!src/testFixtures.ts"],
+  "incremental": true,
+  "incrementalFile": ".stryker-cache/incremental.json",
+  "thresholds": {
+    "high": 90,
+    "low": 75,
+    "break": 75
+  },
+  "mutator": {
+    "excludedMutations": ["StringLiteral"]
+  },
+  "reporters": ["html", "clear-text", "progress"],
+  "htmlReporter": {
+    "fileName": "reports/mutation/index.html"
+  }
+}

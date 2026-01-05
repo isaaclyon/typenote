@@ -16,7 +16,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "mutate": "stryker run",
+    "mutate:open": "open reports/mutation/index.html"
   },
   "dependencies": {
     "@typenote/api": "workspace:*",
@@ -27,6 +29,9 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^8.7.1",
+    "@stryker-mutator/typescript-checker": "^8.7.1",
+    "@stryker-mutator/vitest-runner": "^8.7.1",
     "@types/better-sqlite3": "^7.6.12",
     "drizzle-kit": "^0.30.1",
     "tsx": "^4.19.2",
