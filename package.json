@@ -5,6 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@9.15.1",
   "scripts": {
+    "postinstall": "electron-rebuild",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
