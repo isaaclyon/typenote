@@ -1,9 +1,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { createFileDb, seedBuiltInTypes, closeDb, type TypenoteDb } from '@typenote/storage';
-import { createIpcHandlers } from './ipc.js';
+import { setupIpcHandlers } from './ipc.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,20 +43,7 @@ function initDatabase(): void {
 
 function registerIpcHandlers(): void {
   if (!db) throw new Error('Database not initialized');
-
-  const handlers = createIpcHandlers(db);
-
-  ipcMain.handle('typenote:getDocument', (_event, objectId: string) => {
-    return handlers.getDocument(objectId);
-  });
-
-  ipcMain.handle('typenote:applyBlockPatch', (_event, request: unknown) => {
-    return handlers.applyBlockPatch(request);
-  });
-
-  ipcMain.handle('typenote:getOrCreateTodayDailyNote', () => {
-    return handlers.getOrCreateTodayDailyNote();
-  });
+  setupIpcHandlers(db);
 }
 
 void app.whenReady().then(() => {

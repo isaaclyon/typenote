@@ -67,7 +67,7 @@ export function ObjectList() {
                 </span>
               </div>
               <CardDescription className="text-xs">
-                {obj.updatedAt.toLocaleDateString()}
+                {new Date(obj.updatedAt).toLocaleDateString()}
               </CardDescription>
             </CardHeader>
           </Card>

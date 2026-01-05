@@ -1,3 +1,4 @@
+import { ipcMain } from 'electron';
 import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
@@ -84,4 +85,19 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
       return { success: true, result };
     },
   };
+}
+
+/**
+ * Sets up IPC handlers with auto-registration.
+ * This is the single source of truth - adding a handler here automatically registers it.
+ */
+export function setupIpcHandlers(db: TypenoteDb): void {
+  const handlers = createIpcHandlers(db);
+
+  // Auto-register all handlers with the typenote: prefix
+  for (const [name, handler] of Object.entries(handlers)) {
+    ipcMain.handle(`typenote:${name}`, (_event, ...args: unknown[]) =>
+      (handler as (...args: unknown[]) => unknown)(...args)
+    );
+  }
 }
