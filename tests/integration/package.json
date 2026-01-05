@@ -1,0 +1,21 @@
+{
+  "name": "@typenote/integration-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@typenote/api": "workspace:*",
+    "@typenote/core": "workspace:*",
+    "@typenote/storage": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.8",
+    "drizzle-orm": "^0.38.3",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
