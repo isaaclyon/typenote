@@ -9,4 +9,6 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   applyBlockPatch: (request: unknown) => ipcRenderer.invoke('typenote:applyBlockPatch', request),
 
   getOrCreateTodayDailyNote: () => ipcRenderer.invoke('typenote:getOrCreateTodayDailyNote'),
+
+  listObjects: () => ipcRenderer.invoke('typenote:listObjects'),
 });

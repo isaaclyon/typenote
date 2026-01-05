@@ -1,4 +1,4 @@
-import type { GetDocumentResult, GetOrCreateResult } from '@typenote/storage';
+import type { GetDocumentResult, GetOrCreateResult, ObjectSummary } from '@typenote/storage';
 import type { ApplyBlockPatchResult } from '@typenote/api';
 
 interface IpcSuccess<T> {
@@ -21,6 +21,7 @@ export interface TypenoteAPI {
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
   getOrCreateTodayDailyNote: () => Promise<IpcOutcome<GetOrCreateResult>>;
+  listObjects: () => Promise<IpcOutcome<ObjectSummary[]>>;
 }
 
 declare global {

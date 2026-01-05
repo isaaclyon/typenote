@@ -13,6 +13,8 @@ export default [
       '**/*.js',
       '**/*.mjs',
       '**/drizzle.config.ts', // Config file outside src, not in tsconfig
+      '**/vite.config.ts', // Config file outside src, not in tsconfig
+      'apps/desktop/src/renderer/components/ui/**', // Shadcn UI components (generated)
     ],
   },
   // Base TypeScript config for all TS files

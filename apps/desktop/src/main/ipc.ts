@@ -2,11 +2,13 @@ import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
   getOrCreateTodayDailyNote as getOrCreateTodayDailyNoteStorage,
+  listObjects as listObjectsStorage,
   DocumentNotFoundError,
   type TypenoteDb,
   type GetDocumentResult,
   type ApplyBlockPatchOutcome,
   type GetOrCreateResult,
+  type ObjectSummary,
 } from '@typenote/storage';
 import { ApplyBlockPatchInputSchema, type ApplyBlockPatchResult } from '@typenote/api';
 
@@ -29,6 +31,7 @@ export interface IpcHandlers {
   getDocument: (objectId: string) => IpcOutcome<GetDocumentResult>;
   applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
   getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
+  listObjects: () => IpcOutcome<ObjectSummary[]>;
 }
 
 export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
@@ -74,6 +77,10 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
     },
     getOrCreateTodayDailyNote: (): IpcOutcome<GetOrCreateResult> => {
       const result = getOrCreateTodayDailyNoteStorage(db);
+      return { success: true, result };
+    },
+    listObjects: (): IpcOutcome<ObjectSummary[]> => {
+      const result = listObjectsStorage(db);
       return { success: true, result };
     },
   };

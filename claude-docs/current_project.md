@@ -21,7 +21,7 @@ Key concepts:
 | Search     | SQLite FTS5                 |
 | Editor     | TipTap/ProseMirror (future) |
 | Packages   | pnpm workspaces             |
-| Testing    | Vitest                      |
+| Testing    | Vitest + Stryker            |
 | Validation | Zod                         |
 
 ## Monorepo Structure
@@ -45,9 +45,9 @@ apps/
 | 2     | Storage Schema + Migrations   | ✅ Complete |
 | 3     | applyBlockPatch() core write  | ✅ Complete |
 | 4     | Indexing Side Effects (FTS)   | ✅ Complete |
-| 5     | Object Types + Daily Notes    | 🔲 Pending  |
-| 6     | Export/Import (backup)        | 🔲 Pending  |
-| 7     | Wire Desktop Shell            | 🔲 Pending  |
+| 5     | Object Types + Daily Notes    | ✅ Complete |
+| 6     | Export/Import + Mutation Test | ✅ Complete |
+| 7     | Wire Desktop Shell            | 🔄 Active   |
 
 ## Key Architecture Decisions
 
@@ -56,13 +56,15 @@ apps/
 - **Renderer isolation** — Renderer has no DB access, uses IPC
 - **Content schema is editor-agnostic** — NotateDoc v1 not tied to specific editor
 - **Soft delete** — Blocks marked deleted, not removed
+- **Mutation testing** — Stryker validates test quality (core 80%, storage 75%, api 45% thresholds)
 
 ## Quick Commands
 
 ```bash
 pnpm typecheck     # Type check all packages
 pnpm lint          # Lint all packages
-pnpm test          # Run all tests
+pnpm test          # Run all tests (360 tests)
 pnpm build         # Build all packages
+pnpm mutate        # Run mutation testing
 pnpm --filter @typenote/cli dev hello  # Test CLI
 ```

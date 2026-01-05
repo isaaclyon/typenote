@@ -69,6 +69,9 @@ export {
   type ListDailyNotesResult,
 } from './dailyNoteService.js';
 
+// Object Service
+export { listObjects, type ObjectSummary } from './objectService.js';
+
 // Export/Import Service
 export {
   deterministicStringify,

@@ -30,6 +30,36 @@ describe('IPC Handlers', () => {
       expect(typeof handlers.getDocument).toBe('function');
       expect(typeof handlers.applyBlockPatch).toBe('function');
       expect(typeof handlers.getOrCreateTodayDailyNote).toBe('function');
+      expect(typeof handlers.listObjects).toBe('function');
+    });
+  });
+
+  describe('listObjects', () => {
+    it('returns list of objects with type info', () => {
+      // Create a daily note (which creates an object)
+      const { dailyNote } = getOrCreateTodayDailyNote(db);
+
+      const result = handlers.listObjects();
+
+      expect(result).toEqual({
+        success: true,
+        result: expect.arrayContaining([
+          expect.objectContaining({
+            id: dailyNote.id,
+            title: dailyNote.title,
+            typeKey: 'DailyNote',
+          }),
+        ]),
+      });
+    });
+
+    it('returns empty array when no objects exist', () => {
+      const result = handlers.listObjects();
+
+      expect(result).toEqual({
+        success: true,
+        result: [],
+      });
     });
   });
 

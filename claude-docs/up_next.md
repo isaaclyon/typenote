@@ -1,29 +1,31 @@
 # Up Next
 
-## Workstream: Phase 5 — Object Types + Daily Notes
+## Workstream: Phase 7 — Wire Desktop Shell
 
-Status: **Ready to Start**
+Status: **Active**
 
-**Goal:** Make types and Daily Notes first-class at the backend.
+**Goal:** Minimal Electron UI to exercise the backend.
 
 ### Tasks
 
-- [ ] Implement `ObjectTypeService` (create/list/update/delete)
-- [ ] Implement property validation per type schema
-- [ ] Implement DailyNote API (`getOrCreateTodayDailyNote()`, `getOrCreateDailyNoteByDate()`, `listDailyNotes()`)
-- [ ] Enforce uniqueness constraint on `DailyNote.date_key`
-- [ ] Implement slug mapping for DailyNotes
-- [ ] Add tests for object types and daily notes
-
-### Exit Criteria
-
-- DailyNotes created on access
-- Type validation enforced
-- Built-in types seeded (DailyNote, Page, Person, Event, Place)
+- [x] IPC bridge for storage operations (9 tests, 4 handlers)
+- [x] Tailwind CSS + Shadcn UI setup with tooling exclusions
+- [x] Basic React shell with object list (TDD for listObjects)
+- [ ] Simple block editor (read-only initially)
+- [ ] Daily note navigation
 
 ---
 
 ## Backlog
 
-- [ ] Phase 6: Export/Import
-- [ ] Phase 7: Wire Desktop Shell
+- [ ] Improve mutation testing scores (currently: storage 79.9%, api 52.1%)
+- [ ] Add Markdown export (in addition to JSON)
+
+---
+
+## Recently Completed
+
+### Phase 6 — Export/Import + Mutation Testing ✅ (2026-01-04)
+
+- Deterministic JSON export/import via TDD (17 cycles, 34 tests)
+- Stryker mutation testing for all backend packages

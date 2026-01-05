@@ -1,39 +1,80 @@
 # Recent Work
 
-## Latest Session (2026-01-04 - Phase 4 Indexing Side Effects)
+## Latest Session (2026-01-04 night - Shadcn + Object List)
 
-### Phase 4 Complete — Refs and FTS Indexing
+### Shadcn UI + Object List Shell via TDD
 
-Wired up reference extraction and FTS updates within `applyBlockPatch()` transactions.
+Set up frontend stack and built object list with strict TDD for backend.
 
-**Key changes:**
+**New files:**
 
-- `db.ts` — Added `atomic()` transaction wrapper using better-sqlite3 native transactions
-- `indexing.ts` — Helpers for updating refs/FTS on block insert/update/delete
-- `applyBlockPatch.ts` — Refactored to wrap all mutations in `db.atomic()`, call indexing functions
-- `backlinks.ts` — Query inbound references to an object (`getBacklinks()`)
-- `search.ts` — Full-text search for blocks (`searchBlocks()`)
-- Added integration tests verifying refs/FTS consistency after patch operations
+- `apps/desktop/tailwind.config.js` — Tailwind with CSS variables
+- `apps/desktop/postcss.config.js` — PostCSS for Tailwind
+- `apps/desktop/components.json` — Shadcn configuration
+- `apps/desktop/src/renderer/index.css` — CSS with theme variables
+- `apps/desktop/src/renderer/lib/utils.ts` — `cn()` helper
+- `apps/desktop/src/renderer/components/ui/` — Button, Card, ScrollArea
+- `apps/desktop/src/renderer/components/ObjectList.tsx` — Object list component
+- `packages/storage/src/objectService.ts` — `listObjects()` function (TDD)
+- `packages/storage/src/objectService.test.ts` — 3 tests
 
-**Stats:** 229 tests in storage package, 231 total across all packages
+**Modified files:**
+
+- `apps/desktop/src/main/ipc.ts` — Added `listObjects` handler
+- `apps/desktop/src/preload/index.ts` — Exposed `listObjects` via bridge
+- `eslint.config.js` — ESLint ignores `components/ui/**` (Shadcn)
+
+**TDD cycles:**
+
+1. Storage: `listObjects` returns objects with type info (RED → GREEN)
+2. Storage: Excludes soft-deleted, handles empty
+3. IPC: Handler wraps storage function (RED → GREEN)
+
+**Devex:**
+
+- Shadcn components excluded from ESLint
+- Stryker already excludes desktop app
+- Path alias `@/` configured in tsconfig + Vite
 
 ---
 
-## Previous Session (2026-01-04 - Phase 3 applyBlockPatch)
+## Previous Session (2026-01-04 late evening - Phase 7 IPC)
 
-Phase 3: Implemented `applyBlockPatch()`, `getDocument()`, order keys, cycle detection, content extraction.
+### Phase 7 Started — IPC Bridge via TDD
+
+Wired up Electron IPC communication between renderer and main process using 6 TDD cycles (7 tests).
+
+**New files:**
+
+- `apps/desktop/src/main/ipc.ts` — Handler factory with `createIpcHandlers(db)`
+- `apps/desktop/src/main/ipc.test.ts` — 7 tests covering all handlers
+- `apps/desktop/src/preload/api.d.ts` — TypeScript types for `window.typenoteAPI`
+- `apps/desktop/vitest.config.mjs` — Test configuration for desktop app
+
+**Handlers implemented:**
+
+- `getDocument(objectId)` — Retrieve document block tree
+- `applyBlockPatch(request)` — Apply mutations with Zod validation
+- `getOrCreateTodayDailyNote()` — Get/create today's daily note
+
+**Architecture patterns:**
+
+- Handlers are pure functions testable without Electron runtime
+- Consistent outcome pattern: `{ success, result/error }`
+- DB initialized at `app.whenReady`, closed at `before-quit`
+
+**Commit:**
+
+- `77fece1 feat: Phase 7 - IPC bridge for Electron desktop app`
 
 ---
 
-## Previous Session (2026-01-04 - Phase 2 Schema Fixes)
+## Previous Session (2026-01-04 evening - Phase 6 + Stryker)
 
-Fixed 4 critical schema issues after code review: idempotency composite PK, unique sibling order keys, FTS5 delete support, removed self-referential FK.
+Phase 6 complete: Export/Import service (34 tests) + Stryker mutation testing.
 
----
-
-## Previous Session (2026-01-04 - Phases 1 & 2)
-
-Phase 1: Core contracts (errors, blockPatch, notateDoc, patchValidation, ids). Phase 2: Storage schema (6 tables, migrations, db helpers).
+- `4b11dc6 feat: Phase 6 - Export/Import service for Git-friendly backup`
+- `b27f704 feat: add Stryker mutation testing for backend packages`
 
 ---
 
@@ -46,3 +87,5 @@ Phase 1: Core contracts (errors, blockPatch, notateDoc, patchValidation, ids). P
 | 2     | Storage Schema + Migrations       | 2026-01-04 |
 | 3     | applyBlockPatch() + getDocument() | 2026-01-04 |
 | 4     | Indexing Side Effects (Refs/FTS)  | 2026-01-04 |
+| 5     | Object Types + Daily Notes        | 2026-01-04 |
+| 6     | Export/Import + Mutation Testing  | 2026-01-04 |
