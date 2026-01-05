@@ -1,6 +1,34 @@
 # Recent Work
 
-## Latest Session (2026-01-04 night - Shadcn + Object List)
+## Latest Session (2026-01-04 night - IPC Refactor)
+
+### IPC Auto-Registration Pattern
+
+Discovered missing `listObjects` IPC registration (unit tests passed but integration would fail). Refactored to "single source of truth" pattern.
+
+**Bug fixes:**
+
+- Added missing `ipcMain.handle('typenote:listObjects', ...)` registration
+- Fixed Date serialization in ObjectList (IPC sends strings, not Date objects)
+
+**Architectural refactor:**
+
+- New `setupIpcHandlers(db)` auto-registers all handlers via loop
+- Adding a handler to `createIpcHandlers()` now automatically registers it
+- Removed 19 lines of manual registration from `main/index.ts`
+- Pattern: "Don't remember, automate"
+
+**Lesson learned:**
+
+- Unit tests verify pieces work in isolation, but don't verify they're connected
+- Need integration/E2E tests to catch "wiring" issues
+- Architectural constraints (single source of truth) prevent classes of bugs
+
+**Commit:** `4e077f3 fix: IPC auto-registration and Date serialization`
+
+---
+
+## Previous Session (2026-01-04 night - Shadcn + Object List)
 
 ### Shadcn UI + Object List Shell via TDD
 
@@ -38,43 +66,12 @@ Set up frontend stack and built object list with strict TDD for backend.
 
 ---
 
-## Previous Session (2026-01-04 late evening - Phase 7 IPC)
+## Previous Sessions (2026-01-04)
 
-### Phase 7 Started — IPC Bridge via TDD
-
-Wired up Electron IPC communication between renderer and main process using 6 TDD cycles (7 tests).
-
-**New files:**
-
-- `apps/desktop/src/main/ipc.ts` — Handler factory with `createIpcHandlers(db)`
-- `apps/desktop/src/main/ipc.test.ts` — 7 tests covering all handlers
-- `apps/desktop/src/preload/api.d.ts` — TypeScript types for `window.typenoteAPI`
-- `apps/desktop/vitest.config.mjs` — Test configuration for desktop app
-
-**Handlers implemented:**
-
-- `getDocument(objectId)` — Retrieve document block tree
-- `applyBlockPatch(request)` — Apply mutations with Zod validation
-- `getOrCreateTodayDailyNote()` — Get/create today's daily note
-
-**Architecture patterns:**
-
-- Handlers are pure functions testable without Electron runtime
-- Consistent outcome pattern: `{ success, result/error }`
-- DB initialized at `app.whenReady`, closed at `before-quit`
-
-**Commit:**
-
-- `77fece1 feat: Phase 7 - IPC bridge for Electron desktop app`
-
----
-
-## Previous Session (2026-01-04 evening - Phase 6 + Stryker)
-
-Phase 6 complete: Export/Import service (34 tests) + Stryker mutation testing.
-
-- `4b11dc6 feat: Phase 6 - Export/Import service for Git-friendly backup`
-- `b27f704 feat: add Stryker mutation testing for backend packages`
+- **Phase 7 IPC Bridge** — `77fece1` — Handler factory, 9 tests, 4 handlers
+- **Shadcn + Object List** — `41a40fe` — Tailwind, Shadcn, ObjectList component
+- **Phase 6 Export/Import** — `4b11dc6` — Deterministic JSON export (34 tests)
+- **Stryker Mutation Testing** — `b27f704` — Mutation testing for backend packages
 
 ---
 

@@ -4,12 +4,20 @@ import {
   applyBlockPatch as applyBlockPatchStorage,
   getOrCreateTodayDailyNote as getOrCreateTodayDailyNoteStorage,
   listObjects as listObjectsStorage,
+  searchBlocks as searchBlocksStorage,
+  getBacklinks as getBacklinksStorage,
+  createObject as createObjectStorage,
   DocumentNotFoundError,
+  CreateObjectError,
   type TypenoteDb,
   type GetDocumentResult,
   type ApplyBlockPatchOutcome,
   type GetOrCreateResult,
   type ObjectSummary,
+  type SearchResult,
+  type SearchFilters,
+  type BacklinkResult,
+  type CreatedObject,
 } from '@typenote/storage';
 import { ApplyBlockPatchInputSchema, type ApplyBlockPatchResult } from '@typenote/api';
 
@@ -33,6 +41,13 @@ export interface IpcHandlers {
   applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
   getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
   listObjects: () => IpcOutcome<ObjectSummary[]>;
+  searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
+  getBacklinks: (objectId: string) => IpcOutcome<BacklinkResult[]>;
+  createObject: (
+    typeKey: string,
+    title: string,
+    properties?: Record<string, unknown>
+  ) => IpcOutcome<CreatedObject>;
 }
 
 export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
@@ -83,6 +98,32 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
     listObjects: (): IpcOutcome<ObjectSummary[]> => {
       const result = listObjectsStorage(db);
       return { success: true, result };
+    },
+    searchBlocks: (query: string, filters?: SearchFilters): IpcOutcome<SearchResult[]> => {
+      const results = searchBlocksStorage(db, query, filters);
+      return { success: true, result: results };
+    },
+    getBacklinks: (objectId: string): IpcOutcome<BacklinkResult[]> => {
+      const results = getBacklinksStorage(db, objectId);
+      return { success: true, result: results };
+    },
+    createObject: (
+      typeKey: string,
+      title: string,
+      properties?: Record<string, unknown>
+    ): IpcOutcome<CreatedObject> => {
+      try {
+        const result = createObjectStorage(db, typeKey, title, properties);
+        return { success: true, result };
+      } catch (error) {
+        if (error instanceof CreateObjectError) {
+          return {
+            success: false,
+            error: { code: error.code, message: error.message },
+          };
+        }
+        throw error;
+      }
     },
   };
 }

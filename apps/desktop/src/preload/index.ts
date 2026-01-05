@@ -11,4 +11,12 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getOrCreateTodayDailyNote: () => ipcRenderer.invoke('typenote:getOrCreateTodayDailyNote'),
 
   listObjects: () => ipcRenderer.invoke('typenote:listObjects'),
+
+  searchBlocks: (query: string, filters?: { objectId?: string; limit?: number }) =>
+    ipcRenderer.invoke('typenote:searchBlocks', query, filters),
+
+  getBacklinks: (objectId: string) => ipcRenderer.invoke('typenote:getBacklinks', objectId),
+
+  createObject: (typeKey: string, title: string, properties?: Record<string, unknown>) =>
+    ipcRenderer.invoke('typenote:createObject', typeKey, title, properties),
 });

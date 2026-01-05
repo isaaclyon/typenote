@@ -1,6 +1,9 @@
 import { desc, eq, isNull } from 'drizzle-orm';
+import { generateId } from '@typenote/core';
 import { objects, objectTypes } from './schema.js';
 import type { TypenoteDb } from './db.js';
+import { getObjectTypeByKey } from './objectTypeService.js';
+import { validateProperties, mergeWithDefaults } from './propertyValidation.js';
 
 export interface ObjectSummary {
   id: string;
@@ -9,6 +12,40 @@ export interface ObjectSummary {
   typeKey: string;
   updatedAt: Date;
 }
+
+// ============================================================================
+// Error Types
+// ============================================================================
+
+export class CreateObjectError extends Error {
+  constructor(
+    public readonly code: 'TYPE_NOT_FOUND' | 'VALIDATION_FAILED',
+    message: string,
+    public readonly details?: Record<string, unknown>
+  ) {
+    super(message);
+    this.name = 'CreateObjectError';
+  }
+}
+
+// ============================================================================
+// Result Types
+// ============================================================================
+
+export interface CreatedObject {
+  id: string;
+  typeId: string;
+  typeKey: string;
+  title: string;
+  properties: Record<string, unknown>;
+  docVersion: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ============================================================================
+// Service Functions
+// ============================================================================
 
 export function listObjects(db: TypenoteDb): ObjectSummary[] {
   const rows = db
@@ -32,4 +69,70 @@ export function listObjects(db: TypenoteDb): ObjectSummary[] {
     typeKey: row.typeKey ?? 'Unknown',
     updatedAt: row.updatedAt,
   }));
+}
+
+/**
+ * Create a new object of the given type.
+ *
+ * @param db - Database connection
+ * @param typeKey - The type key (e.g., 'Page', 'Person', or custom type)
+ * @param title - The object title
+ * @param properties - Optional properties (validated against type schema)
+ * @returns The created object
+ * @throws CreateObjectError if type not found or validation fails
+ */
+export function createObject(
+  db: TypenoteDb,
+  typeKey: string,
+  title: string,
+  properties?: Record<string, unknown>
+): CreatedObject {
+  // 1. Look up the object type by key
+  const objectType = getObjectTypeByKey(db, typeKey);
+  if (!objectType) {
+    throw new CreateObjectError('TYPE_NOT_FOUND', `Object type not found: ${typeKey}`, {
+      typeKey,
+    });
+  }
+
+  // 2. Merge with defaults
+  const mergedProperties = mergeWithDefaults(properties, objectType.schema);
+
+  // 3. Validate properties against schema
+  const validationResult = validateProperties(mergedProperties, objectType.schema);
+  if (!validationResult.valid) {
+    throw new CreateObjectError(
+      'VALIDATION_FAILED',
+      `Property validation failed: ${validationResult.errors.map((e) => e.message).join(', ')}`,
+      { errors: validationResult.errors }
+    );
+  }
+
+  // 4. Insert into objects table
+  const id = generateId();
+  const now = new Date();
+
+  db.insert(objects)
+    .values({
+      id,
+      typeId: objectType.id,
+      title,
+      properties: JSON.stringify(mergedProperties),
+      docVersion: 0,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .run();
+
+  // 5. Return the created object
+  return {
+    id,
+    typeId: objectType.id,
+    typeKey: objectType.key,
+    title,
+    properties: mergedProperties,
+    docVersion: 0,
+    createdAt: now,
+    updatedAt: now,
+  };
 }

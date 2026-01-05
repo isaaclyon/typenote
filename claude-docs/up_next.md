@@ -11,6 +11,7 @@ Status: **Active**
 - [x] IPC bridge for storage operations (9 tests, 4 handlers)
 - [x] Tailwind CSS + Shadcn UI setup with tooling exclusions
 - [x] Basic React shell with object list (TDD for listObjects)
+- [x] IPC auto-registration refactor (single source of truth pattern)
 - [ ] Simple block editor (read-only initially)
 - [ ] Daily note navigation
 
@@ -18,6 +19,7 @@ Status: **Active**
 
 ## Backlog
 
+- [ ] Add E2E tests (Playwright/Spectron) to catch IPC wiring issues
 - [ ] Improve mutation testing scores (currently: storage 79.9%, api 52.1%)
 - [ ] Add Markdown export (in addition to JSON)
 
