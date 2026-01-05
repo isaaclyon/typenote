@@ -68,3 +68,20 @@ export {
   type ListDailyNotesOptions,
   type ListDailyNotesResult,
 } from './dailyNoteService.js';
+
+// Export/Import Service
+export {
+  deterministicStringify,
+  exportObject,
+  exportObjectsByType,
+  exportToFolder,
+  importObject,
+  importFromFolder,
+  type ExportedBlock,
+  type ExportedObject,
+  type ExportManifest,
+  type ExportedType,
+  type ImportOptions,
+  type ImportObjectResult,
+  type ImportResult,
+} from './exportService.js';
