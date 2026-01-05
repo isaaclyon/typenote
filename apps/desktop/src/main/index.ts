@@ -1,12 +1,15 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { createFileDb, seedBuiltInTypes, closeDb, type TypenoteDb } from '@typenote/storage';
+import { createIpcHandlers } from './ipc.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let mainWindow: BrowserWindow | null = null;
+let db: TypenoteDb | null = null;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -31,7 +34,34 @@ function createWindow(): void {
   });
 }
 
+function initDatabase(): void {
+  const userDataPath = app.getPath('userData');
+  const dbPath = path.join(userDataPath, 'typenote.db');
+  db = createFileDb(dbPath);
+  seedBuiltInTypes(db);
+}
+
+function registerIpcHandlers(): void {
+  if (!db) throw new Error('Database not initialized');
+
+  const handlers = createIpcHandlers(db);
+
+  ipcMain.handle('typenote:getDocument', (_event, objectId: string) => {
+    return handlers.getDocument(objectId);
+  });
+
+  ipcMain.handle('typenote:applyBlockPatch', (_event, request: unknown) => {
+    return handlers.applyBlockPatch(request);
+  });
+
+  ipcMain.handle('typenote:getOrCreateTodayDailyNote', () => {
+    return handlers.getOrCreateTodayDailyNote();
+  });
+}
+
 void app.whenReady().then(() => {
+  initDatabase();
+  registerIpcHandlers();
   createWindow();
 
   app.on('activate', () => {
@@ -44,5 +74,12 @@ void app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('before-quit', () => {
+  if (db) {
+    closeDb(db);
+    db = null;
   }
 });

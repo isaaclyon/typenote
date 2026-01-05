@@ -1,7 +1,12 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
 // Expose typed API to renderer
-// API methods will be added in Phase 7
 contextBridge.exposeInMainWorld('typenoteAPI', {
   version: '0.1.0',
+
+  getDocument: (objectId: string) => ipcRenderer.invoke('typenote:getDocument', objectId),
+
+  applyBlockPatch: (request: unknown) => ipcRenderer.invoke('typenote:applyBlockPatch', request),
+
+  getOrCreateTodayDailyNote: () => ipcRenderer.invoke('typenote:getOrCreateTodayDailyNote'),
 });
