@@ -3,6 +3,7 @@ import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
   getOrCreateTodayDailyNote as getOrCreateTodayDailyNoteStorage,
+  getOrCreateDailyNoteByDate as getOrCreateDailyNoteByDateStorage,
   listObjects as listObjectsStorage,
   getObject as getObjectStorage,
   searchBlocks as searchBlocksStorage,
@@ -10,6 +11,7 @@ import {
   createObject as createObjectStorage,
   DocumentNotFoundError,
   CreateObjectError,
+  DailyNoteError,
   type TypenoteDb,
   type GetDocumentResult,
   type ApplyBlockPatchOutcome,
@@ -42,6 +44,7 @@ export interface IpcHandlers {
   getDocument: (objectId: string) => IpcOutcome<GetDocumentResult>;
   applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
   getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
+  getOrCreateDailyNoteByDate: (dateKey: string) => IpcOutcome<GetOrCreateResult>;
   listObjects: () => IpcOutcome<ObjectSummary[]>;
   getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
   searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
@@ -97,6 +100,20 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
     getOrCreateTodayDailyNote: (): IpcOutcome<GetOrCreateResult> => {
       const result = getOrCreateTodayDailyNoteStorage(db);
       return { success: true, result };
+    },
+    getOrCreateDailyNoteByDate: (dateKey: string): IpcOutcome<GetOrCreateResult> => {
+      try {
+        const result = getOrCreateDailyNoteByDateStorage(db, dateKey);
+        return { success: true, result };
+      } catch (error) {
+        if (error instanceof DailyNoteError) {
+          return {
+            success: false,
+            error: { code: error.code, message: error.message },
+          };
+        }
+        throw error;
+      }
     },
     listObjects: (): IpcOutcome<ObjectSummary[]> => {
       const result = listObjectsStorage(db);

@@ -40,7 +40,7 @@ function App(): ReactElement {
       {/* Main content area */}
       <main className="flex-1">
         {selectedObjectId ? (
-          <NoteEditor objectId={selectedObjectId} />
+          <NoteEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             Select an object to view

@@ -6,6 +6,7 @@
   "packageManager": "pnpm@9.15.1",
   "scripts": {
     "postinstall": "electron-rebuild",
+    "rebuild": "electron-rebuild",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
@@ -17,7 +18,8 @@
     "clean": "pnpm -r clean",
     "prepare": "husky",
     "mutate": "pnpm -r --filter './packages/*' mutate",
-    "dev": "pnpm --filter @typenote/desktop dev",
+    "dev": "pnpm build && pnpm --filter @typenote/desktop dev",
+    "dev:quick": "pnpm --filter @typenote/desktop dev",
     "start": "pnpm --filter @typenote/desktop dev"
   },
   "devDependencies": {

@@ -440,4 +440,78 @@ describe('IPC Handlers', () => {
       });
     });
   });
+
+  describe('getOrCreateDailyNoteByDate', () => {
+    it('creates new daily note for specified date', () => {
+      const result = handlers.getOrCreateDailyNoteByDate('2024-06-15');
+
+      expect(result).toEqual({
+        success: true,
+        result: {
+          created: true,
+          dailyNote: expect.objectContaining({
+            id: expect.any(String),
+            title: '2024-06-15',
+            properties: { date_key: '2024-06-15' },
+          }),
+        },
+      });
+    });
+
+    it('returns existing daily note for same date (idempotent)', () => {
+      const first = handlers.getOrCreateDailyNoteByDate('2024-06-15') as {
+        success: true;
+        result: { created: boolean; dailyNote: { id: string } };
+      };
+      const second = handlers.getOrCreateDailyNoteByDate('2024-06-15') as {
+        success: true;
+        result: { created: boolean; dailyNote: { id: string } };
+      };
+
+      expect(first.success).toBe(true);
+      expect(second.success).toBe(true);
+      expect(first.result.created).toBe(true);
+      expect(second.result.created).toBe(false);
+      expect(second.result.dailyNote.id).toBe(first.result.dailyNote.id);
+    });
+
+    it('creates different notes for different dates', () => {
+      const result1 = handlers.getOrCreateDailyNoteByDate('2024-06-15') as {
+        success: true;
+        result: { dailyNote: { id: string } };
+      };
+      const result2 = handlers.getOrCreateDailyNoteByDate('2024-06-16') as {
+        success: true;
+        result: { dailyNote: { id: string } };
+      };
+
+      expect(result1.success).toBe(true);
+      expect(result2.success).toBe(true);
+      expect(result1.result.dailyNote.id).not.toBe(result2.result.dailyNote.id);
+    });
+
+    it('returns error for invalid date format', () => {
+      const result = handlers.getOrCreateDailyNoteByDate('invalid-date');
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: 'INVALID_DATE_FORMAT',
+          message: expect.any(String),
+        },
+      });
+    });
+
+    it('returns error for wrong date format (MM-DD-YYYY)', () => {
+      const result = handlers.getOrCreateDailyNoteByDate('06-15-2024');
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: 'INVALID_DATE_FORMAT',
+          message: expect.any(String),
+        },
+      });
+    });
+  });
 });

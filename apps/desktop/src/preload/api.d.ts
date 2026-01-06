@@ -27,6 +27,7 @@ export interface TypenoteAPI {
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
   getOrCreateTodayDailyNote: () => Promise<IpcOutcome<GetOrCreateResult>>;
+  getOrCreateDailyNoteByDate: (dateKey: string) => Promise<IpcOutcome<GetOrCreateResult>>;
   listObjects: () => Promise<IpcOutcome<ObjectSummary[]>>;
   getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
   searchBlocks: (

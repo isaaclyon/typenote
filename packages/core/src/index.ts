@@ -5,6 +5,15 @@ export const CORE_VERSION = '0.1.0';
 // IDs
 export { generateId, isValidUlid, parseUlid } from './ids.js';
 
+// Date utilities (for daily note navigation)
+export {
+  isValidDateKey,
+  getPreviousDate,
+  getNextDate,
+  getTodayDateKey,
+  formatDateForDisplay,
+} from './dateUtils.js';
+
 // Re-export content schemas from api for convenience
 // (Core can import from api per the architecture)
 export {

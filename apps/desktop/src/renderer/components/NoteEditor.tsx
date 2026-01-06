@@ -25,6 +25,8 @@ import {
   MathInline,
   Highlight,
 } from '../extensions/index.js';
+import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
+import { DailyNoteNavigation } from './DailyNoteNavigation.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -32,6 +34,7 @@ import {
 
 interface NoteEditorProps {
   objectId: string;
+  onNavigate?: (objectId: string) => void;
 }
 
 type LoadState =
@@ -43,8 +46,9 @@ type LoadState =
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function NoteEditor({ objectId }: NoteEditorProps) {
+export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
+  const { isDailyNote, dateKey } = useDailyNoteInfo(objectId);
 
   const editor = useEditor({
     extensions: [
@@ -122,6 +126,12 @@ export function NoteEditor({ objectId }: NoteEditorProps) {
   return (
     <div className="h-full overflow-auto">
       <div className="max-w-3xl mx-auto p-8">
+        {/* Daily Note Navigation Header */}
+        {isDailyNote && dateKey && onNavigate && (
+          <div className="mb-4 pb-4 border-b">
+            <DailyNoteNavigation dateKey={dateKey} onNavigate={onNavigate} />
+          </div>
+        )}
         <EditorContent editor={editor} className="prose prose-sm max-w-none" />
       </div>
     </div>

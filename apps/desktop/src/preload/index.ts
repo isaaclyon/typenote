@@ -10,6 +10,9 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   getOrCreateTodayDailyNote: () => ipcRenderer.invoke('typenote:getOrCreateTodayDailyNote'),
 
+  getOrCreateDailyNoteByDate: (dateKey: string) =>
+    ipcRenderer.invoke('typenote:getOrCreateDailyNoteByDate', dateKey),
+
   listObjects: () => ipcRenderer.invoke('typenote:listObjects'),
 
   getObject: (objectId: string) => ipcRenderer.invoke('typenote:getObject', objectId),
