@@ -1,21 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-06 - Placeholder Validation)
+## Latest Session (2026-01-05 - Daily Note Navigation TDD)
+
+### Daily Note Navigation Feature
+
+Implemented prev/today/next navigation for daily notes using strict test-driven development.
+
+**TDD Cycles (46 new tests):**
+
+1. Date utilities in `@typenote/core` — `getPreviousDate`, `getNextDate`, `formatDateForDisplay`
+2. IPC handler `getOrCreateDailyNoteByDate` — Exposes storage function to renderer
+3. `useDailyNoteInfo` hook — Detects if current object is a daily note
+4. `DailyNoteNavigation` component — Prev/Today/Next buttons with date display
+5. Integration — Wired into NoteEditor header (shows only for daily notes)
+
+**Key new files:**
+
+- `packages/core/src/dateUtils.ts` — Date arithmetic utilities (14 tests)
+- `apps/desktop/src/renderer/hooks/useDailyNoteInfo.ts` — Daily note detection hook (5 tests)
+- `apps/desktop/src/renderer/components/DailyNoteNavigation.tsx` — Navigation UI (8 tests)
+- `apps/desktop/src/renderer/test-setup.ts` — Jest-dom setup for renderer tests
+
+**Testing infrastructure added:**
+
+- `@testing-library/react` and `@testing-library/jest-dom` for component tests
+- Vitest configured with jsdom environment for renderer tests
+- 608 total tests pass across monorepo
+
+**Dev experience improvements:**
+
+- `pnpm dev` now runs `pnpm build` first for reliability
+- `pnpm dev:quick` skips build for fast iteration
+- `pnpm rebuild` for manual native module rebuilds
+
+**Commit:** `9b0167b feat: Phase 7 - Daily note navigation with TDD`
+
+---
+
+## Previous Session (2026-01-06 - Placeholder Validation)
 
 ### Verified TipTap Placeholder Implementation
 
 Confirmed that the "empty document placeholder" issue was already resolved in the TipTap editor implementation.
-
-**Findings:**
-
-- Code audit revealed all components were correctly implemented:
-  - Placeholder extension configured with `showOnlyWhenEditable: false`
-  - Empty document handling in converter (creates minimum valid ProseMirror structure)
-  - CSS styling in place for placeholder display
-- Tested with fresh dependencies (clean pnpm install + rebuild)
-- Desktop app builds successfully without errors
-
-**Marked complete:** "Simple block editor (read-only)" phase 7 task
 
 ---
 
@@ -40,45 +66,9 @@ Fixed development environment issues caused by Node.js version mismatch and Elec
 
 ---
 
-## Previous Session (2026-01-05 - TipTap Editor Setup)
-
-### TipTap Read-Only Editor Implementation
-
-Set up TipTap as the document renderer for Phase 7 "Simple block editor" task.
-
-**Completed:**
-
-- TipTap packages installed (@tiptap/react, starter-kit, table, task-list, placeholder)
-- NotateDoc → TipTap converter (`notateToTiptap.ts`)
-- Custom extensions: RefNode, TagNode, CalloutNode, MathBlock, MathInline, Highlight
-- NoteEditor component with document fetching
-- Selection wiring (App.tsx + ObjectList click handlers)
-- getObject IPC handler for ref type lookup
-- Fixed Tailwind v4 PostCSS migration (`@tailwindcss/postcss`)
-- Fixed Electron preload CommonJS requirement (esbuild bundling)
-- Fixed `electron-rebuild` for better-sqlite3 native module
-
-**Commit:** `8fa1b25 feat: Phase 7 - TipTap read-only editor with shared database path`
-
-**Key new files:**
-
-- `apps/desktop/src/renderer/lib/notateToTiptap.ts` — NotateDoc→TipTap converter
-- `apps/desktop/src/renderer/extensions/` — RefNode, TagNode, CalloutNode, MathBlock, MathInline, Highlight
-- `apps/desktop/src/renderer/components/NoteEditor.tsx` — TipTap editor component
-- `packages/storage/src/objectService.ts` — Added `getObject()` function
-
-**Build changes:**
-
-- `apps/desktop/package.json` — Added esbuild preload bundling to build script
-- `apps/desktop/postcss.config.js` — Updated for Tailwind v4
-- `apps/desktop/src/renderer/index.css` — Tailwind v4 @theme syntax + TipTap styles
-
-**Reference added:** `_reference/shadcn-admin/` — Cloned for UI pattern reference (not used in code)
-
----
-
 ## Previous Sessions (2026-01-04 & 2026-01-05)
 
+- **TipTap Read-Only Editor** — `8fa1b25` — NotateDoc→TipTap converter, custom extensions, NoteEditor component
 - **CLI & IPC Proof of Life** — `c140b10`, `6ebb6ca` — CLI commands, integration tests
 - **IPC Refactor** — `4e077f3` — Auto-registration pattern
 - **Shadcn + Object List** — `41a40fe` — Tailwind, Shadcn, ObjectList component

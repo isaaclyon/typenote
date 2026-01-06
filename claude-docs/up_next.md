@@ -2,13 +2,13 @@
 
 ## Workstream: Phase 7 — Wire Desktop Shell
 
-Status: **🔄 IN PROGRESS (89% Complete)**
+Status: **🔄 IN PROGRESS (95% Complete)**
 
 **Goal:** Minimal Electron UI to exercise the backend.
 
 ### Completed ✅
 
-- [x] IPC bridge for storage operations (8 handlers, Zod validation)
+- [x] IPC bridge for storage operations (9 handlers, Zod validation)
 - [x] Tailwind CSS + Shadcn UI setup with tooling exclusions
 - [x] Basic React shell with object list (TDD for listObjects)
 - [x] IPC auto-registration refactor (single source of truth pattern)
@@ -20,10 +20,10 @@ Status: **🔄 IN PROGRESS (89% Complete)**
 - [x] Placeholder support for empty documents
 - [x] Selection wiring between ObjectList and NoteEditor
 - [x] Architectural fix: Query types moved to API package (renderer isolation enforced)
+- [x] **Daily note navigation** — Prev/Today/Next buttons with date display (TDD, 46 tests)
 
 ### Remaining ⏳
 
-- [ ] **Daily note navigation** — Add date picker or prev/next buttons for daily note browsing
 - [ ] **Writable editor** — Implement TipTap → NotateDoc converter for document patches
 - [ ] E2E tests (Playwright/Spectron) — Validate IPC communication end-to-end
 
