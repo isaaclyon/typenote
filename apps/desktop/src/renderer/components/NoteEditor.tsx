@@ -1,9 +1,11 @@
 /**
  * NoteEditor Component
  *
- * Displays a NotateDoc document using TipTap editor in read-only mode.
+ * Displays a NotateDoc document using TipTap editor with auto-save.
  * Fetches document via IPC and converts from NotateDoc format to TipTap JSON.
  */
+
+/// <reference path="../global.d.ts" />
 
 import { useEffect, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -16,6 +18,7 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 
+import type { DocumentBlock } from '@typenote/api';
 import { convertDocument } from '../lib/notateToTiptap.js';
 import {
   RefNode,
@@ -26,6 +29,7 @@ import {
   Highlight,
 } from '../extensions/index.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
+import { useAutoSave } from '../hooks/useAutoSave.js';
 import { DailyNoteNavigation } from './DailyNoteNavigation.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -48,6 +52,7 @@ type LoadState =
 
 export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
+  const [initialBlocks, setInitialBlocks] = useState<DocumentBlock[]>([]);
   const { isDailyNote, dateKey } = useDailyNoteInfo(objectId);
 
   const editor = useEditor({
@@ -74,8 +79,19 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       MathInline,
       Highlight,
     ],
-    editable: false, // Read-only for now
+    editable: true, // Enable editing
     immediatelyRender: false, // Important for Electron SSR concerns
+  });
+
+  // Wire up auto-save hook
+  const {
+    isSaving,
+    lastSaved,
+    error: saveError,
+  } = useAutoSave({
+    editor,
+    objectId,
+    initialBlocks,
   });
 
   useEffect(() => {
@@ -84,6 +100,8 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       try {
         const result = await window.typenoteAPI.getDocument(objectId);
         if (result.success) {
+          // Store initial blocks for diffing
+          setInitialBlocks(result.result.blocks);
           const tiptapContent = convertDocument(result.result);
           editor?.commands.setContent(tiptapContent);
           // TODO: Extract title from object metadata or first heading
@@ -126,6 +144,16 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   return (
     <div className="h-full overflow-auto">
       <div className="max-w-3xl mx-auto p-8">
+        {/* Save status indicator */}
+        <div
+          data-testid="save-status"
+          className="flex items-center justify-end text-xs text-muted-foreground mb-2 h-4"
+        >
+          {isSaving && <span>Saving...</span>}
+          {!isSaving && lastSaved && <span>Saved {lastSaved.toLocaleTimeString()}</span>}
+          {saveError && <span className="text-destructive">{saveError}</span>}
+        </div>
+
         {/* Daily Note Navigation Header */}
         {isDailyNote && dateKey && onNavigate && (
           <div className="mb-4 pb-4 border-b">
