@@ -1,10 +1,50 @@
 # Recent Work
 
-## Latest Session (2026-01-05 - TipTap Editor Setup)
+## Latest Session (2026-01-06 - Placeholder Validation)
+
+### Verified TipTap Placeholder Implementation
+
+Confirmed that the "empty document placeholder" issue was already resolved in the TipTap editor implementation.
+
+**Findings:**
+
+- Code audit revealed all components were correctly implemented:
+  - Placeholder extension configured with `showOnlyWhenEditable: false`
+  - Empty document handling in converter (creates minimum valid ProseMirror structure)
+  - CSS styling in place for placeholder display
+- Tested with fresh dependencies (clean pnpm install + rebuild)
+- Desktop app builds successfully without errors
+
+**Marked complete:** "Simple block editor (read-only)" phase 7 task
+
+---
+
+## Previous Session (2026-01-05 - Dev Environment Fix)
+
+### Postinstall Script for Native Modules
+
+Fixed development environment issues caused by Node.js version mismatch and Electron native module compilation.
+
+**Problems solved:**
+
+- `MODULE_NOT_FOUND` error for yargs (Node 25.2.1 incompatibility with installed modules)
+- `better-sqlite3` NODE_MODULE_VERSION mismatch (compiled for Node, not Electron)
+
+**Solution:**
+
+- Reinstalled node_modules with fresh lockfile
+- Ran `electron-rebuild` to recompile native modules for Electron
+- Added `postinstall` script to auto-rebuild after future installs
+
+**Commit:** `e5d2b43 chore: add postinstall script to auto-rebuild native modules for Electron`
+
+---
+
+## Previous Session (2026-01-05 - TipTap Editor Setup)
 
 ### TipTap Read-Only Editor Implementation
 
-Set up TipTap as the document renderer for Phase 7 "Simple block editor" task. **NOT YET COMMITTED** — work in progress with some issues to resolve.
+Set up TipTap as the document renderer for Phase 7 "Simple block editor" task.
 
 **Completed:**
 
@@ -18,10 +58,7 @@ Set up TipTap as the document renderer for Phase 7 "Simple block editor" task. *
 - Fixed Electron preload CommonJS requirement (esbuild bundling)
 - Fixed `electron-rebuild` for better-sqlite3 native module
 
-**Known Issues (to fix next session):**
-
-- Empty document shows blank instead of placeholder
-- May need to verify TipTap content is being set correctly
+**Commit:** `8fa1b25 feat: Phase 7 - TipTap read-only editor with shared database path`
 
 **Key new files:**
 
@@ -40,88 +77,12 @@ Set up TipTap as the document renderer for Phase 7 "Simple block editor" task. *
 
 ---
 
-## Previous Session (2026-01-05 - CLI & IPC Proof of Life)
+## Previous Sessions (2026-01-04 & 2026-01-05)
 
-### Full Backend Exercisability via CLI
-
-Completed Phase 7 "proof of life" by implementing generic object creation with property validation, 3 new IPC handlers, and a full CLI command set.
-
-**New functionality:**
-
-- `createObject(db, typeKey, title, properties)` — Generic object creation with property validation
-- 3 new IPC handlers: `searchBlocks`, `getBacklinks`, `createObject`
-- CLI commands: `create`, `list`, `get`, `search`, `patch-insert`, `patch-update`, `patch-delete`
-
-**Key files:**
-
-- `packages/storage/src/objectService.ts` — Added `createObject()` with `CreateObjectError`
-- `apps/desktop/src/main/ipc.ts` — 3 new handlers (+30 lines)
-- `apps/desktop/src/main/ipc.test.ts` — 10 new tests (+130 lines)
-- `apps/desktop/src/preload/index.ts` — 3 new bridge methods
-- `apps/cli/src/index.ts` — Full CLI implementation (+280 lines)
-
-**TDD cycles:**
-
-1. IPC handler tests (RED) for searchBlocks, getBacklinks, createObject
-2. IPC handler implementation (GREEN)
-3. Preload bridge wiring
-4. CLI patch command implementation
-
-**Commits:**
-
-- `c140b10 feat: Phase 7 - CLI commands and IPC handlers for proof of life`
-- `6ebb6ca feat: add integration test suite for backend confidence`
-
----
-
-## Previous Session (2026-01-04 night - IPC Refactor)
-
-Discovered missing `listObjects` IPC registration. Refactored to "single source of truth" pattern where adding a handler to `createIpcHandlers()` automatically registers it.
-
-**Commit:** `4e077f3 fix: IPC auto-registration and Date serialization`
-
----
-
-## Previous Session (2026-01-04 night - Shadcn + Object List)
-
-Set up frontend stack and built object list with strict TDD for backend.
-
-**New files:**
-
-- `apps/desktop/tailwind.config.js` — Tailwind with CSS variables
-- `apps/desktop/postcss.config.js` — PostCSS for Tailwind
-- `apps/desktop/components.json` — Shadcn configuration
-- `apps/desktop/src/renderer/index.css` — CSS with theme variables
-- `apps/desktop/src/renderer/lib/utils.ts` — `cn()` helper
-- `apps/desktop/src/renderer/components/ui/` — Button, Card, ScrollArea
-- `apps/desktop/src/renderer/components/ObjectList.tsx` — Object list component
-- `packages/storage/src/objectService.ts` — `listObjects()` function (TDD)
-- `packages/storage/src/objectService.test.ts` — 3 tests
-
-**Modified files:**
-
-- `apps/desktop/src/main/ipc.ts` — Added `listObjects` handler
-- `apps/desktop/src/preload/index.ts` — Exposed `listObjects` via bridge
-- `eslint.config.js` — ESLint ignores `components/ui/**` (Shadcn)
-
-**TDD cycles:**
-
-1. Storage: `listObjects` returns objects with type info (RED → GREEN)
-2. Storage: Excludes soft-deleted, handles empty
-3. IPC: Handler wraps storage function (RED → GREEN)
-
-**Devex:**
-
-- Shadcn components excluded from ESLint
-- Stryker already excludes desktop app
-- Path alias `@/` configured in tsconfig + Vite
-
----
-
-## Previous Sessions (2026-01-04)
-
-- **Phase 7 IPC Bridge** — `77fece1` — Handler factory, 9 tests, 4 handlers
+- **CLI & IPC Proof of Life** — `c140b10`, `6ebb6ca` — CLI commands, integration tests
+- **IPC Refactor** — `4e077f3` — Auto-registration pattern
 - **Shadcn + Object List** — `41a40fe` — Tailwind, Shadcn, ObjectList component
+- **Phase 7 IPC Bridge** — `77fece1` — Handler factory, 9 tests, 4 handlers
 - **Phase 6 Export/Import** — `4b11dc6` — Deterministic JSON export (34 tests)
 - **Stryker Mutation Testing** — `b27f704` — Mutation testing for backend packages
 
