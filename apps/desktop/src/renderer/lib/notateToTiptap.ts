@@ -19,8 +19,9 @@ import type {
   TableContent,
   MathBlockContent,
   FootnoteDefContent,
+  DocumentBlock,
+  GetDocumentResult,
 } from '@typenote/api';
-import type { DocumentBlock, GetDocumentResult } from '@typenote/storage';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mark Mapping

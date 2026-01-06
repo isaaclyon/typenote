@@ -1,13 +1,11 @@
+import type { GetDocumentResult, ObjectSummary, ApplyBlockPatchResult } from '@typenote/api';
 import type {
-  GetDocumentResult,
   GetOrCreateResult,
-  ObjectSummary,
   ObjectDetails,
   SearchResult,
   BacklinkResult,
   CreatedObject,
 } from '@typenote/storage';
-import type { ApplyBlockPatchResult } from '@typenote/api';
 
 interface IpcSuccess<T> {
   success: true;

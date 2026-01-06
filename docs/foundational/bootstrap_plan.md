@@ -79,7 +79,7 @@ Guiding rules:
 
 ## 4) Phase Plan (Backend-First)
 
-### Phase 0 — Day 0 Setup (0.5–1 day)
+### Phase 0 — Day 0 Setup (0.5–1 day) ✅ COMPLETE
 
 **Deliverables**
 
@@ -103,7 +103,7 @@ Guiding rules:
 
 ---
 
-### Phase 1 — Core Contracts (1–2 days)
+### Phase 1 — Core Contracts (1–2 days) ✅ COMPLETE
 
 **Goal**: Establish canonical types/schemas used everywhere.
 
@@ -129,7 +129,7 @@ Guiding rules:
 
 ---
 
-### Phase 2 — Storage Schema + Migrations (2–4 days)
+### Phase 2 — Storage Schema + Migrations (2–4 days) ✅ COMPLETE
 
 **Goal**: Establish SQLite schema and migration workflow.
 
@@ -165,7 +165,7 @@ Guiding rules:
 
 ---
 
-### Phase 3 — Implement `applyBlockPatch()` (4–8 days)
+### Phase 3 — Implement `applyBlockPatch()` (4–8 days) ✅ COMPLETE
 
 **Goal**: Implement the core write pathway per the patch spec.
 
@@ -207,7 +207,7 @@ Guiding rules:
 
 ---
 
-### Phase 4 — Indexing Side Effects (Refs + FTS) (2–4 days)
+### Phase 4 — Indexing Side Effects (Refs + FTS) (2–4 days) ✅ COMPLETE
 
 **Goal**: Keep backlinks and search consistent with writes.
 
@@ -237,7 +237,7 @@ Guiding rules:
 
 ---
 
-### Phase 5 — Object Types + Daily Notes (2–4 days)
+### Phase 5 — Object Types + Daily Notes (2–4 days) ✅ COMPLETE
 
 **Goal**: Make types and Daily Notes first-class at the backend.
 
@@ -267,7 +267,7 @@ Guiding rules:
 
 ---
 
-### Phase 6 — Export/Import (Backup) (3–6 days)
+### Phase 6 — Export/Import (Backup) (3–6 days) ✅ COMPLETE
 
 **Goal**: Deterministic export suitable for Git/Syncthing; import as restore.
 
@@ -296,7 +296,7 @@ Guiding rules:
 
 ---
 
-### Phase 7 — Wire Desktop Shell (Minimal UI) (1–3 days)
+### Phase 7 — Wire Desktop Shell (Minimal UI) (1–3 days) 🔄 IN PROGRESS
 
 **Goal**: Expose backend API to renderer via preload in a secure way.
 
@@ -307,16 +307,27 @@ Guiding rules:
 
 - Renderer can call API and display raw JSON or minimal read-only view
 
-**Steps**
+**Completed**
 
-1. Implement IPC handlers in main.
-2. Expose a typed API in preload.
-3. Add a minimal renderer page to exercise endpoints.
+- ✅ 8 IPC handlers in main (with Zod validation at boundary)
+- ✅ Typed API exposed via preload with contextBridge
+- ✅ Minimal React shell: ObjectList, NoteEditor (TipTap read-only)
+- ✅ Selection wiring between object list and document viewer
+- ✅ TipTap converter (NotateDoc → TipTap JSON)
+- ✅ Custom TipTap extensions (RefNode, TagNode, CalloutNode, Math, Highlight)
+- ✅ Placeholder support for empty documents
+- ✅ Architectural fix: Query types moved to API package (renderer isolation enforced)
+
+**Remaining**
+
+- [ ] Daily note navigation UI
+- [ ] Writable editor (TipTap → NotateDoc converter for patches)
+- [ ] E2E tests (Playwright/Spectron)
 
 **Exit criteria**
 
-- Renderer can create today’s note and apply patches.
-- No renderer access to Node/DB.
+- Renderer can create today's note and apply patches.
+- No renderer access to Node/DB. ✅ (verified via architectural review)
 
 ---
 

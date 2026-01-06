@@ -1,17 +1,13 @@
 import { desc, eq, isNull } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
+import type { ObjectSummary } from '@typenote/api';
 import { objects, objectTypes } from './schema.js';
 import type { TypenoteDb } from './db.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
 import { validateProperties, mergeWithDefaults } from './propertyValidation.js';
 
-export interface ObjectSummary {
-  id: string;
-  title: string;
-  typeId: string;
-  typeKey: string;
-  updatedAt: Date;
-}
+// Re-export from API for convenience
+export type { ObjectSummary };
 
 export interface ObjectDetails {
   id: string;

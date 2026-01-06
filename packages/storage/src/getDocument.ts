@@ -7,28 +7,10 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import type { TypenoteDb } from './db.js';
 import { objects, blocks } from './schema.js';
+import type { DocumentBlock, GetDocumentResult } from '@typenote/api';
 
-/**
- * Block in document tree.
- */
-export interface DocumentBlock {
-  id: string;
-  parentBlockId: string | null;
-  orderKey: string;
-  blockType: string;
-  content: unknown;
-  meta: { collapsed?: boolean } | null;
-  children: DocumentBlock[];
-}
-
-/**
- * Result of getDocument.
- */
-export interface GetDocumentResult {
-  objectId: string;
-  docVersion: number;
-  blocks: DocumentBlock[];
-}
+// Re-export from API for convenience
+export type { DocumentBlock, GetDocumentResult };
 
 /**
  * Options for getDocument.

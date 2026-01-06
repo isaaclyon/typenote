@@ -132,3 +132,6 @@ export {
   ObjectTypeErrorCodeSchema,
   type ObjectTypeErrorCode,
 } from './objectType.js';
+
+// Query Results
+export { type DocumentBlock, type GetDocumentResult, type ObjectSummary } from './queries.js';

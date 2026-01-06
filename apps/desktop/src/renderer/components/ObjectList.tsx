@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card.js';
 import { ScrollArea } from './ui/scroll-area.js';
 import { cn } from '../lib/utils.js';
-import type { ObjectSummary } from '@typenote/storage';
+import type { ObjectSummary } from '@typenote/api';
 
 type LoadState =
   | { status: 'loading' }

@@ -19,16 +19,39 @@ await db.update(objects).set({ docVersion: newVersion });
 await db.insert(refs).values(newRefs);
 ```
 
-**Good:** Single transaction for atomic operations
+**Good:** Single atomic transaction (better-sqlite3 style)
 
 ```typescript
-// DO: Single transaction
-await db.transaction(async (tx) => {
-  await tx.insert(blocks).values(newBlock);
-  await tx.update(objects).set({ docVersion: newVersion });
-  await tx.insert(refs).values(newRefs);
+// DO: Use db.atomic() for synchronous, all-or-nothing execution
+const result = db.atomic((): ApplyBlockPatchOutcome => {
+  // All operations execute synchronously within transaction
+  // If any operation throws, entire transaction rolls back
+
+  // 1. Validate
+  if (!isValid) throw new PatchError(...);
+
+  // 2. Apply ops
+  db.update(blocks).set(...);
+
+  // 3. Update derived data
+  updateRefsForBlock(...);
+  updateFtsForBlock(...);
+
+  // 4. Increment version
+  db.update(objects).set({ docVersion: sql`doc_version + 1` });
+
+  // 5. Return result
+  return { success: true, ... };
 });
 ```
+
+**Why `db.atomic()` instead of `db.transaction()`:**
+
+- `db.atomic()` is synchronous (no async/await overhead)
+- Returns a value directly (not a promise)
+- Perfect for better-sqlite3 (which is synchronous by design)
+- Simpler error handling (throw to rollback)
+- Better performance for write-heavy operations
 
 ### Drizzle Schema Conventions
 
