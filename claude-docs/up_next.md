@@ -21,11 +21,13 @@ Status: **🔄 IN PROGRESS (95% Complete)**
 - [x] Selection wiring between ObjectList and NoteEditor
 - [x] Architectural fix: Query types moved to API package (renderer isolation enforced)
 - [x] **Daily note navigation** — Prev/Today/Next buttons with date display (TDD, 46 tests)
+- [x] **Writable editor** — TipTap → NotateDoc converter with auto-save (see commit 28802a1)
+- [x] **E2E tests (Playwright)** — IPC wiring tests validating all 9 handlers (11 tests pass)
 
 ### Remaining ⏳
 
-- [ ] **Writable editor** — Implement TipTap → NotateDoc converter for document patches
-- [ ] E2E tests (Playwright/Spectron) — Validate IPC communication end-to-end
+- [ ] E2E UI tests — Need selector fixes for button clicks and component interaction
+- [x] Fix native module conflict — smart rebuild script auto-switches between Node/Electron builds
 
 ---
 
@@ -33,7 +35,6 @@ Status: **🔄 IN PROGRESS (95% Complete)**
 
 ### Phase 7 Completeness (After UI Done)
 
-- [ ] Add E2E tests (Playwright/Spectron) to catch IPC wiring issues
 - [ ] Daily note templates system
 
 ### Quality & Performance (Post-Phase 7)
