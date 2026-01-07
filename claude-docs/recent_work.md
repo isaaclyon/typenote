@@ -1,91 +1,57 @@
 # Recent Work
 
-## Latest Session (2026-01-05 - Daily Note Navigation TDD)
+## Latest Session (2026-01-06 evening - Template System Phase 7)
 
-### Daily Note Navigation Feature
+### Template System Complete ✅
 
-Implemented prev/today/next navigation for daily notes using strict test-driven development.
+Finished Phase 7 of the template system — seeding the default DailyNote template:
 
-**TDD Cycles (46 new tests):**
+- Added `seedDailyNoteTemplate()` — idempotent function to create default template
+- Default template: H1 heading with `{{date_key}}` placeholder + empty paragraph
+- Exported `DAILY_NOTE_DEFAULT_TEMPLATE` constant for reference
+- 5 new tests for seeding functionality
 
-1. Date utilities in `@typenote/core` — `getPreviousDate`, `getNextDate`, `formatDateForDisplay`
-2. IPC handler `getOrCreateDailyNoteByDate` — Exposes storage function to renderer
-3. `useDailyNoteInfo` hook — Detects if current object is a daily note
-4. `DailyNoteNavigation` component — Prev/Today/Next buttons with date display
-5. Integration — Wired into NoteEditor header (shows only for daily notes)
+**Commit:** `3dec6db` — "feat: Template system with DailyNote default template"
 
-**Key new files:**
+**Total tests:** 738 (up from 653 before template system)
 
-- `packages/core/src/dateUtils.ts` — Date arithmetic utilities (14 tests)
-- `apps/desktop/src/renderer/hooks/useDailyNoteInfo.ts` — Daily note detection hook (5 tests)
-- `apps/desktop/src/renderer/components/DailyNoteNavigation.tsx` — Navigation UI (8 tests)
-- `apps/desktop/src/renderer/test-setup.ts` — Jest-dom setup for renderer tests
+**All 7 phases complete:**
 
-**Testing infrastructure added:**
-
-- `@testing-library/react` and `@testing-library/jest-dom` for component tests
-- Vitest configured with jsdom environment for renderer tests
-- 608 total tests pass across monorepo
-
-**Dev experience improvements:**
-
-- `pnpm dev` now runs `pnpm build` first for reliability
-- `pnpm dev:quick` skips build for fast iteration
-- `pnpm rebuild` for manual native module rebuilds
-
-**Commit:** `9b0167b feat: Phase 7 - Daily note navigation with TDD`
+1. API contracts (25 tests)
+2. Placeholder engine (18 tests)
+3. Database schema (migration 0002)
+4. Template service (19 + 5 = 24 tests)
+5. Template application (13 tests)
+6. createObject() integration (5 tests)
+7. DailyNote default seeding (5 tests)
 
 ---
 
-## Previous Session (2026-01-06 - Placeholder Validation)
+## Previous Session (2026-01-06 - Template System Phases 5-6)
 
-### Verified TipTap Placeholder Implementation
+- Phase 5: `applyTemplateToObject()` — Applies template to object (13 tests)
+- Phase 6: `createObject()` integration — auto-apply default templates (5 tests)
 
-Confirmed that the "empty document placeholder" issue was already resolved in the TipTap editor implementation.
+## Previous Session (2026-01-06 - Template System Phases 1-4)
 
----
+- Phase 1-4: API contracts, placeholder engine, DB schema, template service (62 tests)
 
-## Previous Session (2026-01-05 - Dev Environment Fix)
+## Previous Session (2026-01-06 - E2E Tests)
 
-### Postinstall Script for Native Modules
-
-Fixed development environment issues caused by Node.js version mismatch and Electron native module compilation.
-
-**Problems solved:**
-
-- `MODULE_NOT_FOUND` error for yargs (Node 25.2.1 incompatibility with installed modules)
-- `better-sqlite3` NODE_MODULE_VERSION mismatch (compiled for Node, not Electron)
-
-**Solution:**
-
-- Reinstalled node_modules with fresh lockfile
-- Ran `electron-rebuild` to recompile native modules for Electron
-- Added `postinstall` script to auto-rebuild after future installs
-
-**Commit:** `e5d2b43 chore: add postinstall script to auto-rebuild native modules for Electron`
-
----
-
-## Previous Sessions (2026-01-04 & 2026-01-05)
-
-- **TipTap Read-Only Editor** — `8fa1b25` — NotateDoc→TipTap converter, custom extensions, NoteEditor component
-- **CLI & IPC Proof of Life** — `c140b10`, `6ebb6ca` — CLI commands, integration tests
-- **IPC Refactor** — `4e077f3` — Auto-registration pattern
-- **Shadcn + Object List** — `41a40fe` — Tailwind, Shadcn, ObjectList component
-- **Phase 7 IPC Bridge** — `77fece1` — Handler factory, 9 tests, 4 handlers
-- **Phase 6 Export/Import** — `4b11dc6` — Deterministic JSON export (34 tests)
-- **Stryker Mutation Testing** — `b27f704` — Mutation testing for backend packages
+E2E testing suite committed (21 tests). Commit: `ab890d4`
 
 ---
 
 ## Completed Milestones
 
-| Phase | Description                       | Date       |
-| ----- | --------------------------------- | ---------- |
-| 0     | Day 0 Setup                       | 2026-01-04 |
-| 1     | Core Contracts                    | 2026-01-04 |
-| 2     | Storage Schema + Migrations       | 2026-01-04 |
-| 3     | applyBlockPatch() + getDocument() | 2026-01-04 |
-| 4     | Indexing Side Effects (Refs/FTS)  | 2026-01-04 |
-| 5     | Object Types + Daily Notes        | 2026-01-04 |
-| 6     | Export/Import + Mutation Testing  | 2026-01-04 |
+| Phase    | Description                       | Date       |
+| -------- | --------------------------------- | ---------- |
+| 0        | Day 0 Setup                       | 2026-01-04 |
+| 1        | Core Contracts                    | 2026-01-04 |
+| 2        | Storage Schema + Migrations       | 2026-01-04 |
+| 3        | applyBlockPatch() + getDocument() | 2026-01-04 |
+| 4        | Indexing Side Effects (Refs/FTS)  | 2026-01-04 |
+| 5        | Object Types + Daily Notes        | 2026-01-04 |
+| 6        | Export/Import + Mutation Testing  | 2026-01-04 |
+| 7        | Wire Desktop Shell + E2E Tests    | 2026-01-06 |
+| Template | Template System (7 phases)        | 2026-01-06 |
