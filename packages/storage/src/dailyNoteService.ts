@@ -9,10 +9,10 @@
  */
 
 import { and, eq, isNull, sql } from 'drizzle-orm';
-import { generateId } from '@typenote/core';
 import type { TypenoteDb } from './db.js';
 import { objects } from './schema.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
+import { createObject } from './objectService.js';
 
 // ============================================================================
 // Types
@@ -129,33 +129,19 @@ export function getOrCreateDailyNoteByDate(db: TypenoteDb, dateKey: string): Get
     };
   }
 
-  // Create the new DailyNote
-  const id = generateId();
-  const now = new Date();
-  const properties = { date_key: dateKey };
-
-  db.insert(objects)
-    .values({
-      id,
-      typeId: dailyNoteType.id,
-      title: dateKey,
-      properties: JSON.stringify(properties),
-      docVersion: 0,
-      createdAt: now,
-      updatedAt: now,
-    })
-    .run();
+  // Create the new DailyNote using createObject (which applies templates)
+  const created = createObject(db, 'DailyNote', dateKey, { date_key: dateKey });
 
   return {
     created: true,
     dailyNote: {
-      id,
-      typeId: dailyNoteType.id,
-      title: dateKey,
-      properties,
-      docVersion: 0,
-      createdAt: now,
-      updatedAt: now,
+      id: created.id,
+      typeId: created.typeId,
+      title: created.title,
+      properties: { date_key: dateKey },
+      docVersion: created.docVersion,
+      createdAt: created.createdAt,
+      updatedAt: created.updatedAt,
     },
   };
 }
