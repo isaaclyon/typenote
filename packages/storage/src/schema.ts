@@ -154,6 +154,48 @@ export const templates = sqliteTable(
 );
 
 // ============================================================================
+// tags - Global tag entities with rich metadata
+// ============================================================================
+
+export const tags = sqliteTable(
+  'tags',
+  {
+    id: text('id').primaryKey(), // ULID
+    name: text('name').notNull(), // Display name (e.g., "Project Alpha")
+    slug: text('slug').notNull().unique(), // URL-safe identifier (e.g., "project-alpha")
+    color: text('color'), // Hex color (#RRGGBB) or CSS color name
+    icon: text('icon'), // Emoji or icon library reference
+    description: text('description'), // Optional description
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [index('tags_slug_idx').on(table.slug)]
+);
+
+// ============================================================================
+// object_tags - Junction table for object-tag many-to-many relationships
+// ============================================================================
+
+export const objectTags = sqliteTable(
+  'object_tags',
+  {
+    objectId: text('object_id')
+      .notNull()
+      .references(() => objects.id, { onDelete: 'cascade' }),
+    tagId: text('tag_id')
+      .notNull()
+      .references(() => tags.id, { onDelete: 'cascade' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [
+    // Composite primary key ensures no duplicate assignments
+    primaryKey({ columns: [table.objectId, table.tagId] }),
+    // Index for reverse lookups (tag → objects)
+    index('object_tags_tag_id_idx').on(table.tagId),
+  ]
+);
+
+// ============================================================================
 // fts_blocks - Full-text search virtual table (FTS5)
 // Drizzle doesn't support FTS5 natively, so we use raw SQL
 // ============================================================================
