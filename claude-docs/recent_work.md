@@ -1,36 +1,37 @@
 # Recent Work
 
-## Latest Session (2026-01-06 night - Template Bug Fixes)
+## Latest Session (2026-01-07 - Template Integration Tests)
 
-### Integration Bug Fixes
+### Template Integration Tests ✅
 
-Fixed two issues discovered during manual testing:
+Added 6 new tests verifying template application to DailyNotes:
 
-1. **seedDailyNoteTemplate() never called** — Function was defined and tested but not invoked during app initialization
-2. **dailyNoteService bypassed createObject()** — Raw DB inserts meant templates were never applied to new DailyNotes
+**Integration tests** (`tests/integration/dailyNote.lifecycle.test.ts`):
+
+- Template content with heading block
+- `{{date_key}}` placeholder substitution
+- docVersion increment after template application
+- No blocks without template
+- Existing DailyNote not affected on second call
+
+**E2E test** (`tests/e2e/specs/daily-note.spec.ts`):
+
+- Template heading visible in editor after DailyNote creation
+
+**Commit:**
+
+- `7d7b6e2` test: add template application integration and E2E tests
+
+---
+
+## Previous Session (2026-01-06 night - Template Bug Fixes)
+
+Fixed two issues: seedDailyNoteTemplate() never called at init, dailyNoteService bypassed createObject().
 
 **Commits:**
 
 - `0ccd742` fix: call seedDailyNoteTemplate() during app initialization
 - `41548ad` fix: use createObject() in dailyNoteService to apply templates
-
-**Key changes:**
-
-- `apps/desktop/src/main/index.ts` — Added seedDailyNoteTemplate(db) call
-- `apps/cli/src/index.ts` — Added seedDailyNoteTemplate(db) call
-- `packages/storage/src/dailyNoteService.ts` — Now uses createObject() instead of raw insert
-
----
-
-## Previous Session (2026-01-06 evening - Template System Phase 7)
-
-### Template System Complete ✅
-
-- Added `seedDailyNoteTemplate()` — idempotent function to create default template
-- Default template: H1 heading with `{{date_key}}` placeholder + empty paragraph
-- 85 new tests total across all 7 phases
-
-**Commit:** `3dec6db` — "feat: Template system with DailyNote default template"
 
 ---
 
