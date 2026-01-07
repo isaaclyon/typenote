@@ -35,6 +35,18 @@ describe('dateUtils', () => {
       expect(isValidDateKey('')).toBe(false);
       expect(isValidDateKey('2024-1-15')).toBe(false); // Missing leading zero
     });
+
+    it('returns false for valid date with prefix', () => {
+      // Tests the ^ anchor in regex - must start with the date pattern
+      expect(isValidDateKey('X2024-01-15')).toBe(false);
+      expect(isValidDateKey('prefix-2024-01-15')).toBe(false);
+    });
+
+    it('returns false for valid date with suffix', () => {
+      // Tests the $ anchor in regex - must end with the date pattern
+      expect(isValidDateKey('2024-01-15X')).toBe(false);
+      expect(isValidDateKey('2024-01-15-suffix')).toBe(false);
+    });
   });
 
   describe('getPreviousDate', () => {

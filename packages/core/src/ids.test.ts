@@ -62,4 +62,15 @@ describe('parseUlid', () => {
   it('throws for invalid ULID', () => {
     expect(() => parseUlid('invalid')).toThrow();
   });
+
+  it('throws with specific error message for invalid ULID', () => {
+    // Tests that our validation runs (not just ulid library's validation)
+    expect(() => parseUlid('invalid')).toThrow('Invalid ULID: invalid');
+  });
+
+  it('throws before calling decodeTime for invalid format', () => {
+    // A 26-char string with invalid ULID chars (lowercase) - our validation catches it
+    const invalidUlid = '01arz3ndektsv4rrffq69g5fav'; // lowercase is invalid
+    expect(() => parseUlid(invalidUlid)).toThrow('Invalid ULID');
+  });
 });
