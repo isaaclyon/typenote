@@ -8,12 +8,15 @@ export {
   ApiErrorSchema,
   notFoundObject,
   notFoundBlock,
+  notFoundTag,
   validationError,
   versionConflict,
   orderingConflict,
+  tagSlugConflict,
   cycleError,
   crossObjectError,
   parentDeletedError,
+  tagInUse,
   idempotencyConflict,
   internalError,
   type ApiError,
@@ -149,3 +152,38 @@ export {
   type CreateTemplateInput,
   type UpdateTemplateInput,
 } from './template.js';
+
+// Tags
+export {
+  // Field schemas
+  TagColorSchema,
+  TagIconSchema,
+  TagSlugSchema,
+  type TagColor,
+  type TagIcon,
+  type TagSlug,
+  // Entity
+  TagSchema,
+  TagWithUsageSchema,
+  type Tag,
+  type TagWithUsage,
+  // API operations
+  CreateTagInputSchema,
+  UpdateTagInputSchema,
+  ListTagsOptionsSchema,
+  type CreateTagInput,
+  type UpdateTagInput,
+  type ListTagsOptions,
+  // Assignment operations
+  AssignTagsInputSchema,
+  RemoveTagsInputSchema,
+  AssignTagsResultSchema,
+  RemoveTagsResultSchema,
+  type AssignTagsInput,
+  type RemoveTagsInput,
+  type AssignTagsResult,
+  type RemoveTagsResult,
+  // Error codes
+  TagErrorCodeSchema,
+  type TagErrorCode,
+} from './tag.js';

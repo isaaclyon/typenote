@@ -12,6 +12,9 @@ import {
   parentDeletedError,
   idempotencyConflict,
   internalError,
+  notFoundTag,
+  tagSlugConflict,
+  tagInUse,
   type ApiError,
   type ApiErrorCode,
 } from './errors.js';
@@ -20,12 +23,15 @@ describe('ApiErrorCodeSchema', () => {
   const validCodes: ApiErrorCode[] = [
     'NOT_FOUND_OBJECT',
     'NOT_FOUND_BLOCK',
+    'NOT_FOUND_TAG',
     'VALIDATION',
     'CONFLICT_VERSION',
     'CONFLICT_ORDERING',
+    'CONFLICT_TAG_SLUG',
     'INVARIANT_CYCLE',
     'INVARIANT_CROSS_OBJECT',
     'INVARIANT_PARENT_DELETED',
+    'INVARIANT_TAG_IN_USE',
     'IDEMPOTENCY_CONFLICT',
     'INTERNAL',
   ];
@@ -177,6 +183,45 @@ describe('Error factory functions', () => {
 
       expect(error.code).toBe('CONFLICT_ORDERING');
       expect(error.details).toEqual({ orderKey: 'bbb', parentBlockId: null });
+    });
+  });
+
+  describe('notFoundTag', () => {
+    it('creates NOT_FOUND_TAG error', () => {
+      const error = notFoundTag('01ARZ3NDEKTSV4RRFFQ69G5FAV');
+
+      expect(error.apiVersion).toBe('v1');
+      expect(error.code).toBe('NOT_FOUND_TAG');
+      expect(error.message).toContain('01ARZ3NDEKTSV4RRFFQ69G5FAV');
+      expect(error.details).toEqual({ tagId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' });
+    });
+  });
+
+  describe('tagSlugConflict', () => {
+    it('creates CONFLICT_TAG_SLUG error', () => {
+      const error = tagSlugConflict('typescript', '01ARZ3NDEKTSV4RRFFQ69G5FAV');
+
+      expect(error.apiVersion).toBe('v1');
+      expect(error.code).toBe('CONFLICT_TAG_SLUG');
+      expect(error.message).toContain('typescript');
+      expect(error.details).toEqual({
+        slug: 'typescript',
+        existingTagId: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+      });
+    });
+  });
+
+  describe('tagInUse', () => {
+    it('creates INVARIANT_TAG_IN_USE error', () => {
+      const error = tagInUse('01ARZ3NDEKTSV4RRFFQ69G5FAV', 5);
+
+      expect(error.apiVersion).toBe('v1');
+      expect(error.code).toBe('INVARIANT_TAG_IN_USE');
+      expect(error.message).toContain('5');
+      expect(error.details).toEqual({
+        tagId: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
+        usageCount: 5,
+      });
     });
   });
 });

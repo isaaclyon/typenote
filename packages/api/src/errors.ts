@@ -6,12 +6,15 @@ import { z } from 'zod';
 export const ApiErrorCodeSchema = z.enum([
   'NOT_FOUND_OBJECT',
   'NOT_FOUND_BLOCK',
+  'NOT_FOUND_TAG',
   'VALIDATION',
   'CONFLICT_VERSION',
   'CONFLICT_ORDERING',
+  'CONFLICT_TAG_SLUG',
   'INVARIANT_CYCLE',
   'INVARIANT_CROSS_OBJECT',
   'INVARIANT_PARENT_DELETED',
+  'INVARIANT_TAG_IN_USE',
   'IDEMPOTENCY_CONFLICT',
   'INTERNAL',
 ]);
@@ -121,5 +124,32 @@ export function orderingConflict(orderKey: string, parentBlockId: string | null)
     code: 'CONFLICT_ORDERING',
     message: 'Order key conflict among siblings',
     details: { orderKey, parentBlockId },
+  };
+}
+
+export function notFoundTag(tagId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'NOT_FOUND_TAG',
+    message: `Tag not found: ${tagId}`,
+    details: { tagId },
+  };
+}
+
+export function tagSlugConflict(slug: string, existingTagId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'CONFLICT_TAG_SLUG',
+    message: `Tag with slug '${slug}' already exists`,
+    details: { slug, existingTagId },
+  };
+}
+
+export function tagInUse(tagId: string, usageCount: number): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'INVARIANT_TAG_IN_USE',
+    message: `Cannot delete tag: assigned to ${usageCount} objects`,
+    details: { tagId, usageCount },
   };
 }
