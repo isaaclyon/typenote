@@ -1,6 +1,30 @@
 # Recent Work
 
-## Latest Session (2026-01-07 - Template Integration Tests)
+## Latest Session (2026-01-07 - Architectural Boundary Tests)
+
+### Architectural Boundary Tests ✅
+
+Added dependency-cruiser to enforce package import hierarchy:
+
+**Rules implemented** (`.dependency-cruiser.cjs`):
+
+1. `api-no-internal-imports` — api cannot import core/storage
+2. `core-no-storage-imports` — core cannot import storage
+3. `no-circular-package-deps` — no circular deps between packages
+4. `packages-no-electron` — shared packages cannot import Electron
+5. `renderer-no-node-or-storage` — renderer cannot import storage (security)
+6. `renderer-no-electron-main` — renderer cannot import Electron main APIs
+7. `no-orphans` — warns about unreachable modules
+8. `no-internal-circular` — warns about circular deps within a package
+
+**Commands added:**
+
+- `pnpm deps:check` — validates architectural boundaries
+- `pnpm deps:graph` — generates SVG dependency graph
+
+---
+
+## Previous Session (2026-01-07 - Template Integration Tests)
 
 ### Template Integration Tests ✅
 

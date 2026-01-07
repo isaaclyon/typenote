@@ -5,7 +5,7 @@
 ### Quality & Performance
 
 - [ ] Improve mutation testing scores (currently: storage 79.9%, api 52.1%)
-- [ ] Add architectural boundary tests (dependency-cruiser)
+- [x] ~~Add architectural boundary tests (dependency-cruiser)~~ ✅
 - [ ] Performance benchmarks for 10k+ objects / 100k+ blocks
 
 ### Features (Future Phases)
@@ -17,6 +17,10 @@
 ---
 
 ## Recently Completed
+
+### Architectural Boundary Tests ✅ (2026-01-07)
+
+Added dependency-cruiser with 8 rules enforcing package hierarchy. Run `pnpm deps:check`.
 
 ### Template Integration Tests ✅ (2026-01-07)
 

@@ -86,6 +86,7 @@ claude-docs/          # Claude context & progress tracking
 | ---------------------- | --------------------------------------- |
 | TypeScript base config | `tsconfig.base.json`                    |
 | ESLint config          | `eslint.config.js`                      |
+| Dependency rules       | `.dependency-cruiser.cjs`               |
 | Workspace config       | `pnpm-workspace.yaml`                   |
 | Bootstrap plan         | `docs/foundational/bootstrap_plan.md`   |
 | Backend contract       | `docs/foundational/backend_contract.md` |
@@ -95,6 +96,7 @@ claude-docs/          # Claude context & progress tracking
 
 - **TypeScript:** Strict mode with `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
 - **Linter:** ESLint with architectural boundary checks
+- **Architecture:** dependency-cruiser enforces package hierarchy (`pnpm deps:check`)
 - **Formatter:** Prettier (run `pnpm format`)
 - **Pre-commit:** Husky + lint-staged (format + lint)
 - **Pre-push:** Typecheck + tests
