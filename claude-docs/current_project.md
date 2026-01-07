@@ -47,7 +47,7 @@ apps/
 | 4     | Indexing Side Effects (FTS)   | ✅ Complete |
 | 5     | Object Types + Daily Notes    | ✅ Complete |
 | 6     | Export/Import + Mutation Test | ✅ Complete |
-| 7     | Wire Desktop Shell            | 🔄 Active   |
+| 7     | Wire Desktop Shell            | ✅ Complete |
 
 ## Key Architecture Decisions
 
@@ -63,7 +63,7 @@ apps/
 ```bash
 pnpm typecheck     # Type check all packages
 pnpm lint          # Lint all packages
-pnpm test          # Run all tests (574 tests)
+pnpm test          # Run all tests (733 tests)
 pnpm build         # Build all packages
 pnpm mutate        # Run mutation testing
 pnpm --filter @typenote/cli dev create Page "Test"  # Create object

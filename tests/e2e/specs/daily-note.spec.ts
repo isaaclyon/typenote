@@ -64,4 +64,21 @@ test.describe('Daily Note Workflow', () => {
     const editor = page.locator('.ProseMirror');
     await expect(editor).toBeVisible();
   });
+
+  test('new DailyNote shows template content with date heading', async ({ window: page }) => {
+    // Click the "Today's Note" button to create a new DailyNote
+    await page.getByTestId('create-daily-note-button').click();
+
+    // Wait for editor to load
+    await page.waitForSelector('.ProseMirror', { state: 'visible' });
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().slice(0, 10);
+
+    // The template should have created a heading with the date
+    // The heading is rendered as an h1 element in ProseMirror
+    const heading = page.locator('.ProseMirror h1');
+    await expect(heading).toBeVisible();
+    await expect(heading).toContainText(today);
+  });
 });

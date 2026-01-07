@@ -24,6 +24,7 @@ import {
   getDailyNoteBySlug,
   getDocument,
   searchBlocks,
+  seedDailyNoteTemplate,
   objects,
 } from '@typenote/storage';
 
@@ -309,6 +310,109 @@ describe('DailyNote Lifecycle Integration', () => {
 
       expect(dailyNote.title).toBe(today);
       expect(dailyNote.properties.date_key).toBe(today);
+    });
+  });
+
+  describe('Template Application', () => {
+    it('new DailyNote has template content with heading block', () => {
+      const { db } = getCtx();
+
+      // Seed the default DailyNote template
+      seedDailyNoteTemplate(db);
+
+      // Create a new DailyNote
+      const { dailyNote, created } = getOrCreateDailyNoteByDate(db, '2024-05-15');
+      expect(created).toBe(true);
+
+      // Get the document to verify template was applied
+      const doc = getDocument(db, dailyNote.id);
+
+      // Template should have created 2 blocks: heading + paragraph
+      expect(doc.blocks).toHaveLength(2);
+
+      // First block should be a heading
+      expect(doc.blocks[0]?.blockType).toBe('heading');
+      expect(doc.blocks[0]?.content).toMatchObject({
+        level: 1,
+      });
+
+      // Second block should be an empty paragraph
+      expect(doc.blocks[1]?.blockType).toBe('paragraph');
+      expect(doc.blocks[1]?.content).toMatchObject({
+        inline: [],
+      });
+    });
+
+    it('{{date_key}} placeholder is substituted with actual date', () => {
+      const { db } = getCtx();
+
+      // Seed the default DailyNote template
+      seedDailyNoteTemplate(db);
+
+      // Create a new DailyNote for a specific date
+      const testDate = '2024-07-04';
+      const { dailyNote } = getOrCreateDailyNoteByDate(db, testDate);
+
+      // Get the document
+      const doc = getDocument(db, dailyNote.id);
+
+      // Heading should contain the substituted date, not the placeholder
+      const headingContent = doc.blocks[0]?.content as {
+        level: number;
+        inline: Array<{ t: string; text: string }>;
+      };
+      expect(headingContent.inline).toHaveLength(1);
+      expect(headingContent.inline[0]?.text).toBe(testDate);
+      expect(headingContent.inline[0]?.text).not.toContain('{{');
+    });
+
+    it('docVersion increments after template application', () => {
+      const { db } = getCtx();
+
+      // Seed the default DailyNote template
+      seedDailyNoteTemplate(db);
+
+      // Create a new DailyNote
+      const { dailyNote } = getOrCreateDailyNoteByDate(db, '2024-08-20');
+
+      // Get the document - version should be 1 (incremented from 0 after template patch)
+      const doc = getDocument(db, dailyNote.id);
+      expect(doc.docVersion).toBe(1);
+    });
+
+    it('DailyNote without template has no blocks', () => {
+      const { db } = getCtx();
+
+      // Do NOT seed template - create DailyNote without template
+      const { dailyNote } = getOrCreateDailyNoteByDate(db, '2024-09-10');
+
+      // Get the document
+      const doc = getDocument(db, dailyNote.id);
+
+      // Should have no blocks since no template was applied
+      expect(doc.blocks).toHaveLength(0);
+      expect(doc.docVersion).toBe(0);
+    });
+
+    it('existing DailyNote is not affected by template on second call', () => {
+      const { db } = getCtx();
+
+      // Create DailyNote first WITHOUT template
+      const { dailyNote: firstNote } = getOrCreateDailyNoteByDate(db, '2024-10-15');
+      const firstDoc = getDocument(db, firstNote.id);
+      expect(firstDoc.blocks).toHaveLength(0);
+
+      // Now seed the template
+      seedDailyNoteTemplate(db);
+
+      // Get the same DailyNote again (should return existing, not create new)
+      const { dailyNote: secondNote, created } = getOrCreateDailyNoteByDate(db, '2024-10-15');
+      expect(created).toBe(false);
+      expect(secondNote.id).toBe(firstNote.id);
+
+      // Document should still have no blocks - template only applies on creation
+      const secondDoc = getDocument(db, secondNote.id);
+      expect(secondDoc.blocks).toHaveLength(0);
     });
   });
 });
