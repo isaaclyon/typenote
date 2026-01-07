@@ -4,6 +4,7 @@ import {
   createFileDb,
   closeDb,
   seedBuiltInTypes,
+  seedDailyNoteTemplate,
   createObject,
   listObjects,
   getDocument,
@@ -23,6 +24,7 @@ function initDb(): TypenoteDb {
   console.log(`Using database: ${dbPath}`);
   const db = createFileDb(dbPath);
   seedBuiltInTypes(db);
+  seedDailyNoteTemplate(db);
   return db;
 }
 

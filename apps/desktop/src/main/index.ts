@@ -5,6 +5,7 @@ import { app, BrowserWindow } from 'electron';
 import {
   createFileDb,
   seedBuiltInTypes,
+  seedDailyNoteTemplate,
   closeDb,
   getDbPath,
   type TypenoteDb,
@@ -45,6 +46,7 @@ function initDatabase(): void {
   console.log(`[TypeNote] Using database: ${dbPath}`);
   db = createFileDb(dbPath);
   seedBuiltInTypes(db);
+  seedDailyNoteTemplate(db);
 }
 
 function registerIpcHandlers(): void {
