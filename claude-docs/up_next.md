@@ -1,5 +1,27 @@
 # Up Next
 
+## Workstream: Template Integration Tests
+
+Status: **Ready to Start**
+
+**Goal:** Add integration and E2E tests to verify templates are applied correctly.
+
+### Tasks
+
+- [ ] Add integration test: new DailyNote has template content with date heading
+- [ ] Add integration test: `{{date_key}}` placeholder is substituted correctly
+- [ ] Add E2E test: editor shows template content after creating DailyNote
+- [ ] Update `dailyNote.lifecycle.test.ts` with template assertions
+
+**Why:** The template feature had two bugs (seeding not called, dailyNoteService bypassing createObject) that would have been caught by integration tests verifying template application.
+
+**Test locations:**
+
+- `tests/integration/dailyNote.lifecycle.test.ts` — Add "Template Application" describe block
+- `tests/e2e/specs/daily-note.spec.ts` — Add test for template content visible in editor
+
+---
+
 ## Backlog
 
 ### Quality & Performance
@@ -20,15 +42,10 @@
 
 ### Template System ✅ (2026-01-06)
 
-Complete 7-phase implementation with 85 new tests:
+Complete 7-phase implementation with 85 new tests + 2 bug fixes:
 
-- Phase 1: API contracts — Zod schemas for templates (25 tests)
-- Phase 2: Placeholder engine — {{title}}, {{date_key}}, {{created_date}} (18 tests)
-- Phase 3: Database schema — templates table + migration 0002
-- Phase 4: Template service — CRUD operations (19 tests)
-- Phase 5: Template application — applyTemplateToObject() (13 tests)
-- Phase 6: createObject() integration — auto-apply default templates (5 tests)
-- Phase 7: DailyNote default template seeding (5 tests)
+- All 7 phases: API contracts, placeholder engine, DB schema, template service, application, createObject integration, seeding
+- Bug fixes: seedDailyNoteTemplate() now called at init, dailyNoteService uses createObject()
 
 ### Phase 7 — Wire Desktop Shell ✅ (2026-01-06)
 

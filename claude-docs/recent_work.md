@@ -1,44 +1,36 @@
 # Recent Work
 
-## Latest Session (2026-01-06 evening - Template System Phase 7)
+## Latest Session (2026-01-06 night - Template Bug Fixes)
 
-### Template System Complete ✅
+### Integration Bug Fixes
 
-Finished Phase 7 of the template system — seeding the default DailyNote template:
+Fixed two issues discovered during manual testing:
 
-- Added `seedDailyNoteTemplate()` — idempotent function to create default template
-- Default template: H1 heading with `{{date_key}}` placeholder + empty paragraph
-- Exported `DAILY_NOTE_DEFAULT_TEMPLATE` constant for reference
-- 5 new tests for seeding functionality
+1. **seedDailyNoteTemplate() never called** — Function was defined and tested but not invoked during app initialization
+2. **dailyNoteService bypassed createObject()** — Raw DB inserts meant templates were never applied to new DailyNotes
 
-**Commit:** `3dec6db` — "feat: Template system with DailyNote default template"
+**Commits:**
 
-**Total tests:** 738 (up from 653 before template system)
+- `0ccd742` fix: call seedDailyNoteTemplate() during app initialization
+- `41548ad` fix: use createObject() in dailyNoteService to apply templates
 
-**All 7 phases complete:**
+**Key changes:**
 
-1. API contracts (25 tests)
-2. Placeholder engine (18 tests)
-3. Database schema (migration 0002)
-4. Template service (19 + 5 = 24 tests)
-5. Template application (13 tests)
-6. createObject() integration (5 tests)
-7. DailyNote default seeding (5 tests)
+- `apps/desktop/src/main/index.ts` — Added seedDailyNoteTemplate(db) call
+- `apps/cli/src/index.ts` — Added seedDailyNoteTemplate(db) call
+- `packages/storage/src/dailyNoteService.ts` — Now uses createObject() instead of raw insert
 
 ---
 
-## Previous Session (2026-01-06 - Template System Phases 5-6)
+## Previous Session (2026-01-06 evening - Template System Phase 7)
 
-- Phase 5: `applyTemplateToObject()` — Applies template to object (13 tests)
-- Phase 6: `createObject()` integration — auto-apply default templates (5 tests)
+### Template System Complete ✅
 
-## Previous Session (2026-01-06 - Template System Phases 1-4)
+- Added `seedDailyNoteTemplate()` — idempotent function to create default template
+- Default template: H1 heading with `{{date_key}}` placeholder + empty paragraph
+- 85 new tests total across all 7 phases
 
-- Phase 1-4: API contracts, placeholder engine, DB schema, template service (62 tests)
-
-## Previous Session (2026-01-06 - E2E Tests)
-
-E2E testing suite committed (21 tests). Commit: `ab890d4`
+**Commit:** `3dec6db` — "feat: Template system with DailyNote default template"
 
 ---
 
