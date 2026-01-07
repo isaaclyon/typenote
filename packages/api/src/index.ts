@@ -135,3 +135,17 @@ export {
 
 // Query Results
 export { type DocumentBlock, type GetDocumentResult, type ObjectSummary } from './queries.js';
+
+// Templates
+export {
+  TemplateBlockSchema,
+  TemplateContentSchema,
+  TemplateSchema,
+  CreateTemplateInputSchema,
+  UpdateTemplateInputSchema,
+  type TemplateBlock,
+  type TemplateContent,
+  type Template,
+  type CreateTemplateInput,
+  type UpdateTemplateInput,
+} from './template.js';

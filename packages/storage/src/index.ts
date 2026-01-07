@@ -9,6 +9,7 @@ export {
   blocks,
   refs,
   idempotency,
+  templates,
   FTS_BLOCKS_TABLE_NAME,
   FTS_BLOCKS_CREATE_SQL,
 } from './schema.js';
@@ -78,6 +79,7 @@ export {
   type ObjectSummary,
   type ObjectDetails,
   type CreatedObject,
+  type CreateObjectOptions,
 } from './objectService.js';
 
 // Export/Import Service
@@ -96,3 +98,22 @@ export {
   type ImportObjectResult,
   type ImportResult,
 } from './exportService.js';
+
+// Template Service
+export {
+  createTemplate,
+  getTemplate,
+  getDefaultTemplateForType,
+  listTemplates,
+  updateTemplate,
+  deleteTemplate,
+  seedDailyNoteTemplate,
+  DAILY_NOTE_DEFAULT_TEMPLATE,
+} from './templateService.js';
+
+// Template Application
+export {
+  applyTemplateToObject,
+  type ApplyTemplateContext,
+  type ApplyTemplateOutcome,
+} from './applyTemplateToObject.js';

@@ -5,6 +5,8 @@ import { objects, objectTypes } from './schema.js';
 import type { TypenoteDb } from './db.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
 import { validateProperties, mergeWithDefaults } from './propertyValidation.js';
+import { getDefaultTemplateForType } from './templateService.js';
+import { applyTemplateToObject } from './applyTemplateToObject.js';
 
 // Re-export from API for convenience
 export type { ObjectSummary };
@@ -129,12 +131,24 @@ export function getObject(db: TypenoteDb, objectId: string): ObjectDetails | nul
 }
 
 /**
+ * Options for createObject.
+ */
+export interface CreateObjectOptions {
+  /**
+   * Whether to auto-apply the default template for this object type.
+   * Default: true
+   */
+  applyDefaultTemplate?: boolean;
+}
+
+/**
  * Create a new object of the given type.
  *
  * @param db - Database connection
  * @param typeKey - The type key (e.g., 'Page', 'Person', or custom type)
  * @param title - The object title
  * @param properties - Optional properties (validated against type schema)
+ * @param options - Optional creation options
  * @returns The created object
  * @throws CreateObjectError if type not found or validation fails
  */
@@ -142,8 +156,11 @@ export function createObject(
   db: TypenoteDb,
   typeKey: string,
   title: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
+  options?: CreateObjectOptions
 ): CreatedObject {
+  const { applyDefaultTemplate = true } = options ?? {};
+
   // 1. Look up the object type by key
   const objectType = getObjectTypeByKey(db, typeKey);
   if (!objectType) {
@@ -181,14 +198,37 @@ export function createObject(
     })
     .run();
 
-  // 5. Return the created object
+  // 5. Apply default template if enabled and one exists
+  let finalDocVersion = 0;
+
+  if (applyDefaultTemplate) {
+    const defaultTemplate = getDefaultTemplateForType(db, objectType.id);
+    if (defaultTemplate) {
+      // Build context for placeholder substitution
+      const dateKey =
+        typeof mergedProperties['date_key'] === 'string' ? mergedProperties['date_key'] : undefined;
+
+      const templateResult = applyTemplateToObject(db, id, defaultTemplate, {
+        title,
+        createdDate: now,
+        dateKey,
+      });
+
+      if (templateResult.success) {
+        finalDocVersion = templateResult.result.newDocVersion;
+      }
+      // If template application fails, we still have a valid object (just empty)
+    }
+  }
+
+  // 6. Return the created object
   return {
     id,
     typeId: objectType.id,
     typeKey: objectType.key,
     title,
     properties: mergedProperties,
-    docVersion: 0,
+    docVersion: finalDocVersion,
     createdAt: now,
     updatedAt: now,
   };

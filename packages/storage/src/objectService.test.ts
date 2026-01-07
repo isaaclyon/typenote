@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTestDb, closeDb, type TypenoteDb } from './db.js';
-import { seedBuiltInTypes, createObjectType } from './objectTypeService.js';
-import { listObjects, createObject, CreateObjectError } from './objectService.js';
+import { seedBuiltInTypes, createObjectType, getObjectTypeByKey } from './objectTypeService.js';
+import { listObjects, createObject, getObject, CreateObjectError } from './objectService.js';
+import { createTemplate } from './templateService.js';
+import { getDocument } from './getDocument.js';
 import { objects } from './schema.js';
 import { generateId } from '@typenote/core';
 
@@ -281,6 +283,185 @@ describe('ObjectService', () => {
         expect(e).toBeInstanceOf(CreateObjectError);
         expect((e as CreateObjectError).code).toBe('VALIDATION_FAILED');
       }
+    });
+
+    describe('with default templates', () => {
+      it('auto-applies default template when one exists', () => {
+        seedBuiltInTypes(db);
+
+        // Get the Page type
+        const pageType = getObjectTypeByKey(db, 'Page');
+        expect(pageType).not.toBeNull();
+        if (!pageType) throw new Error('Expected Page type');
+
+        // Create a default template for Page
+        createTemplate(db, {
+          objectTypeId: pageType.id,
+          name: 'Default Page Template',
+          content: {
+            blocks: [
+              {
+                blockType: 'heading',
+                content: { level: 1, inline: [{ t: 'text', text: '{{title}}' }] },
+              },
+              {
+                blockType: 'paragraph',
+                content: { inline: [{ t: 'text', text: 'Start writing here...' }] },
+              },
+            ],
+          },
+          isDefault: true,
+        });
+
+        // Create an object - template should auto-apply
+        const created = createObject(db, 'Page', 'My New Page');
+
+        // Verify the document has blocks from the template
+        const doc = getDocument(db, created.id);
+        expect(doc.blocks).toHaveLength(2);
+
+        const heading = doc.blocks[0];
+        expect(heading).toBeDefined();
+        if (!heading) throw new Error('Expected heading');
+        expect(heading.blockType).toBe('heading');
+
+        // Title placeholder should be substituted
+        const headingContent = heading.content as {
+          level: number;
+          inline: Array<{ t: string; text: string }>;
+        };
+        const firstInline = headingContent.inline[0];
+        expect(firstInline).toBeDefined();
+        if (!firstInline) throw new Error('Expected inline');
+        expect(firstInline.text).toBe('My New Page');
+
+        // docVersion should be 1 (template applied)
+        const obj = getObject(db, created.id);
+        expect(obj).not.toBeNull();
+        if (!obj) throw new Error('Expected object');
+        expect(obj.docVersion).toBe(1);
+      });
+
+      it('does not apply template when none exists', () => {
+        seedBuiltInTypes(db);
+
+        // Create an object without any template
+        const created = createObject(db, 'Page', 'Plain Page');
+
+        // Verify the document has no blocks
+        const doc = getDocument(db, created.id);
+        expect(doc.blocks).toHaveLength(0);
+
+        // docVersion should be 0 (no template applied)
+        expect(created.docVersion).toBe(0);
+      });
+
+      it('skips template when applyDefaultTemplate is false', () => {
+        seedBuiltInTypes(db);
+
+        const pageType = getObjectTypeByKey(db, 'Page');
+        expect(pageType).not.toBeNull();
+        if (!pageType) throw new Error('Expected Page type');
+
+        // Create a default template
+        createTemplate(db, {
+          objectTypeId: pageType.id,
+          name: 'Default Template',
+          content: {
+            blocks: [
+              {
+                blockType: 'paragraph',
+                content: { inline: [{ t: 'text', text: 'Template content' }] },
+              },
+            ],
+          },
+          isDefault: true,
+        });
+
+        // Create object with template application disabled
+        const created = createObject(db, 'Page', 'No Template Page', undefined, {
+          applyDefaultTemplate: false,
+        });
+
+        // Verify no blocks were added
+        const doc = getDocument(db, created.id);
+        expect(doc.blocks).toHaveLength(0);
+        expect(created.docVersion).toBe(0);
+      });
+
+      it('substitutes {{date_key}} for DailyNote', () => {
+        seedBuiltInTypes(db);
+
+        const dailyNoteType = getObjectTypeByKey(db, 'DailyNote');
+        expect(dailyNoteType).not.toBeNull();
+        if (!dailyNoteType) throw new Error('Expected DailyNote type');
+
+        // Create a DailyNote template with date_key placeholder
+        createTemplate(db, {
+          objectTypeId: dailyNoteType.id,
+          name: 'Daily Note Template',
+          content: {
+            blocks: [
+              {
+                blockType: 'heading',
+                content: { level: 1, inline: [{ t: 'text', text: '📅 {{date_key}}' }] },
+              },
+            ],
+          },
+          isDefault: true,
+        });
+
+        // Create a DailyNote with date_key property
+        const created = createObject(db, 'DailyNote', '2026-01-06', {
+          date_key: '2026-01-06',
+        });
+
+        // Verify the date_key was substituted
+        const doc = getDocument(db, created.id);
+        expect(doc.blocks).toHaveLength(1);
+
+        const heading = doc.blocks[0];
+        expect(heading).toBeDefined();
+        if (!heading) throw new Error('Expected heading');
+
+        const content = heading.content as {
+          level: number;
+          inline: Array<{ t: string; text: string }>;
+        };
+        const firstInline = content.inline[0];
+        expect(firstInline).toBeDefined();
+        if (!firstInline) throw new Error('Expected inline');
+        expect(firstInline.text).toBe('📅 2026-01-06');
+      });
+
+      it('only applies default template, not non-default ones', () => {
+        seedBuiltInTypes(db);
+
+        const pageType = getObjectTypeByKey(db, 'Page');
+        expect(pageType).not.toBeNull();
+        if (!pageType) throw new Error('Expected Page type');
+
+        // Create a non-default template
+        createTemplate(db, {
+          objectTypeId: pageType.id,
+          name: 'Non-Default Template',
+          content: {
+            blocks: [
+              {
+                blockType: 'paragraph',
+                content: { inline: [{ t: 'text', text: 'Non-default content' }] },
+              },
+            ],
+          },
+          isDefault: false,
+        });
+
+        // Create an object - should not have template applied
+        const created = createObject(db, 'Page', 'Test Page');
+
+        const doc = getDocument(db, created.id);
+        expect(doc.blocks).toHaveLength(0);
+      });
     });
   });
 });

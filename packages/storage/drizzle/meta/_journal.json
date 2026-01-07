@@ -15,6 +15,13 @@
       "when": 1767558300000,
       "tag": "0001_daily_note_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1736208000000,
+      "tag": "0002_add_templates",
+      "breakpoints": true
     }
   ]
 }

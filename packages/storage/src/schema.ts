@@ -134,6 +134,26 @@ export const idempotency = sqliteTable(
 );
 
 // ============================================================================
+// templates - Object type templates for auto-applying initial content
+// ============================================================================
+
+export const templates = sqliteTable(
+  'templates',
+  {
+    id: text('id').primaryKey(), // ULID
+    objectTypeId: text('object_type_id')
+      .notNull()
+      .references(() => objectTypes.id),
+    name: text('name').notNull(), // e.g., "Daily Note Default"
+    content: text('content').notNull(), // JSON: TemplateContent
+    isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(true),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [index('templates_object_type_id_idx').on(table.objectTypeId)]
+);
+
+// ============================================================================
 // fts_blocks - Full-text search virtual table (FTS5)
 // Drizzle doesn't support FTS5 natively, so we use raw SQL
 // ============================================================================

@@ -14,6 +14,9 @@ export {
   formatDateForDisplay,
 } from './dateUtils.js';
 
+// Template placeholders
+export { substitutePlaceholders, type PlaceholderContext } from './templatePlaceholders.js';
+
 // Re-export content schemas from api for convenience
 // (Core can import from api per the architecture)
 export {
