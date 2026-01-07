@@ -16,3 +16,6 @@ export { MathBlock } from './MathBlock.js';
 
 // Marks
 export { Highlight } from './Highlight.js';
+
+// Plugins
+export { RefSuggestion } from './RefSuggestion.js';

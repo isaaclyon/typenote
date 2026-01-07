@@ -7,7 +7,7 @@
 
 /// <reference path="../global.d.ts" />
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Placeholder } from '@tiptap/extension-placeholder';
@@ -27,6 +27,7 @@ import {
   MathBlock,
   MathInline,
   Highlight,
+  RefSuggestion,
 } from '../extensions/index.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
@@ -55,6 +56,33 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   const [initialBlocks, setInitialBlocks] = useState<DocumentBlock[]>([]);
   const { isDailyNote, dateKey } = useDailyNoteInfo(objectId);
 
+  // Search handler for wiki-link suggestions
+  const handleSearch = useCallback(async (query: string) => {
+    if (!query.trim()) return [];
+    const result = await window.typenoteAPI.listObjects();
+    if (result.success) {
+      return result.result
+        .filter((obj) => obj.title.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 10);
+    }
+    return [];
+  }, []);
+
+  // Create handler for "Create new" option in suggestions
+  const handleCreate = useCallback(async (title: string) => {
+    const result = await window.typenoteAPI.createObject('Page', title);
+    if (result.success) {
+      return {
+        id: result.result.id,
+        title: result.result.title,
+        typeId: result.result.typeId,
+        typeKey: result.result.typeKey,
+        updatedAt: result.result.updatedAt,
+      };
+    }
+    return null;
+  }, []);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -72,12 +100,19 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       TaskList,
       TaskItem.configure({ nested: true }),
       // Custom NotateDoc extensions
-      RefNode,
+      RefNode.configure({
+        onNavigate,
+      }),
       TagNode,
       CalloutNode,
       MathBlock,
       MathInline,
       Highlight,
+      // Wiki-link and mention suggestions
+      RefSuggestion.configure({
+        onSearch: handleSearch,
+        onCreate: handleCreate,
+      }),
     ],
     editable: true, // Enable editing
     immediatelyRender: false, // Important for Electron SSR concerns

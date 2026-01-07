@@ -27,13 +27,19 @@ interface RefNodeAttrs {
   alias: string | null;
 }
 
+export interface RefNodeOptions {
+  onNavigate: ((objectId: string) => void) | undefined;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Node View Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function RefNodeView({ node }: NodeViewProps) {
+function RefNodeView({ node, extension }: NodeViewProps) {
   const attrs = node.attrs as RefNodeAttrs;
   const { mode, target, alias } = attrs;
+  const options = extension.options as RefNodeOptions;
+  const { onNavigate } = options;
 
   // Display text: alias if provided, otherwise objectId (truncated), or placeholder
   const displayText = alias ?? target?.objectId.slice(0, 8) ?? 'Unknown';
@@ -41,9 +47,18 @@ function RefNodeView({ node }: NodeViewProps) {
   // Embed mode renders differently (slightly different styling)
   const isEmbed = mode === 'embed';
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (target?.objectId && onNavigate) {
+      e.preventDefault();
+      e.stopPropagation();
+      onNavigate(target.objectId);
+    }
+  };
+
   return (
     <NodeViewWrapper as="span" className="inline">
       <span
+        onClick={handleClick}
         className={cn(
           'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-sm',
           'cursor-pointer transition-colors',
@@ -68,11 +83,17 @@ function RefNodeView({ node }: NodeViewProps) {
 // TipTap Extension
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const RefNode = Node.create({
+export const RefNode = Node.create<RefNodeOptions>({
   name: 'ref',
   group: 'inline',
   inline: true,
   atom: true, // Not editable content inside
+
+  addOptions() {
+    return {
+      onNavigate: undefined,
+    };
+  },
 
   addAttributes() {
     return {
