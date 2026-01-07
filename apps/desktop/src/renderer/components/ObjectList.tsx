@@ -1,3 +1,5 @@
+/// <reference path="../global.d.ts" />
+
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card.js';
 import { ScrollArea } from './ui/scroll-area.js';
@@ -71,6 +73,7 @@ export function ObjectList({ onSelect, selectedId }: ObjectListProps) {
               selectedId === obj.id && 'ring-2 ring-primary'
             )}
             onClick={() => onSelect(obj.id)}
+            data-testid={`object-card-${obj.id}`}
           >
             <CardHeader className="p-4">
               <div className="flex items-center justify-between">

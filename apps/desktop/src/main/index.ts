@@ -41,7 +41,7 @@ function createWindow(): void {
 }
 
 function initDatabase(): void {
-  const dbPath = getDbPath();
+  const dbPath = process.env['TYPENOTE_DB_PATH'] ?? getDbPath();
   console.log(`[TypeNote] Using database: ${dbPath}`);
   db = createFileDb(dbPath);
   seedBuiltInTypes(db);

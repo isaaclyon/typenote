@@ -14,6 +14,8 @@ export default defineConfig({
     port: 5173,
     strictPort: true, // Fail if port is in use (Electron expects this port)
   },
+  // Use relative paths for Electron's file:// protocol
+  base: './',
   build: {
     outDir: '../../dist/renderer',
     emptyOutDir: true,

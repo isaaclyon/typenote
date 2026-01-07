@@ -78,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/hooks/format-lint-on-stop.sh"
+            "command": "${PROJECT_DIR}/.claude/hooks/format-lint-on-stop.sh \"${PROJECT_DIR}\""
           }
         ]
       }

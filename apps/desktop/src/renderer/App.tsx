@@ -1,3 +1,5 @@
+/// <reference path="./global.d.ts" />
+
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
@@ -28,6 +30,7 @@ function App(): ReactElement {
             size="sm"
             className="w-full justify-start"
             onClick={() => void handleCreateDailyNote()}
+            data-testid="create-daily-note-button"
           >
             + Today's Note
           </Button>

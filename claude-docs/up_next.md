@@ -2,7 +2,7 @@
 
 ## Workstream: Phase 7 — Wire Desktop Shell
 
-Status: **🔄 IN PROGRESS (95% Complete)**
+Status: **✅ COMPLETE**
 
 **Goal:** Minimal Electron UI to exercise the backend.
 
@@ -26,7 +26,7 @@ Status: **🔄 IN PROGRESS (95% Complete)**
 
 ### Remaining ⏳
 
-- [ ] E2E UI tests — Need selector fixes for button clicks and component interaction
+- [x] E2E UI tests — 21 tests passing (IPC wiring + daily note + editor + navigation)
 - [x] Fix native module conflict — smart rebuild script auto-switches between Node/Electron builds
 
 ---

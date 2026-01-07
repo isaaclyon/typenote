@@ -5,6 +5,8 @@
  * Displays prev/today/next buttons and a formatted date.
  */
 
+/// <reference path="../global.d.ts" />
+
 import { useCallback, useState } from 'react';
 import { Button } from './ui/button.js';
 import {
@@ -52,6 +54,7 @@ export function DailyNoteNavigation({ dateKey, onNavigate }: DailyNoteNavigation
         onClick={handlePrev}
         disabled={isNavigating}
         aria-label="Previous day"
+        data-testid="nav-prev-button"
       >
         Prev
       </Button>
@@ -66,6 +69,7 @@ export function DailyNoteNavigation({ dateKey, onNavigate }: DailyNoteNavigation
         onClick={handleNext}
         disabled={isNavigating}
         aria-label="Next day"
+        data-testid="nav-next-button"
       >
         Next
       </Button>
@@ -76,6 +80,7 @@ export function DailyNoteNavigation({ dateKey, onNavigate }: DailyNoteNavigation
         onClick={handleToday}
         disabled={isToday || isNavigating}
         aria-label="Go to today"
+        data-testid="nav-today-button"
       >
         Today
       </Button>

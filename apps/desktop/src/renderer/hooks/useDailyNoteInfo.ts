@@ -6,6 +6,8 @@
  * controls should be shown and what date is currently being viewed.
  */
 
+/// <reference path="../global.d.ts" />
+
 import { useEffect, useState } from 'react';
 
 export interface DailyNoteInfo {

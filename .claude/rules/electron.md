@@ -117,3 +117,44 @@ import { db } from '@typenote/storage'; // SECURITY VIOLATION
 // DON'T: apps/desktop/src/renderer/utils.ts
 import { readFile } from 'fs'; // Won't work, nodeIntegration is false
 ```
+
+## Vite Configuration
+
+**CRITICAL:** Always use relative base path for Electron:
+
+```typescript
+// apps/desktop/vite.config.ts
+export default defineConfig({
+  base: './', // REQUIRED for file:// protocol
+  build: {
+    outDir: '../../dist/renderer',
+  },
+});
+```
+
+**Why:** Electron loads the renderer via `file://` protocol. Vite's default `base: '/'` generates absolute paths like `/assets/index.js` which resolve to the filesystem root, not the app directory.
+
+## Native Modules (better-sqlite3)
+
+This project uses `better-sqlite3` which requires compilation for the correct Node.js ABI:
+
+- **Unit tests** run in Node.js (e.g., NODE_MODULE_VERSION 141)
+- **Electron app** uses bundled Node.js (e.g., NODE_MODULE_VERSION 130)
+
+### Rebuild Script
+
+The smart rebuild script (`scripts/ensure-native-build.mjs`) handles switching:
+
+```bash
+pnpm rebuild:node      # For unit tests
+pnpm rebuild:electron  # For Electron app/E2E tests
+```
+
+Pre-hooks automatically run the correct rebuild:
+
+- `pnpm test` → rebuilds for Node.js
+- `pnpm dev` / `pnpm test:e2e` → rebuilds for Electron
+
+### Why not electron-rebuild?
+
+`electron-rebuild` doesn't work reliably with pnpm's nested `node_modules/.pnpm/` structure. The script uses `node-gyp` directly with explicit paths instead.
