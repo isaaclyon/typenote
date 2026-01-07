@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # Format & Lint on Stop Hook
-# Automatically formats and lints modified files when Claude Code stops
+# Automatically formats and lints modified/new files when Claude Code stops
 # Trigger: Stop event
-# Scope: Only files modified in current session
+# Scope: Modified, staged, and untracked files in working tree
 
 # Configuration
 WORK_DIR="${1:-.}"
@@ -17,8 +17,11 @@ modified_files=$(git diff --name-only HEAD 2>/dev/null || echo "")
 # Also get staged files in case they haven't been committed yet
 staged_files=$(git diff --name-only --cached 2>/dev/null || echo "")
 
+# Also get untracked files (new files not yet added to git)
+untracked_files=$(git ls-files --others --exclude-standard 2>/dev/null || echo "")
+
 # Combine and deduplicate
-all_files=$(echo -e "$modified_files\n$staged_files" | sort -u | tr '\n' ' ')
+all_files=$(echo -e "$modified_files\n$staged_files\n$untracked_files" | sort -u | tr '\n' ' ')
 
 # Filter for TypeScript and JavaScript files only
 ts_js_files=$(echo "$all_files" | tr ' ' '\n' | grep -E '\.(ts|tsx|js|jsx)$' | tr '\n' ' ' || echo "")
