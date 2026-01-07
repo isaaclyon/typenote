@@ -6,6 +6,7 @@ import { createTemplate } from './templateService.js';
 import { getDocument } from './getDocument.js';
 import { objects } from './schema.js';
 import { generateId } from '@typenote/core';
+import { createTag, assignTags } from './tagService.js';
 
 describe('ObjectService', () => {
   let db: TypenoteDb;
@@ -462,6 +463,67 @@ describe('ObjectService', () => {
         const doc = getDocument(db, created.id);
         expect(doc.blocks).toHaveLength(0);
       });
+    });
+  });
+
+  describe('getObject', () => {
+    it('returns null for non-existent object', () => {
+      seedBuiltInTypes(db);
+
+      const result = getObject(db, '01ARZ3NDEKTSV4RRFFQ69G5FAV');
+
+      expect(result).toBeNull();
+    });
+
+    it('returns object with empty tags array when no tags assigned', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+      const result = getObject(db, created.id);
+
+      expect(result).not.toBeNull();
+      expect(result?.tags).toEqual([]);
+    });
+
+    it('returns object with assigned tags', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+      const tag1 = createTag(db, { name: 'TypeScript', slug: 'typescript' });
+      const tag2 = createTag(db, { name: 'React', slug: 'react' });
+
+      assignTags(db, { objectId: created.id, tagIds: [tag1.id, tag2.id] });
+
+      const result = getObject(db, created.id);
+
+      expect(result).not.toBeNull();
+      expect(result?.tags).toHaveLength(2);
+      expect(result?.tags.map((t) => t.slug).sort()).toEqual(['react', 'typescript']);
+    });
+
+    it('returns full tag details including color and icon', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Styled Page');
+      const tag = createTag(db, {
+        name: 'Important',
+        slug: 'important',
+        color: '#FF0000',
+        icon: '⭐',
+        description: 'High priority items',
+      });
+
+      assignTags(db, { objectId: created.id, tagIds: [tag.id] });
+
+      const result = getObject(db, created.id);
+
+      expect(result).not.toBeNull();
+      expect(result?.tags).toHaveLength(1);
+      const returnedTag = result?.tags[0];
+      expect(returnedTag?.name).toBe('Important');
+      expect(returnedTag?.color).toBe('#FF0000');
+      expect(returnedTag?.icon).toBe('⭐');
+      expect(returnedTag?.description).toBe('High priority items');
     });
   });
 });

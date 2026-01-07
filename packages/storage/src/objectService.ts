@@ -1,12 +1,13 @@
 import { desc, eq, isNull } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
-import type { ObjectSummary } from '@typenote/api';
+import type { ObjectSummary, Tag } from '@typenote/api';
 import { objects, objectTypes } from './schema.js';
 import type { TypenoteDb } from './db.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
 import { validateProperties, mergeWithDefaults } from './propertyValidation.js';
 import { getDefaultTemplateForType } from './templateService.js';
 import { applyTemplateToObject } from './applyTemplateToObject.js';
+import { getObjectTags } from './tagService.js';
 
 // Re-export from API for convenience
 export type { ObjectSummary };
@@ -20,6 +21,8 @@ export interface ObjectDetails {
   docVersion: number;
   createdAt: Date;
   updatedAt: Date;
+  /** Tags assigned to this object (derived from object_tags junction table) */
+  tags: Tag[];
 }
 
 // ============================================================================
@@ -118,6 +121,9 @@ export function getObject(db: TypenoteDb, objectId: string): ObjectDetails | nul
     }
   }
 
+  // Fetch tags for this object
+  const tags = getObjectTags(db, row.id);
+
   return {
     id: row.id,
     title: row.title,
@@ -127,6 +133,7 @@ export function getObject(db: TypenoteDb, objectId: string): ObjectDetails | nul
     docVersion: row.docVersion,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
+    tags,
   };
 }
 
