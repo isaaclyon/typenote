@@ -1,74 +1,65 @@
 # Recent Work
 
-## Latest Session (2026-01-07 - Architectural Boundary Tests)
+## Latest Session (2026-01-07 - Global Tags System Complete)
 
-### Architectural Boundary Tests ✅
+### Completed Global Tags System (Phases 3-5)
 
-Added dependency-cruiser to enforce package import hierarchy:
+Finished implementing the tags system following strict TDD. Tests were written first, then implementation built to satisfy them.
 
-**Rules implemented** (`.dependency-cruiser.cjs`):
+**New Files:**
 
-1. `api-no-internal-imports` — api cannot import core/storage
-2. `core-no-storage-imports` — core cannot import storage
-3. `no-circular-package-deps` — no circular deps between packages
-4. `packages-no-electron` — shared packages cannot import Electron
-5. `renderer-no-node-or-storage` — renderer cannot import storage (security)
-6. `renderer-no-electron-main` — renderer cannot import Electron main APIs
-7. `no-orphans` — warns about unreachable modules
-8. `no-internal-circular` — warns about circular deps within a package
+- `packages/storage/src/tagService.ts` — Tag service with 10 functions (CRUD, assign/remove, getObjectTags, findOrCreate)
+- `packages/storage/drizzle/0003_add_tags.sql` — Migration for tags + object_tags tables
 
-**Commands added:**
+**Modified Files:**
 
-- `pnpm deps:check` — validates architectural boundaries
-- `pnpm deps:graph` — generates SVG dependency graph
+- `packages/storage/src/objectService.ts` — Added `tags: Tag[]` to ObjectDetails, getObject() now includes tags
+- `packages/storage/src/objectService.test.ts` — Added 4 tests for getObject() with tags
+- `packages/storage/drizzle/meta/_journal.json` — Added migration entry
 
----
+**Key Implementation Details:**
 
-## Previous Session (2026-01-07 - Template Integration Tests)
+- Junction table pattern for many-to-many (object_tags)
+- Idempotent assignTags/removeTags operations
+- TagWithUsage type for listing with usage counts
+- Read-back-from-DB pattern ensures consistent timestamp precision
 
-### Template Integration Tests ✅
-
-Added 6 new tests verifying template application to DailyNotes:
-
-**Integration tests** (`tests/integration/dailyNote.lifecycle.test.ts`):
-
-- Template content with heading block
-- `{{date_key}}` placeholder substitution
-- docVersion increment after template application
-- No blocks without template
-- Existing DailyNote not affected on second call
-
-**E2E test** (`tests/e2e/specs/daily-note.spec.ts`):
-
-- Template heading visible in editor after DailyNote creation
-
-**Commit:**
-
-- `7d7b6e2` test: add template application integration and E2E tests
+**Test results:** 710 tests passing (447 storage + 263 API), all typechecks pass.
 
 ---
 
-## Previous Session (2026-01-06 night - Template Bug Fixes)
+## Previous Session (2026-01-07 - Wiki-Link Suggestions)
 
-Fixed two issues: seedDailyNoteTemplate() never called at init, dailyNoteService bypassed createObject().
+Implemented autocomplete for `[[` wiki-links and `@` mentions in TipTap. New components: SuggestionPopup, RefSuggestion extension. 21 new tests.
 
-**Commits:**
+---
 
-- `0ccd742` fix: call seedDailyNoteTemplate() during app initialization
-- `41548ad` fix: use createObject() in dailyNoteService to apply templates
+## Previous Session (2026-01-07 - Tags Phase 1-2)
+
+Started tags system with TDD. API contracts (53 tests) and database schema complete.
+
+---
+
+## Previous Session (2026-01-07 - Architectural Boundary Tests)
+
+Added dependency-cruiser with 8 rules enforcing package hierarchy. Run `pnpm deps:check`.
 
 ---
 
 ## Completed Milestones
 
-| Phase    | Description                       | Date       |
-| -------- | --------------------------------- | ---------- |
-| 0        | Day 0 Setup                       | 2026-01-04 |
-| 1        | Core Contracts                    | 2026-01-04 |
-| 2        | Storage Schema + Migrations       | 2026-01-04 |
-| 3        | applyBlockPatch() + getDocument() | 2026-01-04 |
-| 4        | Indexing Side Effects (Refs/FTS)  | 2026-01-04 |
-| 5        | Object Types + Daily Notes        | 2026-01-04 |
-| 6        | Export/Import + Mutation Testing  | 2026-01-04 |
-| 7        | Wire Desktop Shell + E2E Tests    | 2026-01-06 |
-| Template | Template System (7 phases)        | 2026-01-06 |
+| Phase       | Description                       | Date       |
+| ----------- | --------------------------------- | ---------- |
+| 0           | Day 0 Setup                       | 2026-01-04 |
+| 1           | Core Contracts                    | 2026-01-04 |
+| 2           | Storage Schema + Migrations       | 2026-01-04 |
+| 3           | applyBlockPatch() + getDocument() | 2026-01-04 |
+| 4           | Indexing Side Effects (Refs/FTS)  | 2026-01-04 |
+| 5           | Object Types + Daily Notes        | 2026-01-04 |
+| 6           | Export/Import + Mutation Testing  | 2026-01-04 |
+| 7           | Wire Desktop Shell + E2E Tests    | 2026-01-06 |
+| Template    | Template System (7 phases)        | 2026-01-06 |
+| Tests       | Template Integration Tests        | 2026-01-07 |
+| DepCruise   | Architectural Boundary Tests      | 2026-01-07 |
+| Suggestions | Wiki-Link & Mention Autocomplete  | 2026-01-07 |
+| Tags        | Global Tags System (5 phases)     | 2026-01-07 |

@@ -58,6 +58,12 @@ apps/
 - **Soft delete** — Blocks marked deleted, not removed
 - **Mutation testing** — Stryker validates test quality (core 80%, storage 75%, api 45% thresholds)
 
+## Editor Features
+
+- **TipTap/ProseMirror** — Block-based editing with custom extensions
+- **RefNode** — Inline node for wiki-links and mentions with click navigation
+- **RefSuggestion** — Autocomplete triggered by `[[` or `@` with search/create support
+
 ## Quick Commands
 
 ```bash
