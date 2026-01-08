@@ -1,33 +1,32 @@
 # Up Next
 
-## Custom Object Types with Inheritance
+## Attachments/Media System
 
-**Status:** In Progress (Day 1 Complete)
-**Plan:** `docs/plans/2026-01-07-custom-object-types-design.md`
+**Status:** In Progress (Phases 1-4 Complete, 119 new tests)
+**Plan:** `~/.claude/plans/mellow-cuddling-thacker.md`
 
-Capacities-style type inheritance enabling `Book` → `Media`, `Employee` → `Person`, etc.
+Images + Documents support with content-addressed storage, global deduplication, and 30-day orphan cleanup.
 
-### Implementation Phases (TDD)
+### Implementation Phases (TDD) — 31-41 hours total
 
-- [x] Day 1: API schema tests → implementation (`packages/api/src/objectType.ts`) ✅
-- [x] Day 1: Drizzle schema + migration (`0004_add_object_type_inheritance.sql`) ✅
-- [ ] Day 2: Inheritance validation tests → `validateInheritance()`
-- [ ] Day 2: Schema resolution tests → `resolveTypeSchema()` + cache
-- [ ] Day 2: Update CRUD with validation + cache invalidation
-- [ ] Day 3: Property validation tests with inheritance
-- [ ] Day 3: Integration tests (object creation with inherited types)
-- [ ] Day 4: Polish, manual testing, built-in type defaults
+- [x] Phase 1: API Contracts (2-3h) — Zod schemas, error codes, block type ✅
+- [x] Phase 2: Database Schema (1h) — `attachments` + `block_attachments` tables ✅
+- [x] Phase 3: File Service (2-3h) — FileService interface + implementations ✅
+- [x] Phase 4: Attachment Service (8-10h) — CRUD, link/unlink, cleanup ✅
+- [ ] Phase 5: Block Patch Integration (3-4h) — Handle attachment blocks ⬅️ NEXT
+- [ ] Phase 6: IPC Layer (2-3h) — Upload/get/list handlers
+- [ ] Phase 7: CLI Commands (2-3h) — attachment upload/list/cleanup
+- [ ] Phase 8: Renderer Integration (10-12h) — TipTap node, upload UI
+- [ ] Phase 9: Garbage Collection (1-2h) — Daily cleanup scheduler
 
-### Key Changes
+### Key Files Created
 
-| File                                         | Lines |
-| -------------------------------------------- | ----- |
-| `packages/api/src/objectType.ts`             | ~30   |
-| `packages/storage/src/schema.ts`             | ~10   |
-| `drizzle/0004_*.sql`                         | ~10   |
-| `packages/storage/src/objectTypeService.ts`  | ~200  |
-| `packages/storage/src/propertyValidation.ts` | ~20   |
-| Tests                                        | ~400  |
+| File                                                | Purpose          | Tests |
+| --------------------------------------------------- | ---------------- | ----- |
+| `packages/api/src/attachment.ts`                    | Zod schemas      | 49    |
+| `packages/storage/drizzle/0005_add_attachments.sql` | Migration        | 17    |
+| `packages/storage/src/fileService.ts`               | File abstraction | 24    |
+| `packages/storage/src/attachmentService.ts`         | Business logic   | 29    |
 
 ---
 
@@ -46,64 +45,32 @@ Capacities-style type inheritance enabling `Book` → `Media`, `Employee` → `P
 
 ---
 
-## Attachments/Media System
-
-**Status:** Ready for Implementation (Plan Approved)
-**Plan:** `.claude/plans/mellow-cuddling-thacker.md`
-
-Images + Documents support with content-addressed storage, global deduplication, and 30-day orphan cleanup.
-
-### Implementation Phases (TDD) — 31-41 hours total
-
-- [ ] Phase 1: API Contracts (2-3h) — Zod schemas, error codes, block type
-- [ ] Phase 2: Database Schema (1h) — `attachments` + `block_attachments` tables
-- [ ] Phase 3: File Service (2-3h) — FileService interface + implementations
-- [ ] Phase 4: Attachment Service (8-10h) — CRUD, link/unlink, cleanup
-- [ ] Phase 5: Block Patch Integration (3-4h) — Handle attachment blocks
-- [ ] Phase 6: IPC Layer (2-3h) — Upload/get/list handlers
-- [ ] Phase 7: CLI Commands (2-3h) — attachment upload/list/cleanup
-- [ ] Phase 8: Renderer Integration (10-12h) — TipTap node, upload UI
-- [ ] Phase 9: Garbage Collection (1-2h) — Daily cleanup scheduler
-
-### Key Files to Create
-
-| File                                                | Purpose          |
-| --------------------------------------------------- | ---------------- |
-| `packages/api/src/attachment.ts`                    | Zod schemas      |
-| `packages/storage/src/fileService.ts`               | File abstraction |
-| `packages/storage/src/attachmentService.ts`         | Business logic   |
-| `packages/storage/drizzle/0004_add_attachments.sql` | Migration        |
-
----
-
 ## Recently Completed
 
-### Task Management ✅ (2026-01-07 – 2026-01-08)
+### Object Type Inheritance ✅ (2026-01-08)
 
-Task as 6th built-in type with complete integration:
+Capacities-style type inheritance with 2-level max hierarchy. 4-day TDD implementation:
 
-- **API contracts**: 36 tests (status, priority, due_date, query options)
-- **taskService**: 24 tests (getTodaysTasks, getOverdueTasks, getUpcomingTasks, getInboxTasks, getTasksByStatus, getTasksByPriority, getCompletedTasks, getTasksByDueDate, completeTask, reopenTask)
-- **IPC handlers**: 10 handlers for all task operations
-- **Preload bridge**: Full renderer access via `window.typenoteAPI`
-- **CLI commands**: 9 commands (`task today`, `task overdue`, `task inbox`, `task upcoming`, `task by-status`, `task by-priority`, `task completed`, `task complete`, `task reopen`)
+- `validateInheritance()`: parent exists, cycle detection, depth check
+- `getResolvedSchema()`: merges parent + child properties with caching
+- `validatePropertiesForType()`: validates against resolved schema
+- Built-in types with `pluralName` and `color` metadata
+- CLI commands: `dev list-types`, `dev create-child-type`, `dev show-resolved-schema`
+
+56 new tests. Commit: `367752c`
+
+### Task Management ✅ (2026-01-08)
+
+Task as 6th built-in type with complete integration: 36 API tests, 24 taskService tests, 10 IPC handlers, 9 CLI commands.
 
 ### Global Tags System ✅ (2026-01-07)
 
-Full implementation with 5 phases: API contracts (53 tests), database schema, tagService (37 tests), getObject() integration (4 tests), full verification. Junction table pattern for many-to-many relationships. All objects now have implicit `tags` property.
+Full implementation with junction table pattern. 94+ tests.
 
 ### Wiki-Link & Mention Suggestions ✅ (2026-01-07)
 
-TipTap autocomplete extension with `[[` and `@` triggers. Includes search filtering, create-new option, click navigation, keyboard nav. 21 new tests (14 SuggestionPopup + 4 RefSuggestion + 3 RefNode).
-
-### Architectural Boundary Tests ✅ (2026-01-07)
-
-Added dependency-cruiser with 8 rules enforcing package hierarchy. Run `pnpm deps:check`.
-
-### Template Integration Tests ✅ (2026-01-07)
-
-6 new tests verifying template application (5 integration + 1 E2E).
+TipTap autocomplete extension with `[[` and `@` triggers. 21 tests.
 
 ### Template System ✅ (2026-01-06)
 
-Complete 7-phase implementation with 85 new tests + 2 bug fixes.
+Complete 7-phase implementation with 85 new tests.
