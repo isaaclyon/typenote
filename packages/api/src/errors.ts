@@ -7,6 +7,7 @@ export const ApiErrorCodeSchema = z.enum([
   'NOT_FOUND_OBJECT',
   'NOT_FOUND_BLOCK',
   'NOT_FOUND_TAG',
+  'NOT_FOUND_ATTACHMENT',
   'VALIDATION',
   'CONFLICT_VERSION',
   'CONFLICT_ORDERING',
@@ -15,6 +16,8 @@ export const ApiErrorCodeSchema = z.enum([
   'INVARIANT_CROSS_OBJECT',
   'INVARIANT_PARENT_DELETED',
   'INVARIANT_TAG_IN_USE',
+  'FILE_TOO_LARGE',
+  'UNSUPPORTED_FILE_TYPE',
   'IDEMPOTENCY_CONFLICT',
   'INTERNAL',
 ]);
@@ -151,5 +154,32 @@ export function tagInUse(tagId: string, usageCount: number): ApiError {
     code: 'INVARIANT_TAG_IN_USE',
     message: `Cannot delete tag: assigned to ${usageCount} objects`,
     details: { tagId, usageCount },
+  };
+}
+
+export function notFoundAttachment(attachmentId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'NOT_FOUND_ATTACHMENT',
+    message: `Attachment not found: ${attachmentId}`,
+    details: { attachmentId },
+  };
+}
+
+export function fileTooLarge(sizeBytes: number, maxBytes: number): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'FILE_TOO_LARGE',
+    message: `File size ${sizeBytes} bytes exceeds maximum ${maxBytes} bytes`,
+    details: { sizeBytes, maxBytes },
+  };
+}
+
+export function unsupportedFileType(mimeType: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'UNSUPPORTED_FILE_TYPE',
+    message: `File type '${mimeType}' is not supported`,
+    details: { mimeType },
   };
 }

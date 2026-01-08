@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AttachmentContentSchema } from './attachment.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Inline Node Model (Section 11.1 of Backend Contract)
@@ -115,6 +116,7 @@ export const BlockTypeSchema = z.enum([
   'table',
   'math_block',
   'footnote_def',
+  'attachment',
 ]);
 
 export type BlockType = z.infer<typeof BlockTypeSchema>;
@@ -225,6 +227,7 @@ const ContentSchemaByType = {
   table: TableContentSchema,
   math_block: MathBlockContentSchema,
   footnote_def: FootnoteDefContentSchema,
+  attachment: AttachmentContentSchema,
 } as const;
 
 /**

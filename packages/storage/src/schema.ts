@@ -204,6 +204,49 @@ export const objectTags = sqliteTable(
 );
 
 // ============================================================================
+// attachments - Content-addressed file storage
+// ============================================================================
+
+export const attachments = sqliteTable(
+  'attachments',
+  {
+    id: text('id').primaryKey(), // ULID
+    sha256: text('sha256').notNull().unique(), // Content-addressed hash (64 hex chars)
+    filename: text('filename').notNull(), // Original filename
+    mimeType: text('mime_type').notNull(), // MIME type
+    sizeBytes: integer('size_bytes').notNull(), // File size in bytes
+    lastReferencedAt: integer('last_referenced_at', { mode: 'timestamp' }).notNull(),
+    orphanedAt: integer('orphaned_at', { mode: 'timestamp' }), // When attachment became orphaned
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [index('attachments_sha256_idx').on(table.sha256)]
+);
+
+// ============================================================================
+// block_attachments - Junction table for block-attachment relationships
+// ============================================================================
+
+export const blockAttachments = sqliteTable(
+  'block_attachments',
+  {
+    blockId: text('block_id')
+      .notNull()
+      .references(() => blocks.id, { onDelete: 'cascade' }),
+    attachmentId: text('attachment_id')
+      .notNull()
+      .references(() => attachments.id, { onDelete: 'cascade' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [
+    // Composite primary key ensures no duplicate assignments
+    primaryKey({ columns: [table.blockId, table.attachmentId] }),
+    // Index for reverse lookups (attachment → blocks)
+    index('block_attachments_attachment_id_idx').on(table.attachmentId),
+  ]
+);
+
+// ============================================================================
 // fts_blocks - Full-text search virtual table (FTS5)
 // Drizzle doesn't support FTS5 natively, so we use raw SQL
 // ============================================================================

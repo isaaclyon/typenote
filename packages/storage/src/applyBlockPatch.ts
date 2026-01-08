@@ -14,16 +14,19 @@ import type {
   MoveBlockOp,
   DeleteBlockOp,
   BlockType,
+  AttachmentContent,
 } from '@typenote/api';
 import {
   notFoundObject,
   notFoundBlock,
+  notFoundAttachment,
   versionConflict,
   validationError,
   crossObjectError,
   parentDeletedError,
   cycleError,
   validateBlockContent,
+  AttachmentContentSchema,
 } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
 import { objects, blocks, idempotency } from './schema.js';
@@ -35,6 +38,22 @@ import {
   deleteRefsForBlocks,
   deleteFtsForBlocks,
 } from './indexing.js';
+import {
+  getAttachment,
+  linkBlockToAttachment,
+  unlinkBlockFromAttachment,
+} from './attachmentService.js';
+
+/**
+ * Error thrown within transactions to trigger rollback.
+ * Wraps an ApiError so it can be re-thrown as a proper return value.
+ */
+class PatchError extends Error {
+  constructor(public readonly apiError: ApiError) {
+    super(apiError.message);
+    this.name = 'PatchError';
+  }
+}
 
 /**
  * Tracks affected blocks for indexing updates.
@@ -131,124 +150,132 @@ export function applyBlockPatch(
   const newDocVersion = previousDocVersion + 1;
 
   // Execute all mutations atomically
-  const txResult = db.atomic((): ApplyBlockPatchOutcome => {
-    const applied = {
-      insertedBlockIds: [] as string[],
-      updatedBlockIds: [] as string[],
-      movedBlockIds: [] as string[],
-      deletedBlockIds: [] as string[],
-    };
+  try {
+    const txResult = db.atomic((): ApplyBlockPatchOutcome => {
+      const applied = {
+        insertedBlockIds: [] as string[],
+        updatedBlockIds: [] as string[],
+        movedBlockIds: [] as string[],
+        deletedBlockIds: [] as string[],
+      };
 
-    // Track affected blocks for indexing
-    const affectedBlocks: AffectedBlocks = {
-      upserted: new Map(),
-      deleted: [],
-    };
+      // Track affected blocks for indexing
+      const affectedBlocks: AffectedBlocks = {
+        upserted: new Map(),
+        deleted: [],
+      };
 
-    // Process each operation
-    for (const op of input.ops) {
-      switch (op.op) {
-        case 'block.insert': {
-          const insertResult = applyInsert(db, op, input.objectId);
-          if (!insertResult.success) {
-            return insertResult;
-          }
-          applied.insertedBlockIds.push(op.blockId);
-          // Track for indexing
-          affectedBlocks.upserted.set(op.blockId, {
-            blockType: op.blockType as BlockType,
-            content: op.content,
-          });
-          break;
-        }
-        case 'block.update': {
-          const updateResult = applyUpdate(db, op, input.objectId);
-          if (!updateResult.success) {
-            return updateResult;
-          }
-          applied.updatedBlockIds.push(op.blockId);
-          // Track for indexing if content was updated
-          if (op.patch.content !== undefined) {
-            // Get the block type from the database
-            const block = db
-              .select({ blockType: blocks.blockType })
-              .from(blocks)
-              .where(eq(blocks.id, op.blockId))
-              .limit(1)
-              .all()[0];
-            if (block) {
-              affectedBlocks.upserted.set(op.blockId, {
-                blockType: block.blockType as BlockType,
-                content: op.patch.content,
-              });
+      // Process each operation
+      for (const op of input.ops) {
+        switch (op.op) {
+          case 'block.insert': {
+            const insertResult = applyInsert(db, op, input.objectId);
+            if (!insertResult.success) {
+              throw new PatchError(insertResult.error);
             }
+            applied.insertedBlockIds.push(op.blockId);
+            // Track for indexing
+            affectedBlocks.upserted.set(op.blockId, {
+              blockType: op.blockType as BlockType,
+              content: op.content,
+            });
+            break;
           }
-          break;
-        }
-        case 'block.move': {
-          const moveResult = applyMove(db, op, input.objectId);
-          if (!moveResult.success) {
-            return moveResult;
+          case 'block.update': {
+            const updateResult = applyUpdate(db, op, input.objectId);
+            if (!updateResult.success) {
+              throw new PatchError(updateResult.error);
+            }
+            applied.updatedBlockIds.push(op.blockId);
+            // Track for indexing if content was updated
+            if (op.patch.content !== undefined) {
+              // Get the block type from the database
+              const block = db
+                .select({ blockType: blocks.blockType })
+                .from(blocks)
+                .where(eq(blocks.id, op.blockId))
+                .limit(1)
+                .all()[0];
+              if (block) {
+                affectedBlocks.upserted.set(op.blockId, {
+                  blockType: block.blockType as BlockType,
+                  content: op.patch.content,
+                });
+              }
+            }
+            break;
           }
-          applied.movedBlockIds.push(op.blockId);
-          // Move doesn't affect refs/FTS (content unchanged)
-          break;
-        }
-        case 'block.delete': {
-          const deleteResult = applyDelete(db, op, input.objectId);
-          if (!deleteResult.success) {
-            return deleteResult;
+          case 'block.move': {
+            const moveResult = applyMove(db, op, input.objectId);
+            if (!moveResult.success) {
+              throw new PatchError(moveResult.error);
+            }
+            applied.movedBlockIds.push(op.blockId);
+            // Move doesn't affect refs/FTS (content unchanged)
+            break;
           }
-          applied.deletedBlockIds.push(...deleteResult.deletedIds);
-          // Track for indexing cleanup
-          affectedBlocks.deleted.push(...deleteResult.deletedIds);
-          break;
+          case 'block.delete': {
+            const deleteResult = applyDelete(db, op, input.objectId);
+            if (!deleteResult.success) {
+              throw new PatchError(deleteResult.error);
+            }
+            applied.deletedBlockIds.push(...deleteResult.deletedIds);
+            // Track for indexing cleanup
+            affectedBlocks.deleted.push(...deleteResult.deletedIds);
+            break;
+          }
         }
       }
+
+      // 6. Update indexes for affected blocks
+      for (const [blockId, info] of affectedBlocks.upserted) {
+        updateRefsForBlock(db, blockId, input.objectId, info.blockType, info.content);
+        updateFtsForBlock(db, blockId, input.objectId, info.blockType, info.content);
+      }
+      if (affectedBlocks.deleted.length > 0) {
+        deleteRefsForBlocks(db, affectedBlocks.deleted);
+        deleteFtsForBlocks(db, affectedBlocks.deleted);
+      }
+
+      // 7. Increment version
+      db.run('UPDATE objects SET doc_version = ?, updated_at = ? WHERE id = ?', [
+        newDocVersion,
+        Date.now(),
+        input.objectId,
+      ]);
+
+      // 8. Build result
+      const result: ApplyBlockPatchResult = {
+        apiVersion: 'v1',
+        objectId: input.objectId,
+        previousDocVersion,
+        newDocVersion,
+        applied,
+      };
+
+      // 9. Store idempotency result
+      if (input.idempotencyKey) {
+        db.insert(idempotency)
+          .values({
+            objectId: input.objectId,
+            key: input.idempotencyKey,
+            resultJson: JSON.stringify(result),
+            createdAt: new Date(),
+          })
+          .run();
+      }
+
+      return { success: true, result };
+    });
+
+    return txResult;
+  } catch (error) {
+    // PatchError was thrown to trigger transaction rollback
+    if (error instanceof PatchError) {
+      return { success: false, error: error.apiError };
     }
-
-    // 6. Update indexes for affected blocks
-    for (const [blockId, info] of affectedBlocks.upserted) {
-      updateRefsForBlock(db, blockId, input.objectId, info.blockType, info.content);
-      updateFtsForBlock(db, blockId, input.objectId, info.blockType, info.content);
-    }
-    if (affectedBlocks.deleted.length > 0) {
-      deleteRefsForBlocks(db, affectedBlocks.deleted);
-      deleteFtsForBlocks(db, affectedBlocks.deleted);
-    }
-
-    // 7. Increment version
-    db.run('UPDATE objects SET doc_version = ?, updated_at = ? WHERE id = ?', [
-      newDocVersion,
-      Date.now(),
-      input.objectId,
-    ]);
-
-    // 8. Build result
-    const result: ApplyBlockPatchResult = {
-      apiVersion: 'v1',
-      objectId: input.objectId,
-      previousDocVersion,
-      newDocVersion,
-      applied,
-    };
-
-    // 9. Store idempotency result
-    if (input.idempotencyKey) {
-      db.insert(idempotency)
-        .values({
-          objectId: input.objectId,
-          key: input.idempotencyKey,
-          resultJson: JSON.stringify(result),
-          createdAt: new Date(),
-        })
-        .run();
-    }
-
-    return { success: true, result };
-  });
-
-  return txResult;
+    throw error;
+  }
 }
 
 /**
@@ -301,6 +328,22 @@ function applyInsert(
     };
   }
 
+  // 2b. For attachment blocks, validate the attachment exists
+  let attachmentContent: AttachmentContent | null = null;
+  if (op.blockType === 'attachment') {
+    const parseResult = AttachmentContentSchema.safeParse(op.content);
+    if (parseResult.success) {
+      attachmentContent = parseResult.data;
+      const attachment = getAttachment(db, attachmentContent.attachmentId);
+      if (!attachment) {
+        return {
+          success: false,
+          error: notFoundAttachment(attachmentContent.attachmentId),
+        };
+      }
+    }
+  }
+
   // 3. Get siblings for order key generation
   const siblings = db
     .select({ id: blocks.id, orderKey: blocks.orderKey })
@@ -345,6 +388,11 @@ function applyInsert(
       updatedAt: now,
     })
     .run();
+
+  // 6. Link attachment if this is an attachment block
+  if (attachmentContent) {
+    linkBlockToAttachment(db, op.blockId, attachmentContent.attachmentId);
+  }
 
   return { success: true };
 }
@@ -414,6 +462,38 @@ function applyUpdate(
     }
   }
 
+  // 6b. For attachment blocks with content update, validate new attachment exists
+  let oldAttachmentId: string | null = null;
+  let newAttachmentId: string | null = null;
+  if (existing.blockType === 'attachment' && op.patch.content !== undefined) {
+    // Get old attachmentId from current content
+    const currentBlock = db
+      .select({ content: blocks.content })
+      .from(blocks)
+      .where(eq(blocks.id, op.blockId))
+      .limit(1)
+      .all()[0];
+    if (currentBlock) {
+      const oldContent = AttachmentContentSchema.safeParse(JSON.parse(currentBlock.content));
+      if (oldContent.success) {
+        oldAttachmentId = oldContent.data.attachmentId;
+      }
+    }
+
+    // Validate new attachment exists
+    const newContent = AttachmentContentSchema.safeParse(op.patch.content);
+    if (newContent.success) {
+      newAttachmentId = newContent.data.attachmentId;
+      const attachment = getAttachment(db, newAttachmentId);
+      if (!attachment) {
+        return {
+          success: false,
+          error: notFoundAttachment(newAttachmentId),
+        };
+      }
+    }
+  }
+
   // 7. Build update fields
   const updates: string[] = [];
   const values: unknown[] = [];
@@ -438,6 +518,12 @@ function applyUpdate(
   // 8. Execute update
   if (updates.length > 0) {
     db.run(`UPDATE blocks SET ${updates.join(', ')} WHERE id = ?`, values);
+  }
+
+  // 9. Update attachment links if attachmentId changed
+  if (oldAttachmentId !== null && newAttachmentId !== null && oldAttachmentId !== newAttachmentId) {
+    unlinkBlockFromAttachment(db, op.blockId, oldAttachmentId);
+    linkBlockToAttachment(db, op.blockId, newAttachmentId);
   }
 
   return { success: true };
@@ -623,7 +709,24 @@ function applyDelete(
     deletedIds.push(op.blockId);
   }
 
-  // 5. Soft-delete all collected blocks
+  // 5. Unlink attachments for any attachment blocks being deleted
+  for (const id of deletedIds) {
+    const block = db
+      .select({ blockType: blocks.blockType, content: blocks.content })
+      .from(blocks)
+      .where(eq(blocks.id, id))
+      .limit(1)
+      .all()[0];
+
+    if (block?.blockType === 'attachment') {
+      const content = AttachmentContentSchema.safeParse(JSON.parse(block.content));
+      if (content.success) {
+        unlinkBlockFromAttachment(db, id, content.data.attachmentId);
+      }
+    }
+  }
+
+  // 6. Soft-delete all collected blocks
   for (const id of deletedIds) {
     db.run('UPDATE blocks SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL', [now, id]);
   }

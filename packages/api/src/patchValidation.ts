@@ -15,6 +15,7 @@ import {
   FootnoteDefContentSchema,
   type BlockType,
 } from './notateDoc.js';
+import { AttachmentContentSchema } from './attachment.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Validation Result Types
@@ -47,6 +48,7 @@ const ContentSchemaByType: Record<BlockType, z.ZodType> = {
   table: TableContentSchema,
   math_block: MathBlockContentSchema,
   footnote_def: FootnoteDefContentSchema,
+  attachment: AttachmentContentSchema,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
