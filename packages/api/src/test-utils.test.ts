@@ -262,7 +262,7 @@ describe('makeDeleteOp', () => {
     const op = makeDeleteOp({
       blockId: VALID_ULID_2,
       subtree: true,
-    });
+    }) as { op: string; blockId: string; subtree: boolean };
 
     expect(op.blockId).toBe(VALID_ULID_2);
     expect(op.subtree).toBe(true);

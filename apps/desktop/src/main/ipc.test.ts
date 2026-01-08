@@ -365,6 +365,7 @@ describe('IPC Handlers', () => {
           {
             sourceBlockId: blockId,
             sourceObjectId: sourceObj.id,
+            sourceObjectTitle: 'Source Page',
             targetBlockId: null,
           },
         ],
