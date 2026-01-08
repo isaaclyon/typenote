@@ -177,3 +177,15 @@ export {
   type UploadAttachmentInput,
   type ListAttachmentsOptions,
 } from './attachmentService.js';
+
+// Calendar Service
+export {
+  getCalendarTypes,
+  getEventsOnDate,
+  getEventsInDateRange,
+  getUpcomingEvents,
+  getAllCalendarItems,
+  type CalendarItem,
+  type CalendarTypeMetadata,
+  type GetAllCalendarItemsOptions,
+} from './calendarService.js';

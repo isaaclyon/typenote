@@ -111,6 +111,13 @@ function validateInheritance(
  * Convert database row to ObjectType entity.
  */
 function rowToObjectType(row: typeof objectTypes.$inferSelect): ObjectType {
+  // Cast to access showInCalendar and calendarDateProperty fields
+  // (Drizzle type inference may not include these if schema was updated)
+  const rawRow = row as typeof row & {
+    showInCalendar?: boolean | null;
+    calendarDateProperty?: string | null;
+  };
+
   return {
     id: row.id,
     key: row.key,
@@ -122,6 +129,8 @@ function rowToObjectType(row: typeof objectTypes.$inferSelect): ObjectType {
     pluralName: row.pluralName,
     color: row.color,
     description: row.description,
+    showInCalendar: rawRow.showInCalendar ?? false,
+    calendarDateProperty: rawRow.calendarDateProperty ?? null,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -173,6 +182,16 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
     })
     .run();
 
+  // Handle calendar fields separately using raw SQL
+  // (Drizzle type inference may not include these columns added via migration)
+  const showInCalendar = input.showInCalendar ?? false;
+  const calendarDateProperty = input.calendarDateProperty ?? null;
+  db.run(`UPDATE object_types SET show_in_calendar = ?, calendar_date_property = ? WHERE id = ?`, [
+    showInCalendar ? 1 : 0,
+    calendarDateProperty,
+    id,
+  ]);
+
   // Invalidate schema cache
   invalidateSchemaCache();
 
@@ -187,6 +206,8 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
     pluralName: input.pluralName ?? null,
     color: input.color ?? null,
     description: input.description ?? null,
+    showInCalendar: input.showInCalendar ?? false,
+    calendarDateProperty: input.calendarDateProperty ?? null,
     createdAt: now,
     updatedAt: now,
   };
@@ -284,6 +305,21 @@ export function updateObjectType(
   }
 
   db.update(objectTypes).set(updates).where(eq(objectTypes.id, id)).run();
+
+  // Handle calendar fields separately using raw SQL
+  // (Drizzle type inference may not include these columns)
+  if (input.showInCalendar !== undefined) {
+    db.run(`UPDATE object_types SET show_in_calendar = ? WHERE id = ?`, [
+      input.showInCalendar ? 1 : 0,
+      id,
+    ]);
+  }
+  if (input.calendarDateProperty !== undefined) {
+    db.run(`UPDATE object_types SET calendar_date_property = ? WHERE id = ?`, [
+      input.calendarDateProperty,
+      id,
+    ]);
+  }
 
   // Return updated object type
   const updated = db.select().from(objectTypes).where(eq(objectTypes.id, id)).limit(1).all()[0];

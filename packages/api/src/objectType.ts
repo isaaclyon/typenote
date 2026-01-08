@@ -117,6 +117,10 @@ export const ObjectTypeSchema = z.object({
   color: HexColorSchema.nullable(),
   /** Description of the type */
   description: z.string().max(1024).nullable(),
+  /** Whether objects of this type should appear in calendar views */
+  showInCalendar: z.boolean(),
+  /** Property key to use as the date source for calendar display */
+  calendarDateProperty: z.string().max(64).nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -149,6 +153,10 @@ export const CreateObjectTypeInputSchema = z.object({
   color: HexColorSchema.optional(),
   /** Description of the type */
   description: z.string().max(1024).optional(),
+  /** Whether objects of this type should appear in calendar views */
+  showInCalendar: z.boolean().optional(),
+  /** Property key to use as the date source for calendar display (must be a date/datetime property) */
+  calendarDateProperty: z.string().max(64).optional(),
 });
 
 export type CreateObjectTypeInput = z.infer<typeof CreateObjectTypeInputSchema>;
@@ -169,6 +177,10 @@ export const UpdateObjectTypeInputSchema = z.object({
   color: HexColorSchema.nullable().optional(),
   /** Description of the type (null to remove) */
   description: z.string().max(1024).nullable().optional(),
+  /** Whether objects of this type should appear in calendar views (null to remove) */
+  showInCalendar: z.boolean().nullable().optional(),
+  /** Property key to use as the date source for calendar display (null to remove) */
+  calendarDateProperty: z.string().max(64).nullable().optional(),
 });
 
 export type UpdateObjectTypeInput = z.infer<typeof UpdateObjectTypeInputSchema>;

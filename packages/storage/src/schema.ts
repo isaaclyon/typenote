@@ -25,6 +25,9 @@ export const objectTypes = sqliteTable(
     pluralName: text('plural_name'), // e.g., "Books" for type "Book"
     color: text('color'), // Hex color (#RRGGBB) for UI
     description: text('description'), // Optional type description
+    // Calendar configuration
+    showInCalendar: integer('show_in_calendar', { mode: 'boolean' }).default(false),
+    calendarDateProperty: text('calendar_date_property'), // Property key to use for calendar date
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   },

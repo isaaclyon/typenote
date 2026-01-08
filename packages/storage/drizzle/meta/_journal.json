@@ -43,6 +43,13 @@
       "when": 1767558700000,
       "tag": "0005_add_attachments",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1767558800000,
+      "tag": "0006_add_calendar_config",
+      "breakpoints": true
     }
   ]
 }

@@ -208,6 +208,19 @@ export {
   type GetTasksOptions,
 } from './task.js';
 
+// Calendar
+export {
+  // Date info
+  CalendarDateInfoSchema,
+  type CalendarDateInfo,
+  // Calendar item
+  CalendarItemSchema,
+  type CalendarItem,
+  // Query options
+  CalendarQueryOptionsSchema,
+  type CalendarQueryOptions,
+} from './calendar.js';
+
 // Attachments
 export {
   // Constants

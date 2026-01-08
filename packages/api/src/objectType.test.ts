@@ -29,6 +29,8 @@ describe('ObjectTypeSchema', () => {
     icon: null,
     schema: null,
     builtIn: false,
+    showInCalendar: false,
+    calendarDateProperty: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -205,6 +207,94 @@ describe('ObjectTypeSchema', () => {
       expect(result.success).toBe(false);
     });
   });
+
+  describe('showInCalendar', () => {
+    it('should accept true showInCalendar', () => {
+      const result = ObjectTypeSchema.safeParse({
+        ...validBase,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        showInCalendar: true,
+        calendarDateProperty: 'due_date',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept false showInCalendar', () => {
+      const result = ObjectTypeSchema.safeParse({
+        ...validBase,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        showInCalendar: false,
+        calendarDateProperty: null,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject missing showInCalendar', () => {
+      const result = ObjectTypeSchema.safeParse({
+        id: '01HZXTEST00000000000000001',
+        key: 'Book',
+        name: 'Book',
+        icon: null,
+        schema: null,
+        builtIn: false,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        calendarDateProperty: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('calendarDateProperty', () => {
+    it('should accept null calendarDateProperty', () => {
+      const result = ObjectTypeSchema.safeParse({
+        ...validBase,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        showInCalendar: false,
+        calendarDateProperty: null,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept valid calendarDateProperty', () => {
+      const result = ObjectTypeSchema.safeParse({
+        ...validBase,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        showInCalendar: true,
+        calendarDateProperty: 'start_date',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject calendarDateProperty exceeding max length', () => {
+      const result = ObjectTypeSchema.safeParse({
+        ...validBase,
+        parentTypeId: null,
+        pluralName: null,
+        color: null,
+        description: null,
+        showInCalendar: true,
+        calendarDateProperty: 'a'.repeat(65), // max is 64
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });
 
 // ============================================================================
@@ -277,6 +367,52 @@ describe('CreateObjectTypeInputSchema', () => {
       expect(result.success).toBe(true);
     });
   });
+
+  describe('showInCalendar', () => {
+    it('should accept showInCalendar', () => {
+      const result = CreateObjectTypeInputSchema.safeParse({
+        ...validBase,
+        showInCalendar: true,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept false showInCalendar', () => {
+      const result = CreateObjectTypeInputSchema.safeParse({
+        ...validBase,
+        showInCalendar: false,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept input without showInCalendar', () => {
+      const result = CreateObjectTypeInputSchema.safeParse(validBase);
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('calendarDateProperty', () => {
+    it('should accept calendarDateProperty', () => {
+      const result = CreateObjectTypeInputSchema.safeParse({
+        ...validBase,
+        calendarDateProperty: 'start_date',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept input without calendarDateProperty', () => {
+      const result = CreateObjectTypeInputSchema.safeParse(validBase);
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject calendarDateProperty exceeding max length', () => {
+      const result = CreateObjectTypeInputSchema.safeParse({
+        ...validBase,
+        calendarDateProperty: 'a'.repeat(65),
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });
 
 // ============================================================================
@@ -345,6 +481,52 @@ describe('UpdateObjectTypeInputSchema', () => {
         description: null,
       });
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('showInCalendar', () => {
+    it('should accept showInCalendar update', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        showInCalendar: true,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept null showInCalendar', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        showInCalendar: null,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept false showInCalendar', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        showInCalendar: false,
+      });
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('calendarDateProperty', () => {
+    it('should accept calendarDateProperty update', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        calendarDateProperty: 'due_date',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept null calendarDateProperty', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        calendarDateProperty: null,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject calendarDateProperty exceeding max length', () => {
+      const result = UpdateObjectTypeInputSchema.safeParse({
+        calendarDateProperty: 'a'.repeat(65),
+      });
+      expect(result.success).toBe(false);
     });
   });
 });
