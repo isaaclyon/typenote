@@ -6,6 +6,8 @@
  */
 
 import type { TypeSchema, PropertyDefinition } from '@typenote/api';
+import type { TypenoteDb } from './db.js';
+import { getResolvedSchema } from './objectTypeService.js';
 
 // ============================================================================
 // Validation Result Types
@@ -279,4 +281,30 @@ export function mergeWithDefaults(
   const props = properties ?? {};
 
   return { ...defaults, ...props };
+}
+
+/**
+ * Validate properties against a type's resolved schema (including inherited properties).
+ *
+ * This function uses getResolvedSchema to merge parent and child properties,
+ * then validates the provided properties against the complete schema.
+ *
+ * @param db - Database connection
+ * @param typeId - The object type ID to validate against
+ * @param properties - The properties object to validate
+ * @returns Validation result with any errors
+ */
+export function validatePropertiesForType(
+  db: TypenoteDb,
+  typeId: string,
+  properties: Record<string, unknown> | null | undefined
+): PropertyValidationResult {
+  const resolved = getResolvedSchema(db, typeId);
+
+  // Convert resolved properties to TypeSchema format for validateProperties
+  const schema: TypeSchema = {
+    properties: resolved.properties,
+  };
+
+  return validateProperties(properties, schema);
 }

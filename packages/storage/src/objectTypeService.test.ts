@@ -11,6 +11,7 @@ import {
   isBuiltInTypeKey,
   ObjectTypeError,
   BUILT_IN_TYPES,
+  getResolvedSchema,
 } from './objectTypeService.js';
 import { BUILT_IN_TYPE_KEYS } from '@typenote/api';
 import { objects } from './schema.js';
@@ -321,7 +322,9 @@ describe('ObjectTypeService', () => {
       const dailyNote = getObjectTypeByKey(db, 'DailyNote');
       expect(dailyNote).not.toBeNull();
       expect(dailyNote?.name).toBe('Daily Note');
+      expect(dailyNote?.pluralName).toBe('Daily Notes');
       expect(dailyNote?.icon).toBe('calendar');
+      expect(dailyNote?.color).toBe('#F59E0B');
       expect(dailyNote?.schema?.properties).toHaveLength(1);
       expect(dailyNote?.schema?.properties[0]?.key).toBe('date_key');
     });
@@ -332,6 +335,9 @@ describe('ObjectTypeService', () => {
       const page = getObjectTypeByKey(db, 'Page');
       expect(page).not.toBeNull();
       expect(page?.name).toBe('Page');
+      expect(page?.pluralName).toBe('Pages');
+      expect(page?.icon).toBe('file-text');
+      expect(page?.color).toBe('#6B7280');
       expect(page?.schema).toBeNull();
     });
 
@@ -343,7 +349,9 @@ describe('ObjectTypeService', () => {
         const config = BUILT_IN_TYPES[key];
 
         expect(type?.name).toBe(config?.name);
+        expect(type?.pluralName).toBe(config?.pluralName);
         expect(type?.icon).toBe(config?.icon);
+        expect(type?.color).toBe(config?.color);
         // Schema comparison (both could be null)
         if (config?.schema === null) {
           expect(type?.schema).toBeNull();
@@ -429,6 +437,246 @@ describe('ObjectTypeService', () => {
       } catch (error) {
         expect((error as ObjectTypeError).code).toBe('TYPE_BUILT_IN');
       }
+    });
+  });
+
+  describe('inheritance validation', () => {
+    it('should allow creating child of built-in type', () => {
+      seedBuiltInTypes(db);
+      const personType = getObjectTypeByKey(db, 'Person');
+
+      const result = createObjectType(db, {
+        key: 'Employee',
+        name: 'Employee',
+        parentTypeId: personType?.id,
+        schema: {
+          properties: [{ key: 'department', name: 'Department', type: 'text', required: false }],
+        },
+      });
+
+      expect(result.parentTypeId).toBe(personType?.id);
+      expect(result.key).toBe('Employee');
+    });
+
+    it('should reject non-existent parent', () => {
+      expect(() =>
+        createObjectType(db, {
+          key: 'Orphan',
+          name: 'Orphan',
+          parentTypeId: '01234567890123456789012345', // Non-existent ULID
+        })
+      ).toThrow(ObjectTypeError);
+
+      try {
+        createObjectType(db, {
+          key: 'Orphan',
+          name: 'Orphan',
+          parentTypeId: '01234567890123456789012345',
+        });
+      } catch (error) {
+        expect((error as ObjectTypeError).code).toBe('TYPE_NOT_FOUND');
+      }
+    });
+
+    it('should reject grandchild (max 2 levels)', () => {
+      seedBuiltInTypes(db);
+      const personType = getObjectTypeByKey(db, 'Person');
+
+      // Create child
+      const employee = createObjectType(db, {
+        key: 'Employee',
+        name: 'Employee',
+        parentTypeId: personType?.id,
+      });
+
+      // Try to create grandchild - should fail
+      expect(() =>
+        createObjectType(db, {
+          key: 'Manager',
+          name: 'Manager',
+          parentTypeId: employee.id,
+        })
+      ).toThrow(ObjectTypeError);
+
+      try {
+        createObjectType(db, {
+          key: 'Manager',
+          name: 'Manager',
+          parentTypeId: employee.id,
+        });
+      } catch (error) {
+        expect((error as ObjectTypeError).code).toBe('TYPE_INHERITANCE_DEPTH');
+      }
+    });
+
+    it('should reject self as parent', () => {
+      const customType = createObjectType(db, {
+        key: 'Custom',
+        name: 'Custom',
+      });
+
+      expect(() =>
+        updateObjectType(db, customType.id, {
+          parentTypeId: customType.id,
+        })
+      ).toThrow(ObjectTypeError);
+
+      try {
+        updateObjectType(db, customType.id, {
+          parentTypeId: customType.id,
+        });
+      } catch (error) {
+        expect((error as ObjectTypeError).code).toBe('TYPE_INHERITANCE_CYCLE');
+      }
+    });
+
+    it('should reject deletion when children exist', () => {
+      const parentType = createObjectType(db, {
+        key: 'ParentType',
+        name: 'Parent Type',
+      });
+
+      createObjectType(db, {
+        key: 'ChildType',
+        name: 'Child Type',
+        parentTypeId: parentType.id,
+      });
+
+      expect(() => deleteObjectType(db, parentType.id)).toThrow(ObjectTypeError);
+
+      try {
+        deleteObjectType(db, parentType.id);
+      } catch (error) {
+        expect((error as ObjectTypeError).code).toBe('TYPE_HAS_CHILDREN');
+      }
+    });
+
+    it('should allow deletion after children removed', () => {
+      const parentType = createObjectType(db, {
+        key: 'ParentType',
+        name: 'Parent Type',
+      });
+
+      const childType = createObjectType(db, {
+        key: 'ChildType',
+        name: 'Child Type',
+        parentTypeId: parentType.id,
+      });
+
+      // Delete child first
+      deleteObjectType(db, childType.id);
+
+      // Now parent deletion should work
+      deleteObjectType(db, parentType.id);
+
+      expect(getObjectType(db, parentType.id)).toBeNull();
+    });
+  });
+
+  describe('schema resolution', () => {
+    it('should merge parent and child properties', () => {
+      seedBuiltInTypes(db);
+      const personType = getObjectTypeByKey(db, 'Person');
+
+      // Person has 'email' property
+      // Create child with additional property
+      const employee = createObjectType(db, {
+        key: 'Employee',
+        name: 'Employee',
+        parentTypeId: personType?.id,
+        schema: {
+          properties: [
+            { key: 'department', name: 'Department', type: 'text', required: false },
+            { key: 'hire_date', name: 'Hire Date', type: 'date', required: false },
+          ],
+        },
+      });
+
+      const resolved = getResolvedSchema(db, employee.id);
+
+      // Should have parent's email + child's department and hire_date
+      expect(resolved.properties).toHaveLength(3);
+      expect(resolved.properties.map((p) => p.key)).toContain('email');
+      expect(resolved.properties.map((p) => p.key)).toContain('department');
+      expect(resolved.properties.map((p) => p.key)).toContain('hire_date');
+      expect(resolved.inheritedFrom).toContain('Person');
+    });
+
+    it('should return only child properties when no parent', () => {
+      const standalone = createObjectType(db, {
+        key: 'Standalone',
+        name: 'Standalone',
+        schema: {
+          properties: [{ key: 'field_a', name: 'Field A', type: 'text', required: false }],
+        },
+      });
+
+      const resolved = getResolvedSchema(db, standalone.id);
+
+      expect(resolved.properties).toHaveLength(1);
+      expect(resolved.properties[0]?.key).toBe('field_a');
+      expect(resolved.inheritedFrom).toHaveLength(0);
+    });
+
+    it('should handle types with no schema', () => {
+      const noSchema = createObjectType(db, {
+        key: 'NoSchema',
+        name: 'No Schema',
+        // No schema provided
+      });
+
+      const resolved = getResolvedSchema(db, noSchema.id);
+
+      expect(resolved.properties).toHaveLength(0);
+      expect(resolved.inheritedFrom).toHaveLength(0);
+    });
+
+    it('should cache resolved schemas', () => {
+      const standalone = createObjectType(db, {
+        key: 'Cacheable',
+        name: 'Cacheable',
+        schema: {
+          properties: [{ key: 'cached_prop', name: 'Cached Prop', type: 'text', required: false }],
+        },
+      });
+
+      const first = getResolvedSchema(db, standalone.id);
+      const second = getResolvedSchema(db, standalone.id);
+
+      // Should be the same cached object
+      expect(first).toBe(second);
+    });
+
+    it('should invalidate cache on type mutation', () => {
+      seedBuiltInTypes(db);
+      const personType = getObjectTypeByKey(db, 'Person');
+
+      const employee = createObjectType(db, {
+        key: 'CacheInvalidate',
+        name: 'Cache Invalidate',
+        parentTypeId: personType?.id,
+        schema: {
+          properties: [{ key: 'original', name: 'Original', type: 'text', required: false }],
+        },
+      });
+
+      const firstResolved = getResolvedSchema(db, employee.id);
+      expect(firstResolved.properties.map((p) => p.key)).toContain('original');
+
+      // Update the type's schema
+      updateObjectType(db, employee.id, {
+        schema: {
+          properties: [{ key: 'updated', name: 'Updated', type: 'text', required: false }],
+        },
+      });
+
+      const secondResolved = getResolvedSchema(db, employee.id);
+
+      // Should have new property, not old one
+      expect(secondResolved.properties.map((p) => p.key)).toContain('updated');
+      expect(secondResolved.properties.map((p) => p.key)).not.toContain('original');
+      // Should NOT be the same cached object
+      expect(firstResolved).not.toBe(secondResolved);
     });
   });
 });

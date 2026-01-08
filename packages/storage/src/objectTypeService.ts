@@ -14,6 +14,7 @@ import type {
   ObjectType,
   TypeSchema,
   BuiltInTypeKey,
+  PropertyDefinition,
 } from '@typenote/api';
 import { BUILT_IN_TYPE_KEYS } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
@@ -25,7 +26,14 @@ import { objectTypes, objects } from './schema.js';
 
 export class ObjectTypeError extends Error {
   constructor(
-    public readonly code: 'TYPE_NOT_FOUND' | 'TYPE_KEY_EXISTS' | 'TYPE_BUILT_IN' | 'TYPE_IN_USE',
+    public readonly code:
+      | 'TYPE_NOT_FOUND'
+      | 'TYPE_KEY_EXISTS'
+      | 'TYPE_BUILT_IN'
+      | 'TYPE_IN_USE'
+      | 'TYPE_INHERITANCE_CYCLE'
+      | 'TYPE_INHERITANCE_DEPTH'
+      | 'TYPE_HAS_CHILDREN',
     message: string,
     public readonly details?: Record<string, unknown>
   ) {
@@ -40,19 +48,23 @@ export class ObjectTypeError extends Error {
 
 /**
  * Built-in type configurations.
- * These define the name, icon, and property schema for each built-in type.
+ * These define the name, pluralName, icon, color, and property schema for each built-in type.
  */
 export const BUILT_IN_TYPES: Record<
   BuiltInTypeKey,
   {
     name: string;
+    pluralName: string;
     icon: string | null;
+    color: string;
     schema: TypeSchema | null;
   }
 > = {
   DailyNote: {
     name: 'Daily Note',
+    pluralName: 'Daily Notes',
     icon: 'calendar',
+    color: '#F59E0B', // Amber
     schema: {
       properties: [
         {
@@ -66,12 +78,16 @@ export const BUILT_IN_TYPES: Record<
   },
   Page: {
     name: 'Page',
+    pluralName: 'Pages',
     icon: 'file-text',
+    color: '#6B7280', // Gray
     schema: null, // No required properties
   },
   Person: {
     name: 'Person',
+    pluralName: 'People',
     icon: 'user',
+    color: '#3B82F6', // Blue
     schema: {
       properties: [
         {
@@ -85,7 +101,9 @@ export const BUILT_IN_TYPES: Record<
   },
   Event: {
     name: 'Event',
+    pluralName: 'Events',
     icon: 'calendar-clock',
+    color: '#8B5CF6', // Purple
     schema: {
       properties: [
         {
@@ -105,7 +123,9 @@ export const BUILT_IN_TYPES: Record<
   },
   Place: {
     name: 'Place',
+    pluralName: 'Places',
     icon: 'map-pin',
+    color: '#10B981', // Green
     schema: {
       properties: [
         {
@@ -119,7 +139,9 @@ export const BUILT_IN_TYPES: Record<
   },
   Task: {
     name: 'Task',
+    pluralName: 'Tasks',
     icon: 'check-square',
+    color: '#EF4444', // Red
     schema: {
       properties: [
         {
@@ -149,6 +171,63 @@ export const BUILT_IN_TYPES: Record<
 };
 
 // ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Validate inheritance constraints for object types.
+ * - Parent must exist
+ * - Cannot set self as parent (cycle detection)
+ * - Max 2 levels of inheritance (parent cannot have its own parent)
+ *
+ * @param db Database instance
+ * @param parentTypeId The proposed parent type ID
+ * @param excludeTypeId Optional type ID to exclude from cycle check (the type being updated)
+ * @throws ObjectTypeError if validation fails
+ */
+function validateInheritance(
+  db: TypenoteDb,
+  parentTypeId: string | null | undefined,
+  excludeTypeId?: string
+): void {
+  // Null/undefined parent is always valid (no inheritance)
+  if (parentTypeId === null || parentTypeId === undefined) {
+    return;
+  }
+
+  // Check for self-reference cycle
+  if (excludeTypeId !== undefined && parentTypeId === excludeTypeId) {
+    throw new ObjectTypeError('TYPE_INHERITANCE_CYCLE', 'Cannot set type as its own parent', {
+      typeId: excludeTypeId,
+      parentTypeId,
+    });
+  }
+
+  // Query parent from DB
+  const parent = db
+    .select()
+    .from(objectTypes)
+    .where(eq(objectTypes.id, parentTypeId))
+    .limit(1)
+    .all()[0];
+
+  if (!parent) {
+    throw new ObjectTypeError('TYPE_NOT_FOUND', `Parent type not found: ${parentTypeId}`, {
+      parentTypeId,
+    });
+  }
+
+  // Check max depth (parent cannot have its own parent)
+  if (parent.parentTypeId !== null) {
+    throw new ObjectTypeError(
+      'TYPE_INHERITANCE_DEPTH',
+      'Maximum inheritance depth exceeded (2 levels max)',
+      { parentTypeId, grandparentTypeId: parent.parentTypeId }
+    );
+  }
+}
+
+// ============================================================================
 // Service Functions
 // ============================================================================
 
@@ -163,12 +242,10 @@ function rowToObjectType(row: typeof objectTypes.$inferSelect): ObjectType {
     icon: row.icon,
     schema: row.schema ? (JSON.parse(row.schema) as TypeSchema) : null,
     builtIn: row.builtIn,
-    // These fields are defined in the API but not yet in the DB schema
-    // TODO: Add migration to add these columns to object_types table
-    parentTypeId: null,
-    pluralName: null,
-    color: null,
-    description: null,
+    parentTypeId: row.parentTypeId,
+    pluralName: row.pluralName,
+    color: row.color,
+    description: row.description,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -176,7 +253,7 @@ function rowToObjectType(row: typeof objectTypes.$inferSelect): ObjectType {
 
 /**
  * Create a new object type.
- * @throws ObjectTypeError if key already exists
+ * @throws ObjectTypeError if key already exists or inheritance validation fails
  */
 export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): ObjectType {
   // Check if key already exists
@@ -197,6 +274,9 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
     );
   }
 
+  // Validate inheritance constraints
+  validateInheritance(db, input.parentTypeId);
+
   const id = generateId();
   const now = new Date();
 
@@ -208,10 +288,17 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
       icon: input.icon ?? null,
       schema: input.schema ? JSON.stringify(input.schema) : null,
       builtIn: false,
+      parentTypeId: input.parentTypeId ?? null,
+      pluralName: input.pluralName ?? null,
+      color: input.color ?? null,
+      description: input.description ?? null,
       createdAt: now,
       updatedAt: now,
     })
     .run();
+
+  // Invalidate schema cache
+  invalidateSchemaCache();
 
   return {
     id,
@@ -220,11 +307,10 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
     icon: input.icon ?? null,
     schema: input.schema ?? null,
     builtIn: false,
-    // These fields are defined in the API but not yet in the DB schema
-    parentTypeId: null,
-    pluralName: null,
-    color: null,
-    description: null,
+    parentTypeId: input.parentTypeId ?? null,
+    pluralName: input.pluralName ?? null,
+    color: input.color ?? null,
+    description: input.description ?? null,
     createdAt: now,
     updatedAt: now,
   };
@@ -268,7 +354,7 @@ export function listObjectTypes(db: TypenoteDb, options?: ListObjectTypesOptions
 
 /**
  * Update an object type.
- * @throws ObjectTypeError if type not found or is built-in
+ * @throws ObjectTypeError if type not found, is built-in, or inheritance validation fails
  */
 export function updateObjectType(
   db: TypenoteDb,
@@ -289,6 +375,11 @@ export function updateObjectType(
     });
   }
 
+  // Validate inheritance constraints if parentTypeId is being updated
+  if (input.parentTypeId !== undefined) {
+    validateInheritance(db, input.parentTypeId, id);
+  }
+
   const now = new Date();
   const updates: Partial<typeof objectTypes.$inferInsert> = {
     updatedAt: now,
@@ -303,6 +394,18 @@ export function updateObjectType(
   if (input.schema !== undefined) {
     updates.schema = input.schema ? JSON.stringify(input.schema) : null;
   }
+  if (input.parentTypeId !== undefined) {
+    updates.parentTypeId = input.parentTypeId;
+  }
+  if (input.pluralName !== undefined) {
+    updates.pluralName = input.pluralName;
+  }
+  if (input.color !== undefined) {
+    updates.color = input.color;
+  }
+  if (input.description !== undefined) {
+    updates.description = input.description;
+  }
 
   db.update(objectTypes).set(updates).where(eq(objectTypes.id, id)).run();
 
@@ -316,12 +419,15 @@ export function updateObjectType(
     });
   }
 
+  // Invalidate schema cache
+  invalidateSchemaCache();
+
   return rowToObjectType(updated);
 }
 
 /**
  * Delete an object type.
- * @throws ObjectTypeError if type not found, is built-in, or has objects
+ * @throws ObjectTypeError if type not found, is built-in, has objects, or has child types
  */
 export function deleteObjectType(db: TypenoteDb, id: string): void {
   const existing = db.select().from(objectTypes).where(eq(objectTypes.id, id)).limit(1).all()[0];
@@ -347,7 +453,25 @@ export function deleteObjectType(db: TypenoteDb, id: string): void {
     });
   }
 
+  // Check if any child types exist
+  const childTypes = db
+    .select()
+    .from(objectTypes)
+    .where(eq(objectTypes.parentTypeId, id))
+    .limit(1)
+    .all();
+
+  if (childTypes.length > 0) {
+    throw new ObjectTypeError('TYPE_HAS_CHILDREN', 'Cannot delete type with child types', {
+      id,
+      key: existing.key,
+    });
+  }
+
   db.delete(objectTypes).where(eq(objectTypes.id, id)).run();
+
+  // Invalidate schema cache
+  invalidateSchemaCache();
 }
 
 /**
@@ -385,7 +509,9 @@ export function seedBuiltInTypes(db: TypenoteDb): void {
         id,
         key,
         name: config.name,
+        pluralName: config.pluralName,
         icon: config.icon,
+        color: config.color,
         schema: config.schema ? JSON.stringify(config.schema) : null,
         builtIn: true,
         createdAt: now,
@@ -400,4 +526,99 @@ export function seedBuiltInTypes(db: TypenoteDb): void {
  */
 export function isBuiltInTypeKey(key: string): key is BuiltInTypeKey {
   return BUILT_IN_TYPE_KEYS.includes(key as BuiltInTypeKey);
+}
+
+// ============================================================================
+// Schema Resolution
+// ============================================================================
+
+/**
+ * Resolved type schema with inherited properties.
+ */
+export interface ResolvedTypeSchema {
+  properties: PropertyDefinition[];
+  inheritedFrom: string[];
+}
+
+/**
+ * Module-level cache for resolved schemas.
+ * Maps typeId -> ResolvedTypeSchema
+ */
+let schemaCache: Map<string, ResolvedTypeSchema> | null = null;
+
+/**
+ * Invalidate the schema cache.
+ * Called when object types are created, updated, or deleted.
+ */
+export function invalidateSchemaCache(): void {
+  schemaCache = null;
+}
+
+/**
+ * Build the schema cache by loading all types and resolving their schemas.
+ */
+function buildSchemaCache(db: TypenoteDb): Map<string, ResolvedTypeSchema> {
+  const cache = new Map<string, ResolvedTypeSchema>();
+
+  // Get all object types
+  const allTypes = db.select().from(objectTypes).all();
+
+  // Create a map for quick lookup by ID
+  const typeMap = new Map<string, (typeof allTypes)[number]>();
+  for (const t of allTypes) {
+    typeMap.set(t.id, t);
+  }
+
+  // Resolve schema for each type
+  for (const type of allTypes) {
+    const ownProperties: PropertyDefinition[] = type.schema
+      ? (JSON.parse(type.schema) as TypeSchema).properties
+      : [];
+
+    if (type.parentTypeId === null) {
+      // No parent, just own properties
+      cache.set(type.id, {
+        properties: ownProperties,
+        inheritedFrom: [],
+      });
+    } else {
+      // Has parent, merge parent properties first
+      const parent = typeMap.get(type.parentTypeId);
+      if (parent) {
+        const parentProperties: PropertyDefinition[] = parent.schema
+          ? (JSON.parse(parent.schema) as TypeSchema).properties
+          : [];
+
+        cache.set(type.id, {
+          properties: [...parentProperties, ...ownProperties],
+          inheritedFrom: [parent.key],
+        });
+      } else {
+        // Parent not found (shouldn't happen with FK constraints)
+        cache.set(type.id, {
+          properties: ownProperties,
+          inheritedFrom: [],
+        });
+      }
+    }
+  }
+
+  return cache;
+}
+
+/**
+ * Get the resolved schema for an object type, including inherited properties.
+ *
+ * @param db Database instance
+ * @param typeId The object type ID
+ * @returns Resolved schema with merged parent properties
+ */
+export function getResolvedSchema(db: TypenoteDb, typeId: string): ResolvedTypeSchema {
+  // Build cache if not present
+  if (schemaCache === null) {
+    schemaCache = buildSchemaCache(db);
+  }
+
+  // Return cached value or default empty schema
+  return schemaCache.get(typeId) ?? { properties: [], inheritedFrom: [] };
 }

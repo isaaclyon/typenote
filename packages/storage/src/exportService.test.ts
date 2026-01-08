@@ -1037,8 +1037,8 @@ describe('exportService', () => {
     it('skips types that already exist', () => {
       // Create a custom type
       createObjectType(db, {
-        key: 'Task',
-        name: 'Task',
+        key: 'CustomTask',
+        name: 'Custom Task',
         icon: 'check',
         schema: undefined,
       });
@@ -1046,12 +1046,12 @@ describe('exportService', () => {
       // Export to folder
       exportToFolder(db, tempDir);
 
-      // Create fresh DB with built-in types AND the Task type already
+      // Create fresh DB with built-in types AND the CustomTask type already
       const db2 = createTestDb();
       seedBuiltInTypes(db2);
       createObjectType(db2, {
-        key: 'Task',
-        name: 'Task (Already Exists)',
+        key: 'CustomTask',
+        name: 'Custom Task (Already Exists)',
         icon: 'check-circle',
         schema: undefined,
       });
@@ -1064,8 +1064,8 @@ describe('exportService', () => {
       expect(result.typesImported).toBe(0);
 
       // Verify the existing type was not overwritten
-      const existingType = getObjectTypeByKey(db2, 'Task');
-      expect(existingType?.name).toBe('Task (Already Exists)');
+      const existingType = getObjectTypeByKey(db2, 'CustomTask');
+      expect(existingType?.name).toBe('Custom Task (Already Exists)');
       expect(existingType?.icon).toBe('check-circle');
 
       closeDb(db2);

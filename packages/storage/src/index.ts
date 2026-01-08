@@ -57,6 +57,7 @@ export {
 // Property Validation
 export {
   validateProperties,
+  validatePropertiesForType,
   getDefaultProperties,
   mergeWithDefaults,
   type PropertyValidationError,
@@ -159,3 +160,20 @@ export {
 
 // File Service
 export { type FileService, FilesystemFileService, InMemoryFileService } from './fileService.js';
+
+// Attachment Service
+export {
+  uploadAttachment,
+  getAttachment,
+  getAttachmentByHash,
+  linkBlockToAttachment,
+  unlinkBlockFromAttachment,
+  getBlockAttachments,
+  getAttachmentBlocks,
+  listAttachments,
+  cleanupOrphanedAttachments,
+  AttachmentServiceError,
+  type AttachmentServiceErrorCode,
+  type UploadAttachmentInput,
+  type ListAttachmentsOptions,
+} from './attachmentService.js';

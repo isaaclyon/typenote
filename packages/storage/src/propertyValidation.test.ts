@@ -1,10 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import type { TypeSchema } from '@typenote/api';
 import {
   validateProperties,
   getDefaultProperties,
   mergeWithDefaults,
+  validatePropertiesForType,
 } from './propertyValidation.js';
+import { createTestDb, closeDb, type TypenoteDb } from './db.js';
+import {
+  seedBuiltInTypes,
+  createObjectType,
+  getObjectTypeByKey,
+  invalidateSchemaCache,
+} from './objectTypeService.js';
 
 describe('propertyValidation', () => {
   describe('validateProperties', () => {
@@ -382,6 +390,215 @@ describe('propertyValidation', () => {
     it('handles null schema', () => {
       const result = mergeWithDefaults({ custom: 'value' }, null);
       expect(result).toEqual({ custom: 'value' });
+    });
+  });
+
+  describe('property validation with inheritance', () => {
+    let db: TypenoteDb;
+
+    beforeEach(() => {
+      // Invalidate schema cache before each test since each test gets a new db
+      invalidateSchemaCache();
+      db = createTestDb();
+      seedBuiltInTypes(db);
+    });
+
+    afterEach(() => {
+      closeDb(db);
+    });
+
+    it('should validate against inherited required properties', () => {
+      // Create a parent type with a required property
+      const parentType = createObjectType(db, {
+        key: 'BaseItem',
+        name: 'Base Item',
+        schema: {
+          properties: [
+            {
+              key: 'category',
+              name: 'Category',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      });
+
+      // Create a child type that inherits from parent
+      const childType = createObjectType(db, {
+        key: 'SpecialItem',
+        name: 'Special Item',
+        parentTypeId: parentType.id,
+        schema: {
+          properties: [
+            {
+              key: 'special_field',
+              name: 'Special Field',
+              type: 'text',
+              required: false,
+            },
+          ],
+        },
+      });
+
+      // Validation should fail when inherited required property is missing
+      const result = validatePropertiesForType(db, childType.id, {
+        special_field: 'some value',
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]?.propertyKey).toBe('category');
+      expect(result.errors[0]?.message).toContain('Required');
+    });
+
+    it('should pass when all inherited required properties present', () => {
+      // Create a parent type with a required property
+      const parentType = createObjectType(db, {
+        key: 'BaseItem',
+        name: 'Base Item',
+        schema: {
+          properties: [
+            {
+              key: 'category',
+              name: 'Category',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      });
+
+      // Create a child type that inherits from parent
+      const childType = createObjectType(db, {
+        key: 'SpecialItem',
+        name: 'Special Item',
+        parentTypeId: parentType.id,
+        schema: {
+          properties: [
+            {
+              key: 'special_field',
+              name: 'Special Field',
+              type: 'text',
+              required: false,
+            },
+          ],
+        },
+      });
+
+      // Validation should pass when inherited required property is present
+      const result = validatePropertiesForType(db, childType.id, {
+        category: 'Electronics',
+        special_field: 'some value',
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should validate child own required properties', () => {
+      // Create a parent type with an optional property
+      const parentType = createObjectType(db, {
+        key: 'BaseItem',
+        name: 'Base Item',
+        schema: {
+          properties: [
+            {
+              key: 'category',
+              name: 'Category',
+              type: 'text',
+              required: false,
+            },
+          ],
+        },
+      });
+
+      // Create a child type with its own required property
+      const childType = createObjectType(db, {
+        key: 'SpecialItem',
+        name: 'Special Item',
+        parentTypeId: parentType.id,
+        schema: {
+          properties: [
+            {
+              key: 'required_child_field',
+              name: 'Required Child Field',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      });
+
+      // Validation should fail when child's required property is missing
+      const result = validatePropertiesForType(db, childType.id, {
+        category: 'Electronics',
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]?.propertyKey).toBe('required_child_field');
+    });
+
+    it('should accept properties from both parent and child', () => {
+      // Create a parent type with properties
+      const parentType = createObjectType(db, {
+        key: 'BaseItem',
+        name: 'Base Item',
+        schema: {
+          properties: [
+            {
+              key: 'parent_prop',
+              name: 'Parent Property',
+              type: 'number',
+              required: true,
+            },
+          ],
+        },
+      });
+
+      // Create a child type with its own properties
+      const childType = createObjectType(db, {
+        key: 'SpecialItem',
+        name: 'Special Item',
+        parentTypeId: parentType.id,
+        schema: {
+          properties: [
+            {
+              key: 'child_prop',
+              name: 'Child Property',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      });
+
+      // Validation should pass when both parent and child properties are present
+      const result = validatePropertiesForType(db, childType.id, {
+        parent_prop: 42,
+        child_prop: 'child value',
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should validate against built-in Task type with inheritance', () => {
+      // Get the built-in Task type
+      const taskType = getObjectTypeByKey(db, 'Task');
+      expect(taskType).not.toBeNull();
+      if (!taskType) throw new Error('Expected Task type');
+
+      // Task has required 'status' property
+      // Validation should fail when status is missing
+      const result = validatePropertiesForType(db, taskType.id, {
+        due_date: '2026-01-15T10:00:00Z',
+      });
+
+      expect(result.valid).toBe(false);
+      const statusError = result.errors.find((error) => error.propertyKey === 'status');
+      expect(statusError).toBeDefined();
     });
   });
 });
