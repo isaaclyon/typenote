@@ -78,9 +78,15 @@ Images + Documents support with content-addressed storage, global deduplication,
 
 ## Recently Completed
 
-### Task Management ✅ (2026-01-07)
+### Task Management ✅ (2026-01-07 – 2026-01-08)
 
-Task as 6th built-in type with taskService. TDD implementation: 36 API tests, 24 taskService tests, 3 built-in type tests. Full query suite (today's tasks, overdue, upcoming, inbox, by status/priority) + Daily Note integration via `getTasksByDueDate()`.
+Task as 6th built-in type with complete integration:
+
+- **API contracts**: 36 tests (status, priority, due_date, query options)
+- **taskService**: 24 tests (getTodaysTasks, getOverdueTasks, getUpcomingTasks, getInboxTasks, getTasksByStatus, getTasksByPriority, getCompletedTasks, getTasksByDueDate, completeTask, reopenTask)
+- **IPC handlers**: 10 handlers for all task operations
+- **Preload bridge**: Full renderer access via `window.typenoteAPI`
+- **CLI commands**: 9 commands (`task today`, `task overdue`, `task inbox`, `task upcoming`, `task by-status`, `task by-priority`, `task completed`, `task complete`, `task reopen`)
 
 ### Global Tags System ✅ (2026-01-07)
 

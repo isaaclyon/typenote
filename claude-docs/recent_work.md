@@ -1,6 +1,38 @@
 # Recent Work
 
-## Latest Session (2026-01-07 - Task Management Implementation)
+## Latest Session (2026-01-08 - Task Management Integration)
+
+### Completed Full Task Integration Stack
+
+After verifying that the core taskService was implemented but **not wired up** for use, completed the full integration:
+
+**Changes Made:**
+
+| Layer          | File                                | Changes                               |
+| -------------- | ----------------------------------- | ------------------------------------- |
+| Storage Export | `packages/storage/src/index.ts`     | +15 lines — Export all task functions |
+| IPC Handlers   | `apps/desktop/src/main/ipc.ts`      | +75 lines — 10 handlers               |
+| Preload Bridge | `apps/desktop/src/preload/index.ts` | +23 lines — Task methods              |
+| E2E Types      | `tests/e2e/types/global.d.ts`       | +32 lines — TaskObject, etc.          |
+| CLI Commands   | `apps/cli/src/index.ts`             | +210 lines — 9 task commands          |
+
+**CLI Commands Added:**
+
+- `task today` — Today's tasks
+- `task overdue` — Overdue tasks
+- `task inbox` — Tasks without due date
+- `task upcoming [-d days]` — Upcoming tasks
+- `task by-status <status>` — Filter by status
+- `task by-priority <priority>` — Filter by priority
+- `task completed [--start --end]` — Completed tasks
+- `task complete <taskId>` — Mark task done
+- `task reopen <taskId>` — Reopen task
+
+**Tests:** 382 API tests + 555 storage tests passing (including 36 task API + 24 taskService tests)
+
+---
+
+## Previous Session (2026-01-07 - Task Management Implementation)
 
 ### Implemented Task as Built-in Object Type with taskService
 

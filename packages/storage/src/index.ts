@@ -10,6 +10,10 @@ export {
   refs,
   idempotency,
   templates,
+  tags,
+  objectTags,
+  attachments,
+  blockAttachments,
   FTS_BLOCKS_TABLE_NAME,
   FTS_BLOCKS_CREATE_SQL,
 } from './schema.js';
@@ -45,6 +49,9 @@ export {
   isBuiltInTypeKey,
   ObjectTypeError,
   BUILT_IN_TYPES,
+  getResolvedSchema,
+  invalidateSchemaCache,
+  type ResolvedTypeSchema,
 } from './objectTypeService.js';
 
 // Property Validation
@@ -117,3 +124,38 @@ export {
   type ApplyTemplateContext,
   type ApplyTemplateOutcome,
 } from './applyTemplateToObject.js';
+
+// Tag Service
+export {
+  createTag,
+  getTag,
+  getTagBySlug,
+  updateTag,
+  deleteTag,
+  listTags,
+  assignTags,
+  removeTags,
+  getObjectTags,
+  findOrCreateTag,
+  TagServiceError,
+  type TagServiceErrorCode,
+} from './tagService.js';
+
+// Task Service
+export {
+  getTodaysTasks,
+  getOverdueTasks,
+  getTasksByStatus,
+  getUpcomingTasks,
+  getInboxTasks,
+  getTasksByPriority,
+  getCompletedTasks,
+  getTasksByDueDate,
+  completeTask,
+  reopenTask,
+  type TaskObject,
+  type CompletedTasksOptions,
+} from './taskService.js';
+
+// File Service
+export { type FileService, FilesystemFileService, InMemoryFileService } from './fileService.js';
