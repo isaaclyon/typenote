@@ -49,6 +49,7 @@ electron-builder.yml
 .cache/
 .temp/
 tmp/
+node-compile-cache/
 
 # OS
 Thumbs.db
