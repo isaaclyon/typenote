@@ -29,6 +29,8 @@ npm-debug.log*
 # Testing
 coverage/
 .nyc_output/
+test-results/
+node-compile-cache/
 
 # E2E Testing (Playwright)
 tests/e2e/node_modules/
