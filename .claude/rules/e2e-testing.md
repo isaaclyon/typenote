@@ -29,6 +29,27 @@ await page.getByTestId('create-daily-note-button').click();
 await page.locator('[data-testid^="object-card-"]').first().click();
 ```
 
+### DO: Use prefix matching for dynamic lists
+
+```typescript
+// Good: Prefix matching for dynamically generated test IDs
+await page.locator('[data-testid^="object-card-"]').filter({ hasText: 'Page' }).click();
+await page.locator('[data-testid^="suggestion-"]').first().click();
+```
+
+### DO: Combine locator with filter() for precision
+
+```typescript
+// Good: Modern Playwright API - filter with hasText
+await page.locator('[data-testid^="object-card-"]').filter({ hasText: 'My Document' }).click();
+
+// Good: Multiple filters
+await page
+  .locator('button')
+  .filter({ hasText: 'Save' })
+  .filter({ has: page.locator('.icon') });
+```
+
 ### DO: Use getByRole for accessible elements
 
 ```typescript
@@ -157,3 +178,71 @@ test('example', async ({ window: page, testDbPath }) => {
    ```bash
    pnpm rebuild:electron  # Then re-run tests
    ```
+
+## Test Helpers
+
+### Unique Content Generation
+
+Generate unique content to avoid test flakiness from stale data:
+
+```typescript
+function uniqueContent(testId: string, suffix: string = ''): string {
+  const timestamp = Date.now();
+  return `UNIQUE_${testId}_${timestamp}${suffix ? '_' + suffix : ''}`;
+}
+
+// Usage in test
+const title = uniqueContent('search-test', 'document');
+await page.evaluate((t) => window.typenoteAPI.createObject('Page', t), title);
+```
+
+### ULID-Format Test Block IDs
+
+Generate test block IDs that match ULID format:
+
+```typescript
+function generateTestBlockId(suffix: string): string {
+  return `01TEST${suffix.padStart(20, '0').toUpperCase()}`;
+}
+
+// Usage
+const blockId = generateTestBlockId('BLOCK001');
+// Returns: '01TEST00000000000BLOCK001'
+```
+
+## Framework-Specific Selectors
+
+Some framework selectors are acceptable when they're semantic standards:
+
+```typescript
+// ✓ OK: .ProseMirror is the standard TipTap/ProseMirror editor class
+await page.waitForSelector('.ProseMirror', { state: 'visible' });
+
+// ✗ AVOID: Custom component classes that may change
+await page.locator('.DocumentCard__title'); // Fragile
+```
+
+## IPC Result Types
+
+Test types should match the IPC response pattern:
+
+```typescript
+// types/global.d.ts
+interface IpcSuccess<T> {
+  success: true;
+  result: T;
+}
+
+interface IpcError {
+  success: false;
+  error: { code: string; message: string };
+}
+
+type IpcOutcome<T> = IpcSuccess<T> | IpcError;
+
+// All TypenoteAPI methods return IpcOutcome<T>
+interface TypenoteAPI {
+  getDocument(objectId: string): Promise<IpcOutcome<GetDocumentResult>>;
+  // ...
+}
+```

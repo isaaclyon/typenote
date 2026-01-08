@@ -49,6 +49,7 @@ All errors use this canonical structure:
 
 ```typescript
 export const ApiErrorCodeSchema = z.enum([
+  // Core patch errors
   'NOT_FOUND_OBJECT', // Object does not exist
   'NOT_FOUND_BLOCK', // Block does not exist
   'VALIDATION', // Schema/content invalid
@@ -59,6 +60,16 @@ export const ApiErrorCodeSchema = z.enum([
   'INVARIANT_PARENT_DELETED', // Parent block is deleted
   'IDEMPOTENCY_CONFLICT', // Idempotency key reused with different ops
   'INTERNAL', // Unexpected server error
+
+  // Tag errors
+  'NOT_FOUND_TAG', // Tag does not exist
+  'CONFLICT_TAG_SLUG', // Tag slug already exists
+  'INVARIANT_TAG_IN_USE', // Cannot delete tag that is in use
+
+  // Attachment errors
+  'NOT_FOUND_ATTACHMENT', // Attachment does not exist
+  'FILE_TOO_LARGE', // Upload exceeds size limit
+  'UNSUPPORTED_FILE_TYPE', // MIME type not allowed
 ]);
 
 export type ApiErrorCode = z.infer<typeof ApiErrorCodeSchema>;
@@ -79,13 +90,19 @@ export type ApiError = z.infer<typeof ApiErrorSchema>;
 | -------------------------- | -------------------------------------------- | ------------------------------------------------------- |
 | `NOT_FOUND_OBJECT`         | Object ID doesn't exist                      | `{ objectId: '01HZX...' }`                              |
 | `NOT_FOUND_BLOCK`          | Block ID doesn't exist or is deleted         | `{ blockId: '01HZY...' }`                               |
+| `NOT_FOUND_TAG`            | Tag ID doesn't exist                         | `{ tagId: '01HZZ...' }`                                 |
+| `NOT_FOUND_ATTACHMENT`     | Attachment ID doesn't exist                  | `{ attachmentId: '01HZA...' }`                          |
 | `VALIDATION`               | Malformed request, invalid content schema    | `{ field: 'content', reason: 'Invalid heading level' }` |
 | `CONFLICT_VERSION`         | `baseDocVersion` doesn't match current       | `{ expected: 5, actual: 7 }`                            |
 | `CONFLICT_ORDERING`        | Order key collision (backend should resolve) | `{ orderKey: 'aaa', siblings: [...] }`                  |
+| `CONFLICT_TAG_SLUG`        | Tag slug already in use                      | `{ slug: 'project', existingTagId: '...' }`             |
 | `INVARIANT_CYCLE`          | Move would create parent-child cycle         | `{ blockId: '...', wouldBeUnder: '...' }`               |
 | `INVARIANT_CROSS_OBJECT`   | Parent block in different object             | `{ blockObjectId: '...', parentObjectId: '...' }`       |
 | `INVARIANT_PARENT_DELETED` | Parent block is soft-deleted                 | `{ parentBlockId: '...' }`                              |
+| `INVARIANT_TAG_IN_USE`     | Tag cannot be deleted while in use           | `{ tagId: '...', usageCount: 5 }`                       |
 | `IDEMPOTENCY_CONFLICT`     | Same key, different operations               | `{ idempotencyKey: '...' }`                             |
+| `FILE_TOO_LARGE`           | Attachment exceeds size limit                | `{ sizeBytes: 52428800, maxBytes: 10485760 }`           |
+| `UNSUPPORTED_FILE_TYPE`    | MIME type not in allowed list                | `{ mimeType: 'application/exe' }`                       |
 | `INTERNAL`                 | Unexpected error (log details server-side)   | `{ requestId: '...' }`                                  |
 
 ### Creating Errors
@@ -125,6 +142,62 @@ export function cycleError(blockId: string, wouldBeUnder: string): ApiError {
     code: 'INVARIANT_CYCLE',
     message: 'Move would create a cycle in the block tree',
     details: { blockId, wouldBeUnder },
+  };
+}
+
+// Tag error factories
+export function notFoundTag(tagId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'NOT_FOUND_TAG',
+    message: `Tag not found: ${tagId}`,
+    details: { tagId },
+  };
+}
+
+export function tagSlugConflict(slug: string, existingTagId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'CONFLICT_TAG_SLUG',
+    message: `Tag slug already in use: ${slug}`,
+    details: { slug, existingTagId },
+  };
+}
+
+export function tagInUse(tagId: string, usageCount: number): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'INVARIANT_TAG_IN_USE',
+    message: `Cannot delete tag: still used by ${usageCount} objects`,
+    details: { tagId, usageCount },
+  };
+}
+
+// Attachment error factories
+export function notFoundAttachment(attachmentId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'NOT_FOUND_ATTACHMENT',
+    message: `Attachment not found: ${attachmentId}`,
+    details: { attachmentId },
+  };
+}
+
+export function fileTooLarge(sizeBytes: number, maxBytes: number): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'FILE_TOO_LARGE',
+    message: `File too large: ${sizeBytes} bytes (max: ${maxBytes})`,
+    details: { sizeBytes, maxBytes },
+  };
+}
+
+export function unsupportedFileType(mimeType: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'UNSUPPORTED_FILE_TYPE',
+    message: `Unsupported file type: ${mimeType}`,
+    details: { mimeType },
   };
 }
 ```
@@ -265,3 +338,38 @@ Follow these conventions for consistency:
 | Entity schemas | `{Entity}Schema`                | `BlockSchema`, `ObjectSchema`           |
 | Enum schemas   | `{Name}Schema`                  | `ApiErrorCodeSchema`, `BlockTypeSchema` |
 | Inferred types | Same as schema without `Schema` | `ApplyBlockPatchInput`                  |
+
+## Entity Schemas
+
+The API package defines schemas for all domain entities:
+
+### Core Entities
+
+- `ObjectSchema` — Object metadata (id, typeId, title, properties)
+- `BlockSchema` — Block structure (id, objectId, parentBlockId, content)
+- `ObjectTypeSchema` — Type definitions with inheritance
+
+### Feature Entities
+
+- `TagSchema` — Tag with slug, color, description
+- `TemplateSchema` — Template with blocks and placeholders
+- `AttachmentSchema` — File attachment metadata (hash, mimeType, size)
+- `TaskStatusSchema`, `TaskPrioritySchema` — Task enums
+
+### CRUD Operations
+
+Each entity type has corresponding input schemas:
+
+```typescript
+// Tag CRUD
+(CreateTagInputSchema, UpdateTagInputSchema);
+
+// ObjectType CRUD
+(CreateObjectTypeInputSchema, UpdateObjectTypeInputSchema);
+
+// Template CRUD
+(CreateTemplateInputSchema, UpdateTemplateInputSchema);
+
+// Attachment operations
+(UploadAttachmentInputSchema, UploadAttachmentResultSchema);
+```

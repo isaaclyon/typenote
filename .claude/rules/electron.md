@@ -102,6 +102,57 @@ new BrowserWindow({
 - `contextIsolation: false`
 - `webSecurity: false`
 
+## Type-Only Imports Exception
+
+**Type-only imports from storage ARE allowed in renderer.** TypeScript erases these at compile time, creating no runtime dependency:
+
+```typescript
+// ✓ SAFE: Type-only imports in renderer (erased at compile time)
+import type { GetOrCreateResult, ObjectDetails } from '@typenote/storage';
+import type { Block, InlineNode } from '@typenote/api';
+
+// Use in type positions only
+function handleResult(result: GetOrCreateResult): void { ... }
+```
+
+**Rule of thumb:** If it's only in type positions (function parameters, return types, interfaces), it's safe to import from storage in renderer.
+
+## IPC Response Pattern
+
+All IPC handlers must use a discriminated union outcome type:
+
+```typescript
+// Standard IPC response envelope
+type IpcOutcome<T> =
+  | { success: true; result: T }
+  | { success: false; error: { code: string; message: string } };
+
+// Renderer must check success before accessing result
+const outcome = await window.typenoteAPI.getDocument(id);
+if (outcome.success) {
+  // TypeScript knows outcome.result exists
+  console.log(outcome.result);
+} else {
+  // TypeScript knows outcome.error exists
+  console.error(outcome.error.message);
+}
+```
+
+## IPC Handler Naming Convention
+
+All IPC handlers must be prefixed with `typenote:` for namespacing:
+
+```typescript
+// Main process registration
+ipcMain.handle('typenote:getDocument', ...);
+ipcMain.handle('typenote:applyBlockPatch', ...);
+
+// Preload invocation
+ipcRenderer.invoke('typenote:getDocument', objectId);
+```
+
+This prevents collisions with other Electron apps that might share the namespace.
+
 ## Anti-Patterns
 
 ### Direct DB Import in Renderer
@@ -109,6 +160,9 @@ new BrowserWindow({
 ```typescript
 // DON'T: apps/desktop/src/renderer/App.tsx
 import { db } from '@typenote/storage'; // SECURITY VIOLATION
+
+// DON'T: Runtime import (not type-only)
+import { createObject } from '@typenote/storage'; // Creates runtime dependency!
 ```
 
 ### Node Modules in Renderer
