@@ -52,3 +52,5 @@ tmp/
 
 # OS
 Thumbs.db
+_reference/
+shadcn_resources.md

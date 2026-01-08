@@ -69,7 +69,7 @@ apps/
 ```bash
 pnpm typecheck     # Type check all packages
 pnpm lint          # Lint all packages
-pnpm test          # Run all tests (790+ tests)
+pnpm test          # Run all tests (800+ tests)
 pnpm build         # Build all packages
 pnpm mutate        # Run mutation testing
 pnpm --filter @typenote/cli dev create Page "Test"  # Create object

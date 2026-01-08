@@ -192,42 +192,42 @@ Build a desktop-first, local-only knowledge app where **Objects** (typed entitie
 
 ## 13) Deliverables (Backend-First Milestones)
 
-### Milestone A — Storage foundation
+### Milestone A — Storage foundation ✅ COMPLETE
 
-- SQLite schema + migrations
-- Object CRUD + soft delete
-- Block storage + ordering
-- Basic unit/integration test harness
+- ✅ SQLite schema + migrations
+- ✅ Object CRUD + soft delete
+- ✅ Block storage + ordering
+- ✅ Basic unit/integration test harness (447+ storage tests)
 
-### Milestone B — References and search
+### Milestone B — References and search ✅ COMPLETE
 
-- Reference extraction + refs table
-- Backlinks queries
-- FTS5 indexing + search endpoints
+- ✅ Reference extraction + refs table
+- ✅ Backlinks queries
+- ✅ FTS5 indexing + search endpoints
 
-### Milestone C — Export/Import
+### Milestone C — Export/Import ⚠️ PARTIAL
 
-- Deterministic export
-- Import/restore
-- Attachment store + linking
+- ✅ Deterministic export
+- ✅ Import/restore
+- ⏳ Attachment store + linking (deferred to post-v1)
 
-### Milestone D — API hardening
+### Milestone D — API hardening ✅ COMPLETE
 
-- Patch operation validation
-- Concurrency behavior (single-writer, queued writes)
-- Error taxonomy (validation vs not-found vs conflict)
+- ✅ Patch operation validation
+- ✅ Concurrency behavior (single-writer via transactions, idempotency keys)
+- ✅ Error taxonomy (validation vs not-found vs conflict)
 
 ## 14) Decisions Locked (Early)
 
-The following architectural decisions are confirmed:
+The following architectural decisions are confirmed and implemented:
 
-1. **Object types: built-ins + user-defined**
+1. **Object types: built-ins + user-defined** ✅ IMPLEMENTED
    - Ship a small set of built-in types and support user-defined types.
    - **Built-ins (v1):** `DailyNote`, `Page`, `Person`, `Event`, `Place`.
    - Store property definitions on the type (`schema_json`) and values on objects (`props_json`).
    - Validation is application-level (e.g., Zod), with selective DB indexing for commonly queried fields.
 
-2. **Supported property types (v1)**
+2. **Supported property types (v1)** ✅ IMPLEMENTED
    - `text` (string)
    - `number` (float)
    - `date` (ISO date `YYYY-MM-DD`)
@@ -238,38 +238,55 @@ The following architectural decisions are confirmed:
    - `relation` (one-to-one or one-to-many links to other Objects; persisted as edges and queryable)
    - `contentblock` (**inline block reference**) targeting a specific `block_id` (and implicitly its owning `object_id`) for embed/preview behaviors
 
-3. **Daily Notes are first-class**
+3. **Daily Notes are first-class** ✅ IMPLEMENTED
    - Built-in `DailyNote` type keyed by **local date** (`date_key` = `YYYY-MM-DD`).
    - Enforce DB-level uniqueness (one DailyNote per `date_key`).
    - **Slugs / calendar URLs:** DailyNote routes resolve via deterministic slug derived from `date_key` (e.g., `/2026-01-12`).
    - **Auto-creation:** create-on-access (open Today / navigate to date creates if missing). Optional creation on midnight rollover while the app is open.
-   - Date is computed in the user’s configured/local timezone.
+   - Date is computed in the user's configured/local timezone.
 
-4. **Block model: tree, not flat**
+4. **Block model: tree, not flat** ✅ IMPLEMENTED
    - Blocks are stored as a tree via `parent_block_id` (nullable = root).
    - Ordering is defined among siblings only.
    - Enables nested lists, toggles/collapsible sections, outline navigation, and clean export.
 
-5. **References: hybrid representation**
+5. **References: hybrid representation** ✅ IMPLEMENTED
    - Internally references are **explicit ID-based nodes** in block content (unambiguous, rename-safe).
    - Export formats include both stable IDs and a human-readable token form where appropriate.
 
-6. **Reference maintenance: backend authoritative extraction (2A)**
+6. **Reference maintenance: backend authoritative extraction (2A)** ✅ IMPLEMENTED
    - Backend extracts references from persisted block `content_json` on write and maintains the `refs` table transactionally.
    - Leaves room for later optimization (UI hints) without changing correctness model.
 
-7. **Write model: operation-based patch API (3B)**
+7. **Write model: operation-based patch API (3B)** ✅ IMPLEMENTED
    - Backend accepts **validated patch operations** (insert/update/move/delete) rather than whole-document overwrites.
    - Each patch is applied transactionally and increments a document/version counter for optimistic concurrency.
 
-8. **Attachments: content-addressed store + retention GC**
+8. **Attachments: content-addressed store + retention GC** ⏳ DEFERRED (post-v1)
    - Attachments stored locally with hashed filenames (content-addressed) and metadata in SQLite.
    - When unlinked, attachments are marked orphaned and retained for a grace period (e.g., 30 days).
    - Provide a manual cleanup routine and periodic maintenance/compaction.
 
-9. **Ordering: fractional (lexicographic) order keys**
+9. **Ordering: fractional (lexicographic) order keys** ✅ IMPLEMENTED
    - Use fractional indexing order keys (lexicographic strings) to support cheap inserts/reorders.
    - Implement a rebalance routine for rare key-growth scenarios.
+
+10. **Tags: global tagging system** ✅ IMPLEMENTED (2026-01-07)
+    - Global `tags` table with `id`, `name`, `slug`, `color`, `icon`, `description`.
+    - Many-to-many via `object_tags` junction table.
+    - Tag assignment/removal operations with usage tracking.
+    - Slug uniqueness enforced for natural ID lookup.
+
+11. **Templates: per-type default templates** ✅ IMPLEMENTED
+    - `templates` table with template definitions per object type.
+    - Auto-application of default template on object creation.
+    - DailyNote default template seeded on database init.
+
+12. **IPC API + Desktop integration** ✅ IMPLEMENTED
+    - 8 IPC handlers for typed communication between main/renderer.
+    - Preload context bridge exposes `window.typenoteAPI`.
+    - TipTap editor with custom extensions (refs, tags, callouts, math).
+    - Wiki-link autocomplete (`[[` trigger) and mentions (`@` trigger).
 
 ---
 
@@ -279,7 +296,7 @@ The following architectural decisions are confirmed:
 2. **Relations v1 semantics:** cardinality rules per property (one vs many), referential integrity behavior on delete, and whether relations are strictly typed (allowed target types).
 3. **contentblock behaviors:** display modes (inline preview vs embed), permitted targets (single block only vs subtree reference), and export/import representation.
 4. **Slugs beyond DailyNotes:** whether and how non-DailyNote objects get slugs (manual vs generated), rename/redirect behavior.
-5. **Templates:** DailyNote template application rules, and whether templates are type-level (per ObjectType) in v1.
+5. ~~**Templates:** DailyNote template application rules, and whether templates are type-level (per ObjectType) in v1.~~ ✅ RESOLVED — Templates implemented as type-level (per ObjectType) with auto-application on object creation.
 
 ## Working Agreements for Iteration
 

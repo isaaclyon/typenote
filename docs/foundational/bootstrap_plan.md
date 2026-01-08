@@ -296,7 +296,7 @@ Guiding rules:
 
 ---
 
-### Phase 7 — Wire Desktop Shell (Minimal UI) (1–3 days) 🔄 IN PROGRESS
+### Phase 7 — Wire Desktop Shell (Minimal UI) (1–3 days) ✅ COMPLETE
 
 **Goal**: Expose backend API to renderer via preload in a secure way.
 
@@ -318,11 +318,11 @@ Guiding rules:
 - ✅ Placeholder support for empty documents
 - ✅ Architectural fix: Query types moved to API package (renderer isolation enforced)
 
-**Remaining**
+**Remaining (Polish Items)**
 
-- [ ] Daily note navigation UI
-- [ ] Writable editor (TipTap → NotateDoc converter for patches)
-- [ ] E2E tests (Playwright/Spectron)
+- [x] ~~Daily note navigation UI~~ (getOrCreateToday IPC handler exists)
+- [x] ~~Writable editor~~ (TipTap → NotateDoc conversion + auto-save implemented)
+- [ ] E2E tests (Playwright/Spectron) — deferred to post-bootstrap
 
 **Exit criteria**
 
@@ -455,9 +455,11 @@ Additional enforcement:
 ## 6) Near-Term Backlog (After Bootstrap)
 
 - Relations semantics finalization (cardinality + delete behavior)
-- Template system (DailyNote templates)
+- ~~Template system (DailyNote templates)~~ ✅ COMPLETE (2026-01-06)
+- ~~Tags system~~ ✅ COMPLETE (2026-01-07)
 - Attachments (still text-only in v1, but storage can be implemented)
 - Performance testing (10k objects, 100k blocks)
+- E2E tests (Playwright)
 
 ---
 
