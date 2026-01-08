@@ -8,11 +8,7 @@ import { readFileSync, statSync, existsSync, mkdirSync } from 'node:fs';
 import { basename, dirname, extname, join } from 'node:path';
 import { Command } from 'commander';
 import {
-  createFileDb,
-  closeDb,
   getDbPath,
-  seedBuiltInTypes,
-  seedDailyNoteTemplate,
   uploadAttachment,
   getAttachment,
   getAttachmentByHash,
@@ -24,22 +20,10 @@ import {
   cleanupOrphanedAttachments,
   AttachmentServiceError,
   FilesystemFileService,
-  type TypenoteDb,
   type FileService,
 } from '@typenote/storage';
 import type { SupportedMimeType } from '@typenote/api';
-
-// ============================================================================
-// Database Setup
-// ============================================================================
-
-function initDb(): TypenoteDb {
-  const dbPath = getDbPath();
-  const db = createFileDb(dbPath);
-  seedBuiltInTypes(db);
-  seedDailyNoteTemplate(db);
-  return db;
-}
+import { initDb, closeDb } from './db.js';
 
 // ============================================================================
 // File Service Setup

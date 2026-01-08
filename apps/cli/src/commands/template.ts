@@ -6,32 +6,15 @@
 
 import { Command } from 'commander';
 import {
-  createFileDb,
-  closeDb,
-  getDbPath,
-  seedBuiltInTypes,
-  seedDailyNoteTemplate,
   createTemplate,
   getTemplate,
   getDefaultTemplateForType,
   listTemplates,
   updateTemplate,
   deleteTemplate,
-  type TypenoteDb,
 } from '@typenote/storage';
 import type { TemplateContent } from '@typenote/api';
-
-// ============================================================================
-// Database Setup
-// ============================================================================
-
-function initDb(): TypenoteDb {
-  const dbPath = getDbPath();
-  const db = createFileDb(dbPath);
-  seedBuiltInTypes(db);
-  seedDailyNoteTemplate(db);
-  return db;
-}
+import { initDb, closeDb } from './db.js';
 
 // ============================================================================
 // Template Command

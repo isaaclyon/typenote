@@ -7,11 +7,6 @@
 import { readFileSync } from 'node:fs';
 import { Command } from 'commander';
 import {
-  createFileDb,
-  closeDb,
-  getDbPath,
-  seedBuiltInTypes,
-  seedDailyNoteTemplate,
   exportObject,
   exportObjectsByType,
   exportToFolder,
@@ -20,22 +15,10 @@ import {
   deterministicStringify,
   getObject,
   getObjectTypeByKey,
-  type TypenoteDb,
   type ExportedObject,
   type ExportManifest,
 } from '@typenote/storage';
-
-// ============================================================================
-// Database Setup
-// ============================================================================
-
-function initDb(): TypenoteDb {
-  const dbPath = getDbPath();
-  const db = createFileDb(dbPath);
-  seedBuiltInTypes(db);
-  seedDailyNoteTemplate(db);
-  return db;
-}
+import { initDbQuiet as initDb, closeDb } from './db.js';
 
 // ============================================================================
 // Export Command
