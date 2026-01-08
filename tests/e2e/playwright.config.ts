@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './specs',
   timeout: 60000, // Electron apps need longer startup time
   retries: process.env['CI'] ? 2 : 0,
-  workers: 1, // Sequential execution - Electron apps can conflict
+  workers: 4, // Parallel execution - each test has isolated temp DB
 
   reporter: process.env['CI'] ? [['github'], ['html', { open: 'never' }]] : [['list'], ['html']],
 

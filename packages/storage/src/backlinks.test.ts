@@ -55,6 +55,7 @@ describe('getBacklinks', () => {
     expect(result[0]).toEqual({
       sourceBlockId: 'block1',
       sourceObjectId: 'source',
+      sourceObjectTitle: 'Source Object',
       targetBlockId: null,
     });
   });

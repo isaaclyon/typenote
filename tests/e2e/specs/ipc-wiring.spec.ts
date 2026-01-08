@@ -154,7 +154,7 @@ test.describe('IPC Channel Wiring', () => {
           ops: [
             {
               op: 'block.insert',
-              blockId: '01SEARCHBLOCK12345678901234',
+              blockId: '01SEARCHBLOCK1234567890123',
               parentBlockId: null,
               blockType: 'paragraph',
               content: { inline: [{ t: 'text', text: 'Searchable content here' }] },

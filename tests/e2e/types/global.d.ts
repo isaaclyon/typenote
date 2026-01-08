@@ -49,11 +49,17 @@ interface CreatedObject {
   title: string;
 }
 
+/**
+ * Block interface matching DocumentBlock from @typenote/api
+ */
 interface Block {
   id: string;
-  type: string;
+  parentBlockId: string | null;
+  orderKey: string;
+  blockType: string;
   content: unknown;
-  indent: number;
+  meta: { collapsed?: boolean } | null;
+  children: Block[];
 }
 
 interface GetDocumentResult {
