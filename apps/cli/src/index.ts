@@ -31,6 +31,11 @@ import {
   type TypenoteDb,
 } from '@typenote/storage';
 import { generateId } from '@typenote/core';
+import { registerExportCommand, registerImportCommand } from './commands/export.js';
+import { registerAttachmentCommand } from './commands/attachment.js';
+import { registerTemplateCommand } from './commands/template.js';
+import { registerTagCommand } from './commands/tag.js';
+import { registerBacklinksCommand } from './commands/backlinks.js';
 
 // ============================================================================
 // Database Setup
@@ -748,5 +753,16 @@ devCmd
       console.log(`  ${key}: ${config.pluralName} (${config.color})`);
     }
   });
+
+// ============================================================================
+// Export/Import Commands
+// ============================================================================
+
+registerExportCommand(program);
+registerImportCommand(program);
+registerAttachmentCommand(program);
+registerTemplateCommand(program);
+registerTagCommand(program);
+registerBacklinksCommand(program);
 
 program.parse();
