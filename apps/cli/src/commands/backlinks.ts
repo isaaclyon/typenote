@@ -5,27 +5,8 @@
  */
 
 import { Command } from 'commander';
-import {
-  createFileDb,
-  closeDb,
-  getDbPath,
-  seedBuiltInTypes,
-  seedDailyNoteTemplate,
-  getBacklinks,
-  type TypenoteDb,
-} from '@typenote/storage';
-
-// ============================================================================
-// Database Setup
-// ============================================================================
-
-function initDb(): TypenoteDb {
-  const dbPath = getDbPath();
-  const db = createFileDb(dbPath);
-  seedBuiltInTypes(db);
-  seedDailyNoteTemplate(db);
-  return db;
-}
+import { getBacklinks } from '@typenote/storage';
+import { initDb, closeDb } from './db.js';
 
 // ============================================================================
 // Backlinks Command

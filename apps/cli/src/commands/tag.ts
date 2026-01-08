@@ -6,11 +6,6 @@
 
 import { Command } from 'commander';
 import {
-  createFileDb,
-  closeDb,
-  getDbPath,
-  seedBuiltInTypes,
-  seedDailyNoteTemplate,
   createTag,
   getTag,
   getTagBySlug,
@@ -22,20 +17,8 @@ import {
   getObjectTags,
   findOrCreateTag,
   TagServiceError,
-  type TypenoteDb,
 } from '@typenote/storage';
-
-// ============================================================================
-// Database Setup
-// ============================================================================
-
-function initDb(): TypenoteDb {
-  const dbPath = getDbPath();
-  const db = createFileDb(dbPath);
-  seedBuiltInTypes(db);
-  seedDailyNoteTemplate(db);
-  return db;
-}
+import { initDb, closeDb } from './db.js';
 
 // ============================================================================
 // Tag Command
