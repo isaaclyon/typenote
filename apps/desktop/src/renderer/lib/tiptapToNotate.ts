@@ -399,7 +399,17 @@ export function generateBlockOps(
 
     if (oldBlock !== undefined && newBlock !== undefined) {
       // Both exist at this position - check for update
-      if (!contentEquals(oldBlock.content, newBlock.content)) {
+      // If block types differ, we need to delete + insert (block type changes not allowed in v1)
+      if (oldBlock.blockType !== newBlock.blockType) {
+        // Delete old block
+        ops.push({
+          op: 'block.delete',
+          blockId: oldBlock.id,
+        });
+        // Insert new block with potentially different type
+        createInsertOpsForBlock(newBlock, null, ops);
+      } else if (!contentEquals(oldBlock.content, newBlock.content)) {
+        // Same type, different content - update
         ops.push({
           op: 'block.update',
           blockId: oldBlock.id,

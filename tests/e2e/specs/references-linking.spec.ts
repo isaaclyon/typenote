@@ -23,13 +23,13 @@ test.describe('References and Linking', () => {
 
       // Wait for suggestion popup to appear
       // The popup is appended to document.body with fixed positioning
-      await page.waitForSelector('[data-testid^="suggestion-"]', {
+      await page.waitForSelector('[data-testid="suggestion-popup"]', {
         state: 'visible',
         timeout: 3000,
       });
 
       // Popup should be visible
-      const popup = page.locator('.bg-popover').first();
+      const popup = page.locator('[data-testid="suggestion-popup"]').first();
       await expect(popup).toBeVisible();
     });
 
@@ -962,9 +962,8 @@ test.describe('References and Linking', () => {
       // Verify the ref node has blue styling class
       const refNode = page.locator('span[data-ref]');
       await expect(refNode).toBeVisible();
-      // Check for blue color classes
-      const refSpan = refNode.locator('span').first();
-      await expect(refSpan).toHaveClass(/bg-blue-100|text-blue-700/);
+      // Check for blue color classes on the ref node itself
+      await expect(refNode).toHaveClass(/bg-blue-100/);
     });
 
     test('embed mode reference has purple styling', async ({ window: page }) => {
@@ -1018,9 +1017,8 @@ test.describe('References and Linking', () => {
       // Verify the ref node has purple styling class
       const refNode = page.locator('span[data-ref]');
       await expect(refNode).toBeVisible();
-      // Check for purple color classes
-      const refSpan = refNode.locator('span').first();
-      await expect(refSpan).toHaveClass(/bg-purple-100|text-purple-700/);
+      // Check for purple color classes on the ref node itself
+      await expect(refNode).toHaveClass(/bg-purple-100/);
     });
 
     test('reference has link icon', async ({ window: page }) => {

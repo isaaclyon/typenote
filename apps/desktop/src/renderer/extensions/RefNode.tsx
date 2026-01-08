@@ -59,6 +59,8 @@ function RefNodeView({ node, extension }: NodeViewProps) {
     <NodeViewWrapper as="span" className="inline">
       <span
         onClick={handleClick}
+        data-ref=""
+        data-mode={mode}
         className={cn(
           'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-sm',
           'cursor-pointer transition-colors',
@@ -72,7 +74,7 @@ function RefNodeView({ node, extension }: NodeViewProps) {
             : undefined
         }
       >
-        <Link2 className="h-3 w-3 shrink-0" />
+        <Link2 className="h-3 w-3 shrink-0" data-testid="ref-link-icon" />
         <span className="truncate max-w-[200px]">{displayText}</span>
       </span>
     </NodeViewWrapper>

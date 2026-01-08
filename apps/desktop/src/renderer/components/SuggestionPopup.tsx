@@ -90,14 +90,20 @@ export const SuggestionPopup = forwardRef<SuggestionPopupRef, SuggestionPopupPro
     // Loading state
     if (isLoading) {
       return (
-        <div className="bg-popover border rounded-md shadow-md p-2 min-w-[200px]">
+        <div
+          className="bg-popover border rounded-md shadow-md p-2 min-w-[200px]"
+          data-testid="suggestion-popup"
+        >
           <div className="text-sm text-muted-foreground px-2 py-1">Searching...</div>
         </div>
       );
     }
 
     return (
-      <div className="bg-popover border rounded-md shadow-md min-w-[200px] max-w-[300px]">
+      <div
+        className="bg-popover border rounded-md shadow-md min-w-[200px] max-w-[300px]"
+        data-testid="suggestion-popup"
+      >
         <ScrollArea className="max-h-[200px]">
           {items.length === 0 && !hasCreateNew && (
             <div className="text-sm text-muted-foreground px-3 py-2">No results</div>
