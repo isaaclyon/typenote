@@ -9,6 +9,7 @@ export {
   notFoundObject,
   notFoundBlock,
   notFoundTag,
+  notFoundAttachment,
   validationError,
   versionConflict,
   orderingConflict,
@@ -17,6 +18,8 @@ export {
   crossObjectError,
   parentDeletedError,
   tagInUse,
+  fileTooLarge,
+  unsupportedFileType,
   idempotencyConflict,
   internalError,
   type ApiError,
@@ -187,3 +190,47 @@ export {
   TagErrorCodeSchema,
   type TagErrorCode,
 } from './tag.js';
+
+// Tasks
+export {
+  // Status and priority enums
+  TaskStatusSchema,
+  TaskPrioritySchema,
+  TASK_STATUSES,
+  TASK_PRIORITIES,
+  type TaskStatus,
+  type TaskPriority,
+  // Properties schema
+  TaskPropertiesSchema,
+  type TaskProperties,
+  // Query options
+  GetTasksOptionsSchema,
+  type GetTasksOptions,
+} from './task.js';
+
+// Attachments
+export {
+  // Constants
+  MAX_FILE_SIZE_BYTES,
+  SUPPORTED_MIME_TYPES,
+  type SupportedMimeType,
+  // Field schemas
+  Sha256Schema,
+  FilenameSchema,
+  SupportedMimeTypeSchema,
+  FileSizeSchema,
+  // Entity
+  AttachmentSchema,
+  type Attachment,
+  // API operations
+  UploadAttachmentInputSchema,
+  UploadAttachmentResultSchema,
+  type UploadAttachmentInput,
+  type UploadAttachmentResult,
+  // Block content
+  AttachmentContentSchema,
+  type AttachmentContent,
+  // Error codes
+  AttachmentErrorCodeSchema,
+  type AttachmentErrorCode,
+} from './attachment.js';

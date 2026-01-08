@@ -361,12 +361,74 @@ describe('ObjectTypeService', () => {
       expect(isBuiltInTypeKey('Person')).toBe(true);
       expect(isBuiltInTypeKey('Event')).toBe(true);
       expect(isBuiltInTypeKey('Place')).toBe(true);
+      expect(isBuiltInTypeKey('Task')).toBe(true);
     });
 
     it('returns false for custom type keys', () => {
       expect(isBuiltInTypeKey('Project')).toBe(false);
-      expect(isBuiltInTypeKey('Task')).toBe(false);
       expect(isBuiltInTypeKey('custom')).toBe(false);
+    });
+  });
+
+  describe('Task built-in type', () => {
+    it('seeds Task type on initialization', () => {
+      seedBuiltInTypes(db);
+
+      const taskType = getObjectTypeByKey(db, 'Task');
+      expect(taskType).not.toBeNull();
+      expect(taskType?.builtIn).toBe(true);
+    });
+
+    it('has correct Task schema', () => {
+      seedBuiltInTypes(db);
+
+      const taskType = getObjectTypeByKey(db, 'Task');
+      expect(taskType?.name).toBe('Task');
+      expect(taskType?.icon).toBe('check-square');
+      expect(taskType?.schema?.properties).toHaveLength(3);
+
+      // Status property
+      const statusProp = taskType?.schema?.properties.find((p) => p.key === 'status');
+      expect(statusProp).toEqual({
+        key: 'status',
+        name: 'Status',
+        type: 'select',
+        required: true,
+        options: ['Backlog', 'Todo', 'InProgress', 'Done'],
+        defaultValue: 'Todo',
+      });
+
+      // Due date property
+      const dueDateProp = taskType?.schema?.properties.find((p) => p.key === 'due_date');
+      expect(dueDateProp).toEqual({
+        key: 'due_date',
+        name: 'Due Date',
+        type: 'datetime',
+        required: false,
+      });
+
+      // Priority property
+      const priorityProp = taskType?.schema?.properties.find((p) => p.key === 'priority');
+      expect(priorityProp).toEqual({
+        key: 'priority',
+        name: 'Priority',
+        type: 'select',
+        required: false,
+        options: ['Low', 'Medium', 'High'],
+      });
+    });
+
+    it('cannot delete Task type', () => {
+      seedBuiltInTypes(db);
+      const taskType = getObjectTypeByKey(db, 'Task');
+
+      expect(() => deleteObjectType(db, taskType?.id ?? '')).toThrow(ObjectTypeError);
+
+      try {
+        deleteObjectType(db, taskType?.id ?? '');
+      } catch (error) {
+        expect((error as ObjectTypeError).code).toBe('TYPE_BUILT_IN');
+      }
     });
   });
 });

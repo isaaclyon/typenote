@@ -117,6 +117,35 @@ export const BUILT_IN_TYPES: Record<
       ],
     },
   },
+  Task: {
+    name: 'Task',
+    icon: 'check-square',
+    schema: {
+      properties: [
+        {
+          key: 'status',
+          name: 'Status',
+          type: 'select',
+          required: true,
+          options: ['Backlog', 'Todo', 'InProgress', 'Done'],
+          defaultValue: 'Todo',
+        },
+        {
+          key: 'due_date',
+          name: 'Due Date',
+          type: 'datetime',
+          required: false,
+        },
+        {
+          key: 'priority',
+          name: 'Priority',
+          type: 'select',
+          required: false,
+          options: ['Low', 'Medium', 'High'],
+        },
+      ],
+    },
+  },
 };
 
 // ============================================================================
@@ -134,6 +163,12 @@ function rowToObjectType(row: typeof objectTypes.$inferSelect): ObjectType {
     icon: row.icon,
     schema: row.schema ? (JSON.parse(row.schema) as TypeSchema) : null,
     builtIn: row.builtIn,
+    // These fields are defined in the API but not yet in the DB schema
+    // TODO: Add migration to add these columns to object_types table
+    parentTypeId: null,
+    pluralName: null,
+    color: null,
+    description: null,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -185,6 +220,11 @@ export function createObjectType(db: TypenoteDb, input: CreateObjectTypeInput): 
     icon: input.icon ?? null,
     schema: input.schema ?? null,
     builtIn: false,
+    // These fields are defined in the API but not yet in the DB schema
+    parentTypeId: null,
+    pluralName: null,
+    color: null,
+    description: null,
     createdAt: now,
     updatedAt: now,
   };
