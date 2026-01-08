@@ -20,10 +20,18 @@ export const objectTypes = sqliteTable(
     icon: text('icon'), // Optional icon identifier
     schema: text('schema'), // JSON schema for properties (stored as text)
     builtIn: integer('built_in', { mode: 'boolean' }).notNull().default(false),
+    // Inheritance fields
+    parentTypeId: text('parent_type_id'), // Self-reference for type inheritance (max 2 levels)
+    pluralName: text('plural_name'), // e.g., "Books" for type "Book"
+    color: text('color'), // Hex color (#RRGGBB) for UI
+    description: text('description'), // Optional type description
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   },
-  (table) => [index('object_types_key_idx').on(table.key)]
+  (table) => [
+    index('object_types_key_idx').on(table.key),
+    index('object_types_parent_type_id_idx').on(table.parentTypeId),
+  ]
 );
 
 // ============================================================================
