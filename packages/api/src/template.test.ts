@@ -56,6 +56,31 @@ describe('TemplateBlockSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('parses children field correctly and includes it in output', () => {
+    const block = {
+      blockType: 'list',
+      content: { kind: 'bullet' },
+      children: [
+        {
+          blockType: 'list_item',
+          content: { inline: [{ t: 'text', text: 'Item 1' }] },
+        },
+        {
+          blockType: 'list_item',
+          content: { inline: [{ t: 'text', text: 'Item 2' }] },
+        },
+      ],
+    };
+    const result = TemplateBlockSchema.safeParse(block);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.children).toBeDefined();
+      expect(result.data.children).toHaveLength(2);
+      expect(result.data.children?.[0]?.blockType).toBe('list_item');
+      expect(result.data.children?.[1]?.blockType).toBe('list_item');
+    }
+  });
+
   it('rejects invalid block type', () => {
     const block = {
       blockType: 'invalid_type',

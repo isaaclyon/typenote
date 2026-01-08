@@ -12,8 +12,18 @@ import {
   CodeBlockContentSchema,
   ThematicBreakContentSchema,
   TableContentSchema,
+  TableRowSchema,
   MathBlockContentSchema,
   FootnoteDefContentSchema,
+  ObjectRefTargetSchema,
+  BlockRefTargetSchema,
+  TextNodeSchema,
+  HardBreakNodeSchema,
+  RefNodeSchema,
+  TagNodeSchema,
+  MathInlineNodeSchema,
+  FootnoteRefNodeSchema,
+  LinkNodeSchema,
   getContentSchemaForBlockType,
   type BlockType,
 } from './notateDoc.js';
@@ -326,5 +336,78 @@ describe('getContentSchemaForBlockType', () => {
     // @ts-expect-error - testing invalid input
     const schema = getContentSchemaForBlockType('unknown');
     expect(schema).toBeUndefined();
+  });
+});
+
+// =============================================================================
+// Mutation Testing: Empty Object Rejection
+// These tests kill ObjectLiteral mutants by proving schemas have required fields
+// =============================================================================
+
+describe('Schema required fields (mutation testing)', () => {
+  describe('Reference target schemas', () => {
+    it('ObjectRefTargetSchema rejects empty object', () => {
+      expectInvalid(ObjectRefTargetSchema, {});
+    });
+
+    it('BlockRefTargetSchema rejects empty object', () => {
+      expectInvalid(BlockRefTargetSchema, {});
+    });
+  });
+
+  describe('Inline node schemas', () => {
+    it('TextNodeSchema rejects empty object', () => {
+      expectInvalid(TextNodeSchema, {});
+    });
+
+    it('HardBreakNodeSchema rejects empty object', () => {
+      expectInvalid(HardBreakNodeSchema, {});
+    });
+
+    it('RefNodeSchema rejects empty object', () => {
+      expectInvalid(RefNodeSchema, {});
+    });
+
+    it('TagNodeSchema rejects empty object', () => {
+      expectInvalid(TagNodeSchema, {});
+    });
+
+    it('MathInlineNodeSchema rejects empty object', () => {
+      expectInvalid(MathInlineNodeSchema, {});
+    });
+
+    it('FootnoteRefNodeSchema rejects empty object', () => {
+      expectInvalid(FootnoteRefNodeSchema, {});
+    });
+
+    it('LinkNodeSchema rejects empty object', () => {
+      expectInvalid(LinkNodeSchema, {});
+    });
+  });
+
+  describe('Block content schemas', () => {
+    it('ListItemContentSchema rejects empty object', () => {
+      expectInvalid(ListItemContentSchema, {});
+    });
+
+    it('CalloutContentSchema rejects empty object', () => {
+      expectInvalid(CalloutContentSchema, {});
+    });
+
+    it('TableRowSchema rejects empty object', () => {
+      expectInvalid(TableRowSchema, {});
+    });
+
+    it('TableContentSchema rejects empty object', () => {
+      expectInvalid(TableContentSchema, {});
+    });
+
+    it('MathBlockContentSchema rejects empty object', () => {
+      expectInvalid(MathBlockContentSchema, {});
+    });
+
+    it('FootnoteDefContentSchema rejects empty object', () => {
+      expectInvalid(FootnoteDefContentSchema, {});
+    });
   });
 });

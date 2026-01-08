@@ -11,6 +11,8 @@ import {
   UploadAttachmentInputSchema,
   UploadAttachmentResultSchema,
   AttachmentContentSchema,
+  AttachmentErrorCodeSchema,
+  Sha256Schema,
   SUPPORTED_MIME_TYPES,
   MAX_FILE_SIZE_BYTES,
   type Attachment,
@@ -465,5 +467,49 @@ describe('Type inference', () => {
       caption: 'Caption',
     };
     expect(content.attachmentId).toBeDefined();
+  });
+});
+
+// ============================================================================
+// Sha256Schema Regex Anchor Tests (Mutation Testing)
+// ============================================================================
+
+describe('Sha256Schema regex validation', () => {
+  const valid64Hex = 'a'.repeat(64);
+
+  it('rejects sha256 with prefix junk before valid 64 chars', () => {
+    const result = Sha256Schema.safeParse('xyz' + valid64Hex);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects sha256 with suffix junk after valid 64 chars', () => {
+    const result = Sha256Schema.safeParse(valid64Hex + 'xyz');
+    expect(result.success).toBe(false);
+  });
+
+  it('provides descriptive error message for invalid sha256', () => {
+    // Use 64 chars with uppercase to trigger regex validation (not length check)
+    const result = Sha256Schema.safeParse('A'.repeat(64));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const errorMessage = result.error.issues[0]?.message;
+      expect(errorMessage).toContain('SHA256');
+    }
+  });
+});
+
+// ============================================================================
+// AttachmentErrorCodeSchema Tests (Mutation Testing)
+// ============================================================================
+
+describe('AttachmentErrorCodeSchema', () => {
+  it('contains expected error codes', () => {
+    expect(AttachmentErrorCodeSchema.safeParse('ATTACHMENT_NOT_FOUND').success).toBe(true);
+    expect(AttachmentErrorCodeSchema.safeParse('FILE_TOO_LARGE').success).toBe(true);
+    expect(AttachmentErrorCodeSchema.safeParse('UNSUPPORTED_FILE_TYPE').success).toBe(true);
+  });
+
+  it('rejects invalid error codes', () => {
+    expect(AttachmentErrorCodeSchema.safeParse('INVALID_CODE').success).toBe(false);
   });
 });

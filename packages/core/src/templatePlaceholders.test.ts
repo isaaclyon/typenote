@@ -495,6 +495,54 @@ describe('substitutePlaceholders', () => {
 
   describe('type guard edge cases', () => {
     // These tests verify the isTextNode type guard correctly filters non-text nodes
+    // Critical: These tests kill mutation testing survivors by verifying behavior
+    // differs when type guards are bypassed
+
+    it('does not substitute placeholders in non-text nodes with text property', () => {
+      // This test kills the mutation: `['t'] === 'text'` → `true`
+      // A link node has a `text` property but t !== 'text'
+      // If the type guard is bypassed, substitution would incorrectly occur
+      const blocks: TemplateBlock[] = [
+        {
+          blockType: 'paragraph',
+          content: {
+            inline: [
+              // Simulating a malformed node that has t !== 'text' but has a text property
+              { t: 'other', text: '{{title}}' } as unknown as { t: 'text'; text: string },
+            ],
+          },
+        },
+      ];
+
+      const result = substitutePlaceholders(blocks, baseContext);
+
+      // The node should be passed through UNCHANGED - no substitution
+      const inline = (result[0]?.content as { inline: unknown[] }).inline;
+      expect(inline[0]).toEqual({ t: 'other', text: '{{title}}' });
+    });
+
+    it('handles undefined nodes without crashing', () => {
+      // This test kills the mutation: `typeof node === 'object'` → `true`
+      // If bypassed, accessing properties on undefined would throw
+      const blocks: TemplateBlock[] = [
+        {
+          blockType: 'paragraph',
+          content: {
+            inline: [
+              undefined as unknown as { t: 'text'; text: string },
+              { t: 'text', text: '{{title}}' },
+            ],
+          },
+        },
+      ];
+
+      const result = substitutePlaceholders(blocks, baseContext);
+
+      // undefined should be passed through, text should be substituted
+      const inline = (result[0]?.content as { inline: unknown[] }).inline;
+      expect(inline[0]).toBeUndefined();
+      expect(inline[1]).toEqual({ t: 'text', text: 'Test Title' });
+    });
 
     it('handles null nodes in inline array gracefully', () => {
       // Cast to bypass TypeScript - simulating malformed data

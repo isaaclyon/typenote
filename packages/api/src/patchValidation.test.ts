@@ -138,6 +138,18 @@ describe('validatePatchInput', () => {
 // =============================================================================
 
 describe('validateBlockContent', () => {
+  describe('unknown block type', () => {
+    it('rejects unknown block type with error result', () => {
+      const result = validateBlockContent('unknown_type', { inline: [] });
+      expect(result.valid).toBe(false);
+      if (!result.valid) {
+        expect(result.errors).toHaveLength(1);
+        expect(result.errors[0]?.path).toBe('blockType');
+        expect(result.errors[0]?.message).toContain('Unknown block type');
+      }
+    });
+  });
+
   describe('paragraph', () => {
     it('accepts valid paragraph content', () => {
       const result = validateBlockContent('paragraph', { inline: [] });

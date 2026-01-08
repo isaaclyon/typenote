@@ -17,6 +17,7 @@ import {
   RemoveTagsInputSchema,
   AssignTagsResultSchema,
   RemoveTagsResultSchema,
+  TagErrorCodeSchema,
   type Tag,
   type TagWithUsage,
   type CreateTagInput,
@@ -66,6 +67,26 @@ describe('TagColorSchema', () => {
   it('rejects invalid characters in color name', () => {
     const result = TagColorSchema.safeParse('red-blue');
     expect(result.success).toBe(false);
+  });
+
+  it('rejects hex with prefix before hash', () => {
+    const result = TagColorSchema.safeParse('x#FF0000');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects hex with suffix after digits', () => {
+    const result = TagColorSchema.safeParse('#FF0000x');
+    expect(result.success).toBe(false);
+  });
+
+  it('returns error message for invalid color', () => {
+    const result = TagColorSchema.safeParse('invalid-color');
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe(
+        'Color must be hex code (#RRGGBB) or CSS color name'
+      );
+    }
   });
 });
 
@@ -273,6 +294,25 @@ describe('TagSchema', () => {
     };
     const result = TagSchema.safeParse(tag);
     expect(result.success).toBe(false);
+  });
+
+  it('returns error message for invalid slug', () => {
+    const tag = {
+      id: VALID_ULID_1,
+      name: 'Test',
+      slug: 'Invalid_Slug!',
+      color: null,
+      icon: null,
+      description: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const result = TagSchema.safeParse(tag);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const slugError = result.error.issues.find((i) => i.path.includes('slug'));
+      expect(slugError?.message).toBe('Slug must be lowercase alphanumeric with hyphens');
+    }
   });
 });
 
@@ -600,6 +640,11 @@ describe('AssignTagsResultSchema', () => {
     const parsed = AssignTagsResultSchema.safeParse(result);
     expect(parsed.success).toBe(true);
   });
+
+  it('rejects empty object', () => {
+    const parsed = AssignTagsResultSchema.safeParse({});
+    expect(parsed.success).toBe(false);
+  });
 });
 
 // ============================================================================
@@ -625,5 +670,29 @@ describe('RemoveTagsResultSchema', () => {
     };
     const parsed = RemoveTagsResultSchema.safeParse(result);
     expect(parsed.success).toBe(true);
+  });
+
+  it('rejects empty object', () => {
+    const parsed = RemoveTagsResultSchema.safeParse({});
+    expect(parsed.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// TagErrorCodeSchema
+// ============================================================================
+
+describe('TagErrorCodeSchema', () => {
+  it('validates all defined error codes', () => {
+    const errorCodes = ['TAG_NOT_FOUND', 'TAG_SLUG_EXISTS', 'TAG_IN_USE'];
+    for (const code of errorCodes) {
+      const result = TagErrorCodeSchema.safeParse(code);
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it('rejects invalid error code', () => {
+    const result = TagErrorCodeSchema.safeParse('INVALID_CODE');
+    expect(result.success).toBe(false);
   });
 });

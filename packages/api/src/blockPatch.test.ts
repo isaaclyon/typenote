@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   PlaceSchema,
+  BlockMetaSchema,
   InsertBlockOpSchema,
   UpdateBlockOpSchema,
   MoveBlockOpSchema,
@@ -9,6 +10,7 @@ import {
   ClientContextSchema,
   ApplyBlockPatchInputSchema,
   ApplyBlockPatchResultSchema,
+  PatchWarningSchema,
   type BlockOp,
 } from './blockPatch.js';
 import {
@@ -44,10 +46,29 @@ describe('PlaceSchema', () => {
   const invalidPlaces = [
     ['before without siblingBlockId', { where: 'before' }],
     ['after without siblingBlockId', { where: 'after' }],
+    ['empty object', {}],
   ] as const;
 
   it.each(invalidPlaces)('rejects %s', (_, place) => {
     expectInvalid(PlaceSchema, place);
+  });
+});
+
+// =============================================================================
+// BlockMetaSchema Tests
+// =============================================================================
+
+describe('BlockMetaSchema', () => {
+  it('accepts valid meta with collapsed', () => {
+    expectValid(BlockMetaSchema, { collapsed: true });
+  });
+
+  it('accepts empty object', () => {
+    expectValid(BlockMetaSchema, {});
+  });
+
+  it('rejects invalid collapsed type', () => {
+    expectInvalid(BlockMetaSchema, { collapsed: 'yes' }, 'collapsed');
   });
 });
 
@@ -77,6 +98,15 @@ describe('InsertBlockOpSchema', () => {
   const invalidInsertOps = [
     ['without blockId', { ...makeInsertOp(), blockId: undefined }],
     ['with invalid blockId length', makeInsertOp({ blockId: 'short' })],
+    ['empty object missing required fields', {}],
+    [
+      'missing op',
+      { blockId: VALID_ULID, parentBlockId: null, blockType: 'paragraph', content: {} },
+    ],
+    [
+      'missing blockType',
+      { op: 'block.insert', blockId: VALID_ULID, parentBlockId: null, content: {} },
+    ],
   ] as const;
 
   it.each(invalidInsertOps)('rejects insert %s', (_, op) => {
@@ -111,6 +141,19 @@ describe('UpdateBlockOpSchema', () => {
     const op = { op: 'block.update', blockId: VALID_ULID };
     expectInvalid(UpdateBlockOpSchema, op);
   });
+
+  it('rejects empty object missing required fields', () => {
+    expectInvalid(UpdateBlockOpSchema, {});
+  });
+
+  it('rejects update missing blockId', () => {
+    expectInvalid(UpdateBlockOpSchema, { op: 'block.update', patch: { content: {} } }, 'blockId');
+  });
+
+  it('accepts update with empty patch object', () => {
+    // Empty patch is valid - patch fields are all optional
+    expectValid(UpdateBlockOpSchema, { op: 'block.update', blockId: VALID_ULID, patch: {} });
+  });
 });
 
 // =============================================================================
@@ -128,6 +171,18 @@ describe('MoveBlockOpSchema', () => {
   it.each(validMoveOps)('accepts move %s', (_, op) => {
     expectValid(MoveBlockOpSchema, op);
   });
+
+  it('rejects empty object missing required fields', () => {
+    expectInvalid(MoveBlockOpSchema, {});
+  });
+
+  it('rejects move missing blockId', () => {
+    expectInvalid(MoveBlockOpSchema, { op: 'block.move', newParentBlockId: null }, 'blockId');
+  });
+
+  it('rejects move missing newParentBlockId', () => {
+    expectInvalid(MoveBlockOpSchema, { op: 'block.move', blockId: VALID_ULID }, 'newParentBlockId');
+  });
 });
 
 // =============================================================================
@@ -142,6 +197,14 @@ describe('DeleteBlockOpSchema', () => {
 
   it.each(validDeleteOps)('accepts delete %s', (_, op) => {
     expectValid(DeleteBlockOpSchema, op);
+  });
+
+  it('rejects empty object missing required fields', () => {
+    expectInvalid(DeleteBlockOpSchema, {});
+  });
+
+  it('rejects delete missing blockId', () => {
+    expectInvalid(DeleteBlockOpSchema, { op: 'block.delete' }, 'blockId');
   });
 });
 
@@ -252,6 +315,55 @@ describe('ApplyBlockPatchResultSchema', () => {
   it.each(validResults)('accepts %s result', (_, result) => {
     expectValid(ApplyBlockPatchResultSchema, result);
   });
+
+  it('rejects empty object missing required fields', () => {
+    expectInvalid(ApplyBlockPatchResultSchema, {});
+  });
+
+  it('rejects result missing applied', () => {
+    expectInvalid(
+      ApplyBlockPatchResultSchema,
+      {
+        apiVersion: 'v1',
+        objectId: VALID_ULID,
+        previousDocVersion: 0,
+        newDocVersion: 1,
+      },
+      'applied'
+    );
+  });
+
+  it('rejects result with empty applied object', () => {
+    expectInvalid(
+      ApplyBlockPatchResultSchema,
+      {
+        apiVersion: 'v1',
+        objectId: VALID_ULID,
+        previousDocVersion: 0,
+        newDocVersion: 1,
+        applied: {},
+      },
+      'applied.insertedBlockIds'
+    );
+  });
+
+  it('rejects result with applied missing insertedBlockIds', () => {
+    expectInvalid(
+      ApplyBlockPatchResultSchema,
+      {
+        apiVersion: 'v1',
+        objectId: VALID_ULID,
+        previousDocVersion: 0,
+        newDocVersion: 1,
+        applied: {
+          updatedBlockIds: [],
+          movedBlockIds: [],
+          deletedBlockIds: [],
+        },
+      },
+      'applied.insertedBlockIds'
+    );
+  });
 });
 
 // =============================================================================
@@ -279,5 +391,35 @@ describe('ClientContextSchema', () => {
 
   it('rejects invalid timestamp format', () => {
     expectInvalid(ClientContextSchema, { ts: 'not-a-date' }, 'ts');
+  });
+});
+
+// =============================================================================
+// PatchWarningSchema Tests
+// =============================================================================
+
+describe('PatchWarningSchema', () => {
+  it('accepts valid warning with code and message', () => {
+    expectValid(PatchWarningSchema, { code: 'ORDER_KEY_REBALANCED', message: 'Keys rebalanced' });
+  });
+
+  it('accepts warning with optional details', () => {
+    expectValid(PatchWarningSchema, {
+      code: 'ORDER_KEY_REBALANCED',
+      message: 'Keys rebalanced',
+      details: { count: 5 },
+    });
+  });
+
+  it('rejects empty object missing required fields', () => {
+    expectInvalid(PatchWarningSchema, {});
+  });
+
+  it('rejects warning missing code', () => {
+    expectInvalid(PatchWarningSchema, { message: 'Some message' }, 'code');
+  });
+
+  it('rejects warning missing message', () => {
+    expectInvalid(PatchWarningSchema, { code: 'SOME_CODE' }, 'message');
   });
 });
