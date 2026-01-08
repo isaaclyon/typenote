@@ -140,7 +140,7 @@ test.describe('Block Manipulation', () => {
     await expect(saveStatus).toContainText('Saved', { timeout: 5000 });
 
     // Select all and replace
-    await editor.press('Meta+a');
+    await editor.press('ControlOrMeta+a');
     await editor.pressSequentially('Replaced text', { delay: 30 });
 
     // Wait for save again
@@ -373,9 +373,9 @@ test.describe('Rich Content', () => {
     await editor.pressSequentially('Normal ', { delay: 30 });
 
     // Turn on bold
-    await editor.press('Meta+b');
+    await editor.press('ControlOrMeta+b');
     await editor.pressSequentially('bold', { delay: 30 });
-    await editor.press('Meta+b');
+    await editor.press('ControlOrMeta+b');
 
     await editor.pressSequentially(' text', { delay: 30 });
 
@@ -393,9 +393,9 @@ test.describe('Rich Content', () => {
 
     // Type with italic
     await editor.pressSequentially('Normal ', { delay: 30 });
-    await editor.press('Meta+i');
+    await editor.press('ControlOrMeta+i');
     await editor.pressSequentially('italic', { delay: 30 });
-    await editor.press('Meta+i');
+    await editor.press('ControlOrMeta+i');
     await editor.pressSequentially(' text', { delay: 30 });
 
     // Verify italic element exists
@@ -411,8 +411,8 @@ test.describe('Rich Content', () => {
     await editor.click();
 
     // Apply both bold and italic
-    await editor.press('Meta+b');
-    await editor.press('Meta+i');
+    await editor.press('ControlOrMeta+b');
+    await editor.press('ControlOrMeta+i');
     await editor.pressSequentially('bold-italic', { delay: 30 });
 
     // Should have both marks
@@ -555,11 +555,11 @@ test.describe('Rich Content', () => {
     await editor.click();
 
     // Create formatted content
-    await editor.press('Meta+b');
+    await editor.press('ControlOrMeta+b');
     await editor.pressSequentially('Bold persisted', { delay: 30 });
-    await editor.press('Meta+b');
+    await editor.press('ControlOrMeta+b');
     await editor.press('Enter');
-    await editor.press('Meta+i');
+    await editor.press('ControlOrMeta+i');
     await editor.pressSequentially('Italic persisted', { delay: 30 });
 
     // Wait for save
@@ -645,8 +645,8 @@ test.describe('Block Nesting (List Indentation)', () => {
     await editor.pressSequentially('Second item', { delay: 30 });
     await editor.press('Tab'); // Try to indent
 
-    // Verify list exists with content
-    await expect(editor.locator('ul')).toBeVisible();
+    // Verify list exists with content (use .first() as nested lists create multiple ul elements)
+    await expect(editor.locator('ul').first()).toBeVisible();
     await expect(editor).toContainText('First item');
     await expect(editor).toContainText('Second item');
   });
@@ -1071,19 +1071,19 @@ test.describe('Block Type Rendering', () => {
 
   test('blockquote renders correctly via IPC with paragraph child', async ({ window: page }) => {
     // Test blockquote creation via IPC with proper paragraph content
-    const createResult = await page.evaluate(async () => {
+    const result = await page.evaluate(async () => {
       const note = await window.typenoteAPI.getOrCreateTodayDailyNote();
-      if (!note.success) return note;
+      if (!note.success) return { noteSuccess: false, patchSuccess: false };
 
       // Insert a simple paragraph instead of blockquote for now
       // Blockquote is a container and needs proper child relationship
-      await window.typenoteAPI.applyBlockPatch({
+      const patchResult = await window.typenoteAPI.applyBlockPatch({
         apiVersion: 'v1',
         objectId: note.result.dailyNote.id,
         ops: [
           {
             op: 'block.insert',
-            blockId: '01TESTQUOTE0000000000001',
+            blockId: '01TESTQUOTE000000000000012',
             parentBlockId: null,
             blockType: 'paragraph',
             content: { inline: [{ t: 'text', text: 'Quote styled text' }] },
@@ -1091,10 +1091,11 @@ test.describe('Block Type Rendering', () => {
         ],
       });
 
-      return note;
+      return { noteSuccess: true, patchSuccess: patchResult.success };
     });
 
-    expect(createResult.success).toBe(true);
+    expect(result.noteSuccess).toBe(true);
+    expect(result.patchSuccess).toBe(true);
 
     // Reload and verify
     await page.reload();
@@ -1118,7 +1119,7 @@ test.describe('Block Type Rendering', () => {
         ops: [
           {
             op: 'block.insert',
-            blockId: '01TESTHR0000000000000001',
+            blockId: '01TESTHR000000000000000012',
             parentBlockId: null,
             blockType: 'thematic_break',
             content: {},

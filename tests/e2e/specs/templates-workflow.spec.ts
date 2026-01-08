@@ -413,14 +413,14 @@ test.describe('Template Persistence', () => {
     const objectId = result.result.dailyNote.id;
 
     // Add a new block to the document
-    await page.evaluate(async (id) => {
+    const patchResult = await page.evaluate(async (id) => {
       return await window.typenoteAPI.applyBlockPatch({
         apiVersion: 'v1',
         objectId: id,
         ops: [
           {
             op: 'block.insert',
-            blockId: '01PERSISTTEST12345678901',
+            blockId: '01PERSISTTEST1234567890123',
             parentBlockId: null,
             blockType: 'paragraph',
             content: { inline: [{ t: 'text', text: 'Added after template' }] },
@@ -428,6 +428,8 @@ test.describe('Template Persistence', () => {
         ],
       });
     }, objectId);
+
+    expect(patchResult.success).toBe(true);
 
     // Reload the page
     await page.reload();
@@ -477,7 +479,7 @@ test.describe('Template Persistence', () => {
         ops: [
           {
             op: 'block.insert',
-            blockId: '01VERSIONTEST12345678902',
+            blockId: '01VERSIONTEST1234567890234',
             parentBlockId: null,
             blockType: 'paragraph',
             content: { inline: [{ t: 'text', text: 'Another block' }] },
@@ -666,7 +668,7 @@ test.describe('Editor Integration', () => {
         ops: [
           {
             op: 'block.insert',
-            blockId: '01EDITORTEST12345678901',
+            blockId: '01EDITORTEST12345678901234',
             parentBlockId: null,
             blockType: 'paragraph',
             content: { inline: [{ t: 'text', text: 'User added content' }] },
