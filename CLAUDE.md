@@ -29,7 +29,12 @@ TypeNote — A local-first desktop knowledge management app. Backend-first archi
 ```bash
 pnpm typecheck        # Type check all packages
 pnpm lint             # Lint all packages
-pnpm test             # Run all tests
+pnpm test             # Run all unit tests (excludes E2E and integration)
+pnpm test:e2e         # Run E2E tests (auto-cleans & rebuilds desktop app)
+pnpm test:e2e:quick   # Run E2E tests (skips rebuild - use when build is fresh)
+pnpm test:e2e:headed  # Run E2E tests with visible Electron window
+pnpm test:integration # Run integration tests
+pnpm test:all         # Run unit + integration tests (excludes E2E)
 pnpm build            # Build all packages
 pnpm format           # Format all files
 pnpm format:check     # Check formatting
