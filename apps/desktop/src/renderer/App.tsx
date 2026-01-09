@@ -5,6 +5,7 @@ import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
 import { NoteEditor } from './components/NoteEditor.js';
 import { Button } from './components/ui/button.js';
+import { CommandPalette } from './components/CommandPalette.js';
 
 function App(): ReactElement {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
@@ -19,6 +20,11 @@ function App(): ReactElement {
 
   return (
     <div className="flex h-screen">
+      <CommandPalette
+        onNavigate={setSelectedObjectId}
+        onCreateDailyNote={() => void handleCreateDailyNote()}
+      />
+
       {/* Sidebar */}
       <aside className="w-64 border-r bg-muted/30 flex flex-col">
         <div className="p-4 border-b">
