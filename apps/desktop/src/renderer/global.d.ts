@@ -1,4 +1,10 @@
-import type { GetDocumentResult, ObjectSummary, ApplyBlockPatchResult } from '@typenote/api';
+import type {
+  GetDocumentResult,
+  ObjectSummary,
+  ApplyBlockPatchResult,
+  Attachment,
+  UploadAttachmentResult,
+} from '@typenote/api';
 import type {
   GetOrCreateResult,
   ObjectDetails,
@@ -40,6 +46,19 @@ export interface TypenoteAPI {
     title: string,
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
+
+  // Attachment operations
+  uploadAttachment: (input: {
+    filename: string;
+    mimeType: string;
+    sizeBytes: number;
+    data: string;
+  }) => Promise<IpcOutcome<UploadAttachmentResult>>;
+  getAttachment: (attachmentId: string) => Promise<IpcOutcome<Attachment | null>>;
+  listAttachments: (options?: { orphanedOnly?: boolean }) => Promise<IpcOutcome<Attachment[]>>;
+  linkBlockToAttachment: (blockId: string, attachmentId: string) => Promise<IpcOutcome<void>>;
+  unlinkBlockFromAttachment: (blockId: string, attachmentId: string) => Promise<IpcOutcome<void>>;
+  getBlockAttachments: (blockId: string) => Promise<IpcOutcome<Attachment[]>>;
 }
 
 declare global {

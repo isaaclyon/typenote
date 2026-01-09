@@ -6,19 +6,23 @@ import {
   applyBlockPatch,
   getOrCreateTodayDailyNote,
   createObject,
+  InMemoryFileService,
   type TypenoteDb,
+  type FileService,
 } from '@typenote/storage';
 import { generateId } from '@typenote/core';
 import { createIpcHandlers, type IpcHandlers } from './ipc.js';
 
 describe('IPC Handlers', () => {
   let db: TypenoteDb;
+  let fileService: FileService;
   let handlers: IpcHandlers;
 
   beforeEach(() => {
     db = createTestDb();
     seedBuiltInTypes(db);
-    handlers = createIpcHandlers(db);
+    fileService = new InMemoryFileService();
+    handlers = createIpcHandlers(db, fileService);
   });
 
   afterEach(() => {
@@ -512,6 +516,297 @@ describe('IPC Handlers', () => {
           code: 'INVALID_DATE_FORMAT',
           message: expect.any(String),
         },
+      });
+    });
+  });
+
+  describe('attachment operations', () => {
+    describe('uploadAttachment', () => {
+      it('uploads attachment and returns attachmentId', () => {
+        const result = handlers.uploadAttachment({
+          filename: 'test.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test data').toString('base64'),
+        });
+
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.result.attachmentId).toBeDefined();
+          expect(typeof result.result.attachmentId).toBe('string');
+        }
+      });
+
+      it('returns validation error for invalid mimeType', () => {
+        const result = handlers.uploadAttachment({
+          filename: 'test.exe',
+          mimeType: 'application/x-msdownload',
+          sizeBytes: 100,
+          data: Buffer.from('test').toString('base64'),
+        });
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.code).toBe('UNSUPPORTED_FILE_TYPE');
+        }
+      });
+
+      it('returns error for file too large', () => {
+        const result = handlers.uploadAttachment({
+          filename: 'big.png',
+          mimeType: 'image/png',
+          sizeBytes: 11 * 1024 * 1024, // 11 MB (exceeds 10 MB limit)
+          data: Buffer.from('small').toString('base64'),
+        });
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.code).toBe('FILE_TOO_LARGE');
+        }
+      });
+
+      it('returns validation error for missing required fields', () => {
+        const result = handlers.uploadAttachment({
+          filename: 'test.png',
+          // missing mimeType, sizeBytes, data
+        });
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.code).toBe('VALIDATION');
+        }
+      });
+    });
+
+    describe('getAttachment', () => {
+      it('returns attachment by id', () => {
+        // First upload an attachment
+        const uploadResult = handlers.uploadAttachment({
+          filename: 'test.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test data').toString('base64'),
+        });
+        expect(uploadResult.success).toBe(true);
+        if (!uploadResult.success) return;
+
+        const result = handlers.getAttachment(uploadResult.result.attachmentId);
+
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.result).not.toBeNull();
+          expect(result.result?.filename).toBe('test.png');
+          expect(result.result?.mimeType).toBe('image/png');
+        }
+      });
+
+      it('returns null for non-existent attachment', () => {
+        const result = handlers.getAttachment('nonexistent-id');
+
+        expect(result).toEqual({
+          success: true,
+          result: null,
+        });
+      });
+    });
+
+    describe('listAttachments', () => {
+      it('returns empty array when no attachments exist', () => {
+        const result = handlers.listAttachments();
+
+        expect(result).toEqual({
+          success: true,
+          result: [],
+        });
+      });
+
+      it('returns all attachments', () => {
+        // Upload two attachments
+        handlers.uploadAttachment({
+          filename: 'test1.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test1').toString('base64'),
+        });
+        handlers.uploadAttachment({
+          filename: 'test2.pdf',
+          mimeType: 'application/pdf',
+          sizeBytes: 200,
+          data: Buffer.from('test2').toString('base64'),
+        });
+
+        const result = handlers.listAttachments();
+
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.result.length).toBe(2);
+        }
+      });
+    });
+
+    describe('linkBlockToAttachment', () => {
+      it('links block to attachment successfully', () => {
+        // Create a daily note with a block
+        const { dailyNote } = getOrCreateTodayDailyNote(db);
+        const blockId = generateId();
+        applyBlockPatch(db, {
+          apiVersion: 'v1',
+          objectId: dailyNote.id,
+          baseDocVersion: 0,
+          ops: [
+            {
+              op: 'block.insert',
+              blockId,
+              parentBlockId: null,
+              place: { where: 'end' },
+              blockType: 'paragraph',
+              content: { inline: [{ t: 'text', text: 'test' }] },
+            },
+          ],
+        });
+
+        // Upload an attachment
+        const uploadResult = handlers.uploadAttachment({
+          filename: 'test.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test').toString('base64'),
+        });
+        expect(uploadResult.success).toBe(true);
+        if (!uploadResult.success) return;
+
+        const result = handlers.linkBlockToAttachment(blockId, uploadResult.result.attachmentId);
+
+        expect(result).toEqual({
+          success: true,
+          result: undefined,
+        });
+      });
+
+      it('returns error for non-existent attachment', () => {
+        const blockId = generateId();
+
+        const result = handlers.linkBlockToAttachment(blockId, 'nonexistent-id');
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+          expect(result.error.code).toBe('ATTACHMENT_NOT_FOUND');
+        }
+      });
+    });
+
+    describe('unlinkBlockFromAttachment', () => {
+      it('unlinks block from attachment successfully', () => {
+        // Create a daily note with a block
+        const { dailyNote } = getOrCreateTodayDailyNote(db);
+        const blockId = generateId();
+        applyBlockPatch(db, {
+          apiVersion: 'v1',
+          objectId: dailyNote.id,
+          baseDocVersion: 0,
+          ops: [
+            {
+              op: 'block.insert',
+              blockId,
+              parentBlockId: null,
+              place: { where: 'end' },
+              blockType: 'paragraph',
+              content: { inline: [{ t: 'text', text: 'test' }] },
+            },
+          ],
+        });
+
+        // Upload and link an attachment
+        const uploadResult = handlers.uploadAttachment({
+          filename: 'test.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test').toString('base64'),
+        });
+        expect(uploadResult.success).toBe(true);
+        if (!uploadResult.success) return;
+
+        handlers.linkBlockToAttachment(blockId, uploadResult.result.attachmentId);
+
+        // Now unlink
+        const result = handlers.unlinkBlockFromAttachment(
+          blockId,
+          uploadResult.result.attachmentId
+        );
+
+        expect(result).toEqual({
+          success: true,
+          result: undefined,
+        });
+
+        // Verify it's unlinked
+        const attachmentsResult = handlers.getBlockAttachments(blockId);
+        expect(attachmentsResult.success).toBe(true);
+        if (attachmentsResult.success) {
+          expect(attachmentsResult.result.length).toBe(0);
+        }
+      });
+    });
+
+    describe('getBlockAttachments', () => {
+      it('returns empty array for block with no attachments', () => {
+        const result = handlers.getBlockAttachments('some-block-id');
+
+        expect(result).toEqual({
+          success: true,
+          result: [],
+        });
+      });
+
+      it('returns attachments linked to block', () => {
+        // Create a daily note with a block
+        const { dailyNote } = getOrCreateTodayDailyNote(db);
+        const blockId = generateId();
+        applyBlockPatch(db, {
+          apiVersion: 'v1',
+          objectId: dailyNote.id,
+          baseDocVersion: 0,
+          ops: [
+            {
+              op: 'block.insert',
+              blockId,
+              parentBlockId: null,
+              place: { where: 'end' },
+              blockType: 'paragraph',
+              content: { inline: [{ t: 'text', text: 'test' }] },
+            },
+          ],
+        });
+
+        // Upload and link two attachments
+        const upload1 = handlers.uploadAttachment({
+          filename: 'test1.png',
+          mimeType: 'image/png',
+          sizeBytes: 100,
+          data: Buffer.from('test1').toString('base64'),
+        });
+        const upload2 = handlers.uploadAttachment({
+          filename: 'test2.pdf',
+          mimeType: 'application/pdf',
+          sizeBytes: 200,
+          data: Buffer.from('test2').toString('base64'),
+        });
+
+        expect(upload1.success).toBe(true);
+        expect(upload2.success).toBe(true);
+        if (!upload1.success || !upload2.success) return;
+
+        handlers.linkBlockToAttachment(blockId, upload1.result.attachmentId);
+        handlers.linkBlockToAttachment(blockId, upload2.result.attachmentId);
+
+        const result = handlers.getBlockAttachments(blockId);
+
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.result.length).toBe(2);
+          expect(result.result.map((a) => a.filename)).toContain('test1.png');
+          expect(result.result.map((a) => a.filename)).toContain('test2.pdf');
+        }
       });
     });
   });

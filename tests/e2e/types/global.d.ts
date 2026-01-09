@@ -157,6 +157,19 @@ interface CompletedTasksOptions {
   endDate?: string;
 }
 
+interface CalendarDateInfo {
+  startDate: string;
+  endDate?: string | undefined;
+  allDay: boolean;
+}
+
+interface CalendarItem {
+  id: string;
+  title: string;
+  typeKey: string;
+  dateInfo: CalendarDateInfo;
+}
+
 export interface TypenoteAPI {
   version: string;
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
@@ -195,6 +208,8 @@ export interface TypenoteAPI {
   getTasksByDueDate: (dateKey: string) => Promise<IpcOutcome<TaskObject[]>>;
   completeTask: (taskId: string) => Promise<IpcOutcome<void>>;
   reopenTask: (taskId: string) => Promise<IpcOutcome<void>>;
+  // Calendar operations
+  getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
 }
 
 declare global {

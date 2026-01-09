@@ -14,6 +14,15 @@ export {
   formatDateForDisplay,
 } from './dateUtils.js';
 
+// Calendar date utilities (for calendar grid generation)
+export {
+  getMonthGridDates,
+  getMonthDateRange,
+  formatMonthYear,
+  addMonths,
+  getCalendarTodayDateKey,
+} from './calendarDateUtils.js';
+
 // Template placeholders
 export { substitutePlaceholders, type PlaceholderContext } from './templatePlaceholders.js';
 

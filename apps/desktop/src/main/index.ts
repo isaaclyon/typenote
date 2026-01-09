@@ -8,7 +8,9 @@ import {
   seedDailyNoteTemplate,
   closeDb,
   getDbPath,
+  FilesystemFileService,
   type TypenoteDb,
+  type FileService,
 } from '@typenote/storage';
 import { setupIpcHandlers } from './ipc.js';
 
@@ -17,6 +19,7 @@ const __dirname = path.dirname(__filename);
 
 let mainWindow: BrowserWindow | null = null;
 let db: TypenoteDb | null = null;
+let fileService: FileService | null = null;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -47,11 +50,17 @@ function initDatabase(): void {
   db = createFileDb(dbPath);
   seedBuiltInTypes(db);
   seedDailyNoteTemplate(db);
+
+  // Initialize file service in the same directory as the database
+  const attachmentsPath = path.join(path.dirname(dbPath), 'attachments');
+  fileService = new FilesystemFileService(attachmentsPath);
+  console.log(`[TypeNote] Using attachments directory: ${attachmentsPath}`);
 }
 
 function registerIpcHandlers(): void {
   if (!db) throw new Error('Database not initialized');
-  setupIpcHandlers(db);
+  if (!fileService) throw new Error('FileService not initialized');
+  setupIpcHandlers(db, fileService);
 }
 
 void app.whenReady().then(() => {

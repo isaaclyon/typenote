@@ -4,13 +4,17 @@ import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
 import { NoteEditor } from './components/NoteEditor.js';
+import { CalendarView } from './components/calendar/index.js';
 import { Button } from './components/ui/button.js';
 import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
 
+type ViewMode = 'notes' | 'calendar';
+
 function App(): ReactElement {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('notes');
   const { isOpen, close } = useCommandPalette();
 
   const handleCreateDailyNote = async () => {
@@ -29,7 +33,7 @@ function App(): ReactElement {
           <div className="p-4 border-b">
             <h1 className="font-semibold">TypeNote</h1>
           </div>
-          <div className="p-2">
+          <div className="p-2 space-y-1">
             <Button
               variant="outline"
               size="sm"
@@ -39,6 +43,24 @@ function App(): ReactElement {
             >
               + Today's Note
             </Button>
+            <Button
+              variant={viewMode === 'notes' ? 'secondary' : 'ghost'}
+              size="sm"
+              className="w-full justify-start"
+              onClick={() => setViewMode('notes')}
+              data-testid="notes-button"
+            >
+              Notes
+            </Button>
+            <Button
+              variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
+              size="sm"
+              className="w-full justify-start"
+              onClick={() => setViewMode('calendar')}
+              data-testid="calendar-button"
+            >
+              Calendar
+            </Button>
           </div>
           <div className="flex-1 overflow-hidden">
             <ObjectList onSelect={setSelectedObjectId} selectedId={selectedObjectId} />
@@ -47,7 +69,14 @@ function App(): ReactElement {
 
         {/* Main content area */}
         <main className="flex-1">
-          {selectedObjectId ? (
+          {viewMode === 'calendar' ? (
+            <CalendarView
+              onNavigate={(id) => {
+                setSelectedObjectId(id);
+                setViewMode('notes');
+              }}
+            />
+          ) : selectedObjectId ? (
             <NoteEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground">

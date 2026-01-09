@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron';
+import { z } from 'zod';
 import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
@@ -28,11 +29,22 @@ import {
   getTasksByDueDate as getTasksByDueDateStorage,
   completeTask as completeTaskStorage,
   reopenTask as reopenTaskStorage,
+  // Calendar service
+  getEventsInDateRange as getEventsInDateRangeStorage,
+  // Attachment service
+  uploadAttachment as uploadAttachmentStorage,
+  getAttachment as getAttachmentStorage,
+  listAttachments as listAttachmentsStorage,
+  linkBlockToAttachment as linkBlockToAttachmentStorage,
+  unlinkBlockFromAttachment as unlinkBlockFromAttachmentStorage,
+  getBlockAttachments as getBlockAttachmentsStorage,
+  AttachmentServiceError,
   DocumentNotFoundError,
   CreateObjectError,
   DailyNoteError,
   TagServiceError,
   type TypenoteDb,
+  type FileService,
   type GetDocumentResult,
   type ApplyBlockPatchOutcome,
   type GetOrCreateResult,
@@ -44,6 +56,8 @@ import {
   type CreatedObject,
   type TaskObject,
   type CompletedTasksOptions,
+  type ListAttachmentsOptions,
+  type CalendarItem,
 } from '@typenote/storage';
 import {
   ApplyBlockPatchInputSchema,
@@ -57,7 +71,23 @@ import {
   type RemoveTagsResult,
   type TaskStatus,
   type TaskPriority,
+  type Attachment,
+  type UploadAttachmentResult,
 } from '@typenote/api';
+
+/**
+ * IPC-specific schema for uploadAttachment that includes base64-encoded data.
+ * This schema is intentionally less strict than UploadAttachmentInputSchema to let
+ * the storage layer handle domain-specific validation (MIME type, file size limits).
+ * This way, specific error codes like UNSUPPORTED_FILE_TYPE and FILE_TOO_LARGE
+ * are returned instead of generic VALIDATION errors.
+ */
+const IpcUploadAttachmentInputSchema = z.object({
+  filename: z.string().min(1).max(255),
+  mimeType: z.string().min(1), // Don't restrict to supported types - let storage layer validate
+  sizeBytes: z.number().int().min(1), // Don't enforce max - let storage layer validate
+  data: z.string().min(1, 'Data is required'),
+});
 
 interface IpcSuccess<T> {
   success: true;
@@ -108,9 +138,18 @@ export interface IpcHandlers {
   getTasksByDueDate: (dateKey: string) => IpcOutcome<TaskObject[]>;
   completeTask: (taskId: string) => IpcOutcome<void>;
   reopenTask: (taskId: string) => IpcOutcome<void>;
+  // Attachment operations
+  uploadAttachment: (request: unknown) => IpcOutcome<UploadAttachmentResult>;
+  getAttachment: (attachmentId: string) => IpcOutcome<Attachment | null>;
+  listAttachments: (options?: ListAttachmentsOptions) => IpcOutcome<Attachment[]>;
+  linkBlockToAttachment: (blockId: string, attachmentId: string) => IpcOutcome<void>;
+  unlinkBlockFromAttachment: (blockId: string, attachmentId: string) => IpcOutcome<void>;
+  getBlockAttachments: (blockId: string) => IpcOutcome<Attachment[]>;
+  // Calendar operations
+  getEventsInDateRange: (startDate: string, endDate: string) => IpcOutcome<CalendarItem[]>;
 }
 
-export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
+export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {
   return {
     getDocument: (objectId: string): IpcOutcome<GetDocumentResult> => {
       try {
@@ -347,6 +386,79 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
         throw error;
       }
     },
+    // Attachment operations
+    uploadAttachment: (request: unknown): IpcOutcome<UploadAttachmentResult> => {
+      // Validate input with IPC-specific schema (includes base64 data)
+      const parseResult = IpcUploadAttachmentInputSchema.safeParse(request);
+      if (!parseResult.success) {
+        return {
+          success: false,
+          error: {
+            code: 'VALIDATION',
+            message: parseResult.error.errors[0]?.message ?? 'Validation failed',
+          },
+        };
+      }
+
+      const { filename, mimeType, sizeBytes, data } = parseResult.data;
+
+      // Decode base64 data to Buffer
+      const fileData = Buffer.from(data, 'base64');
+
+      try {
+        // Cast mimeType since storage layer validates it and throws UNSUPPORTED_FILE_TYPE
+        const result = uploadAttachmentStorage(db, fileService, {
+          filename,
+          mimeType: mimeType as import('@typenote/api').SupportedMimeType,
+          sizeBytes,
+          fileData,
+        });
+        return { success: true, result };
+      } catch (error) {
+        if (error instanceof AttachmentServiceError) {
+          return {
+            success: false,
+            error: { code: error.code, message: error.message },
+          };
+        }
+        throw error;
+      }
+    },
+    getAttachment: (attachmentId: string): IpcOutcome<Attachment | null> => {
+      const result = getAttachmentStorage(db, attachmentId);
+      return { success: true, result };
+    },
+    listAttachments: (options?: ListAttachmentsOptions): IpcOutcome<Attachment[]> => {
+      const result = listAttachmentsStorage(db, options);
+      return { success: true, result };
+    },
+    linkBlockToAttachment: (blockId: string, attachmentId: string): IpcOutcome<void> => {
+      try {
+        linkBlockToAttachmentStorage(db, blockId, attachmentId);
+        return { success: true, result: undefined };
+      } catch (error) {
+        if (error instanceof AttachmentServiceError) {
+          return {
+            success: false,
+            error: { code: error.code, message: error.message },
+          };
+        }
+        throw error;
+      }
+    },
+    unlinkBlockFromAttachment: (blockId: string, attachmentId: string): IpcOutcome<void> => {
+      unlinkBlockFromAttachmentStorage(db, blockId, attachmentId);
+      return { success: true, result: undefined };
+    },
+    getBlockAttachments: (blockId: string): IpcOutcome<Attachment[]> => {
+      const result = getBlockAttachmentsStorage(db, blockId);
+      return { success: true, result };
+    },
+    // Calendar operations
+    getEventsInDateRange: (startDate: string, endDate: string): IpcOutcome<CalendarItem[]> => {
+      const result = getEventsInDateRangeStorage(db, startDate, endDate);
+      return { success: true, result };
+    },
   };
 }
 
@@ -354,8 +466,8 @@ export function createIpcHandlers(db: TypenoteDb): IpcHandlers {
  * Sets up IPC handlers with auto-registration.
  * This is the single source of truth - adding a handler here automatically registers it.
  */
-export function setupIpcHandlers(db: TypenoteDb): void {
-  const handlers = createIpcHandlers(db);
+export function setupIpcHandlers(db: TypenoteDb, fileService: FileService): void {
+  const handlers = createIpcHandlers(db, fileService);
 
   // Auto-register all handlers with the typenote: prefix
   for (const [name, handler] of Object.entries(handlers)) {

@@ -83,4 +83,31 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   completeTask: (taskId: string) => ipcRenderer.invoke('typenote:completeTask', taskId),
 
   reopenTask: (taskId: string) => ipcRenderer.invoke('typenote:reopenTask', taskId),
+
+  // Attachment operations
+  uploadAttachment: (input: {
+    filename: string;
+    mimeType: string;
+    sizeBytes: number;
+    data: string; // base64-encoded file data
+  }) => ipcRenderer.invoke('typenote:uploadAttachment', input),
+
+  getAttachment: (attachmentId: string) =>
+    ipcRenderer.invoke('typenote:getAttachment', attachmentId),
+
+  listAttachments: (options?: { orphanedOnly?: boolean }) =>
+    ipcRenderer.invoke('typenote:listAttachments', options),
+
+  linkBlockToAttachment: (blockId: string, attachmentId: string) =>
+    ipcRenderer.invoke('typenote:linkBlockToAttachment', blockId, attachmentId),
+
+  unlinkBlockFromAttachment: (blockId: string, attachmentId: string) =>
+    ipcRenderer.invoke('typenote:unlinkBlockFromAttachment', blockId, attachmentId),
+
+  getBlockAttachments: (blockId: string) =>
+    ipcRenderer.invoke('typenote:getBlockAttachments', blockId),
+
+  // Calendar operations
+  getEventsInDateRange: (startDate: string, endDate: string) =>
+    ipcRenderer.invoke('typenote:getEventsInDateRange', startDate, endDate),
 });

@@ -5,6 +5,7 @@ import type {
   SearchResult,
   BacklinkResult,
   CreatedObject,
+  CalendarItem,
 } from '@typenote/storage';
 
 interface IpcSuccess<T> {
@@ -40,6 +41,8 @@ export interface TypenoteAPI {
     title: string,
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
+  // Calendar operations
+  getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
 }
 
 declare global {
