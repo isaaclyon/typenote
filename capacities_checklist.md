@@ -2,7 +2,7 @@
 
 Based on my exploration, here's what you'd hand to a developer to build Capacities from scratch.
 
-**Last Updated:** 2026-01-07
+**Last Updated:** 2026-01-08
 
 ## Status Legend
 
@@ -23,16 +23,16 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | **1. Core Data Model**    |   90%    |   10%    |   50%    |
 | **2. Rich Text Editor**   |   95%    |   80%    |   87%    |
 | **3. Navigation & Views** |   60%    |   20%    |   40%    |
-| **4. Calendar System**    |   40%    |   10%    |   25%    |
+| **4. Calendar System**    |   100%   |   70%    |   85%    |
 | **5. Task Management**    |   100%   |    0%    |   50%    |
-| **6. Command Palette**    |   70%    |    0%    |   35%    |
+| **6. Command Palette**    |   70%    |   70%    |   70%    |
 | **7. AI Assistant**       |    0%    |    0%    |    0%    |
 | **8. Settings & Config**  |   50%    |    0%    |   25%    |
 | **9. Integrations**       |   60%    |    0%    |   30%    |
 | **10. Sharing & Collab**  |   10%    |    0%    |    5%    |
 | **11. System Features**   |   70%    |   10%    |   40%    |
-| **12. UI Components**     |   N/A    |   35%    |   35%    |
-| **OVERALL**               | **~65%** | **~15%** | **~35%** |
+| **12. UI Components**     |   N/A    |   45%    |   45%    |
+| **OVERALL**               | **~65%** | **~25%** | **~45%** |
 
 ---
 
@@ -217,15 +217,17 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Calendar Views
 
-| Feature                     | Backend | Frontend | Notes                           |
-| --------------------------- | :-----: | :------: | ------------------------------- |
-| Month view                  |   ❌    |    ❌    | Not implemented                 |
-| Week view                   |   ❌    |    ❌    | Not implemented                 |
-| 3-day view                  |   ❌    |    ❌    | Not implemented                 |
-| Day view                    |   ❌    |    ❌    | Not implemented                 |
-| Mini calendar (date picker) |   N/A   |    📦    | `react-day-picker` installed    |
-| "Today" quick navigation    |   ✅    |    ✅    | `DailyNoteNavigation` component |
-| Week number display         |   ❌    |    ❌    | Not implemented                 |
+| Feature                     | Backend | Frontend | Notes                                       |
+| --------------------------- | :-----: | :------: | ------------------------------------------- |
+| Month view                  |   ✅    |    ✅    | 6-week grid with dot indicators             |
+| Week view                   |   ❌    |    ❌    | Not implemented                             |
+| 3-day view                  |   ❌    |    ❌    | Not implemented                             |
+| Day view                    |   ❌    |    ❌    | Not implemented                             |
+| Mini calendar (date picker) |   N/A   |    📦    | `react-day-picker` installed                |
+| "Today" quick navigation    |   ✅    |    ✅    | CalendarHeader + DailyNoteNavigation        |
+| Week number display         |   ❌    |    ❌    | Not implemented                             |
+| Month navigation            |   ✅    |    ✅    | Prev/Next buttons in CalendarHeader         |
+| Day selection with sidebar  |   ✅    |    ✅    | CalendarSidebar shows selected day's events |
 
 ### Daily Note Integration
 
@@ -234,19 +236,23 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Auto-create daily note for current day |   ✅    |    ✅    | `getOrCreateTodayDailyNote()`   |
 | Quick-add buttons (+ Task, etc.)       |   N/A   |    ❌    | No UI                           |
 | Tags section on daily notes            |   ✅    |    ❌    | Tags work, no dedicated section |
-| Show calendar events alongside         |   ❌    |    ❌    | No calendar integration         |
+| Show calendar events alongside         |   ✅    |    ✅    | CalendarSidebar shows all items |
 
 ### Calendar Object Integration
 
-| Feature                               | Backend | Frontend | Notes                             |
-| ------------------------------------- | :-----: | :------: | --------------------------------- |
-| Objects with dates appear in calendar |   ⚠️    |    ❌    | Event type has dates, no calendar |
-| Per-type calendar settings            |   ❌    |    ❌    | No "show in calendar" toggle      |
-| Create objects from calendar events   |   ❌    |    ❌    | Not implemented                   |
-| Color-coded events                    |   ❌    |    ❌    | Not implemented                   |
+| Feature                               | Backend | Frontend | Notes                                     |
+| ------------------------------------- | :-----: | :------: | ----------------------------------------- |
+| Objects with dates appear in calendar |   ✅    |    ✅    | Events, Tasks, DailyNotes unified display |
+| Per-type calendar settings            |   ✅    |    ❌    | `showInCalendar` in DB, no UI toggle      |
+| Create objects from calendar events   |   ❌    |    ❌    | Not implemented                           |
+| Color-coded events                    |   ❌    |    ❌    | Not implemented (type badge only)         |
+| Click event to navigate               |   ✅    |    ✅    | Opens object in editor                    |
 
 **Key Files:**
 
+- Calendar Service: `packages/storage/src/calendarService.ts`
+- Calendar Date Utils: `packages/core/src/calendarDateUtils.ts`
+- Calendar Components: `apps/desktop/src/renderer/components/calendar/`
 - Daily Notes Service: `packages/storage/src/dailyNoteService.ts`
 - Navigation Component: `apps/desktop/src/renderer/components/DailyNoteNavigation.tsx`
 
@@ -464,24 +470,24 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 12. UI COMPONENTS TO BUILD
 
-| Component                   |        Installed         | Integrated | Notes                       |
-| --------------------------- | :----------------------: | :--------: | --------------------------- |
-| Resizable sidebar           |            ❌            |     ❌     | Fixed 264px                 |
-| Modal/overlay system        |         ✅ Radix         |     ❌     | Available, not used         |
-| Side panel                  |            ❌            |     ❌     | Not implemented             |
-| Dropdown menus              |         ✅ Radix         |     ❌     | Available, not used         |
-| Context menus (right-click) |         ✅ Radix         |     ❌     | Available, not used         |
-| Toast notifications         |        ✅ Sonner         |     ❌     | Installed, not wired        |
-| Tag/pill components         |            ⚠️            |     ⚠️     | Badge available             |
-| Date picker                 |   ✅ react-day-picker    |     ❌     | Installed, not wired        |
-| Icon picker                 |            ❌            |     ❌     | Not implemented             |
-| Color picker                |            ❌            |     ❌     | Not implemented             |
-| Table component             | ✅ @tanstack/react-table |     ❌     | Installed, not integrated   |
-| Kanban board component      |            ❌            |     ❌     | Not implemented             |
-| Card grid component         |            ⚠️            |     ⚠️     | Basic ObjectList only       |
-| Calendar components         |   ✅ react-day-picker    |     ❌     | No month/week/day views     |
-| Rich text editor            |        ✅ TipTap         |     ✅     | Complete with extensions    |
-| Command palette             |         ✅ cmdk          |     ❌     | **Installed but not wired** |
+| Component                   |        Installed         | Integrated | Notes                        |
+| --------------------------- | :----------------------: | :--------: | ---------------------------- |
+| Resizable sidebar           |            ❌            |     ❌     | Fixed 264px                  |
+| Modal/overlay system        |         ✅ Radix         |     ❌     | Available, not used          |
+| Side panel                  |            ❌            |     ❌     | Not implemented              |
+| Dropdown menus              |         ✅ Radix         |     ❌     | Available, not used          |
+| Context menus (right-click) |         ✅ Radix         |     ❌     | Available, not used          |
+| Toast notifications         |        ✅ Sonner         |     ✅     | Wired in App.tsx             |
+| Tag/pill components         |            ⚠️            |     ⚠️     | Badge available              |
+| Date picker                 |   ✅ react-day-picker    |     ❌     | Installed, not wired         |
+| Icon picker                 |            ❌            |     ❌     | Not implemented              |
+| Color picker                |            ❌            |     ❌     | Not implemented              |
+| Table component             | ✅ @tanstack/react-table |     ❌     | Installed, not integrated    |
+| Kanban board component      |            ❌            |     ❌     | Not implemented              |
+| Card grid component         |            ⚠️            |     ⚠️     | Basic ObjectList only        |
+| Calendar components         |          Custom          |     ✅     | Month grid with 7 components |
+| Rich text editor            |        ✅ TipTap         |     ✅     | Complete with extensions     |
+| Command palette             |         ✅ cmdk          |     ✅     | Wired with search + create   |
 
 ### Installed Dependencies (Available but Unused)
 
