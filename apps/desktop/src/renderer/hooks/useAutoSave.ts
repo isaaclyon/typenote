@@ -11,6 +11,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Editor } from '@tiptap/react';
 import type { DocumentBlock } from '@typenote/api';
 import { generateBlockOps } from '../lib/tiptapToNotate.js';
+import { ipcCall } from '../lib/ipc.js';
 
 const DEFAULT_DEBOUNCE_MS = 500;
 
@@ -47,18 +48,25 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
     setIsSaving(true);
     setError(null);
 
-    const result = await window.typenoteAPI.applyBlockPatch({
-      apiVersion: 'v1',
-      objectId,
-      ops,
-    });
+    try {
+      const result = await ipcCall('Save', () =>
+        window.typenoteAPI.applyBlockPatch({
+          apiVersion: 'v1',
+          objectId,
+          ops,
+        })
+      );
 
-    setIsSaving(false);
-
-    if (result.success) {
-      setLastSaved(new Date());
-    } else {
-      setError(result.error?.message ?? 'Save failed');
+      if (result.success) {
+        setLastSaved(new Date());
+      } else {
+        setError(result.error?.message ?? 'Save failed');
+      }
+    } catch {
+      // Error already toasted by ipcCall, just set local state
+      setError('Save failed');
+    } finally {
+      setIsSaving(false);
     }
   }, [editor, initialBlocks, objectId]);
 
