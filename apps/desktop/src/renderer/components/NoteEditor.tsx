@@ -28,7 +28,9 @@ import {
   MathInline,
   Highlight,
   RefSuggestion,
+  AttachmentNode,
 } from '../extensions/index.js';
+import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
 import { DailyNoteNavigation } from './DailyNoteNavigation.js';
@@ -108,6 +110,7 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       MathBlock,
       MathInline,
       Highlight,
+      AttachmentNode,
       // Wiki-link and mention suggestions
       RefSuggestion.configure({
         onSearch: handleSearch,
@@ -128,6 +131,33 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     objectId,
     initialBlocks,
   });
+
+  // Wire up image upload handlers for drag-drop and paste
+  const { handleDrop, handlePaste } = useImageUpload(editor);
+
+  useEffect(() => {
+    if (editor === null) return;
+
+    const editorElement = editor.view.dom;
+
+    // Handle drop events
+    const onDrop = (event: DragEvent) => {
+      void handleDrop(event);
+    };
+
+    // Handle paste events
+    const onPaste = (event: ClipboardEvent) => {
+      void handlePaste(event);
+    };
+
+    editorElement.addEventListener('drop', onDrop);
+    editorElement.addEventListener('paste', onPaste);
+
+    return () => {
+      editorElement.removeEventListener('drop', onDrop);
+      editorElement.removeEventListener('paste', onPaste);
+    };
+  }, [editor, handleDrop, handlePaste]);
 
   useEffect(() => {
     async function loadDocument() {

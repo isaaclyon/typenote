@@ -11,6 +11,7 @@ export { TagNode } from './TagNode.js';
 export { MathInline } from './MathInline.js';
 
 // Block nodes
+export { AttachmentNode } from './AttachmentNode/index.js';
 export { CalloutNode } from './CalloutNode.js';
 export { MathBlock } from './MathBlock.js';
 
