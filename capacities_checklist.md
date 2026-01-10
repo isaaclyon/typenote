@@ -2,7 +2,7 @@
 
 Based on my exploration, here's what you'd hand to a developer to build Capacities from scratch.
 
-**Last Updated:** 2026-01-08
+**Last Updated:** 2026-01-10
 
 ## Status Legend
 
@@ -137,14 +137,14 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Editor Features
 
-| Feature                        | Backend | Frontend | Notes                              |
-| ------------------------------ | :-----: | :------: | ---------------------------------- |
-| Drag-and-drop block reordering |   ✅    |    ❌    | `block.move` operation exists      |
-| Slash command menu (/)         |   ❌    |    ❌    | Not implemented                    |
-| Markdown shortcuts             |   N/A   |    ⚠️    | Via TipTap StarterKit              |
-| Spellcheck                     |   N/A   |    ❌    | Not configured                     |
-| "Unlinked mentions" detection  |   ❌    |    ❌    | Not implemented                    |
-| Auto-save                      |   N/A   |    ✅    | 500ms debounce, `useAutoSave` hook |
+| Feature                        | Backend | Frontend | Notes                                                       |
+| ------------------------------ | :-----: | :------: | ----------------------------------------------------------- |
+| Drag-and-drop block reordering |   ✅    |    ❌    | `block.move` operation exists                               |
+| Slash command menu (/)         |   N/A   |    ✅    | 15 commands, keyboard nav, 39 tests                         |
+| Markdown shortcuts             |   N/A   |    ⚠️    | Via TipTap StarterKit                                       |
+| Spellcheck                     |   N/A   |    ❌    | Not configured                                              |
+| "Unlinked mentions" detection  |   ⚠️    |    ❌    | Infrastructure ready (FTS5, refs), needs detection function |
+| Auto-save                      |   N/A   |    ✅    | 500ms debounce, `useAutoSave` hook                          |
 
 **Key Files:**
 
@@ -426,12 +426,12 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 10. SHARING & COLLABORATION
 
-| Feature             | Backend | Frontend | Notes                             |
-| ------------------- | :-----: | :------: | --------------------------------- |
-| Share (public link) |   ❌    |    ❌    | Not implemented                   |
-| Pin to sidebar      |   ❌    |    ❌    | No pinning mechanism              |
-| Duplicate objects   |   ❌    |    ❌    | No clone functionality            |
-| Change object type  |   ⚠️    |    ❌    | Schema ready, no conversion logic |
+| Feature             | Backend | Frontend | Notes                                                    |
+| ------------------- | :-----: | :------: | -------------------------------------------------------- |
+| Share (public link) |   ❌    |    ❌    | Not implemented                                          |
+| Pin to sidebar      |   ❌    |    ❌    | No pinning mechanism                                     |
+| Duplicate objects   |   ❌    |    ❌    | No clone functionality                                   |
+| Change object type  |   ❌    |    ❌    | No implementation - no updateObject() or type conversion |
 
 ---
 
