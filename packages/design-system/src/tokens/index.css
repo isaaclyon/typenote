@@ -1,8 +1,13 @@
 /**
  * TypeNote Design System - Tailwind v4 Theme Tokens
  */
-@import "tailwindcss";
+@import 'tailwindcss';
 @import './fonts.css';
+
+/* Tell Tailwind v4 where to find source files for utility generation */
+@source '../components';
+@source '../stories';
+@source '../../.ladle';
 
 @theme {
   /* ========== Warm Grayscale ========== */
@@ -24,7 +29,7 @@
   --color-accent-200: #bac8ff;
   --color-accent-300: #91a7ff;
   --color-accent-400: #748ffc;
-  --color-accent-500: #6495ED;
+  --color-accent-500: #6495ed;
   --color-accent-600: #5076d4;
   --color-accent-700: #3d5fc2;
 
@@ -32,7 +37,7 @@
   --color-error: #e57373;
   --color-success: #81c784;
   --color-warning: #ffb74d;
-  --color-info: #6495ED;
+  --color-info: #6495ed;
 
   /* ========== Shadcn-Compatible Aliases ========== */
   --color-border: var(--color-gray-200);
@@ -58,6 +63,18 @@
   /* ========== Typography ========== */
   --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
 
   /* ========== Border Radius ========== */
   --radius-sm: 4px;

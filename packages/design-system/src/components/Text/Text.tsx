@@ -5,15 +5,15 @@ import { cn } from '../../utils/cn.js';
 const textVariants = cva('', {
   variants: {
     variant: {
-      body: 'text-[15px] leading-normal text-foreground',
-      bodySmall: 'text-[13px] leading-normal text-foreground',
-      heading1: 'text-[30px] font-semibold leading-tight text-gray-800',
-      heading2: 'text-[24px] font-semibold leading-tight text-gray-800',
-      heading3: 'text-[20px] font-semibold leading-tight text-gray-800',
-      heading4: 'text-[17px] font-semibold leading-tight text-gray-800',
-      label: 'text-[13px] font-medium text-gray-600',
-      caption: 'text-[12px] text-muted-foreground',
-      code: 'font-mono text-[13px] bg-muted px-1.5 py-0.5 rounded',
+      body: 'text-base leading-normal text-foreground',
+      bodySmall: 'text-sm leading-normal text-foreground',
+      heading1: 'text-3xl font-semibold leading-tight text-gray-800',
+      heading2: 'text-2xl font-semibold leading-tight text-gray-800',
+      heading3: 'text-xl font-semibold leading-tight text-gray-800',
+      heading4: 'text-lg font-semibold leading-tight text-gray-800',
+      label: 'text-sm font-medium text-gray-600',
+      caption: 'text-xs text-muted-foreground',
+      code: 'font-mono text-sm bg-muted px-1.5 py-0.5 rounded',
     },
     muted: {
       true: 'text-muted-foreground',
