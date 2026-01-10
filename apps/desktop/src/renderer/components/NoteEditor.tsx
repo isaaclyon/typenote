@@ -29,6 +29,7 @@ import {
   Highlight,
   RefSuggestion,
   AttachmentNode,
+  SlashCommand,
 } from '../extensions/index.js';
 import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
@@ -116,6 +117,8 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
         onSearch: handleSearch,
         onCreate: handleCreate,
       }),
+      // Slash command palette
+      SlashCommand,
     ],
     editable: true, // Enable editing
     immediatelyRender: false, // Important for Electron SSR concerns
