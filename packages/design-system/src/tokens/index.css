@@ -1,11 +1,7 @@
 /**
  * TypeNote Design System - Tailwind v4 Theme Tokens
- *
- * Usage: Import AFTER tailwindcss in your main CSS:
- *   @import "tailwindcss";
- *   @import "@typenote/design-system/tokens.css";
  */
-
+@import "tailwindcss";
 @import './fonts.css';
 
 @theme {
