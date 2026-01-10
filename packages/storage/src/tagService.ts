@@ -19,6 +19,7 @@ import type {
 } from '@typenote/api';
 import { tags, objectTags, objects } from './schema.js';
 import type { TypenoteDb } from './db.js';
+import { createServiceError } from './errors.js';
 
 // ============================================================================
 // Error Types
@@ -31,16 +32,9 @@ export type TagServiceErrorCode =
   | 'NOT_FOUND_OBJECT'
   | 'NOT_FOUND_TAG';
 
-export class TagServiceError extends Error {
-  constructor(
-    public readonly code: TagServiceErrorCode,
-    message: string,
-    public readonly details?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'TagServiceError';
-  }
-}
+export const TagServiceError = createServiceError<TagServiceErrorCode>('TagServiceError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type TagServiceError = InstanceType<typeof TagServiceError>;
 
 // ============================================================================
 // CRUD Operations

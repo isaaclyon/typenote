@@ -20,6 +20,7 @@ import { BUILT_IN_TYPE_KEYS } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
 import { objectTypes, objects } from './schema.js';
 import { BUILT_IN_TYPES } from './builtInTypes.js';
+import { createServiceError } from './errors.js';
 
 // Re-export for backwards compatibility
 export { BUILT_IN_TYPES } from './builtInTypes.js';
@@ -28,23 +29,19 @@ export { BUILT_IN_TYPES } from './builtInTypes.js';
 // Error Types
 // ============================================================================
 
-export class ObjectTypeError extends Error {
-  constructor(
-    public readonly code:
-      | 'TYPE_NOT_FOUND'
-      | 'TYPE_KEY_EXISTS'
-      | 'TYPE_BUILT_IN'
-      | 'TYPE_IN_USE'
-      | 'TYPE_INHERITANCE_CYCLE'
-      | 'TYPE_INHERITANCE_DEPTH'
-      | 'TYPE_HAS_CHILDREN',
-    message: string,
-    public readonly details?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'ObjectTypeError';
-  }
-}
+export type ObjectTypeErrorCode =
+  | 'TYPE_NOT_FOUND'
+  | 'TYPE_KEY_EXISTS'
+  | 'TYPE_BUILT_IN'
+  | 'TYPE_IN_USE'
+  | 'TYPE_INHERITANCE_CYCLE'
+  | 'TYPE_INHERITANCE_DEPTH'
+  | 'TYPE_HAS_CHILDREN';
+
+export const ObjectTypeError = createServiceError<ObjectTypeErrorCode>('ObjectTypeError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
+export type ObjectTypeError = InstanceType<typeof ObjectTypeError>;
 
 // ============================================================================
 // Helper Functions

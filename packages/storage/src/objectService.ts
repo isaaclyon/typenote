@@ -8,6 +8,7 @@ import { validateProperties, mergeWithDefaults } from './propertyValidation.js';
 import { getDefaultTemplateForType } from './templateService.js';
 import { applyTemplateToObject } from './applyTemplateToObject.js';
 import { getObjectTags } from './tagService.js';
+import { createServiceError } from './errors.js';
 
 // Re-export from API for convenience
 export type { ObjectSummary };
@@ -29,16 +30,12 @@ export interface ObjectDetails {
 // Error Types
 // ============================================================================
 
-export class CreateObjectError extends Error {
-  constructor(
-    public readonly code: 'TYPE_NOT_FOUND' | 'VALIDATION_FAILED',
-    message: string,
-    public readonly details?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'CreateObjectError';
-  }
-}
+export type CreateObjectErrorCode = 'TYPE_NOT_FOUND' | 'VALIDATION_FAILED';
+
+export const CreateObjectError = createServiceError<CreateObjectErrorCode>('CreateObjectError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
+export type CreateObjectError = InstanceType<typeof CreateObjectError>;
 
 // ============================================================================
 // Result Types

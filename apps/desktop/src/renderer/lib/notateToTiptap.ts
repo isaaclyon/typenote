@@ -23,27 +23,14 @@ import type {
   GetDocumentResult,
 } from '@typenote/api';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mark Mapping
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Maps NotateDoc mark names to TipTap mark names.
- */
-const MARK_MAP: Record<Mark, string> = {
-  em: 'italic',
-  strong: 'bold',
-  code: 'code',
-  strike: 'strike',
-  highlight: 'highlight',
-};
+import { NOTATE_TO_TIPTAP } from './markMapping.js';
 
 /**
  * Converts NotateDoc marks to TipTap marks array.
  */
 function convertMarks(marks: Mark[] | undefined): Array<{ type: string }> | undefined {
   if (!marks || marks.length === 0) return undefined;
-  return marks.map((mark) => ({ type: MARK_MAP[mark] }));
+  return marks.map((mark) => ({ type: NOTATE_TO_TIPTAP[mark] }));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

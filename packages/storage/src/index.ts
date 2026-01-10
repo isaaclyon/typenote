@@ -2,6 +2,9 @@
 
 export const STORAGE_VERSION = '0.1.0';
 
+// Error Factory
+export { createServiceError, type ServiceError, type ServiceErrorConstructor } from './errors.js';
+
 // Schema
 export {
   objectTypes,
@@ -51,6 +54,7 @@ export {
   BUILT_IN_TYPES,
   getResolvedSchema,
   invalidateSchemaCache,
+  type ObjectTypeErrorCode,
   type ResolvedTypeSchema,
 } from './objectTypeService.js';
 
@@ -72,6 +76,7 @@ export {
   getDailyNoteBySlug,
   getDailyNoteSlug,
   DailyNoteError,
+  type DailyNoteErrorCode,
   type DailyNote,
   type GetOrCreateResult,
   type ListDailyNotesOptions,
@@ -84,6 +89,7 @@ export {
   getObject,
   createObject,
   CreateObjectError,
+  type CreateObjectErrorCode,
   type ObjectSummary,
   type ObjectDetails,
   type CreatedObject,

@@ -17,6 +17,7 @@ import {
 import { attachments, blockAttachments } from './schema.js';
 import type { TypenoteDb } from './db.js';
 import type { FileService } from './fileService.js';
+import { createServiceError } from './errors.js';
 
 // ============================================================================
 // Error Types
@@ -27,16 +28,10 @@ export type AttachmentServiceErrorCode =
   | 'UNSUPPORTED_FILE_TYPE'
   | 'ATTACHMENT_NOT_FOUND';
 
-export class AttachmentServiceError extends Error {
-  constructor(
-    public readonly code: AttachmentServiceErrorCode,
-    message: string,
-    public readonly details?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'AttachmentServiceError';
-  }
-}
+export const AttachmentServiceError =
+  createServiceError<AttachmentServiceErrorCode>('AttachmentServiceError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type AttachmentServiceError = InstanceType<typeof AttachmentServiceError>;
 
 // ============================================================================
 // Input Types

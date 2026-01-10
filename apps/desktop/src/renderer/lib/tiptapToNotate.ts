@@ -9,20 +9,7 @@ import type { JSONContent } from '@tiptap/react';
 import type { BlockOp, BlockType, DocumentBlock, InlineNode, Mark, RefTarget } from '@typenote/api';
 import { generateId } from '@typenote/core';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mark Mapping
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Maps TipTap mark names to NotateDoc mark names (reverse of notateToTiptap.ts).
- */
-const REVERSE_MARK_MAP: Record<string, Mark> = {
-  bold: 'strong',
-  italic: 'em',
-  code: 'code',
-  strike: 'strike',
-  highlight: 'highlight',
-};
+import { TIPTAP_TO_NOTATE } from './markMapping.js';
 
 /**
  * Extracts link mark from TipTap marks array, returning the href and remaining marks.
@@ -56,7 +43,7 @@ function convertMarks(marks: Array<{ type: string }> | undefined): Mark[] | unde
   if (!marks || marks.length === 0) return undefined;
   const result: Mark[] = [];
   for (const mark of marks) {
-    const mapped = REVERSE_MARK_MAP[mark.type];
+    const mapped = TIPTAP_TO_NOTATE[mark.type];
     if (mapped) {
       result.push(mapped);
     }

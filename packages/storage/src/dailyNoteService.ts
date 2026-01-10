@@ -13,6 +13,7 @@ import type { TypenoteDb } from './db.js';
 import { objects } from './schema.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
 import { createObject } from './objectService.js';
+import { createServiceError } from './errors.js';
 
 // ============================================================================
 // Types
@@ -49,15 +50,12 @@ export interface ListDailyNotesResult {
 // Error Types
 // ============================================================================
 
-export class DailyNoteError extends Error {
-  constructor(
-    public readonly code: 'TYPE_NOT_FOUND' | 'INVALID_DATE_FORMAT',
-    message: string
-  ) {
-    super(message);
-    this.name = 'DailyNoteError';
-  }
-}
+export type DailyNoteErrorCode = 'TYPE_NOT_FOUND' | 'INVALID_DATE_FORMAT';
+
+export const DailyNoteError = createServiceError<DailyNoteErrorCode>('DailyNoteError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
+export type DailyNoteError = InstanceType<typeof DailyNoteError>;
 
 // ============================================================================
 // Internal Helpers
