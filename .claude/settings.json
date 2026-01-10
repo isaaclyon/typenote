@@ -1,35 +1,5 @@
 {
-  "enabledPlugins": {
-    "terminal-title@claude-tools": true,
-    "brainstorming@claude-tools": true,
-    "git-workflow@claude-tools": true,
-    "hook-creator@claude-tools": true,
-    "model-agents@claude-tools": false,
-    "skill-evaluation@claude-tools": true,
-    "test-driven-development@claude-tools": true,
-    "feature-dev@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": false,
-    "code-review@claude-plugins-official": false,
-    "security-guidance@claude-plugins-official": true,
-    "vtsls@claude-code-lsps": true,
-    "pyright@claude-code-lsps": true
-  },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "./.claude/hooks/file-protection.sh"
-          },
-          {
-            "type": "command",
-            "command": "./.claude/hooks/git-force-push-protection.sh"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -73,6 +43,21 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/file-protection.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/git-force-push-protection.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
@@ -83,5 +68,25 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "security-guidance@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "test-driven-development@claude-tools": true,
+    "terminal-title@claude-tools": false,
+    "hook-creator@claude-tools": false,
+    "brainstorming@claude-tools": true,
+    "feature-dev@claude-plugins-official": true,
+    "code-review@claude-plugins-official": false,
+    "model-agents@claude-tools": false,
+    "full-stack-orchestration@claude-code-workflows": true,
+    "database-design@claude-code-workflows": false,
+    "vtsls@claude-code-lsps": true,
+    "skill-evaluation@claude-tools": true,
+    "superpowers@superpowers-marketplace": true,
+    "agent-orchestration@claude-code-workflows": true,
+    "pyright@claude-code-lsps": true,
+    "git-workflow@claude-tools": true
   }
 }

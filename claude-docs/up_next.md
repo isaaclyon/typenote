@@ -2,7 +2,7 @@
 
 ## Attachments/Media System
 
-**Status:** In Progress (Phases 1-5 Complete, Phase 7 Complete)
+**Status:** In Progress (Phases 1-8 Complete, Phase 9 remaining)
 **Plan:** `~/.claude/plans/mellow-cuddling-thacker.md`
 
 Images + Documents support with content-addressed storage, global deduplication, and 30-day orphan cleanup.
@@ -14,10 +14,10 @@ Images + Documents support with content-addressed storage, global deduplication,
 - [x] Phase 3: File Service — FileService interface + implementations ✅
 - [x] Phase 4: Attachment Service — CRUD, link/unlink, cleanup ✅
 - [x] Phase 5: Block Patch Integration — Handle attachment blocks ✅
-- [ ] Phase 6: IPC Layer — Upload/get/list handlers ⬅️ NEXT
+- [x] Phase 6: IPC Layer — Upload/get/list handlers ✅
 - [x] Phase 7: CLI Commands — attachment upload/list/cleanup ✅ (with --dry-run)
-- [ ] Phase 8: Renderer Integration — TipTap node, upload UI
-- [ ] Phase 9: Garbage Collection — Daily cleanup scheduler
+- [x] Phase 8: Renderer Integration — TipTap node, upload UI ✅
+- [ ] Phase 9: Garbage Collection — Daily cleanup scheduler ⬅️ NEXT
 
 ---
 
