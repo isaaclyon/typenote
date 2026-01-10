@@ -1,8 +1,8 @@
 import type { Story } from '@ladle/react';
-import { Text } from '@typenote/design-system';
+import { Text } from './Text.js';
 
 export default {
-  title: 'Design System/Text',
+  title: 'Components/Text',
 };
 
 export const AllVariants: Story = () => (

@@ -6,13 +6,13 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-  Button,
-  Badge,
-  Text,
-} from '@typenote/design-system';
+} from './Card.js';
+import { Button } from '../Button/index.js';
+import { Badge } from '../Badge/index.js';
+import { Text } from '../Text/index.js';
 
 export default {
-  title: 'Design System/Card',
+  title: 'Components/Card',
 };
 
 export const AllVariants: Story = () => (

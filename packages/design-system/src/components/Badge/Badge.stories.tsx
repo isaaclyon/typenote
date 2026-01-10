@@ -1,8 +1,8 @@
 import type { Story } from '@ladle/react';
-import { Badge } from '@typenote/design-system';
+import { Badge } from './Badge.js';
 
 export default {
-  title: 'Design System/Badge',
+  title: 'Components/Badge',
 };
 
 export const AllVariants: Story = () => (

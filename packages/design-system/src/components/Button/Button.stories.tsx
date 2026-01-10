@@ -1,8 +1,8 @@
 import type { Story } from '@ladle/react';
-import { Button } from '@typenote/design-system';
+import { Button } from './Button.js';
 
 export default {
-  title: 'Design System/Button',
+  title: 'Components/Button',
 };
 
 export const AllVariants: Story = () => (

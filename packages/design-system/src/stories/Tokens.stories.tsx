@@ -1,8 +1,10 @@
 import type { Story } from '@ladle/react';
-import { colors, typography, spacing, borderRadius } from '@typenote/design-system';
+import { colors } from '../tokens/colors.js';
+import { typography } from '../tokens/typography.js';
+import { spacing, borderRadius } from '../tokens/spacing.js';
 
 export default {
-  title: 'Design System/Tokens',
+  title: 'Tokens',
 };
 
 const grayEntries = Object.entries(colors.gray) as [string, string][];
