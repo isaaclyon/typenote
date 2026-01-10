@@ -16,6 +16,8 @@
     "dev": "pnpm build:main && pnpm build:preload && concurrently -n renderer,electron -c cyan,yellow \"vite\" \"NODE_ENV=development electron .\"",
     "dev:renderer": "vite",
     "dev:electron": "electron .",
+    "sandbox": "ladle serve",
+    "sandbox:build": "ladle build",
     "package": "electron-builder"
   },
   "dependencies": {
@@ -36,6 +38,7 @@
     "@tiptap/suggestion": "^3.15.1",
     "@typenote/api": "workspace:*",
     "@typenote/core": "workspace:*",
+    "@typenote/design-system": "workspace:*",
     "@typenote/storage": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -48,6 +51,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@ladle/react": "^5.1.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

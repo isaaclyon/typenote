@@ -21,3 +21,6 @@ export { Highlight } from './Highlight.js';
 // Plugins
 export { RefSuggestion } from './RefSuggestion.js';
 export { SlashCommand } from './SlashCommand/index.js';
+
+// Behavior extensions
+export { LineNavigation } from './LineNavigation.js';

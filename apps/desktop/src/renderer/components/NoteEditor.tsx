@@ -30,6 +30,7 @@ import {
   RefSuggestion,
   AttachmentNode,
   SlashCommand,
+  LineNavigation,
 } from '../extensions/index.js';
 import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
@@ -119,10 +120,21 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       }),
       // Slash command palette
       SlashCommand,
+      // Line navigation (Home/End keys)
+      LineNavigation,
     ],
     editable: true, // Enable editing
     immediatelyRender: false, // Important for Electron SSR concerns
   });
+
+  // Callback to update initialBlocks after save
+  const handleSaveSuccess = useCallback(async (savedObjectId: string) => {
+    // Refetch document to get updated blocks
+    const result = await window.typenoteAPI.getDocument(savedObjectId);
+    if (result.success) {
+      setInitialBlocks(result.result.blocks);
+    }
+  }, []);
 
   // Wire up auto-save hook
   const {
@@ -133,6 +145,7 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     editor,
     objectId,
     initialBlocks,
+    onSaveSuccess: handleSaveSuccess,
   });
 
   // Wire up image upload handlers for drag-drop and paste

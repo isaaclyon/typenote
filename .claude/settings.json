@@ -70,23 +70,24 @@
     ]
   },
   "enabledPlugins": {
+    "git-workflow@claude-tools": true,
+    "code-review@claude-plugins-official": false,
+    "full-stack-orchestration@claude-code-workflows": true,
+    "feature-dev@claude-plugins-official": true,
+    "brainstorming@claude-tools": false,
+    "test-driven-development@claude-tools": false,
     "security-guidance@claude-plugins-official": true,
+    "skill-evaluation@claude-tools": true,
     "frontend-design@claude-plugins-official": false,
-    "typescript-lsp@claude-plugins-official": true,
-    "test-driven-development@claude-tools": true,
+    "database-design@claude-code-workflows": true,
+    "agent-orchestration@claude-code-workflows": true,
     "terminal-title@claude-tools": false,
     "hook-creator@claude-tools": false,
-    "brainstorming@claude-tools": true,
-    "feature-dev@claude-plugins-official": true,
-    "code-review@claude-plugins-official": false,
-    "model-agents@claude-tools": false,
-    "full-stack-orchestration@claude-code-workflows": true,
-    "database-design@claude-code-workflows": false,
-    "vtsls@claude-code-lsps": true,
-    "skill-evaluation@claude-tools": true,
+    "model-agents@claude-tools": true,
+    "typescript-lsp@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
-    "agent-orchestration@claude-code-workflows": true,
+    "vtsls@claude-code-lsps": true,
     "pyright@claude-code-lsps": true,
-    "git-workflow@claude-tools": true
+    "code-simplifier@claude-plugins-official": true
   }
 }

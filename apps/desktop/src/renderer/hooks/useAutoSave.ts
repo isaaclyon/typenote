@@ -20,6 +20,7 @@ export interface UseAutoSaveOptions {
   objectId: string;
   initialBlocks: DocumentBlock[];
   debounceMs?: number;
+  onSaveSuccess?: (objectId: string) => void | Promise<void>;
 }
 
 export interface UseAutoSaveResult {
@@ -29,19 +30,31 @@ export interface UseAutoSaveResult {
 }
 
 export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
-  const { editor, objectId, initialBlocks, debounceMs = DEFAULT_DEBOUNCE_MS } = options;
+  const {
+    editor,
+    objectId,
+    initialBlocks,
+    debounceMs = DEFAULT_DEBOUNCE_MS,
+    onSaveSuccess,
+  } = options;
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialBlocksRef = useRef<DocumentBlock[]>(initialBlocks);
+
+  // Keep ref in sync with prop
+  useEffect(() => {
+    initialBlocksRef.current = initialBlocks;
+  }, [initialBlocks]);
 
   const save = useCallback(async () => {
     if (!editor) return;
 
     const editorJson = editor.getJSON();
-    const ops = generateBlockOps(initialBlocks, editorJson, objectId);
+    const ops = generateBlockOps(initialBlocksRef.current, editorJson, objectId);
 
     if (ops.length === 0) return;
 
@@ -59,6 +72,10 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
 
       if (result.success) {
         setLastSaved(new Date());
+        // Notify caller so they can update initialBlocks
+        if (onSaveSuccess) {
+          await onSaveSuccess(objectId);
+        }
       } else {
         setError(result.error?.message ?? 'Save failed');
       }
@@ -68,7 +85,7 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
     } finally {
       setIsSaving(false);
     }
-  }, [editor, initialBlocks, objectId]);
+  }, [editor, objectId, onSaveSuccess]);
 
   useEffect(() => {
     if (!editor) return;
