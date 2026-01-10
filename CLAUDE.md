@@ -40,9 +40,10 @@ pnpm format           # Format all files
 pnpm format:check     # Check formatting
 
 # Package-specific
-pnpm --filter @typenote/cli dev hello     # Test CLI
-pnpm --filter @typenote/api test          # Test API package
-pnpm --filter @typenote/storage test      # Test storage package
+pnpm --filter @typenote/cli dev hello          # Test CLI
+pnpm --filter @typenote/api test               # Test API package
+pnpm --filter @typenote/storage test           # Test storage package
+pnpm --filter @typenote/design-system sandbox  # Component sandbox (Ladle)
 ```
 
 ## Architecture
