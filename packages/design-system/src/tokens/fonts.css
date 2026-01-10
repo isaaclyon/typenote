@@ -1,0 +1,15 @@
+/**
+ * TypeNote Design System - Font Loading
+ *
+ * IBM Plex Sans: weights 400, 500, 600
+ * IBM Plex Mono: weights 400, 500
+ */
+
+/* IBM Plex Sans */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+
+/* IBM Plex Mono */
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';

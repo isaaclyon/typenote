@@ -6,6 +6,8 @@
  *   @import "@typenote/design-system/tokens.css";
  */
 
+@import './fonts.css';
+
 @theme {
   /* ========== Warm Grayscale ========== */
   --color-white: #ffffff;
