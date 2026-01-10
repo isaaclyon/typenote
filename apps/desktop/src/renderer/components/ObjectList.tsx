@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from './ui/card.js';
 import { ScrollArea } from './ui/scroll-area.js';
 import { cn } from '../lib/utils.js';
 import type { ObjectSummary } from '@typenote/api';
+import { useTypenoteEvents } from '../hooks/useTypenoteEvents.js';
 
 type LoadState =
   | { status: 'loading' }
@@ -37,6 +38,19 @@ export function ObjectList({ onSelect, selectedId }: ObjectListProps) {
     }
     void loadObjects();
   }, []);
+
+  // Refetch when object created
+  useTypenoteEvents((event) => {
+    if (event.type === 'object:created') {
+      // Simple approach: refetch entire list
+      void (async () => {
+        const result = await window.typenoteAPI.listObjects();
+        if (result.success) {
+          setState({ status: 'loaded', objects: result.result });
+        }
+      })();
+    }
+  });
 
   if (state.status === 'loading') {
     return (

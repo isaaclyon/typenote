@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { TypenoteEvent } from '@typenote/api';
 
 // Expose typed API to renderer
 contextBridge.exposeInMainWorld('typenoteAPI', {
@@ -110,4 +111,17 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) =>
     ipcRenderer.invoke('typenote:getEventsInDateRange', startDate, endDate),
+
+  // Event subscription
+  onEvent: (callback: (event: TypenoteEvent) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, data: TypenoteEvent) => {
+      callback(data);
+    };
+    ipcRenderer.on('typenote:event', listener);
+
+    // Return cleanup function
+    return () => {
+      ipcRenderer.removeListener('typenote:event', listener);
+    };
+  },
 });

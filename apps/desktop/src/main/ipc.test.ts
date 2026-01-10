@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   createTestDb,
   closeDb,
@@ -12,6 +12,7 @@ import {
 } from '@typenote/storage';
 import { generateId } from '@typenote/core';
 import { createIpcHandlers, type IpcHandlers } from './ipc.js';
+import { typenoteEvents } from './events.js';
 
 describe('IPC Handlers', () => {
   let db: TypenoteDb;
@@ -443,6 +444,74 @@ describe('IPC Handlers', () => {
           message: expect.any(String),
         },
       });
+    });
+
+    it('emits object:created event on successful creation', () => {
+      const emitSpy = vi.spyOn(typenoteEvents, 'emit');
+
+      const result = handlers.createObject('Page', 'Test Page');
+
+      expect(result.success).toBe(true);
+      expect(emitSpy).toHaveBeenCalledWith({
+        type: 'object:created',
+        payload: expect.objectContaining({
+          id: expect.any(String),
+          typeKey: 'Page',
+          title: 'Test Page',
+          createdAt: expect.any(Date),
+        }),
+      });
+
+      emitSpy.mockRestore();
+    });
+
+    it('emits event with correct payload structure', () => {
+      const emitSpy = vi.spyOn(typenoteEvents, 'emit');
+
+      const result = handlers.createObject('Person', 'Jane Doe', {
+        email: 'jane@example.com',
+      });
+
+      expect(result.success).toBe(true);
+      expect(emitSpy).toHaveBeenCalledOnce();
+
+      const emittedEvent = emitSpy.mock.calls[0]?.[0];
+      expect(emittedEvent).toBeDefined();
+      expect(emittedEvent?.type).toBe('object:created');
+      expect(emittedEvent?.payload).toEqual({
+        id: expect.any(String),
+        typeKey: 'Person',
+        title: 'Jane Doe',
+        createdAt: expect.any(Date),
+      });
+
+      emitSpy.mockRestore();
+    });
+
+    it('does NOT emit event when creation fails', () => {
+      const emitSpy = vi.spyOn(typenoteEvents, 'emit');
+
+      // Try to create with invalid type
+      const result = handlers.createObject('NonExistentType', 'Test');
+
+      expect(result.success).toBe(false);
+      expect(emitSpy).not.toHaveBeenCalled();
+
+      emitSpy.mockRestore();
+    });
+
+    it('does NOT emit event when validation fails', () => {
+      const emitSpy = vi.spyOn(typenoteEvents, 'emit');
+
+      // Try to create with invalid properties
+      const result = handlers.createObject('DailyNote', 'Test', {
+        date_key: 'invalid-date',
+      });
+
+      expect(result.success).toBe(false);
+      expect(emitSpy).not.toHaveBeenCalled();
+
+      emitSpy.mockRestore();
     });
   });
 

@@ -13,6 +13,7 @@ import {
   type FileService,
 } from '@typenote/storage';
 import { setupIpcHandlers } from './ipc.js';
+import { typenoteEvents } from './events.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,9 +64,21 @@ function registerIpcHandlers(): void {
   setupIpcHandlers(db, fileService);
 }
 
+function setupEventBroadcasting(): void {
+  typenoteEvents.on((event) => {
+    // Broadcast to all renderer windows
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed()) {
+        window.webContents.send('typenote:event', event);
+      }
+    }
+  });
+}
+
 void app.whenReady().then(() => {
   initDatabase();
   registerIpcHandlers();
+  setupEventBroadcasting();
   createWindow();
 
   app.on('activate', () => {

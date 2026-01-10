@@ -247,3 +247,6 @@ export {
   AttachmentErrorCodeSchema,
   type AttachmentErrorCode,
 } from './attachment.js';
+
+// Events
+export { type EventType, type ObjectCreatedEvent, type TypenoteEvent } from './events.js';

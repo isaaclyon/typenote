@@ -4,6 +4,7 @@ import type {
   ApplyBlockPatchResult,
   Attachment,
   UploadAttachmentResult,
+  TypenoteEvent,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
@@ -62,6 +63,9 @@ export interface TypenoteAPI {
 
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
+
+  // Events
+  onEvent: (callback: (event: TypenoteEvent) => void) => () => void;
 }
 
 declare global {

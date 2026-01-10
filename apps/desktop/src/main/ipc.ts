@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import { z } from 'zod';
+import { typenoteEvents } from './events.js';
 import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
@@ -231,6 +232,18 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     ): IpcOutcome<CreatedObject> => {
       try {
         const result = createObjectStorage(db, typeKey, title, properties);
+
+        // Emit event after successful creation
+        typenoteEvents.emit({
+          type: 'object:created',
+          payload: {
+            id: result.id,
+            typeKey: result.typeKey,
+            title: result.title,
+            createdAt: result.createdAt,
+          },
+        });
+
         return { success: true, result };
       } catch (error) {
         if (error instanceof CreateObjectError) {

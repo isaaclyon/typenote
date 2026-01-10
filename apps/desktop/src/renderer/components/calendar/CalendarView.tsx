@@ -7,12 +7,13 @@
  * - CalendarSidebar for selected day events
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { CalendarItem } from '@typenote/storage';
 import { getMonthDateRange, addMonths, getCalendarTodayDateKey } from '@typenote/core';
 import { CalendarHeader } from './CalendarHeader.js';
 import { CalendarGrid } from './CalendarGrid.js';
 import { CalendarSidebar, type LoadState } from './CalendarSidebar.js';
+import { useTypenoteEvents } from '../../hooks/useTypenoteEvents.js';
 
 export interface CalendarViewProps {
   onNavigate: (objectId: string) => void;
@@ -24,30 +25,42 @@ export function CalendarView({ onNavigate }: CalendarViewProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(getCalendarTodayDateKey());
   const [eventsState, setEventsState] = useState<LoadState<CalendarItem[]>>({ status: 'loading' });
 
+  // Extract fetchEvents as stable callback
+  const fetchEvents = useCallback(async () => {
+    setEventsState({ status: 'loading' });
+
+    try {
+      const year = viewingMonth.getFullYear();
+      const month = viewingMonth.getMonth();
+      const { startDate, endDate } = getMonthDateRange(year, month);
+
+      const outcome = await window.typenoteAPI.getEventsInDateRange(startDate, endDate);
+      if (outcome.success) {
+        setEventsState({ status: 'loaded', data: outcome.result });
+      } else {
+        setEventsState({ status: 'error', message: outcome.error.message });
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      setEventsState({ status: 'error', message });
+    }
+  }, [viewingMonth]);
+
   // Fetch events when viewing month changes
   useEffect(() => {
-    const fetchEvents = async () => {
-      setEventsState({ status: 'loading' });
-
-      try {
-        const year = viewingMonth.getFullYear();
-        const month = viewingMonth.getMonth();
-        const { startDate, endDate } = getMonthDateRange(year, month);
-
-        const outcome = await window.typenoteAPI.getEventsInDateRange(startDate, endDate);
-        if (outcome.success) {
-          setEventsState({ status: 'loaded', data: outcome.result });
-        } else {
-          setEventsState({ status: 'error', message: outcome.error.message });
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        setEventsState({ status: 'error', message });
-      }
-    };
-
     void fetchEvents();
-  }, [viewingMonth]);
+  }, [fetchEvents]);
+
+  // Refetch when Event object created
+  useTypenoteEvents(
+    (event) => {
+      if (event.type === 'object:created' && event.payload.typeKey === 'Event') {
+        // Refetch current month's events
+        void fetchEvents();
+      }
+    },
+    [fetchEvents]
+  );
 
   // Group events by date for the grid
   const eventsMap = useMemo(() => {

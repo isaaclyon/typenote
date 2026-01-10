@@ -72,8 +72,9 @@ vi.mock('@typenote/core', () => ({
   }),
 }));
 
-// Create mock function
+// Create mock functions
 const mockGetEventsInDateRange = vi.fn();
+const mockOnEvent = vi.fn(() => vi.fn()); // Returns unsubscribe function
 
 // Setup window.typenoteAPI mock
 beforeEach(() => {
@@ -81,9 +82,15 @@ beforeEach(() => {
   // This preserves other window properties like document
   // Use type assertion to allow partial mock
   (
-    window as unknown as { typenoteAPI: { getEventsInDateRange: typeof mockGetEventsInDateRange } }
+    window as unknown as {
+      typenoteAPI: {
+        getEventsInDateRange: typeof mockGetEventsInDateRange;
+        onEvent: typeof mockOnEvent;
+      };
+    }
   ).typenoteAPI = {
     getEventsInDateRange: mockGetEventsInDateRange,
+    onEvent: mockOnEvent,
   };
 
   // Default mock resolves to IpcSuccess with empty array
