@@ -194,6 +194,25 @@ test.describe('IPC Channel Wiring', () => {
         expect(result.result.length).toBe(0); // No backlinks for new object
       }
     });
+
+    test('getUnlinkedMentions returns empty array for new object', async ({ window: page }) => {
+      const createResult = await page.evaluate(async () => {
+        return await window.typenoteAPI.getOrCreateTodayDailyNote();
+      });
+      expect(createResult.success).toBe(true);
+      if (!createResult.success) return;
+
+      const objectId = createResult.result.dailyNote.id;
+      const result = await page.evaluate(async (id) => {
+        return await window.typenoteAPI.getUnlinkedMentions(id);
+      }, objectId);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(Array.isArray(result.result)).toBe(true);
+        expect(result.result.length).toBe(0); // No unlinked mentions for new object
+      }
+    });
   });
 
   test.describe('Error Handling', () => {

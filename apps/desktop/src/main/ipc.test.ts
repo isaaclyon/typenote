@@ -389,6 +389,134 @@ describe('IPC Handlers', () => {
     });
   });
 
+  describe('getUnlinkedMentions', () => {
+    it('returns unlinked mentions when text matches object title', () => {
+      // Create target object
+      const targetObj = createObject(db, 'Page', 'Project Alpha');
+      // Create source object that mentions target without linking
+      const sourceObj = createObject(db, 'Page', 'Task List');
+
+      // Add block with plain text mention (no explicit reference)
+      const blockId = generateId();
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: sourceObj.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [{ t: 'text', text: 'Working on Project Alpha this week' }],
+            },
+          },
+        ],
+      });
+
+      const result = handlers.getUnlinkedMentions(targetObj.id);
+
+      expect(result).toEqual({
+        success: true,
+        result: [
+          {
+            sourceBlockId: blockId,
+            sourceObjectId: sourceObj.id,
+            sourceObjectTitle: 'Task List',
+          },
+        ],
+      });
+    });
+
+    it('excludes blocks that already have explicit references', () => {
+      const targetObj = createObject(db, 'Page', 'Project Alpha');
+      const sourceObj = createObject(db, 'Page', 'Task List');
+
+      // Add block with both text mention AND explicit reference
+      const blockId = generateId();
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: sourceObj.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'See ' },
+                { t: 'ref', mode: 'link', target: { kind: 'object', objectId: targetObj.id } },
+                { t: 'text', text: ' for details about Project Alpha' },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = handlers.getUnlinkedMentions(targetObj.id);
+
+      // Should return empty because block already links to target
+      expect(result).toEqual({
+        success: true,
+        result: [],
+      });
+    });
+
+    it('excludes self-references from target object', () => {
+      const targetObj = createObject(db, 'Page', 'Project Alpha');
+
+      // Add block within targetObj that mentions its own title
+      const blockId = generateId();
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: targetObj.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [{ t: 'text', text: 'This is Project Alpha documentation' }],
+            },
+          },
+        ],
+      });
+
+      const result = handlers.getUnlinkedMentions(targetObj.id);
+
+      // Should return empty because it's a self-reference
+      expect(result).toEqual({
+        success: true,
+        result: [],
+      });
+    });
+
+    it('returns empty array for object with no unlinked mentions', () => {
+      const obj = createObject(db, 'Page', 'Unique Unmatchable Title XYZ123');
+
+      const result = handlers.getUnlinkedMentions(obj.id);
+
+      expect(result).toEqual({
+        success: true,
+        result: [],
+      });
+    });
+
+    it('returns empty array for non-existent object', () => {
+      const result = handlers.getUnlinkedMentions('01NONEXISTENT0000000000000');
+
+      expect(result).toEqual({
+        success: true,
+        result: [],
+      });
+    });
+  });
+
   describe('createObject', () => {
     it('creates object with valid type and title', () => {
       const result = handlers.createObject('Page', 'My Test Page');

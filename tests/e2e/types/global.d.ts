@@ -86,6 +86,12 @@ interface BacklinkResult {
   targetBlockId: string | null;
 }
 
+interface UnlinkedMentionResult {
+  sourceBlockId: string;
+  sourceObjectId: string;
+  sourceObjectTitle: string;
+}
+
 interface Tag {
   id: string;
   name: string;
@@ -183,6 +189,7 @@ export interface TypenoteAPI {
     filters?: { objectId?: string; limit?: number }
   ) => Promise<IpcOutcome<SearchResult[]>>;
   getBacklinks: (objectId: string) => Promise<IpcOutcome<BacklinkResult[]>>;
+  getUnlinkedMentions: (objectId: string) => Promise<IpcOutcome<UnlinkedMentionResult[]>>;
   createObject: (
     typeKey: string,
     title: string,

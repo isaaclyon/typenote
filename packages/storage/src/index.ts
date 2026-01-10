@@ -36,8 +36,9 @@ export {
   DocumentNotFoundError,
 } from './getDocument.js';
 
-// Backlinks & Search
+// Backlinks, Unlinked Mentions & Search
 export { getBacklinks, type BacklinkResult } from './backlinks.js';
+export { getUnlinkedMentionsTo, type UnlinkedMentionResult } from './unlinkedMentions.js';
 export { searchBlocks, type SearchResult, type SearchFilters } from './search.js';
 
 // Object Type Service

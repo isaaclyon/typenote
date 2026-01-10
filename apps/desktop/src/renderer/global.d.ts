@@ -10,6 +10,7 @@ import type {
   ObjectDetails,
   SearchResult,
   BacklinkResult,
+  UnlinkedMentionResult,
   CreatedObject,
 } from '@typenote/storage';
 
@@ -41,6 +42,7 @@ export interface TypenoteAPI {
     filters?: { objectId?: string; limit?: number }
   ) => Promise<IpcOutcome<SearchResult[]>>;
   getBacklinks: (objectId: string) => Promise<IpcOutcome<BacklinkResult[]>>;
+  getUnlinkedMentions: (objectId: string) => Promise<IpcOutcome<UnlinkedMentionResult[]>>;
   createObject: (
     typeKey: string,
     title: string,

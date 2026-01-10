@@ -10,6 +10,7 @@ import {
   getObject as getObjectStorage,
   searchBlocks as searchBlocksStorage,
   getBacklinks as getBacklinksStorage,
+  getUnlinkedMentionsTo as getUnlinkedMentionsToStorage,
   createObject as createObjectStorage,
   createTag as createTagStorage,
   getTag as getTagStorage,
@@ -54,6 +55,7 @@ import {
   type SearchResult,
   type SearchFilters,
   type BacklinkResult,
+  type UnlinkedMentionResult,
   type CreatedObject,
   type TaskObject,
   type CompletedTasksOptions,
@@ -171,6 +173,7 @@ export interface IpcHandlers {
   getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
   searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
   getBacklinks: (objectId: string) => IpcOutcome<BacklinkResult[]>;
+  getUnlinkedMentions: (objectId: string) => IpcOutcome<UnlinkedMentionResult[]>;
   createObject: (
     typeKey: string,
     title: string,
@@ -246,6 +249,9 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     searchBlocks: (query, filters) => handleIpcCall(() => searchBlocksStorage(db, query, filters)),
 
     getBacklinks: (objectId) => handleIpcCall(() => getBacklinksStorage(db, objectId)),
+
+    getUnlinkedMentions: (objectId) =>
+      handleIpcCall(() => getUnlinkedMentionsToStorage(db, objectId)),
 
     createObject: (typeKey, title, properties) => {
       // Special case: needs to emit event after successful creation

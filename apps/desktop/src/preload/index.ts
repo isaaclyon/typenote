@@ -23,6 +23,9 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   getBacklinks: (objectId: string) => ipcRenderer.invoke('typenote:getBacklinks', objectId),
 
+  getUnlinkedMentions: (objectId: string) =>
+    ipcRenderer.invoke('typenote:getUnlinkedMentions', objectId),
+
   createObject: (typeKey: string, title: string, properties?: Record<string, unknown>) =>
     ipcRenderer.invoke('typenote:createObject', typeKey, title, properties),
 
