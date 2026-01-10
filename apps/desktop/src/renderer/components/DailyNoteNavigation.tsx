@@ -8,7 +8,7 @@
 /// <reference path="../global.d.ts" />
 
 import { useCallback, useState } from 'react';
-import { Button } from './ui/button.js';
+import { Button } from '@typenote/design-system';
 import {
   getPreviousDate,
   getNextDate,

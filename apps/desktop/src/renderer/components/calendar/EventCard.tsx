@@ -6,7 +6,7 @@
 
 import type { CalendarItem } from '@typenote/storage';
 import { cn } from '../../lib/utils.js';
-import { Card, CardHeader, CardTitle } from '../ui/card.js';
+import { Card, CardHeader, CardTitle } from '@typenote/design-system';
 
 export interface EventCardProps {
   event: CalendarItem;

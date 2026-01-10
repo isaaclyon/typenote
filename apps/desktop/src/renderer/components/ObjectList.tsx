@@ -1,7 +1,7 @@
 /// <reference path="../global.d.ts" />
 
 import { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription } from './ui/card.js';
+import { Card, CardHeader, CardTitle, CardDescription } from '@typenote/design-system';
 import { ScrollArea } from '@typenote/design-system';
 import { cn } from '../lib/utils.js';
 import type { ObjectSummary } from '@typenote/api';
