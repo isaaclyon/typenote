@@ -69,6 +69,15 @@
   --radius-lg: 8px;
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Global defaults */
 * {
   border-color: var(--color-border);
