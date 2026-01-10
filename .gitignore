@@ -7,6 +7,7 @@ dist/
 build/
 out/
 *.tsbuildinfo
+.ladle/
 
 # Environment
 .env
@@ -52,6 +53,7 @@ electron-builder.yml
 .temp/
 tmp/
 node-compile-cache/
+.worktrees/
 
 # OS
 Thumbs.db
