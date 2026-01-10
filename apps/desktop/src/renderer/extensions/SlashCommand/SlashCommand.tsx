@@ -9,7 +9,7 @@ import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { ReactRenderer } from '@tiptap/react';
-import { computePosition, flip, shift, offset } from '@floating-ui/react';
+import { computePosition, flip, shift } from '@floating-ui/react';
 import { filterCommands } from './commandRegistry.js';
 import {
   SlashCommandMenu,
@@ -72,7 +72,7 @@ export const SlashCommand = Extension.create({
                 if (rect) {
                   void computePosition({ getBoundingClientRect: () => rect }, popup, {
                     placement: 'bottom-start',
-                    middleware: [offset(8), flip(), shift({ padding: 8 })],
+                    middleware: [flip(), shift()],
                   }).then(({ x, y }) => {
                     if (popup) {
                       popup.style.left = `${x}px`;
@@ -97,7 +97,7 @@ export const SlashCommand = Extension.create({
                 if (rect) {
                   void computePosition({ getBoundingClientRect: () => rect }, popup, {
                     placement: 'bottom-start',
-                    middleware: [offset(8), flip(), shift({ padding: 8 })],
+                    middleware: [flip(), shift()],
                   }).then(({ x, y }) => {
                     if (popup) {
                       popup.style.left = `${x}px`;
@@ -111,7 +111,6 @@ export const SlashCommand = Extension.create({
             onKeyDown: (props) => {
               if (props.event.key === 'Escape') {
                 popup?.remove();
-                component?.destroy();
                 return true;
               }
               return component?.ref?.onKeyDown?.(props) ?? false;
