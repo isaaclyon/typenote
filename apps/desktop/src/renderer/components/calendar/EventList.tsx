@@ -5,7 +5,7 @@
  */
 
 import type { CalendarItem } from '@typenote/storage';
-import { ScrollArea } from '../ui/scroll-area.js';
+import { ScrollArea } from '@typenote/design-system';
 import { EventCard } from './EventCard.js';
 
 export interface EventListProps {

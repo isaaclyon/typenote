@@ -6,6 +6,7 @@ export * from './Card/index.js';
 export * from './Checkbox/index.js';
 export * from './EmptyState/index.js';
 export * from './KeyboardKey/index.js';
+export * from './ScrollArea/index.js';
 export * from './Skeleton/index.js';
 export * from './Tag/index.js';
 export * from './Text/index.js';

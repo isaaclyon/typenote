@@ -7,7 +7,7 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { ObjectSummary } from '@typenote/api';
-import { ScrollArea } from './ui/scroll-area.js';
+import { ScrollArea } from '@typenote/design-system';
 import { cn } from '../lib/utils.js';
 import { FileText, Plus } from 'lucide-react';
 

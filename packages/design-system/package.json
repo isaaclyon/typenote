@@ -30,6 +30,7 @@
     "lucide-react": "^0.562.0"
   },
   "peerDependencies": {
+    "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-slot": "^1.2.4",
     "react": "^19.0.0"
   },
