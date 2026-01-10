@@ -5,7 +5,7 @@ import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
 import { NoteEditor } from './components/NoteEditor.js';
 import { CalendarView } from './components/calendar/index.js';
-import { Button } from './components/ui/button.js';
+import { Button } from '@typenote/design-system';
 import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';

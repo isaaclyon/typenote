@@ -28,9 +28,10 @@ Key concepts:
 
 ```
 packages/
-  api/      — API contracts, types, error taxonomy
-  core/     — Pure TS domain logic, content schemas
-  storage/  — SQLite schema, migrations, services
+  api/            — API contracts, types, error taxonomy
+  core/           — Pure TS domain logic, content schemas
+  storage/        — SQLite schema, migrations, services
+  design-system/  — Reusable UI components (Ladle sandbox)
 apps/
   cli/      — Backend testing without UI
   desktop/  — Electron + React + Vite

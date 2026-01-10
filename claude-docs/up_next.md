@@ -1,5 +1,28 @@
 # Up Next
 
+## UI/Design System - Organism Components
+
+**Status:** Active (Sidebar organism complete in Ladle, ready for integration)
+**Plan:** `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md`
+
+Building organism-level components in the design-system package with Ladle sandbox testing before desktop app integration.
+
+### Completed
+
+- [x] Left Sidebar Navigation organism (8 components, 9 stories) ✅
+  - Compound component architecture established
+  - CSS-first hover patterns
+  - Full design system adherence
+
+### Next Steps
+
+- [ ] Integrate Sidebar into desktop app (`apps/desktop/src/renderer/App.tsx`)
+- [ ] Build Right Panel organism (backlinks, page info, tags)
+- [ ] Build Type Browser organism (data table with sort/filter)
+- [ ] Build App Shell organism (3-panel layout with sidebar collapse)
+
+---
+
 ## Attachments/Media System
 
 **Status:** In Progress (Phases 1-8 Complete, Phase 9 remaining)

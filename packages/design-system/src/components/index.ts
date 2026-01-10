@@ -10,3 +10,6 @@ export * from './ScrollArea/index.js';
 export * from './Skeleton/index.js';
 export * from './Tag/index.js';
 export * from './Text/index.js';
+
+// Organism Components
+export * from './Sidebar/index.js';

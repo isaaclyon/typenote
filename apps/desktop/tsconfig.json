@@ -10,7 +10,7 @@
       "@/*": ["./src/renderer/*"]
     }
   },
-  "include": ["src/**/*", ".ladle/**/*"],
+  "include": ["src/**/*"],
   "references": [
     { "path": "../../packages/api" },
     { "path": "../../packages/core" },

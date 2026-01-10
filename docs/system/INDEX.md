@@ -1,17 +1,56 @@
 # Design System Documentation Index
 
-Complete reference guide for the TypeNote design system extracted from `design_system.jsx`.
+Complete reference guide for the TypeNote design system. **Two locations:** `.claude/skills/design-principles/` (design decisions) + `/docs/system/` (implementation specs).
 
 ---
 
-## Files Overview
+## 📋 Master Checklist
+
+### Design Foundation
+
+- [x] **Color System** — 22 tokens (grayscale, cornflower, semantic)
+- [x] **Typography System** — IBM Plex Sans/Mono, 7 scales, 3 weights
+- [x] **Spacing & Layout** — 4px grid, 9 units, 3-panel structure
+- [x] **Interaction System** — Borders, shadows, focus, animations
+- [x] **Icon System** — Phosphor Regular, 16-32px
+
+### Components Documented
+
+- [x] **Atomic Components** (8) — Buttons, inputs, checkboxes, tags, badges, keys, cards
+- [x] **Complex Components** (6) — Type Browser, Sidebar, Daily Notes, Right Panel, Overlays
+- [x] **States** (4) — Loading, empty, error, success
+- [x] **Feedback Patterns** (3) — Save status, error handling, keyboard shortcuts
+
+### Implementation Status
+
+- [x] **Design Documentation** — Complete (13 files, ~70KB)
+- [x] **Interactive Preview** — design_system.jsx (3,553 lines)
+- [ ] **Component Library** — Not yet built (Storybook/similar)
+- [ ] **React Components** — Not yet implemented
+- [ ] **CSS/Tailwind Tokens** — Not yet extracted
+- [ ] **Dark Mode** — Not yet designed
+- [ ] **Responsive Breakpoints** — Not yet defined (fluid layout only)
+- [ ] **Design Tokens Export** — Not yet available (JSON/CSS vars)
+
+### Documentation Locations
+
+- [x] **Design Decisions** — `.claude/skills/design-principles/typenote/` (6 files)
+- [x] **Implementation Specs** — `/docs/system/` (5 files)
+- [x] **Quick Reference** — Copy-paste ready values
+- [x] **Navigation Index** — This file
+- [x] **Visual Overview** — STRUCTURE_OVERVIEW.txt
+
+---
+
+## 📂 Files Overview
 
 ### Entry Points (Start Here)
 
-| File                       | Size | Time     | Purpose                        |
-| -------------------------- | ---- | -------- | ------------------------------ |
-| **README.md**              | 13KB | 5-10 min | Overview, principles, FAQ      |
-| **STRUCTURE_OVERVIEW.txt** | 13KB | 2-3 min  | Visual directory of everything |
+| File                                                  | Size | Time     | Purpose                        |
+| ----------------------------------------------------- | ---- | -------- | ------------------------------ |
+| **README.md**                                         | 13KB | 5-10 min | Overview, principles, FAQ      |
+| **STRUCTURE_OVERVIEW.txt**                            | 13KB | 2-3 min  | Visual directory of everything |
+| `.claude/skills/design-principles/typenote/README.md` | ~5KB | 5 min    | Design philosophy & decisions  |
 
 ### Developer References
 
@@ -20,6 +59,113 @@ Complete reference guide for the TypeNote design system extracted from `design_s
 | **QUICK_REFERENCE.md**         | 10KB | 5 min     | Copy-paste color/spacing/typography values |
 | **COMPONENTS_INVENTORY.md**    | 12KB | 15-20 min | Component catalog with specs               |
 | **DESIGN_SYSTEM_BREAKDOWN.md** | 23KB | 30-45 min | Complete detailed specifications           |
+
+### Design Decision Files (.claude/skills/design-principles/typenote/)
+
+| File               | Purpose                              | Status   |
+| ------------------ | ------------------------------------ | -------- |
+| **colors.md**      | Color system: 22 tokens, usage rules | Complete |
+| **typography.md**  | Font families, scales, weights       | Complete |
+| **layout.md**      | Spacing grid, app structure, panels  | Complete |
+| **components.md**  | Borders, depth, interactions, radius | Complete |
+| **daily-notes.md** | Special daily notes design treatment | Complete |
+
+---
+
+## 🚀 Implementation Roadmap
+
+### Phase 1: Design Tokens (Not Started)
+
+- [ ] Extract color tokens to CSS variables
+- [ ] Extract spacing tokens to CSS variables
+- [ ] Extract typography tokens to CSS variables
+- [ ] Create design tokens JSON export
+- [ ] Set up token versioning system
+- [ ] Document token usage in codebase
+
+**Deliverable:** `tokens.css`, `tokens.json` with all 22 colors, 9 spacing units, typography scales
+
+### Phase 2: Component Library Setup (Not Started)
+
+- [ ] Choose component library tool (Storybook, Ladle, Histoire)
+- [ ] Set up component library project structure
+- [ ] Configure build process for components
+- [ ] Create component template/starter
+- [ ] Set up documentation auto-generation
+- [ ] Configure visual regression testing
+
+**Deliverable:** Component library infrastructure ready for implementation
+
+### Phase 3: Atomic Components (Not Started)
+
+- [ ] Implement Button component (4 variants)
+- [ ] Implement TextInput component
+- [ ] Implement Checkbox component
+- [ ] Implement Tag component
+- [ ] Implement Badge component (status, count)
+- [ ] Implement KeyboardKey component
+- [ ] Implement Card component
+- [ ] Write tests for each component
+- [ ] Add accessibility tests (ARIA, keyboard nav)
+- [ ] Document component APIs
+
+**Deliverable:** 8 production-ready atomic components with tests & docs
+
+### Phase 4: Complex Components (Not Started)
+
+- [ ] Implement TypeBrowser (data table with sort/filter/select)
+- [ ] Implement LeftSidebar (navigation, type list)
+- [ ] Implement DailyNotesLayout (editor, calendar, date nav)
+- [ ] Implement RightPanel (backlinks, page info, tags, settings)
+- [ ] Implement CommandPalette overlay
+- [ ] Implement Toast notification system
+- [ ] Implement Modal component
+- [ ] Write integration tests for complex components
+- [ ] Document component composition patterns
+
+**Deliverable:** 7 production-ready complex components
+
+### Phase 5: States & Patterns (Not Started)
+
+- [ ] Implement Loading skeleton component
+- [ ] Implement Shimmer animation utility
+- [ ] Implement EmptyState component pattern
+- [ ] Implement Error state component
+- [ ] Implement SaveStatus indicator
+- [ ] Create feedback pattern utilities
+- [ ] Document state management patterns
+
+**Deliverable:** Complete state management & feedback system
+
+### Phase 6: Future Enhancements (Not Planned)
+
+- [ ] Design dark mode color system
+- [ ] Implement dark mode theme switching
+- [ ] Define responsive breakpoints
+- [ ] Create mobile-optimized component variants
+- [ ] Build component playground/sandbox
+- [ ] Create design system website/portal
+- [ ] Set up automated visual regression tests
+- [ ] Create Figma design kit sync
+
+**Deliverable:** Enhanced design system with dark mode & responsive support
+
+---
+
+## ✅ Pre-Implementation Checklist
+
+Before building components, ensure you have:
+
+- [ ] Read **README.md** for design philosophy
+- [ ] Read **QUICK_REFERENCE.md** for token values
+- [ ] Reviewed **COMPONENTS_INVENTORY.md** for component specs
+- [ ] Loaded **design_system.jsx** to see visual references
+- [ ] Read relevant `.claude/skills/design-principles/typenote/*.md` files
+- [ ] Set up development environment with design tokens
+- [ ] Configured linter/formatter for consistency
+- [ ] Understand the 4px grid system
+- [ ] Understand color token usage rules
+- [ ] Understand typography scale application
 
 ---
 
@@ -155,20 +301,44 @@ Complete reference guide for the TypeNote design system extracted from `design_s
 
 ---
 
-## Design System Statistics
+## 📊 Design System Statistics
 
-| Metric                        | Count |
-| ----------------------------- | ----- |
-| **Total Documentation Files** | 5     |
-| **Total Documentation Size**  | ~70KB |
-| **Color Tokens**              | 22    |
-| **Typography Scales**         | 7     |
-| **Font Weights**              | 3     |
-| **Spacing Units**             | 9     |
-| **UI Components**             | 15+   |
-| **Complex Components**        | 6+    |
-| **States Documented**         | 30+   |
-| **Source File Lines**         | 3,553 |
+### Documentation Metrics
+
+| Metric                             | Count |
+| ---------------------------------- | ----- |
+| **Total Documentation Files**      | 13    |
+| **Documentation Locations**        | 2     |
+| **Implementation Reference Files** | 5     |
+| **Design Decision Files**          | 6     |
+| **Skill Definition Files**         | 2     |
+| **Total Documentation Size**       | ~70KB |
+| **Interactive Preview Lines**      | 3,553 |
+
+### Design System Metrics
+
+| Metric                    | Count |
+| ------------------------- | ----- |
+| **Color Tokens**          | 22    |
+| **Typography Scales**     | 7     |
+| **Font Weights**          | 3     |
+| **Spacing Units**         | 9     |
+| **Border Radius Options** | 2     |
+| **Shadow Levels**         | 2     |
+| **Animation Timings**     | 2     |
+| **Focus Ring Styles**     | 1     |
+
+### Component Metrics
+
+| Metric                       | Count |
+| ---------------------------- | ----- |
+| **Atomic Components**        | 8     |
+| **Complex Components**       | 7     |
+| **Component States**         | 4     |
+| **Feedback Patterns**        | 3     |
+| **Total Component Variants** | 30+   |
+| **Layout Panels**            | 3     |
+| **Overlay Types**            | 3     |
 
 ---
 
@@ -361,7 +531,18 @@ A: README.md → FAQ section
 
 ---
 
-## Version History
+## 📜 Version History
+
+### v1.1 (2026-01-10) — Comprehensive Index Update
+
+- ✨ Added master checklist showing documentation vs implementation status
+- ✨ Added 6-phase implementation roadmap with deliverables
+- ✨ Added pre-implementation checklist
+- ✨ Documented both documentation locations (`.claude/skills/` + `/docs/system/`)
+- ✨ Enhanced statistics with documentation, design system, and component metrics
+- ✨ Added design decision files inventory
+- 📊 Now covers all 13 documentation files across both locations
+- 🎯 Clear next steps for implementation teams
 
 ### v1.0 (2026-01-10) — Initial Release
 
@@ -376,17 +557,49 @@ A: README.md → FAQ section
 
 ---
 
-## License & Attribution
+## 📄 License & Attribution
 
-TypeNote Design System Documentation
+**TypeNote Design System Documentation**
 
-- Created: 2026-01-10
-- Source: `/docs/system/design_system.jsx` (3,553 lines)
-- Status: Complete, production-ready documentation
-- Part of: TypeNote project
+- **Created:** 2026-01-10
+- **Updated:** 2026-01-10
+- **Source:** `/docs/system/design_system.jsx` (3,553 lines)
+- **Design Decisions:** `.claude/skills/design-principles/typenote/` (6 files)
+- **Implementation Specs:** `/docs/system/` (5 files)
+- **Status:** Complete documentation, ready for implementation
+- **Part of:** TypeNote project
+
+---
+
+## 📌 Quick Summary
+
+**What's Complete:**
+
+- ✅ 13 documentation files (~70KB)
+- ✅ 22 color tokens, 7 typography scales, 9 spacing units
+- ✅ 8 atomic + 7 complex components documented
+- ✅ Interactive preview (3,553 lines)
+- ✅ Design philosophy & principles established
+
+**What's Next:**
+
+- ⏳ Extract design tokens (CSS variables, JSON)
+- ⏳ Set up component library infrastructure
+- ⏳ Implement React components
+- ⏳ Build testing & documentation automation
+- ⏳ Design & implement dark mode
+- ⏳ Define responsive breakpoints
+
+**Start Here:**
+
+1. Read `README.md` for overview
+2. Review `QUICK_REFERENCE.md` for tokens
+3. Check `.claude/skills/design-principles/typenote/README.md` for design decisions
+4. Scan implementation roadmap above
+5. Begin Phase 1: Design Tokens
 
 ---
 
 **Last Updated:** 2026-01-10
-**Status:** COMPLETE
-**Ready for:** Implementation, team onboarding, component building
+**Status:** DOCUMENTATION COMPLETE — READY FOR IMPLEMENTATION
+**Next Milestone:** Design Tokens Extraction (Phase 1)

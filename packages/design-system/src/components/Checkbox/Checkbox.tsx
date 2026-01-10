@@ -7,20 +7,24 @@ export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElemen
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, indeterminate, ...props }, ref) => {
-    const inputRef = React.useRef<HTMLInputElement>(null);
-
-    React.useImperativeHandle(ref, () => inputRef.current!);
-
-    React.useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.indeterminate = indeterminate ?? false;
-      }
-    }, [indeterminate]);
+    const callbackRef = React.useCallback(
+      (node: HTMLInputElement | null) => {
+        if (node) {
+          node.indeterminate = indeterminate ?? false;
+        }
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref, indeterminate]
+    );
 
     return (
       <input
         type="checkbox"
-        ref={inputRef}
+        ref={callbackRef}
         className={cn(
           'h-3.5 w-3.5 rounded border-gray-300 text-accent-500',
           'focus:ring-2 focus:ring-accent-500 focus:ring-offset-2',

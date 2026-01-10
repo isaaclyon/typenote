@@ -55,15 +55,23 @@ For comprehensive guidance, see:
 
 **This project has a committed design system.** Always use it:
 
-- **[TypeNote Design Overview](typenote/README.md)** — Start here for the full spec
+- **[TypeNote Design Overview](typenote/README.md)** — Start here for design decisions and principles
 
-Detailed specs (load as needed):
+**Design decision files** (load as needed):
 
 - [Colors](typenote/colors.md) — Gray scale, accent, semantic colors
 - [Typography](typenote/typography.md) — Fonts, scale, weights
 - [Layout](typenote/layout.md) — Spacing grid, structure
 - [Components](typenote/components.md) — Borders, depth, interactions
 - [Daily Notes](typenote/daily-notes.md) — Special daily note treatment
+
+**Implementation reference** (for detailed specs):
+
+When implementing components, use `/docs/system/` for comprehensive specifications:
+
+- **QUICK_REFERENCE.md** — Copy-paste ready values (colors, spacing, typography)
+- **COMPONENTS_INVENTORY.md** — Component catalog with measurements
+- **DESIGN_SYSTEM_BREAKDOWN.md** — Complete detailed reference (~790 lines)
 
 ### Quick Summary
 
