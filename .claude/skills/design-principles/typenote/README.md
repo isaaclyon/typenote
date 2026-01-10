@@ -44,10 +44,19 @@ The definitive design spec for TypeNote. These are **committed decisions**, not 
 
 ## Detailed Specs
 
-Load these as needed:
+**Quick design decisions (load as needed):**
 
 - [Colors](colors.md) — Gray scale, accent, semantic colors
 - [Typography](typography.md) — Fonts, scale, weights, usage
 - [Layout](layout.md) — Spacing grid, structure, responsive
 - [Components](components.md) — Borders, depth, interactions, states
 - [Daily Notes](daily-notes.md) — Special treatment for daily notes
+
+**Complete implementation reference:**
+
+For comprehensive specs, measurements, and copy-paste ready code:
+
+- **[/docs/system/QUICK_REFERENCE.md](../../../../docs/system/QUICK_REFERENCE.md)** — Fast lookup (colors, spacing, typography)
+- **[/docs/system/COMPONENTS_INVENTORY.md](../../../../docs/system/COMPONENTS_INVENTORY.md)** — Component catalog with full specs
+- **[/docs/system/DESIGN_SYSTEM_BREAKDOWN.md](../../../../docs/system/DESIGN_SYSTEM_BREAKDOWN.md)** — Complete detailed reference (~790 lines)
+- **[/docs/system/README.md](../../../../docs/system/README.md)** — System overview and FAQ

@@ -1,0 +1,79 @@
+/**
+ * TypeNote Design System - Tailwind v4 Theme Tokens
+ *
+ * Usage: Import AFTER tailwindcss in your main CSS:
+ *   @import "tailwindcss";
+ *   @import "@typenote/design-system/tokens.css";
+ */
+
+@theme {
+  /* ========== Warm Grayscale ========== */
+  --color-white: #ffffff;
+  --color-gray-50: #fafaf9;
+  --color-gray-100: #f5f5f4;
+  --color-gray-200: #e7e5e4;
+  --color-gray-300: #d6d3d1;
+  --color-gray-400: #a8a29e;
+  --color-gray-500: #78716c;
+  --color-gray-600: #57534e;
+  --color-gray-700: #44403c;
+  --color-gray-800: #292524;
+  --color-gray-900: #1c1917;
+
+  /* ========== Cornflower Accent ========== */
+  --color-accent-50: #f0f4ff;
+  --color-accent-100: #dbe4ff;
+  --color-accent-200: #bac8ff;
+  --color-accent-300: #91a7ff;
+  --color-accent-400: #748ffc;
+  --color-accent-500: #6495ED;
+  --color-accent-600: #5076d4;
+  --color-accent-700: #3d5fc2;
+
+  /* ========== Semantic Colors ========== */
+  --color-error: #e57373;
+  --color-success: #81c784;
+  --color-warning: #ffb74d;
+  --color-info: #6495ED;
+
+  /* ========== Shadcn-Compatible Aliases ========== */
+  --color-border: var(--color-gray-200);
+  --color-input: var(--color-gray-200);
+  --color-ring: var(--color-accent-500);
+  --color-background: var(--color-white);
+  --color-foreground: var(--color-gray-700);
+  --color-primary: var(--color-accent-500);
+  --color-primary-foreground: var(--color-white);
+  --color-secondary: var(--color-gray-100);
+  --color-secondary-foreground: var(--color-gray-800);
+  --color-muted: var(--color-gray-100);
+  --color-muted-foreground: var(--color-gray-500);
+  --color-accent: var(--color-accent-50);
+  --color-accent-foreground: var(--color-accent-700);
+  --color-destructive: var(--color-error);
+  --color-destructive-foreground: var(--color-white);
+  --color-card: var(--color-white);
+  --color-card-foreground: var(--color-gray-700);
+  --color-popover: var(--color-white);
+  --color-popover-foreground: var(--color-gray-700);
+
+  /* ========== Typography ========== */
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* ========== Border Radius ========== */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+/* Global defaults */
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}

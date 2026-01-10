@@ -1,0 +1,384 @@
+================================================================================
+                    TYPENOTE DESIGN SYSTEM - FILE STRUCTURE
+================================================================================
+
+Created: 2026-01-10
+Source File: design_system.jsx (3,553 lines)
+Documentation Status: COMPLETE
+
+================================================================================
+                              DOCUMENTATION FILES
+================================================================================
+
+README.md (START HERE)
+├── Overview of all documentation
+├── Quick start guide
+├── Core design principles
+├── Key numbers & statistics
+└── FAQ & contribution guidelines
+    [5-10 min read]
+
+QUICK_REFERENCE.md (FOR DEVELOPERS)
+├── Color tokens (copy-paste ready)
+├── Typography values
+├── Spacing scale
+├── Common measurements
+├── Button styles
+├── Form elements
+├── Component specs
+└── Dev checklist
+    [5 min lookup reference]
+
+COMPONENTS_INVENTORY.md (COMPONENT CATALOG)
+├── Design systems (colors, typography, spacing)
+├── UI components (buttons, inputs, tags)
+├── Complex components (table, sidebar, daily notes)
+├── States & feedback patterns
+├── Overlays & modals
+├── Icon system
+├── Dependencies & implementation order
+└── Accessibility checklist
+    [15-20 min read]
+
+DESIGN_SYSTEM_BREAKDOWN.md (DETAILED REFERENCE)
+├── Complete color system specifications
+├── Typography system (fonts, sizes, weights, line heights)
+├── Spacing & layout system
+├── Interactive states & animations
+├── All UI components with props
+├── Complex components with structure diagrams
+├── States & feedback patterns
+├── Recommended file structure
+├── Implementation checklist
+└── Summary statistics
+    [30-45 min detailed read]
+
+STRUCTURE_OVERVIEW.txt (THIS FILE)
+├── Quick visual guide of documentation
+├── Component count summary
+├── What's where guide
+└── How to use the documentation
+    [2 min scan]
+
+================================================================================
+                                DESIGN SYSTEMS
+================================================================================
+
+1. COLOR SYSTEM (22 Tokens)
+   ├── Grayscale Foundation (11 colors)
+   │   └── Used for: Text, borders, backgrounds
+   ├── Cornflower Blue Accent (8 colors)
+   │   └── Primary brand color: #6495ED
+   └── Semantic Colors (4 colors)
+       └── Error, Success, Warning, Info
+
+2. TYPOGRAPHY SYSTEM
+   ├── Font Families
+   │   ├── Sans: IBM Plex Sans
+   │   └── Mono: IBM Plex Mono
+   ├── 7-Level Type Scale
+   │   └── 12px → 13px → 15px → 17px → 20px → 24px → 30px
+   ├── 3 Font Weights
+   │   └── 400, 500, 600
+   ├── Line Heights
+   │   └── 1.25 (tight), 1.5 (normal), 1.625 (relaxed)
+   └── Letter Spacing
+       └── -0.02em, 0, 0.025em
+
+3. SPACING SYSTEM (4px Base Grid)
+   ├── 9 Spacing Units
+   │   └── 4px, 8px, 12px, 16px, 20px, 24px, 32px, 40px, 48px
+   ├── Layout Dimensions
+   │   ├── Sidebar: 240-260px
+   │   ├── Content: Fluid
+   │   └── Right Panel: ~280px
+   └── Interactive Elements
+       ├── Button height: 36-40px
+       ├── Touch target: 36×36px
+       └── Icon sizes: 12-20px
+
+4. INTERACTION SYSTEM
+   ├── Borders & Radius
+   │   ├── Border weight: 1px
+   │   ├── Default color: #e7e5e4
+   │   ├── Hover color: #d6d3d1
+   │   └── Radius: 4px (default), 6px (large)
+   ├── Shadows (Minimal)
+   │   ├── shadow-sm: 0 1px 2px rgba(0,0,0,0.04)
+   │   └── shadow-md: 0 2px 4px rgba(0,0,0,0.06)
+   ├── States
+   │   ├── Hover: BG #fafaf9, Border #d6d3d1
+   │   ├── Focus: Double ring (2px white, 4px #6495ED)
+   │   └── Selection: rgba(100, 149, 237, 0.25)
+   └── Animation
+       ├── Micro: 150ms ease-out
+       └── Standard: 200ms ease-out
+
+================================================================================
+                                  UI COMPONENTS
+================================================================================
+
+SIMPLE/ATOMIC (7)
+├── Button (4 variants: Primary, Secondary, Tertiary, Danger)
+├── Text Input
+├── Checkbox
+├── Tag / Badge
+├── Status Badge
+├── Keyboard Key (<kbd>)
+└── Card
+
+COMPLEX/COMPOSITE (9+)
+├── Type Browser (table with sort/filter/select)
+├── Column Header (sortable, filterable)
+├── Table Row (with hover actions)
+├── Left Sidebar (navigation, type list)
+├── Sidebar Type Item (icon, name, count)
+├── Daily Notes Layout (editor, date nav, mini calendar)
+├── Right Panel (backlinks, page info, tags, settings)
+├── Overlays
+│   ├── Command Palette (search commands)
+│   ├── Toast (bottom-right notification)
+│   └── Modal (centered dialog)
+└── States
+    ├── Loading (skeleton shimmer)
+    ├── Empty (icon + CTA)
+    ├── Save Status (inline feedback)
+    └── Error Feedback
+
+================================================================================
+                            COMPLEX COMPONENTS DETAIL
+================================================================================
+
+TYPE BROWSER (Data Table)
+├── Header
+│   ├── Title + Count
+│   ├── Search Input
+│   ├── New Item Button
+│   └── Column Settings Button
+├── Table
+│   ├── Headers
+│   │   ├── Checkbox (40px)
+│   │   ├── Title (flex)
+│   │   ├── Modified (100px)
+│   │   ├── Tags (150px)
+│   │   ├── Status (90px)
+│   │   └── Actions (50px)
+│   └── Rows
+│       ├── Checkbox
+│       ├── Title + "Open" button (hover)
+│       ├── Modified timestamp
+│       ├── Tag badges
+│       ├── Status badge
+│       └── More menu (hover)
+└── Footer
+    ├── Selection count
+    └── Bulk actions (Archive, Delete)
+
+LEFT SIDEBAR (Navigation)
+├── Top Section
+│   ├── Search/Command Palette (⌘K)
+│   └── Calendar Button
+├── Types Section (scrollable)
+│   ├── Type Items
+│   │   ├── Icon (color-coded)
+│   │   ├── Name
+│   │   └── Count (on hover)
+│   └── "+ New Type" Button
+└── Bottom Section
+    ├── Archive Button
+    └── Settings Button
+
+DAILY NOTES (Specialized Editor)
+├── Header Navigation
+│   ├── ← Prior Day
+│   ├── Date Display
+│   ├── Next →
+│   └── "Today" Button
+├── Editor Area
+│   ├── Title
+│   ├── Content (fluid width)
+│   └── Responsive padding
+└── Mini Calendar (200px)
+    ├── Month Navigation
+    ├── Weekday Headers
+    ├── Day Grid
+    │   ├── Today: Highlighted
+    │   └── Days with notes: Dot indicator
+    └── Keyboard: T to jump to today
+
+RIGHT PANEL (Contextual)
+├── Backlinks Section
+├── Page Info Section
+├── Tags Section
+└── Settings Section
+
+================================================================================
+                            STATES & FEEDBACK PATTERNS
+================================================================================
+
+LOADING STATES
+└── Skeleton Placeholder
+    ├── Linear gradient shimmer (1.5s infinite)
+    └── Used for: Cards, content blocks
+
+EMPTY STATES
+└── Pattern
+    ├── Icon (large, semi-transparent)
+    ├── Heading (15px)
+    ├── Description (13px)
+    └── CTA Button
+
+SAVE STATUS
+├── Saving... (animated dot + text)
+└── Saved (check icon + text, fades)
+
+FEEDBACK COLORS
+├── Error: #e57373 (destructive)
+├── Success: #81c784 (positive)
+├── Warning: #ffb74d (caution)
+└── Info: #6495ED (neutral)
+
+OVERLAYS
+├── Command Palette (top-center)
+├── Toast (bottom-right, auto-dismiss)
+└── Modal (centered, blur backdrop)
+
+KEYBOARD SHORTCUTS
+├── ⌘K - Command palette
+├── ⌘N - New note
+├── ⌘F - Search
+└── T - Jump to today (daily notes)
+
+================================================================================
+                              WHAT TO READ WHEN
+================================================================================
+
+I NEED A QUICK LOOKUP
+→ QUICK_REFERENCE.md
+   Hex values, measurements, font sizes, copy-paste ready
+
+I'M BUILDING A COMPONENT
+→ COMPONENTS_INVENTORY.md
+   Component specs, variants, props, dependencies
+
+I NEED DETAILED SPECS
+→ DESIGN_SYSTEM_BREAKDOWN.md
+   Complete reference, all systems documented
+
+I'M NEW TO TYPENOTE DESIGN
+→ README.md
+   Start here, overview of everything
+
+I WANT TO UNDERSTAND THE STRUCTURE
+→ STRUCTURE_OVERVIEW.txt (THIS FILE)
+   Visual guide, what's where
+
+I NEED THE INTERACTIVE PREVIEW
+→ design_system.jsx
+   React component showing all colors, components, layouts
+
+================================================================================
+                                QUICK STATISTICS
+================================================================================
+
+Colors:                    22 tokens
+  - Grayscale:           11
+  - Accent (Cornflower):  8
+  - Semantic:             4
+
+Typography:
+  - Font families:        2 (Sans, Mono)
+  - Size scale:           7 sizes (12px-30px)
+  - Font weights:         3 levels (400, 500, 600)
+  - Line heights:         3 options
+  - Letter spacing:       3 options
+
+Spacing:
+  - Grid unit:            4px
+  - Scale units:          9 (4px-48px)
+
+Components:
+  - Atomic:               7+
+  - Complex:              9+
+  - States documented:    30+
+
+Documentation:
+  - Files created:        4 markdown + 1 overview
+  - Total documentation:  ~50 pages equivalent
+  - Source lines:         3,553 (design_system.jsx)
+
+================================================================================
+                         DESIGN PRINCIPLES SUMMARY
+================================================================================
+
+1. MINIMAL, PRECISE DESIGN
+   → Every pixel purposeful
+   → Inspired by Linear, Notion, Stripe
+
+2. WARM NEUTRALS
+   → Grayscale based on warm tones
+   → Never pure black/white
+
+3. SINGLE PRIMARY ACCENT
+   → Cornflower Blue (#6495ED)
+   → Consistent across all interactive elements
+
+4. SUBTLE, SMOOTH INTERACTIONS
+   → 150ms/200ms transitions
+   → ease-out easing (no bounce)
+   → Smooth, not jarring
+
+5. CONTENT FIRST
+   → Readable typography
+   → Plenty of whitespace
+   → Generous padding
+
+6. ACCESSIBLE BY DEFAULT
+   → Color contrast verified
+   → 36×36px touch targets
+   → Focus indicators everywhere
+   → Keyboard navigation
+
+================================================================================
+                              NEXT STEPS
+================================================================================
+
+For Developers:
+  1. Read README.md (5 min)
+  2. Save QUICK_REFERENCE.md as bookmark
+  3. Reference COMPONENTS_INVENTORY.md when building
+  4. Implement following design tokens
+  5. Test accessibility (contrast, focus)
+
+For Designers:
+  1. Review DESIGN_SYSTEM_BREAKDOWN.md
+  2. Study design principles in README.md
+  3. Reference design_system.jsx for interactive preview
+  4. Propose new components with complete specifications
+
+For Team Leads:
+  1. Read README.md + FAQ section
+  2. Understand governance model
+  3. Ensure team follows color/spacing system
+  4. Review component implementations for consistency
+
+================================================================================
+                                  REMEMBER
+================================================================================
+
+✓ Use color tokens (don't hardcode hex)
+✓ Follow 4px spacing grid
+✓ Apply correct typography combos
+✓ Use 4px or 6px border radius
+✓ Add focus rings to interactive elements
+✓ Use ease-out easing
+✓ Ensure 36×36px touch targets
+✓ Show appropriate feedback states
+✓ Make keyboard accessible
+✓ Test color contrast
+
+================================================================================
+Created: 2026-01-10
+Source: /docs/system/design_system.jsx (3,553 lines)
+Status: COMPLETE & DOCUMENTED
+================================================================================
