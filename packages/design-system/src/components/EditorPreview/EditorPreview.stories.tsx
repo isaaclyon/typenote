@@ -232,3 +232,63 @@ export const ProseAllElements: Story = () => (
     </pre>
   </EditorPreview>
 );
+
+export const RealisticContent: Story = () => (
+  <EditorPreview>
+    <h1 className="text-2xl font-semibold my-4 text-gray-800 leading-tight">
+      Project Meeting Notes
+    </h1>
+
+    <p className="my-2 text-gray-700">
+      Meeting with <RefNode type="person" label="Sarah Chen" /> about{' '}
+      <RefNode type="project" label="Q1 Product Launch" />. Tagged: <TagNode value="meeting" />{' '}
+      <TagNode value="product" />
+    </p>
+
+    <CalloutNode kind="info" title="Key Takeaway">
+      <p className="text-sm text-gray-700">
+        Launch date confirmed for March 15th. All features must be code-complete by March 1st.
+      </p>
+    </CalloutNode>
+
+    <h2 className="text-xl font-semibold my-3 text-gray-800 leading-tight">Action Items</h2>
+
+    <ul className="pl-6 my-2 text-gray-700 leading-normal list-disc">
+      <li className="my-1">
+        Update <RefNode type="note" label="Technical Spec" /> with new requirements
+      </li>
+      <li className="my-1">
+        Create <RefNode type="task" label="Design mockups for landing page" />
+      </li>
+      <li className="my-1">Review budget calculations</li>
+    </ul>
+
+    <h2 className="text-xl font-semibold my-3 text-gray-800 leading-tight">Budget Analysis</h2>
+
+    <p className="my-2 text-gray-700">
+      The cost formula is <MathInline latex="C = R × T × (1 + M)" /> where <MathInline latex="R" />{' '}
+      is the resource rate, <MathInline latex="T" /> is time, and <MathInline latex="M" /> is the
+      markup percentage.
+    </p>
+
+    <MathBlock latex="Total = $50/hr × 160hr × (1 + 0.15) = $9,200" />
+
+    <CalloutNode kind="warning">
+      <p className="text-sm text-gray-700">
+        This exceeds our Q1 budget allocation by 15%. Need to discuss with{' '}
+        <RefNode type="person" label="Finance Team" />.
+      </p>
+    </CalloutNode>
+
+    <h2 className="text-xl font-semibold my-3 text-gray-800 leading-tight">Design Reference</h2>
+
+    <AttachmentNode
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Crect fill='%23f5f5f4' width='600' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2378716c'%3EMockup Screenshot%3C/text%3E%3C/svg%3E"
+      alt="Landing page mockup"
+    />
+
+    <p className="my-2 text-gray-700">
+      Related: <RefNode type="resource" label="Design System Guidelines" />
+    </p>
+  </EditorPreview>
+);
