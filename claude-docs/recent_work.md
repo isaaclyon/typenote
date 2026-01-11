@@ -1,10 +1,62 @@
 # Recent Work
 
-## Latest Session (2026-01-10 - Left Sidebar Navigation Organism)
+## Latest Session (2026-01-10 - Recent Objects Feature Complete)
 
-### Built First Organism Component in Design System
+### Recent Objects Tracking - Full Implementation
 
-Implemented comprehensive left sidebar navigation organism in Ladle sandbox with 8 compound components, 9 interactive stories, and full design system adherence.
+Completed end-to-end recent objects tracking feature with 100-entry LRU cache, backend service, IPC layer, and command palette integration. Feature fully tested and committed.
+
+**Backend Implementation:**
+
+- Database: `recent_objects` table with CASCADE delete on objectId FK
+- Migration: `0007_add_recent_objects.sql` with proper SQL breakpoints
+- Service: `recentObjectsService.ts` with silent failure pattern (logs, doesn't throw)
+  - `recordView(db, objectId)` — UPSERT with LRU cleanup (100 max)
+  - `getRecentObjects(db, limit)` — Ordered by viewedAt DESC, filters soft-deleted
+  - `clearRecentObjects(db)` — Deletes all entries
+- Tests: 13/13 passing unit tests with deterministic timestamps
+
+**IPC Layer:**
+
+- Main process: `recordView` and `getRecentObjects` handlers
+- Preload: Exposed API with TypeScript types
+- Types: Added `RecentObjectSummary` interface
+
+**Frontend Integration:**
+
+- `useRecentObjects` hook - Fetches recent objects from backend
+- CommandPalette "Recent" section - Shows when query is empty
+- Auto-tracking: Records views on navigation and object creation
+- UI: Clock icon, type badge, ordered by most recent first
+
+**Testing:**
+
+- 13 unit tests (service layer)
+- 3 E2E tests (IPC wiring, ordering with 1s delay for SQLite second precision, limit parameter)
+- All 1677 tests passing across entire codebase
+- Full typecheck, build verification
+
+**Key files:**
+
+- `packages/storage/src/schema.ts` — recentObjects table
+- `packages/storage/drizzle/0007_add_recent_objects.sql` — migration
+- `packages/storage/src/recentObjectsService.ts` — service implementation (150 lines)
+- `packages/storage/src/recentObjectsService.test.ts` — TDD test suite
+- `apps/desktop/src/renderer/hooks/useRecentObjects.ts` — React hook
+- `apps/desktop/src/renderer/components/CommandPalette/index.tsx` — UI integration
+- `apps/desktop/src/renderer/hooks/useCommandActions.ts` — view tracking
+- `tests/e2e/specs/ipc-wiring.spec.ts` — E2E tests
+- `tests/e2e/types/global.d.ts` — TypeScript types
+
+**Commit:** `b8cb7d6 feat(recent-objects): implement 100-entry LRU cache with command palette integration`
+
+---
+
+## Previous Session (2026-01-10 - Left Sidebar Navigation Organism)
+
+### Built and Committed First Organism Component
+
+Implemented comprehensive left sidebar navigation organism in Ladle sandbox with 8 compound components, 9 interactive stories, and full design system adherence. Verified with full test suite before committing.
 
 **Components created:**
 
@@ -35,7 +87,14 @@ Implemented comprehensive left sidebar navigation organism in Ladle sandbox with
 - CSS-first interactivity (performance over React state)
 - Bottom-up build sequence (simple → complex → container)
 
-**No commits made** — Work in progress, ready for integration testing
+**Verification:**
+
+- Typecheck: All 6 packages pass
+- Lint: design-system clean
+- Tests: 1652 tests pass (565 api, 91 core, 697 storage, 1 cli, 298 desktop)
+- Build: All packages build successfully
+
+**Commit:** `d8c01d3 feat(design-system): add left sidebar navigation organism`
 
 ---
 
@@ -80,24 +139,6 @@ Investigated 41 E2E test failures. Root cause: invalid blockIds (wrong character
 
 ---
 
-## Previous Session (2026-01-08 - CLI Command Suite)
-
-Full CLI coverage for all backend services: tag (10), backlinks (1), template (6), attachment (9), export/import (5). Added `--dry-run` to 4 commands. 31 total commands. Commit: `1a469cf`
-
----
-
-## Previous Session (2026-01-08 - Attachments Phase 5)
-
-Block Patch Integration for Attachments. 13 new tests. Commit: `7d1260f`
-
----
-
-## Previous Session (2026-01-08 - Object Type Inheritance)
-
-Completed 4-day TDD implementation. 56 new tests. Commit: `367752c`
-
----
-
 ## Completed Milestones
 
 | Phase       | Description                          | Date       |
@@ -109,3 +150,5 @@ Completed 4-day TDD implementation. 56 new tests. Commit: `367752c`
 | Inheritance | Object Type Inheritance (4 days)     | 2026-01-08 |
 | Attachments | Phases 1-8 (180+ tests)              | 2026-01-08 |
 | CLI         | Full CLI command coverage            | 2026-01-08 |
+| Design      | Left Sidebar Navigation organism     | 2026-01-10 |
+| Recent      | Recent Objects Tracking (LRU cache)  | 2026-01-10 |

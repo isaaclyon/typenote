@@ -2,21 +2,22 @@
 
 ## UI/Design System - Organism Components
 
-**Status:** Active (Sidebar organism complete in Ladle, ready for integration)
+**Status:** Active (Sidebar committed, ready for desktop integration)
 **Plan:** `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md`
 
 Building organism-level components in the design-system package with Ladle sandbox testing before desktop app integration.
 
 ### Completed
 
-- [x] Left Sidebar Navigation organism (8 components, 9 stories) ✅
+- [x] Left Sidebar Navigation organism (8 components, 9 stories) ✅ Commit: `d8c01d3`
   - Compound component architecture established
   - CSS-first hover patterns
   - Full design system adherence
+  - Verified: typecheck, lint, 1677 tests, build
 
 ### Next Steps
 
-- [ ] Integrate Sidebar into desktop app (`apps/desktop/src/renderer/App.tsx`)
+- [ ] Integrate Sidebar into desktop app with real data (wire up IPC)
 - [ ] Build Right Panel organism (backlinks, page info, tags)
 - [ ] Build Type Browser organism (data table with sort/filter)
 - [ ] Build App Shell organism (3-panel layout with sidebar collapse)
@@ -67,10 +68,15 @@ Images + Documents support with content-addressed storage, global deduplication,
 
 - [ ] Markdown export (in addition to JSON)
 - [ ] Relations semantics finalization
+- [ ] Unlinked mentions (design spec: `docs/plans/2026-01-10-unlinked-mentions-design.md`)
 
 ---
 
 ## Recently Completed
+
+### Recent Objects Tracking ✅ (2026-01-10)
+
+100-entry LRU cache with command palette integration. Backend service, IPC layer, React hook, UI integration. 13 unit tests + 3 E2E tests. Commit: `b8cb7d6`
 
 ### CLI Command Suite ✅ (2026-01-08)
 
