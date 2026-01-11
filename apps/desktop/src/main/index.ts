@@ -14,6 +14,7 @@ import {
 } from '@typenote/storage';
 import { setupIpcHandlers } from './ipc.js';
 import { typenoteEvents } from './events.js';
+import { startAttachmentCleanupScheduler, stopAttachmentCleanupScheduler } from './lifecycle.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,10 +76,16 @@ function setupEventBroadcasting(): void {
   });
 }
 
-void app.whenReady().then(() => {
+void app.whenReady().then(async () => {
   initDatabase();
   registerIpcHandlers();
   setupEventBroadcasting();
+
+  // Start attachment cleanup scheduler (runs daily)
+  if (db && fileService) {
+    await startAttachmentCleanupScheduler(db, fileService, 30);
+  }
+
   createWindow();
 
   app.on('activate', () => {
@@ -95,6 +102,9 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  // Stop attachment cleanup scheduler
+  stopAttachmentCleanupScheduler();
+
   if (db) {
     closeDb(db);
     db = null;
