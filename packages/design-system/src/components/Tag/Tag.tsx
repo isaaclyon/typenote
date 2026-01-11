@@ -4,38 +4,69 @@ import { cn } from '../../utils/cn.js';
 import { X } from 'lucide-react';
 
 const tagVariants = cva(
-  'inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-xs font-medium transition-colors',
+  'inline-flex items-center gap-1 rounded px-2 h-6 text-sm font-medium transition-colors',
   {
     variants: {
       variant: {
-        default: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+        default: 'bg-gray-100 text-gray-700 hover:bg-accent-50',
         primary: 'bg-accent-100 text-accent-700 hover:bg-accent-200',
+      },
+      clickable: {
+        true: 'cursor-pointer',
+        false: '',
       },
     },
     defaultVariants: {
       variant: 'default',
+      clickable: false,
     },
   }
 );
 
 export interface TagProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof tagVariants> {
+  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>, VariantProps<typeof tagVariants> {
   onRemove?: () => void;
+  onClick?: () => void;
 }
 
-function Tag({ className, variant, onRemove, children, ...props }: TagProps) {
+function Tag({ className, variant, clickable, onRemove, onClick, children, ...props }: TagProps) {
+  const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    // Don't trigger tag click when clicking remove button
+    if (onClick && e.target === e.currentTarget) {
+      onClick();
+    }
+  };
+
   return (
-    <span className={cn(tagVariants({ variant }), className)} {...props}>
+    <span
+      className={cn(tagVariants({ variant, clickable: clickable ?? !!onClick }), className)}
+      onClick={handleClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      {...props}
+    >
       {children}
       {onRemove && (
         <button
           type="button"
-          onClick={onRemove}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
           className="hover:bg-black/10 rounded-full p-0.5 transition-colors"
           aria-label="Remove tag"
         >
-          <X className="h-2.5 w-2.5" />
+          <X className="h-3 w-3" />
         </button>
       )}
     </span>

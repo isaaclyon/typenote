@@ -61,7 +61,11 @@ Images + Documents support with content-addressed storage, global deduplication,
 
 ### Quality & Performance
 
-- [ ] Improve mutation testing scores (storage 79.9%, api 52.1%)
+- [x] Improve mutation testing scores ✅ Partial (api: 87.42%, core: 96.30%, storage: 78.30%)
+  - blockPatch.ts: 52.63% → 57.89% (+5.26%)
+  - Identified equivalent mutants in schemas with all-optional fields
+  - Incremental mode verified working (40-63% cache reuse)
+- [ ] Further mutation improvements: objectType.ts (84.91%), calendar.ts (86.36%)
 - [ ] Performance benchmarks for 10k+ objects / 100k+ blocks
 
 ### Features (Future)

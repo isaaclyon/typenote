@@ -1,6 +1,36 @@
 # Recent Work
 
-## Latest Session (2026-01-10 - Recent Objects Feature Complete)
+## Latest Session (2026-01-10 - Mutation Testing Coverage Improvements)
+
+### Incremental Stryker Mutation Testing + Coverage Analysis
+
+Analyzed mutation testing infrastructure and improved test coverage for API package schemas. Learned about incremental mutation testing and killed additional mutants in blockPatch.ts.
+
+**Work completed:**
+
+- Verified incremental mutation testing is enabled across api, core, storage packages
+- Analyzed mutation test results: api 87.42%, core 96.30%, storage 78.30%
+- Improved blockPatch.ts from 52.63% → 57.89% (+5.26% improvement)
+- Added 14 targeted tests for ObjectLiteral mutations
+- Documented equivalent mutant pattern in schemas with all-optional fields
+
+**Key insights:**
+
+- Incremental mode tracks which mutants were tested using git HEAD comparison
+- Cache reuse: 40-63% of mutants reused on subsequent runs (massive speedup)
+- Equivalent mutants exist when `z.object({ optional: ... })` → `z.object({})` behaves identically
+- notateDoc.ts improvements didn't kill mutants due to equivalent mutant pattern
+
+**Files changed:**
+
+- `packages/api/src/blockPatch.test.ts` — Added 14 tests for required/optional field validation
+- `packages/api/src/notateDoc.test.ts` — Added 13 tests (discovered equivalent mutants)
+
+**Commit:** `c3ba9b2 test: improve blockPatch.ts mutation coverage`
+
+---
+
+## Previous Session (2026-01-10 - Recent Objects Feature Complete)
 
 ### Recent Objects Tracking - Full Implementation
 
@@ -98,47 +128,6 @@ Implemented comprehensive left sidebar navigation organism in Ladle sandbox with
 
 ---
 
-## Previous Session (2026-01-08 - Attachment Renderer UI)
-
-### Completed Phase 6 & 8 of Attachment System
-
-Implemented image upload and display in the TipTap editor. Users can drag-drop or paste images which are validated, base64-encoded, and uploaded via IPC to the content-addressed storage system.
-
-**Phase 6 - IPC Layer:**
-
-- Added 6 attachment IPC handlers: uploadAttachment, getAttachment, listAttachments, linkBlockToAttachment, unlinkBlockFromAttachment, getBlockAttachments
-- 13 new IPC tests
-
-**Phase 8 - Renderer Integration:**
-
-- AttachmentNode TipTap extension with image rendering (7 tests)
-- ResizeHandle component for aspect-ratio-preserving resize
-- useImageUpload hook for drag-drop/paste handling (15 tests)
-- imageUtils for validation (type/size) and base64 encoding (17 tests)
-- Integrated with NoteEditor via event listeners
-
-**Commit:** `cc6ab66 feat(attachments): implement image upload and display in editor`
-
----
-
-## Previous Session (2026-01-08 - E2E Test Fixes)
-
-### Fixed E2E Test Failures (21 tests fixed)
-
-Investigated 41 E2E test failures. Root cause: invalid blockIds (wrong character count for ULID validation). Fixed 28 blockIds across 6 spec files.
-
-**Key changes:**
-
-- Fixed blockIds in `references-linking.spec.ts`, `search-discovery.spec.ts`, `block-hierarchy.spec.ts`, `ipc-wiring.spec.ts`, `object-creation.spec.ts`, `templates-workflow.spec.ts`
-- Added `sourceObjectTitle` to `BacklinkResult` type in `packages/storage/src/backlinks.ts`
-- Updated `tests/e2e/types/global.d.ts` Block interface (`blockType` not `type`)
-
-**Results:** 185 tests passing (up from 164), 20 remaining failures are UI-related (RefNode rendering, autocomplete popup)
-
-**Commit:** `b5a9382 fix(e2e): correct blockId lengths and add sourceObjectTitle to backlinks`
-
----
-
 ## Completed Milestones
 
 | Phase       | Description                          | Date       |
@@ -150,5 +139,7 @@ Investigated 41 E2E test failures. Root cause: invalid blockIds (wrong character
 | Inheritance | Object Type Inheritance (4 days)     | 2026-01-08 |
 | Attachments | Phases 1-8 (180+ tests)              | 2026-01-08 |
 | CLI         | Full CLI command coverage            | 2026-01-08 |
+| E2E Fixes   | Fixed 21 test failures (blockIds)    | 2026-01-08 |
 | Design      | Left Sidebar Navigation organism     | 2026-01-10 |
 | Recent      | Recent Objects Tracking (LRU cache)  | 2026-01-10 |
+| Testing     | Mutation testing improvements        | 2026-01-10 |

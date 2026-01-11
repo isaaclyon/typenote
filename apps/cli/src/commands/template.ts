@@ -12,6 +12,9 @@ import {
   listTemplates,
   updateTemplate,
   deleteTemplate,
+  applyTemplateToObject,
+  getObject,
+  type ApplyTemplateContext,
 } from '@typenote/storage';
 import type { TemplateContent } from '@typenote/api';
 import { initDb, closeDb } from './db.js';
@@ -203,6 +206,64 @@ export function registerTemplateCommand(program: Command): void {
           console.log(`Template ${id} deleted.`);
         } else {
           console.error(`Template not found: ${id}`);
+          process.exit(1);
+        }
+      } catch (error) {
+        console.error('Error:', error instanceof Error ? error.message : String(error));
+        process.exit(1);
+      } finally {
+        closeDb(db);
+      }
+    });
+
+  // template apply <templateId> <objectId>
+  templateCmd
+    .command('apply')
+    .description('Apply a template to an object')
+    .argument('<templateId>', 'Template ID (ULID)')
+    .argument('<objectId>', 'Object ID (ULID)')
+    .action((templateId: string, objectId: string) => {
+      const db = initDb();
+      try {
+        // Get the template
+        const template = getTemplate(db, templateId);
+        if (template === null) {
+          console.error(`Template not found: ${templateId}`);
+          process.exit(1);
+        }
+
+        // Get the object to build context
+        const obj = getObject(db, objectId);
+        if (obj === null) {
+          console.error(`Object not found: ${objectId}`);
+          process.exit(1);
+        }
+
+        // Build context from object
+        const context: ApplyTemplateContext = {
+          title: obj.title,
+          createdDate: obj.createdAt,
+        };
+
+        // Add dateKey if object has it (for DailyNote types)
+        if (obj.properties && typeof obj.properties === 'object' && 'date_key' in obj.properties) {
+          const dateKey = obj.properties['date_key'];
+          if (typeof dateKey === 'string') {
+            context.dateKey = dateKey;
+          }
+        }
+
+        // Apply template
+        const result = applyTemplateToObject(db, objectId, template, context);
+
+        if (result.success) {
+          console.log('Template applied successfully:');
+          console.log(JSON.stringify(result.result, null, 2));
+        } else {
+          console.error('Error applying template:', result.error.message);
+          if (result.error.details) {
+            console.error('Details:', JSON.stringify(result.error.details, null, 2));
+          }
           process.exit(1);
         }
       } catch (error) {

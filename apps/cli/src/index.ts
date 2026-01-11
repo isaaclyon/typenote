@@ -8,6 +8,8 @@ import { registerBacklinksCommand } from './commands/backlinks.js';
 import { registerTaskCommand } from './commands/task.js';
 import { registerDevCommand } from './commands/dev.js';
 import { registerCoreCommands } from './commands/core.js';
+import { registerDailyCommand } from './commands/daily.js';
+import { registerCalendarCommand } from './commands/calendar.js';
 
 // ============================================================================
 // CLI Program
@@ -35,5 +37,7 @@ registerAttachmentCommand(program);
 registerTemplateCommand(program);
 registerTagCommand(program);
 registerBacklinksCommand(program);
+registerDailyCommand(program);
+registerCalendarCommand(program);
 
 program.parse();
