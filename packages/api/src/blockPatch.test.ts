@@ -52,6 +52,19 @@ describe('PlaceSchema', () => {
   it.each(invalidPlaces)('rejects %s', (_, place) => {
     expectInvalid(PlaceSchema, place);
   });
+
+  // Additional tests to kill ObjectLiteral mutations
+  it('rejects start variant missing where field', () => {
+    expectInvalid(PlaceSchema, {}, 'where');
+  });
+
+  it('rejects before variant missing siblingBlockId', () => {
+    expectInvalid(PlaceSchema, { where: 'before' }, 'siblingBlockId');
+  });
+
+  it('rejects after variant missing siblingBlockId', () => {
+    expectInvalid(PlaceSchema, { where: 'after' }, 'siblingBlockId');
+  });
 });
 
 // =============================================================================
@@ -112,6 +125,29 @@ describe('InsertBlockOpSchema', () => {
   it.each(invalidInsertOps)('rejects insert %s', (_, op) => {
     expectInvalid(InsertBlockOpSchema, op);
   });
+
+  // Additional tests to kill ObjectLiteral mutation (z.object({}) -> z.object({}))
+  it('rejects completely empty object', () => {
+    expectInvalid(InsertBlockOpSchema, {});
+  });
+
+  it('rejects object with only op field', () => {
+    expectInvalid(InsertBlockOpSchema, { op: 'block.insert' });
+  });
+
+  it('verifies all required fields are actually required', () => {
+    // Missing blockId
+    expectInvalid(
+      InsertBlockOpSchema,
+      {
+        op: 'block.insert',
+        parentBlockId: null,
+        blockType: 'paragraph',
+        content: {},
+      },
+      'blockId'
+    );
+  });
 });
 
 // =============================================================================
@@ -154,6 +190,32 @@ describe('UpdateBlockOpSchema', () => {
     // Empty patch is valid - patch fields are all optional
     expectValid(UpdateBlockOpSchema, { op: 'block.update', blockId: VALID_ULID, patch: {} });
   });
+
+  // Additional tests to kill ObjectLiteral mutations
+  // While patch fields are optional, they must be valid when provided
+  it('rejects patch with invalid blockType (not a string)', () => {
+    expectInvalid(
+      UpdateBlockOpSchema,
+      {
+        op: 'block.update',
+        blockId: VALID_ULID,
+        patch: { blockType: 123 },
+      },
+      'patch.blockType'
+    );
+  });
+
+  it('rejects patch with invalid meta (collapsed not boolean)', () => {
+    expectInvalid(
+      UpdateBlockOpSchema,
+      {
+        op: 'block.update',
+        blockId: VALID_ULID,
+        patch: { meta: { collapsed: 'yes' } },
+      },
+      'patch.meta.collapsed'
+    );
+  });
 });
 
 // =============================================================================
@@ -183,6 +245,33 @@ describe('MoveBlockOpSchema', () => {
   it('rejects move missing newParentBlockId', () => {
     expectInvalid(MoveBlockOpSchema, { op: 'block.move', blockId: VALID_ULID }, 'newParentBlockId');
   });
+
+  // Additional tests to kill ObjectLiteral mutation
+  it('rejects move with invalid orderKey (not a string)', () => {
+    expectInvalid(
+      MoveBlockOpSchema,
+      {
+        op: 'block.move',
+        blockId: VALID_ULID,
+        newParentBlockId: null,
+        orderKey: 123,
+      },
+      'orderKey'
+    );
+  });
+
+  it('rejects move with invalid subtree value (must be literal true)', () => {
+    expectInvalid(
+      MoveBlockOpSchema,
+      {
+        op: 'block.move',
+        blockId: VALID_ULID,
+        newParentBlockId: null,
+        subtree: false,
+      },
+      'subtree'
+    );
+  });
 });
 
 // =============================================================================
@@ -205,6 +294,31 @@ describe('DeleteBlockOpSchema', () => {
 
   it('rejects delete missing blockId', () => {
     expectInvalid(DeleteBlockOpSchema, { op: 'block.delete' }, 'blockId');
+  });
+
+  // Additional tests to kill ObjectLiteral mutation
+  it('rejects delete with invalid subtree value (must be literal true)', () => {
+    expectInvalid(
+      DeleteBlockOpSchema,
+      {
+        op: 'block.delete',
+        blockId: VALID_ULID,
+        subtree: false,
+      },
+      'subtree'
+    );
+  });
+
+  it('rejects delete with invalid subtree type (must be boolean true)', () => {
+    expectInvalid(
+      DeleteBlockOpSchema,
+      {
+        op: 'block.delete',
+        blockId: VALID_ULID,
+        subtree: 'true',
+      },
+      'subtree'
+    );
   });
 });
 
