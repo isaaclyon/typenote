@@ -5,6 +5,7 @@ import { TagNode } from './TagNode.js';
 import { MathInline } from './MathInline.js';
 import { CalloutNode } from './CalloutNode.js';
 import { MathBlock } from './MathBlock.js';
+import { CodeBlock } from './CodeBlock.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -119,5 +120,39 @@ export const MathBlockVariations: Story = () => (
     <p className="my-2 text-gray-700">And the Pythagorean theorem:</p>
 
     <MathBlock latex="a² + b² = c²" />
+  </EditorPreview>
+);
+
+export const CodeBlockVariations: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">Python example:</p>
+
+    <CodeBlock
+      language="python"
+      code={`def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))`}
+    />
+
+    <p className="my-2 text-gray-700">TypeScript example:</p>
+
+    <CodeBlock
+      language="typescript"
+      code={`interface User {
+  name: string;
+  age: number;
+}
+
+const user: User = { name: "Alice", age: 30 };`}
+    />
+
+    <p className="my-2 text-gray-700">Code block without language label:</p>
+
+    <CodeBlock
+      code={`This is a plain code block
+without syntax highlighting
+or language label.`}
+    />
   </EditorPreview>
 );
