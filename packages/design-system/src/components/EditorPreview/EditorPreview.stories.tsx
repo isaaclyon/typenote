@@ -186,3 +186,49 @@ export const AttachmentNodeStates: Story = () => (
     />
   </EditorPreview>
 );
+
+export const ProseAllElements: Story = () => (
+  <EditorPreview>
+    <h1 className="text-2xl font-semibold my-4 text-gray-800 leading-tight">Heading 1</h1>
+    <h2 className="text-xl font-semibold my-3 text-gray-800 leading-tight">Heading 2</h2>
+    <h3 className="text-lg font-semibold my-2 text-gray-800 leading-tight">Heading 3</h3>
+
+    <p className="my-2 text-gray-700 leading-normal">
+      This is a paragraph with <strong>bold text</strong> and <em>italic text</em>. Regular body
+      copy uses 15px IBM Plex Sans with 1.5 line height.
+    </p>
+
+    <ul className="pl-6 my-2 text-gray-700 leading-normal list-disc">
+      <li className="my-1">First bullet point</li>
+      <li className="my-1">Second bullet point with more text</li>
+      <li className="my-1">Third bullet point</li>
+    </ul>
+
+    <ol className="pl-6 my-2 text-gray-700 leading-normal list-decimal">
+      <li className="my-1">First numbered item</li>
+      <li className="my-1">Second numbered item</li>
+      <li className="my-1">Third numbered item</li>
+    </ol>
+
+    <blockquote className="border-l-4 border-l-gray-200 pl-4 my-2 text-gray-500 leading-relaxed">
+      This is a blockquote. It uses muted text color and has a left border accent. Line height is
+      slightly more relaxed for better readability.
+    </blockquote>
+
+    <p className="my-2 text-gray-700">
+      Inline code looks like this:{' '}
+      <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm text-gray-700">
+        const x = 42;
+      </code>
+    </p>
+
+    <pre className="rounded bg-gray-100 p-4 my-2 overflow-x-auto">
+      <code className="font-mono text-sm text-gray-700">
+        {`function example() {
+  console.log("Code block");
+  return true;
+}`}
+      </code>
+    </pre>
+  </EditorPreview>
+);
