@@ -2,6 +2,7 @@ import type { Story } from '@ladle/react';
 import { EditorPreview } from './EditorPreview.js';
 import { RefNode } from './RefNode.js';
 import { TagNode } from './TagNode.js';
+import { MathInline } from './MathInline.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -54,6 +55,17 @@ export const TagNodeInSentence: Story = () => (
     <p className="my-2 text-gray-700">
       This note is tagged with <TagNode value="design-system" /> and{' '}
       <TagNode value="documentation" /> for easy discovery.
+    </p>
+  </EditorPreview>
+);
+
+export const MathInlineVariations: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">
+      Einstein's famous equation <MathInline latex="E = mc²" /> relates energy and mass.
+    </p>
+    <p className="my-2 text-gray-700">
+      The quadratic formula is <MathInline latex="x = (-b ± √(b² - 4ac)) / 2a" />.
     </p>
   </EditorPreview>
 );
