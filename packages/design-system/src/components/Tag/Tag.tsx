@@ -4,7 +4,7 @@ import { cn } from '../../utils/cn.js';
 import { X } from 'lucide-react';
 
 const tagVariants = cva(
-  'inline-flex items-center gap-1 rounded px-2 h-6 text-sm font-medium transition-colors',
+  'inline-flex items-center gap-1 rounded px-2 h-6 text-sm font-medium transition-colors group',
   {
     variants: {
       variant: {
@@ -63,7 +63,7 @@ function Tag({ className, variant, clickable, onRemove, onClick, children, ...pr
             e.stopPropagation();
             onRemove();
           }}
-          className="hover:bg-black/10 rounded-full p-0.5 transition-colors"
+          className="opacity-0 group-hover:opacity-100 hover:bg-black/10 rounded-full p-0.5 transition-all"
           aria-label="Remove tag"
         >
           <X className="h-3 w-3" />

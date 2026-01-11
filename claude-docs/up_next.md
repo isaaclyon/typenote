@@ -1,8 +1,32 @@
 # Up Next
 
+## CLI Critical Gaps Implementation
+
+**Status:** ✅ COMPLETE (2026-01-10 evening)
+**Design:** `docs/plans/2026-01-10-cli-critical-gaps-design.md`
+
+All 4 critical gaps from CLI coverage analysis now have full command implementations. Ready for manual smoke testing.
+
+### Completed
+
+- [x] Daily notes CLI (4 commands) — today, get, list, slug ✅ Commit: `f9748e5`
+- [x] Calendar CLI (5 commands) — types, on, range, upcoming, list ✅ Commit: `f9748e5`
+- [x] Template apply command — Auto-populate context from object ✅ Commit: `f9748e5`
+- [x] Block move command — 4 placement modes (start, end, before, after) ✅ Pending commit
+- [x] Documentation — Updated CLAUDE.md with CLI commands section ✅
+
+### Manual Smoke Tests (Optional)
+
+- [ ] Test daily note operations (create today, get specific date, list with filters)
+- [ ] Test calendar queries (events on date, date ranges, upcoming)
+- [ ] Test template apply (verify context auto-population, dateKey extraction)
+- [ ] Test block move (verify all 4 placement modes work correctly)
+
+---
+
 ## UI/Design System - Organism Components
 
-**Status:** Active (Sidebar committed, ready for desktop integration)
+**Status:** Active (Sidebar committed, in-progress components uncommitted)
 **Plan:** `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md`
 
 Building organism-level components in the design-system package with Ladle sandbox testing before desktop app integration.
@@ -15,10 +39,18 @@ Building organism-level components in the design-system package with Ladle sandb
   - Full design system adherence
   - Verified: typecheck, lint, 1677 tests, build
 
+### In Progress (Uncommitted)
+
+- PropertyItem component (edit mode, various value types)
+- BacklinkItem component
+- RightPanel components
+
 ### Next Steps
 
-- [ ] Integrate Sidebar into desktop app with real data (wire up IPC)
+- [ ] Complete PropertyItem component with stories
+- [ ] Complete BacklinkItem component with stories
 - [ ] Build Right Panel organism (backlinks, page info, tags)
+- [ ] Integrate Sidebar into desktop app with real data (wire up IPC)
 - [ ] Build Type Browser organism (data table with sort/filter)
 - [ ] Build App Shell organism (3-panel layout with sidebar collapse)
 

@@ -1,6 +1,50 @@
 # Recent Work
 
-## Latest Session (2026-01-10 - Attachments Phase 9 Complete)
+## Latest Session (2026-01-10 evening - CLI Critical Gaps Implementation)
+
+### CLI Commands for Backend Coverage
+
+Completed all 4 critical gaps identified in CLI coverage analysis. Added ~90 lines of new CLI code (patch-move command) to complete the implementation started in commit `f9748e5`.
+
+**Implementation completed this session:**
+
+- `apps/cli/src/commands/core.ts` (+90 lines) — Added `patch-move` command
+  - Supports 4 placement modes: `--where start|end`, `--before <siblingId>`, `--after <siblingId>`
+  - Validates conflicting placement options
+  - Full error handling and database lifecycle management
+
+**Previously committed (commit `f9748e5`):**
+
+- `apps/cli/src/commands/daily.ts` (NEW, 173 lines) — 4 daily note commands
+- `apps/cli/src/commands/calendar.ts` (NEW, 205 lines) — 5 calendar query commands
+- `apps/cli/src/commands/template.ts` (+60 lines) — `template apply` command
+
+**Key technical patterns:**
+
+- exactOptionalPropertyTypes compliance via conditional object building
+- Index signature access for dynamic properties (`obj.properties['date_key']`)
+- Extracted `parseDateKey()` helper for YYYY-MM-DD validation
+- Service-layer tests only (66 tests passing: dailyNoteService, calendarService, applyTemplateToObject)
+
+**Quality verification:**
+
+- ✅ Typecheck: All packages pass
+- ✅ Lint: CLI package clean
+- ✅ Build: All packages build successfully
+
+**Documentation:**
+
+- Updated `CLAUDE.md` with CLI commands section
+
+**Commits:**
+
+- Pending: `feat(cli): add patch-move command for block repositioning`
+
+**Manual smoke tests pending:** Daily notes, calendar queries, template apply, block move operations
+
+---
+
+## Previous Session (2026-01-10 afternoon - Attachments Phase 9 Complete)
 
 ### Daily Garbage Collection Scheduler
 
@@ -185,3 +229,4 @@ Implemented comprehensive left sidebar navigation organism in Ladle sandbox with
 | Recent      | Recent Objects Tracking (LRU cache)       | 2026-01-10 |
 | Testing     | Mutation testing improvements             | 2026-01-10 |
 | Attachments | Complete system - Phases 1-9 (190+ tests) | 2026-01-10 |
+| CLI Gaps    | Daily/calendar/template/move commands     | 2026-01-10 |
