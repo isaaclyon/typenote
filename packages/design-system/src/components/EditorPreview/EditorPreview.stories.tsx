@@ -6,6 +6,7 @@ import { MathInline } from './MathInline.js';
 import { CalloutNode } from './CalloutNode.js';
 import { MathBlock } from './MathBlock.js';
 import { CodeBlock } from './CodeBlock.js';
+import { AttachmentNode } from './AttachmentNode.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -159,6 +160,29 @@ const user: User = { name: "Alice", age: 30 };`}
       code={`This is a plain code block
 without syntax highlighting
 or language label.`}
+    />
+  </EditorPreview>
+);
+
+export const AttachmentNodeStates: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">Placeholder (no image):</p>
+    <AttachmentNode />
+
+    <p className="my-2 text-gray-700">Placeholder selected:</p>
+    <AttachmentNode selected />
+
+    <p className="my-2 text-gray-700">With image (using SVG data URL for demo):</p>
+    <AttachmentNode
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23f5f5f4' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%2378716c'%3EDemo Image%3C/text%3E%3C/svg%3E"
+      alt="Demo"
+    />
+
+    <p className="my-2 text-gray-700">Image selected:</p>
+    <AttachmentNode
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23f5f5f4' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%2378716c'%3ESelected Image%3C/text%3E%3C/svg%3E"
+      alt="Selected"
+      selected
     />
   </EditorPreview>
 );
