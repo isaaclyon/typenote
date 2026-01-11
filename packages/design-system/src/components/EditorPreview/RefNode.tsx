@@ -55,7 +55,7 @@ export function RefNode({ type, label, className }: RefNodeProps) {
 
   return (
     <span
-      className={cn('inline-flex items-center gap-1.5 cursor-pointer transition-colors', className)}
+      className={cn('inline-flex items-center gap-1 cursor-pointer transition-colors', className)}
     >
       <Icon className={cn('h-3.5 w-3.5', config.colorClass)} />
       <span className={cn('underline text-gray-700 hover:text-gray-900', config.decorationClass)}>
