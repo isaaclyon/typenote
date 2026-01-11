@@ -3,6 +3,7 @@ import { EditorPreview } from './EditorPreview.js';
 import { RefNode } from './RefNode.js';
 import { TagNode } from './TagNode.js';
 import { MathInline } from './MathInline.js';
+import { CalloutNode } from './CalloutNode.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -67,5 +68,43 @@ export const MathInlineVariations: Story = () => (
     <p className="my-2 text-gray-700">
       The quadratic formula is <MathInline latex="x = (-b ± √(b² - 4ac)) / 2a" />.
     </p>
+  </EditorPreview>
+);
+
+export const CalloutNodeAllKinds: Story = () => (
+  <EditorPreview>
+    <CalloutNode kind="info">
+      <p className="text-sm text-gray-700">This is an informational callout with useful context.</p>
+    </CalloutNode>
+
+    <CalloutNode kind="success">
+      <p className="text-sm text-gray-700">
+        Operation completed successfully! All changes have been saved.
+      </p>
+    </CalloutNode>
+
+    <CalloutNode kind="warning">
+      <p className="text-sm text-gray-700">
+        Warning: This action cannot be undone. Proceed with caution.
+      </p>
+    </CalloutNode>
+
+    <CalloutNode kind="error">
+      <p className="text-sm text-gray-700">Error: Failed to save changes. Please try again.</p>
+    </CalloutNode>
+  </EditorPreview>
+);
+
+export const CalloutNodeCustomTitles: Story = () => (
+  <EditorPreview>
+    <CalloutNode kind="info" title="Pro Tip">
+      <p className="text-sm text-gray-700">Use keyboard shortcuts to speed up your workflow.</p>
+    </CalloutNode>
+
+    <CalloutNode kind="warning" title="Breaking Change">
+      <p className="text-sm text-gray-700">
+        This version includes breaking API changes. Review the migration guide.
+      </p>
+    </CalloutNode>
   </EditorPreview>
 );
