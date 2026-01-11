@@ -46,6 +46,44 @@ pnpm --filter @typenote/storage test           # Test storage package
 pnpm --filter @typenote/design-system sandbox  # Component sandbox (Ladle)
 ```
 
+## CLI Commands
+
+The `@typenote/cli` package provides backend testing commands. Build the CLI with `pnpm --filter @typenote/cli build`, then run:
+
+```bash
+# Daily Notes
+typenote daily today                      # Get or create today's daily note
+typenote daily get <YYYY-MM-DD>           # Get or create daily note for date
+typenote daily list [--from] [--to]       # List daily notes with date filters
+typenote daily slug <YYYY-MM-DD>          # Generate slug for date
+
+# Calendar Events
+typenote calendar types                   # List calendar-enabled object types
+typenote calendar on <YYYY-MM-DD>         # Get events on specific date
+typenote calendar range <start> <end>     # Get events in date range
+typenote calendar upcoming [--days N]     # Get upcoming events (default: 7 days)
+typenote calendar list [--type] [--from] [--to]  # List all calendar items with filters
+
+# Templates
+typenote template create -n <name> -t <typeId> -s <json>  # Create template
+typenote template get <id>                # Get template by ID
+typenote template list [-t <typeId>]      # List all templates
+typenote template apply <templateId> <objectId>  # Apply template to object
+typenote template update <id> [-n] [-s] [-d]  # Update template
+typenote template delete <id>             # Delete template
+
+# Block Operations
+typenote patch-insert <objectId> <blockType> <text>  # Insert block
+typenote patch-update <objectId> <blockId> <text>    # Update block
+typenote patch-delete <objectId> <blockId> [--subtree]  # Delete block
+typenote patch-move <objectId> <blockId> [options]   # Move block
+  # Move options:
+  #   -p, --parent <blockId>   New parent (omit for root)
+  #   -w, --where <position>   Position: start, end (default: end)
+  #   -b, --before <siblingId> Place before sibling
+  #   -a, --after <siblingId>  Place after sibling
+```
+
 ## Architecture
 
 **Stack:** Electron, TypeScript (strict), SQLite, Drizzle ORM, Vitest, Zod

@@ -1,6 +1,48 @@
 # Recent Work
 
-## Latest Session (2026-01-10 - Mutation Testing Coverage Improvements)
+## Latest Session (2026-01-10 - Attachments Phase 9 Complete)
+
+### Daily Garbage Collection Scheduler
+
+Completed Phase 9 (final phase) of the attachments system with automated cleanup of orphaned attachments. Used TDD approach with comprehensive testing.
+
+**Implementation:**
+
+- `apps/desktop/src/main/lifecycle.ts` — Scheduler module with start/stop functions
+  - Runs cleanup immediately on app startup
+  - Schedules daily cleanup via setInterval (24-hour interval)
+  - Configurable grace period (default: 30 days)
+  - Graceful shutdown on app quit
+- Main process integration in `apps/desktop/src/main/index.ts`
+  - Starts scheduler after database initialization
+  - Stops scheduler in before-quit handler
+
+**Testing:**
+
+- 8 comprehensive unit tests covering all scheduler behavior
+- Tests startup cleanup, grace period config, start/stop lifecycle
+- End-to-end integration test
+- All 1685 tests passing across entire codebase
+- Full typecheck and build verification
+
+**Design decisions:**
+
+- Used setInterval for simplicity over cron-style scheduling
+- Module-level singleton prevents duplicate intervals
+- Graceful error handling (logs, doesn't crash app)
+- Cleanup errors logged but don't fail app startup
+
+**Commits:**
+
+- `cda52e4 feat(recent-objects): implement 100-entry LRU cache with command palette integration`
+- `5a07f5f feat(attachments): Phase 9 - Daily garbage collection scheduler`
+- `f9748e5 chore: session work - CLI commands, design system components, docs`
+
+**Attachments system now complete** — All 9 phases finished with 180+ tests, content-addressed storage, global deduplication, and automated 30-day orphan cleanup.
+
+---
+
+## Previous Session (2026-01-10 - Mutation Testing Coverage Improvements)
 
 ### Incremental Stryker Mutation Testing + Coverage Analysis
 
@@ -130,16 +172,16 @@ Implemented comprehensive left sidebar navigation organism in Ladle sandbox with
 
 ## Completed Milestones
 
-| Phase       | Description                          | Date       |
-| ----------- | ------------------------------------ | ---------- |
-| 0-7         | Core Bootstrap Phases                | 2026-01-04 |
-| Template    | Template System (7 phases)           | 2026-01-06 |
-| Tags        | Global Tags System (5 phases)        | 2026-01-07 |
-| Tasks       | Task Management (built-in + service) | 2026-01-08 |
-| Inheritance | Object Type Inheritance (4 days)     | 2026-01-08 |
-| Attachments | Phases 1-8 (180+ tests)              | 2026-01-08 |
-| CLI         | Full CLI command coverage            | 2026-01-08 |
-| E2E Fixes   | Fixed 21 test failures (blockIds)    | 2026-01-08 |
-| Design      | Left Sidebar Navigation organism     | 2026-01-10 |
-| Recent      | Recent Objects Tracking (LRU cache)  | 2026-01-10 |
-| Testing     | Mutation testing improvements        | 2026-01-10 |
+| Phase       | Description                               | Date       |
+| ----------- | ----------------------------------------- | ---------- |
+| 0-7         | Core Bootstrap Phases                     | 2026-01-04 |
+| Template    | Template System (7 phases)                | 2026-01-06 |
+| Tags        | Global Tags System (5 phases)             | 2026-01-07 |
+| Tasks       | Task Management (built-in + service)      | 2026-01-08 |
+| Inheritance | Object Type Inheritance (4 days)          | 2026-01-08 |
+| CLI         | Full CLI command coverage                 | 2026-01-08 |
+| E2E Fixes   | Fixed 21 test failures (blockIds)         | 2026-01-08 |
+| Design      | Left Sidebar Navigation organism          | 2026-01-10 |
+| Recent      | Recent Objects Tracking (LRU cache)       | 2026-01-10 |
+| Testing     | Mutation testing improvements             | 2026-01-10 |
+| Attachments | Complete system - Phases 1-9 (190+ tests) | 2026-01-10 |

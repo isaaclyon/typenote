@@ -300,4 +300,87 @@ export function registerCoreCommands(program: Command): void {
         closeDb(db);
       }
     });
+
+  // ============================================================================
+  // patch-move <objectId> <blockId>
+  // ============================================================================
+
+  program
+    .command('patch-move')
+    .description('Move a block to a new parent and position')
+    .argument('<objectId>', 'Object ID')
+    .argument('<blockId>', 'Block ID to move')
+    .option('-p, --parent <blockId>', 'New parent block ID (omit for root)')
+    .option('-w, --where <position>', 'Position: start, end (default: end)', 'end')
+    .option('-b, --before <siblingId>', 'Place before this sibling block ID')
+    .option('-a, --after <siblingId>', 'Place after this sibling block ID')
+    .action(
+      (
+        objectId: string,
+        blockId: string,
+        options: { parent?: string; where?: string; before?: string; after?: string }
+      ) => {
+        const db = initDb();
+        try {
+          // Validate placement options
+          if (options.before && options.after) {
+            console.error('Error: Cannot specify both --before and --after');
+            process.exit(1);
+          }
+
+          if ((options.before || options.after) && options.where && options.where !== 'end') {
+            console.error('Error: Cannot combine --before/--after with --where');
+            process.exit(1);
+          }
+
+          if (options.where && !['start', 'end'].includes(options.where)) {
+            console.error('Error: --where must be "start" or "end"');
+            process.exit(1);
+          }
+
+          // Build place parameter
+          let place:
+            | { where: 'start' }
+            | { where: 'end' }
+            | { where: 'before'; siblingBlockId: string }
+            | { where: 'after'; siblingBlockId: string };
+
+          if (options.before) {
+            place = { where: 'before', siblingBlockId: options.before };
+          } else if (options.after) {
+            place = { where: 'after', siblingBlockId: options.after };
+          } else if (options.where === 'start') {
+            place = { where: 'start' };
+          } else {
+            place = { where: 'end' };
+          }
+
+          const result = applyBlockPatch(db, {
+            apiVersion: 'v1',
+            objectId,
+            ops: [
+              {
+                op: 'block.move',
+                blockId,
+                newParentBlockId: options.parent ?? null,
+                place,
+              },
+            ],
+          });
+
+          if (result.success) {
+            console.log('Block moved:');
+            console.log(JSON.stringify(result.result, null, 2));
+          } else {
+            console.error('Error:', result.error.message);
+            process.exit(1);
+          }
+        } catch (error) {
+          console.error('Error:', error instanceof Error ? error.message : String(error));
+          process.exit(1);
+        } finally {
+          closeDb(db);
+        }
+      }
+    );
 }

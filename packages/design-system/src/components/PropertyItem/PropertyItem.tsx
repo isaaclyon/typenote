@@ -6,7 +6,7 @@ export type PropertyType = 'text' | 'select' | 'date' | 'number';
 
 export interface PropertyItemProps {
   label: string;
-  value?: string | number;
+  value?: string | number | undefined;
   type: PropertyType;
   options?: string[]; // For select type
   placeholder?: string;

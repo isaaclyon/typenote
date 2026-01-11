@@ -26,12 +26,12 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ## Attachments/Media System
 
-**Status:** In Progress (Phases 1-8 Complete, Phase 9 remaining)
+**Status:** ✅ COMPLETE (2026-01-10)
 **Plan:** `~/.claude/plans/mellow-cuddling-thacker.md`
 
-Images + Documents support with content-addressed storage, global deduplication, and 30-day orphan cleanup.
+Full attachment system with content-addressed storage, global deduplication, and automated 30-day orphan cleanup.
 
-### Implementation Phases (TDD)
+### Implementation Phases (TDD) — All Complete
 
 - [x] Phase 1: API Contracts — Zod schemas, error codes, block type ✅
 - [x] Phase 2: Database Schema — `attachments` + `block_attachments` tables ✅
@@ -41,7 +41,9 @@ Images + Documents support with content-addressed storage, global deduplication,
 - [x] Phase 6: IPC Layer — Upload/get/list handlers ✅
 - [x] Phase 7: CLI Commands — attachment upload/list/cleanup ✅ (with --dry-run)
 - [x] Phase 8: Renderer Integration — TipTap node, upload UI ✅
-- [ ] Phase 9: Garbage Collection — Daily cleanup scheduler ⬅️ NEXT
+- [x] Phase 9: Garbage Collection — Daily cleanup scheduler ✅ Commit: `5a07f5f`
+
+**Total:** 190+ tests, all phases complete
 
 ---
 

@@ -1,93 +1,93 @@
 {
+  "enabledPlugins": {
+    "test-driven-development@claude-tools": false,
+    "skill-evaluation@claude-tools": true,
+    "frontend-design@claude-plugins-official": false,
+    "database-design@claude-code-workflows": true,
+    "git-workflow@claude-tools": true,
+    "code-review@claude-plugins-official": false,
+    "security-guidance@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "agent-orchestration@claude-code-workflows": true,
+    "model-agents@claude-tools": true,
+    "full-stack-orchestration@claude-code-workflows": false,
+    "superpowers@superpowers-marketplace": true,
+    "hook-creator@claude-tools": false,
+    "brainstorming@claude-tools": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "vtsls@claude-code-lsps": true,
+    "pyright@claude-code-lsps": true,
+    "code-simplifier@claude-plugins-official": true,
+    "terminal-title@claude-tools": true
+  },
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
         "hooks": [
           {
-            "type": "command",
-            "command": "./.claude/hooks/package-boundary-validation.sh"
+            "command": "./.claude/hooks/package-boundary-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/zod-schema-validation.sh"
+            "command": "./.claude/hooks/zod-schema-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/core-purity-validation.sh"
+            "command": "./.claude/hooks/core-purity-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/storage-transaction-validation.sh"
+            "command": "./.claude/hooks/storage-transaction-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/ulid-format-validation.sh"
+            "command": "./.claude/hooks/ulid-format-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/notate-doc-schema-validation.sh"
+            "command": "./.claude/hooks/notate-doc-schema-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/block-patch-spec-validation.sh"
+            "command": "./.claude/hooks/block-patch-spec-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/test-file-size-validation.sh"
+            "command": "./.claude/hooks/test-file-size-validation.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/source-file-size-validation.sh"
+            "command": "./.claude/hooks/source-file-size-validation.sh",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Edit|Write"
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
-            "type": "command",
-            "command": "./.claude/hooks/file-protection.sh"
+            "command": "./.claude/hooks/file-protection.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "./.claude/hooks/git-force-push-protection.sh"
+            "command": "./.claude/hooks/git-force-push-protection.sh",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Bash"
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "./.claude/hooks/format-lint-on-stop.sh"
+            "command": "./.claude/hooks/format-lint-on-stop.sh",
+            "type": "command"
           }
         ]
       }
     ]
-  },
-  "enabledPlugins": {
-    "git-workflow@claude-tools": true,
-    "code-review@claude-plugins-official": false,
-    "full-stack-orchestration@claude-code-workflows": false,
-    "feature-dev@claude-plugins-official": true,
-    "brainstorming@claude-tools": false,
-    "test-driven-development@claude-tools": false,
-    "security-guidance@claude-plugins-official": true,
-    "skill-evaluation@claude-tools": true,
-    "frontend-design@claude-plugins-official": false,
-    "database-design@claude-code-workflows": true,
-    "agent-orchestration@claude-code-workflows": true,
-    "terminal-title@claude-tools": false,
-    "hook-creator@claude-tools": false,
-    "model-agents@claude-tools": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "superpowers@superpowers-marketplace": true,
-    "vtsls@claude-code-lsps": true,
-    "pyright@claude-code-lsps": true,
-    "code-simplifier@claude-plugins-official": true
   }
 }
