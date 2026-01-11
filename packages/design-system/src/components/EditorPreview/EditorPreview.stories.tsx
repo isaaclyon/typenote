@@ -1,6 +1,7 @@
 import type { Story } from '@ladle/react';
 import { EditorPreview } from './EditorPreview.js';
 import { RefNode } from './RefNode.js';
+import { TagNode } from './TagNode.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -31,6 +32,28 @@ export const RefNodeInSentence: Story = () => (
       I'm working on <RefNode type="project" label="TypeNote Redesign" /> with{' '}
       <RefNode type="person" label="Sarah" /> to improve the{' '}
       <RefNode type="note" label="Editor Experience" />.
+    </p>
+  </EditorPreview>
+);
+
+export const TagNodeVariations: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">
+      Tags with icons: <TagNode value="project" /> <TagNode value="important" />{' '}
+      <TagNode value="draft" />
+    </p>
+    <p className="my-2 text-gray-700">
+      Tags without icons: <TagNode value="work" showIcon={false} />{' '}
+      <TagNode value="personal" showIcon={false} />
+    </p>
+  </EditorPreview>
+);
+
+export const TagNodeInSentence: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">
+      This note is tagged with <TagNode value="design-system" /> and{' '}
+      <TagNode value="documentation" /> for easy discovery.
     </p>
   </EditorPreview>
 );
