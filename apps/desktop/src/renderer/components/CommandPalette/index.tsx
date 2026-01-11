@@ -20,6 +20,7 @@ import {
 } from '../ui/command.js';
 import { useCommandSearch } from '../../hooks/useCommandSearch.js';
 import { useCommandActions } from '../../hooks/useCommandActions.js';
+import { useRecentObjects } from '../../hooks/useRecentObjects.js';
 import { commandRegistry } from './commands/registry.js';
 import type { Command, NavigationCommand, CreationCommand } from './commands/types.js';
 
@@ -50,10 +51,14 @@ function getIcon(iconName: string | undefined): LucideIcon {
 export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const searchState = useCommandSearch(query);
+  const { recentObjects, isLoading: isLoadingRecent } = useRecentObjects(10);
   const { handleCommand } = useCommandActions({ onNavigate, onClose });
 
   // Get creation commands when there's a query
   const creationCommands = query.trim() ? commandRegistry.getCreationCommands(query) : [];
+
+  // Show recent objects only when query is empty
+  const showRecent = !query.trim() && recentObjects.length > 0;
 
   // Handle selection
   const handleSelect = (command: Command) => {
@@ -71,12 +76,15 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
       />
       <CommandList>
         {/* Loading state */}
-        {searchState.status === 'loading' && <CommandLoading />}
+        {(searchState.status === 'loading' || (isLoadingRecent && !query.trim())) && (
+          <CommandLoading />
+        )}
 
         {/* Empty state */}
-        {searchState.status === 'success' && searchState.commands.length === 0 && !query.trim() && (
-          <CommandEmpty>Type to search...</CommandEmpty>
-        )}
+        {searchState.status === 'success' &&
+          searchState.commands.length === 0 &&
+          !query.trim() &&
+          !showRecent && <CommandEmpty>Type to search...</CommandEmpty>}
 
         {searchState.status === 'success' && searchState.commands.length === 0 && query.trim() && (
           <CommandEmpty>No results found.</CommandEmpty>
@@ -85,6 +93,34 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
         {/* Error state */}
         {searchState.status === 'error' && (
           <CommandEmpty>Search failed: {searchState.message}</CommandEmpty>
+        )}
+
+        {/* Recent objects */}
+        {showRecent && (
+          <CommandGroup heading="Recent">
+            {recentObjects.map((obj) => (
+              <CommandItem
+                key={obj.id}
+                value={`${obj.id}-${obj.title}`}
+                onSelect={() => {
+                  const navCommand: NavigationCommand = {
+                    type: 'navigation',
+                    id: obj.id,
+                    label: obj.title,
+                    objectId: obj.id,
+                    objectType: obj.typeKey,
+                    icon: undefined,
+                  };
+                  handleSelect(navCommand);
+                }}
+                data-testid={`command-recent-${obj.id}`}
+              >
+                <Icons.Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="flex-1 truncate">{obj.title}</span>
+                <span className="text-xs text-muted-foreground">{obj.typeKey}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
         )}
 
         {/* Search results */}

@@ -410,4 +410,64 @@ describe('Schema required fields (mutation testing)', () => {
       expectInvalid(FootnoteDefContentSchema, {});
     });
   });
+
+  describe('Optional field type validation', () => {
+    it('TextNodeSchema rejects invalid marks type (must be array)', () => {
+      expectInvalid(TextNodeSchema, { t: 'text', text: 'hello', marks: 'strong' }, 'marks');
+    });
+
+    it('TextNodeSchema rejects invalid mark in array', () => {
+      expectInvalid(TextNodeSchema, { t: 'text', text: 'hello', marks: ['underline'] }, 'marks.0');
+    });
+
+    it('LinkNodeSchema rejects invalid children type (must be array)', () => {
+      expectInvalid(
+        LinkNodeSchema,
+        { t: 'link', href: 'https://example.com', children: 'text' },
+        'children'
+      );
+    });
+
+    it('RefNodeSchema rejects missing mode field', () => {
+      expectInvalid(
+        RefNodeSchema,
+        { t: 'ref', target: { kind: 'object', objectId: VALID_ULID } },
+        'mode'
+      );
+    });
+
+    it('RefNodeSchema rejects missing target field', () => {
+      expectInvalid(RefNodeSchema, { t: 'ref', mode: 'link' }, 'target');
+    });
+
+    it('TagNodeSchema rejects missing value field', () => {
+      expectInvalid(TagNodeSchema, { t: 'tag' }, 'value');
+    });
+
+    it('MathInlineNodeSchema rejects missing latex field', () => {
+      expectInvalid(MathInlineNodeSchema, { t: 'math_inline' }, 'latex');
+    });
+
+    it('FootnoteRefNodeSchema rejects missing key field', () => {
+      expectInvalid(FootnoteRefNodeSchema, { t: 'footnote_ref' }, 'key');
+    });
+  });
+
+  describe('Reference target validation', () => {
+    it('ObjectRefTargetSchema rejects missing kind field', () => {
+      expectInvalid(ObjectRefTargetSchema, { objectId: VALID_ULID }, 'kind');
+    });
+
+    it('ObjectRefTargetSchema rejects missing objectId field', () => {
+      expectInvalid(ObjectRefTargetSchema, { kind: 'object' }, 'objectId');
+    });
+
+    it('BlockRefTargetSchema rejects missing blockId field', () => {
+      expectInvalid(BlockRefTargetSchema, { kind: 'block', objectId: VALID_ULID }, 'blockId');
+    });
+
+    it('BlockRefTargetSchema rejects missing objectId field', () => {
+      expectInvalid(BlockRefTargetSchema, { kind: 'block', blockId: VALID_ULID_2 }, 'objectId');
+    });
+  });
 });
