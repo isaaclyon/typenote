@@ -50,6 +50,13 @@
       "when": 1767558800000,
       "tag": "0006_add_calendar_config",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1767558900000,
+      "tag": "0007_add_recent_objects",
+      "breakpoints": true
     }
   ]
 }

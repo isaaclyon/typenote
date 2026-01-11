@@ -250,6 +250,24 @@ export const blockAttachments = sqliteTable(
 );
 
 // ============================================================================
+// recent_objects - LRU cache of recently viewed objects
+// ============================================================================
+
+export const recentObjects = sqliteTable(
+  'recent_objects',
+  {
+    objectId: text('object_id')
+      .primaryKey()
+      .references(() => objects.id, { onDelete: 'cascade' }),
+    viewedAt: integer('viewed_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [
+    // Index for LRU cleanup (ORDER BY viewedAt ASC LIMIT N)
+    index('recent_objects_viewed_at_idx').on(table.viewedAt),
+  ]
+);
+
+// ============================================================================
 // fts_blocks - Full-text search virtual table (FTS5)
 // Drizzle doesn't support FTS5 natively, so we use raw SQL
 // ============================================================================

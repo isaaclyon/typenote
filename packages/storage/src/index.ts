@@ -17,6 +17,7 @@ export {
   objectTags,
   attachments,
   blockAttachments,
+  recentObjects,
   FTS_BLOCKS_TABLE_NAME,
   FTS_BLOCKS_CREATE_SQL,
 } from './schema.js';
@@ -196,3 +197,11 @@ export {
   type CalendarTypeMetadata,
   type GetAllCalendarItemsOptions,
 } from './calendarService.js';
+
+// Recent Objects Service
+export {
+  recordView,
+  getRecentObjects,
+  clearRecentObjects,
+  type RecentObjectSummary,
+} from './recentObjectsService.js';

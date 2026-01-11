@@ -176,6 +176,13 @@ interface CalendarItem {
   dateInfo: CalendarDateInfo;
 }
 
+interface RecentObjectSummary {
+  id: string;
+  title: string;
+  typeKey: string;
+  viewedAt: string;
+}
+
 export interface TypenoteAPI {
   version: string;
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
@@ -195,6 +202,9 @@ export interface TypenoteAPI {
     title: string,
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
+  // Recent objects
+  recordView: (objectId: string) => Promise<IpcOutcome<void>>;
+  getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
   // Tag operations
   createTag: (input: CreateTagInput) => Promise<IpcOutcome<Tag>>;
   getTag: (tagId: string) => Promise<IpcOutcome<Tag | null>>;

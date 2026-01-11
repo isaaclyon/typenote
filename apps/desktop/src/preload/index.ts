@@ -115,6 +115,11 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getEventsInDateRange: (startDate: string, endDate: string) =>
     ipcRenderer.invoke('typenote:getEventsInDateRange', startDate, endDate),
 
+  // Recent objects operations
+  recordView: (objectId: string) => ipcRenderer.invoke('typenote:recordView', objectId),
+
+  getRecentObjects: (limit?: number) => ipcRenderer.invoke('typenote:getRecentObjects', limit),
+
   // Event subscription
   onEvent: (callback: (event: TypenoteEvent) => void) => {
     const listener = (_event: Electron.IpcRendererEvent, data: TypenoteEvent) => {

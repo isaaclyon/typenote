@@ -14,6 +14,7 @@ import type {
   UnlinkedMentionResult,
   CreatedObject,
   CalendarItem,
+  RecentObjectSummary,
 } from '@typenote/storage';
 
 interface IpcSuccess<T> {
@@ -65,6 +66,10 @@ export interface TypenoteAPI {
 
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
+
+  // Recent objects operations
+  recordView: (objectId: string) => Promise<IpcOutcome<void>>;
+  getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
 
   // Events
   onEvent: (callback: (event: TypenoteEvent) => void) => () => void;

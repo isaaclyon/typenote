@@ -33,6 +33,9 @@ import {
   reopenTask as reopenTaskStorage,
   // Calendar service
   getEventsInDateRange as getEventsInDateRangeStorage,
+  // Recent objects service
+  recordView as recordViewStorage,
+  getRecentObjects as getRecentObjectsStorage,
   // Attachment service
   uploadAttachment as uploadAttachmentStorage,
   getAttachment as getAttachmentStorage,
@@ -61,6 +64,7 @@ import {
   type CompletedTasksOptions,
   type ListAttachmentsOptions,
   type CalendarItem,
+  type RecentObjectSummary,
 } from '@typenote/storage';
 import {
   ApplyBlockPatchInputSchema,
@@ -208,6 +212,9 @@ export interface IpcHandlers {
   getBlockAttachments: (blockId: string) => IpcOutcome<Attachment[]>;
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => IpcOutcome<CalendarItem[]>;
+  // Recent objects operations
+  recordView: (objectId: string) => IpcOutcome<void>;
+  getRecentObjects: (limit?: number) => IpcOutcome<RecentObjectSummary[]>;
 }
 
 export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {
@@ -385,6 +392,14 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     // Calendar operations
     getEventsInDateRange: (startDate, endDate) =>
       handleIpcCall(() => getEventsInDateRangeStorage(db, startDate, endDate)),
+
+    // Recent objects operations
+    recordView: (objectId) => {
+      recordViewStorage(db, objectId);
+      return { success: true, result: undefined };
+    },
+
+    getRecentObjects: (limit) => handleIpcCall(() => getRecentObjectsStorage(db, limit)),
   };
 }
 

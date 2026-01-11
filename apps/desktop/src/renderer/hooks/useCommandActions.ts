@@ -27,6 +27,8 @@ export function useCommandActions({
     async (command: Command) => {
       switch (command.type) {
         case 'navigation':
+          // Record view for analytics/recent objects tracking
+          void window.typenoteAPI.recordView(command.objectId);
           onNavigate?.(command.objectId);
           onClose();
           break;
@@ -35,6 +37,8 @@ export function useCommandActions({
           const title = command.defaultTitle ?? `New ${command.typeKey}`;
           const result = await window.typenoteAPI.createObject(command.typeKey, title);
           if (result.success) {
+            // Record view for newly created object
+            void window.typenoteAPI.recordView(result.result.id);
             onNavigate?.(result.result.id);
             onClose();
           }
