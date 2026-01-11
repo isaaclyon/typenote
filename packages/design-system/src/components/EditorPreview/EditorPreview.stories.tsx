@@ -4,6 +4,7 @@ import { RefNode } from './RefNode.js';
 import { TagNode } from './TagNode.js';
 import { MathInline } from './MathInline.js';
 import { CalloutNode } from './CalloutNode.js';
+import { MathBlock } from './MathBlock.js';
 
 export const Empty: Story = () => (
   <EditorPreview>
@@ -106,5 +107,17 @@ export const CalloutNodeCustomTitles: Story = () => (
         This version includes breaking API changes. Review the migration guide.
       </p>
     </CalloutNode>
+  </EditorPreview>
+);
+
+export const MathBlockVariations: Story = () => (
+  <EditorPreview>
+    <p className="my-2 text-gray-700">The integral formula:</p>
+
+    <MathBlock latex="∫₀^∞ e^(-x²) dx = √π/2" />
+
+    <p className="my-2 text-gray-700">And the Pythagorean theorem:</p>
+
+    <MathBlock latex="a² + b² = c²" />
   </EditorPreview>
 );
