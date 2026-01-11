@@ -123,6 +123,12 @@ export const MathBlockVariations: Story = () => (
   </EditorPreview>
 );
 
+/**
+ * CodeBlockVariations
+ *
+ * Note: Syntax highlighting will be added when implementing the real TipTap CodeBlock extension.
+ * Consider using react-syntax-highlighter or prismjs with a custom TypeNote theme.
+ */
 export const CodeBlockVariations: Story = () => (
   <EditorPreview>
     <p className="my-2 text-gray-700">Python example:</p>
