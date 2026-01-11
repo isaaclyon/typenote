@@ -40,6 +40,8 @@ export default [
       // Disable base rules that conflict with TS
       'no-unused-vars': 'off',
       'no-undef': 'off',
+      'no-redeclare': 'off', // Use @typescript-eslint/no-redeclare instead
+      '@typescript-eslint/no-redeclare': 'error',
     },
   },
   // Architectural boundaries - only packages (not apps) have import restrictions

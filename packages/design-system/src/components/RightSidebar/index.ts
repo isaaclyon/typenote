@@ -1,2 +1,2 @@
-export { RightSidebar } from './RightPanel.js';
-export type { RightSidebarProps } from './RightPanel.js';
+export { RightSidebar } from './RightSidebar.js';
+export type { RightSidebarProps } from './RightSidebar.js';

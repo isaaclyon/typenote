@@ -24,10 +24,11 @@
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.0.0",
     "@fontsource/ibm-plex-sans": "^5.0.0",
+    "@phosphor-icons/react": "^2.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^3.4.0",
-    "lucide-react": "^0.562.0"
+    "lucide-react": "^0.562.0",
+    "tailwind-merge": "^3.4.0"
   },
   "peerDependencies": {
     "@radix-ui/react-scroll-area": "^1.2.10",
@@ -37,13 +38,13 @@
   "devDependencies": {
     "@ladle/react": "^5.1.1",
     "@tailwindcss/vite": "^4.1.0",
+    "@testing-library/react": "^16.3.1",
     "@types/react": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^27.4.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
-    "vitest": "^2.1.8",
-    "@testing-library/react": "^16.3.1",
-    "jsdom": "^27.4.0"
+    "vitest": "^2.1.8"
   }
 }

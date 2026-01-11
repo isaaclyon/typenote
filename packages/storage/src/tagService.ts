@@ -33,7 +33,7 @@ export type TagServiceErrorCode =
   | 'NOT_FOUND_TAG';
 
 export const TagServiceError = createServiceError<TagServiceErrorCode>('TagServiceError');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
 export type TagServiceError = InstanceType<typeof TagServiceError>;
 
 // ============================================================================

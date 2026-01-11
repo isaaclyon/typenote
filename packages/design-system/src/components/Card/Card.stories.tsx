@@ -1,12 +1,5 @@
 import type { Story } from '@ladle/react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from './Card.js';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card.js';
 import { Button } from '../Button/index.js';
 import { Badge } from '../Badge/index.js';
 import { Text } from '../Text/index.js';

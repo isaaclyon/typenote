@@ -33,8 +33,7 @@ export interface ObjectDetails {
 export type CreateObjectErrorCode = 'TYPE_NOT_FOUND' | 'VALIDATION_FAILED';
 
 export const CreateObjectError = createServiceError<CreateObjectErrorCode>('CreateObjectError');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
 export type CreateObjectError = InstanceType<typeof CreateObjectError>;
 
 // ============================================================================

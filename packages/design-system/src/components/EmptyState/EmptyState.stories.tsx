@@ -48,11 +48,7 @@ export const WithAction: Story = () => (
 );
 
 export const WithoutAction: Story = () => (
-  <EmptyState
-    icon={<Inbox />}
-    title="All done!"
-    description="Nothing to see here"
-  />
+  <EmptyState icon={<Inbox />} title="All done!" description="Nothing to see here" />
 );
 
 export const Minimal: Story = () => <EmptyState title="No items" />;

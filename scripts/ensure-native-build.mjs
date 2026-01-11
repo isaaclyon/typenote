@@ -66,6 +66,35 @@ function getCurrentMode() {
   }
 }
 
+/**
+ * Verify the native module is actually built correctly for the target mode.
+ * Returns true if the module loads successfully, false if it needs rebuild.
+ */
+function verifyNativeModule(mode) {
+  try {
+    const betterSqlite3Path = findBetterSqlite3Path();
+    const binaryPath = join(betterSqlite3Path, 'build', 'Release', 'better_sqlite3.node');
+
+    if (!existsSync(binaryPath)) {
+      return false; // Binary doesn't exist, needs rebuild
+    }
+
+    // Try to load the module - this will fail if NODE_MODULE_VERSION is wrong
+    if (mode === 'electron') {
+      // For Electron, we can't actually load it in Node.js, so just check marker
+      // The marker file should be accurate if it exists
+      return true;
+    } else {
+      // For Node.js, try to actually require it
+      const Database = require(binaryPath);
+      return true;
+    }
+  } catch (error) {
+    // If we get MODULE_VERSION error or any load error, needs rebuild
+    return false;
+  }
+}
+
 function setCurrentMode(mode) {
   writeFileSync(MARKER_FILE, mode, 'utf-8');
 }
@@ -160,12 +189,20 @@ function main() {
     electron: 'Electron (for app & E2E tests)',
   };
 
-  if (currentMode === requestedMode) {
+  // Verify the binary is actually correct, not just the marker file
+  const moduleValid = verifyNativeModule(requestedMode);
+
+  if (currentMode === requestedMode && moduleValid) {
     console.log(`✓ Native modules already built for ${descriptions[requestedMode]}`);
     return;
   }
 
-  if (currentMode) {
+  // Determine why we're rebuilding
+  if (!moduleValid && currentMode === requestedMode) {
+    console.log(
+      `⚠️  Native module verification failed, rebuilding for ${descriptions[requestedMode]}`
+    );
+  } else if (currentMode && currentMode !== requestedMode) {
     console.log(
       `⚡ Switching from ${descriptions[currentMode]} → ${descriptions[requestedMode]}`
     );

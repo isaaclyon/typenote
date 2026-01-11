@@ -39,8 +39,7 @@ export type ObjectTypeErrorCode =
   | 'TYPE_HAS_CHILDREN';
 
 export const ObjectTypeError = createServiceError<ObjectTypeErrorCode>('ObjectTypeError');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
 export type ObjectTypeError = InstanceType<typeof ObjectTypeError>;
 
 // ============================================================================

@@ -1,8 +1,78 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/package-boundary-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/zod-schema-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/core-purity-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/storage-transaction-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/ulid-format-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/notate-doc-schema-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/block-patch-spec-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/test-file-size-validation.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/source-file-size-validation.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/file-protection.sh"
+          },
+          {
+            "type": "command",
+            "command": "./.claude/hooks/git-force-push-protection.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/format-lint-on-stop.sh"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "test-driven-development@claude-tools": false,
     "skill-evaluation@claude-tools": true,
-    "frontend-design@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": true,
     "database-design@claude-code-workflows": true,
     "git-workflow@claude-tools": true,
     "code-review@claude-plugins-official": false,
@@ -19,75 +89,5 @@
     "pyright@claude-code-lsps": true,
     "code-simplifier@claude-plugins-official": true,
     "terminal-title@claude-tools": true
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "./.claude/hooks/package-boundary-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/zod-schema-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/core-purity-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/storage-transaction-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/ulid-format-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/notate-doc-schema-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/block-patch-spec-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/test-file-size-validation.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/source-file-size-validation.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Edit|Write"
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "./.claude/hooks/file-protection.sh",
-            "type": "command"
-          },
-          {
-            "command": "./.claude/hooks/git-force-push-protection.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "./.claude/hooks/format-lint-on-stop.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ]
   }
 }

@@ -53,8 +53,7 @@ export interface ListDailyNotesResult {
 export type DailyNoteErrorCode = 'TYPE_NOT_FOUND' | 'INVALID_DATE_FORMAT';
 
 export const DailyNoteError = createServiceError<DailyNoteErrorCode>('DailyNoteError');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
 export type DailyNoteError = InstanceType<typeof DailyNoteError>;
 
 // ============================================================================

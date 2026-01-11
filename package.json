@@ -20,7 +20,9 @@
     "build:desktop:clean": "pnpm --filter @typenote/desktop clean && pnpm --filter @typenote/desktop build",
     "pretest:e2e": "node scripts/ensure-native-build.mjs electron && pnpm build:desktop:clean",
     "test:e2e": "pnpm --filter @typenote/e2e-tests test",
+    "pretest:e2e:quick": "node scripts/ensure-native-build.mjs electron",
     "test:e2e:quick": "pnpm --filter @typenote/e2e-tests test",
+    "pretest:e2e:headed": "node scripts/ensure-native-build.mjs electron",
     "test:e2e:headed": "pnpm --filter @typenote/e2e-tests test:headed",
     "test:all": "pnpm test && pnpm test:integration",
     "build": "pnpm -r build",
@@ -31,7 +33,9 @@
     "deps:graph": "depcruise packages apps --config .dependency-cruiser.cjs --output-type dot | dot -T svg > dependency-graph.svg",
     "predev": "node scripts/ensure-native-build.mjs electron",
     "dev": "pnpm build && pnpm --filter @typenote/desktop dev",
+    "predev:quick": "node scripts/ensure-native-build.mjs electron",
     "dev:quick": "pnpm --filter @typenote/desktop dev",
+    "prestart": "node scripts/ensure-native-build.mjs electron",
     "start": "pnpm --filter @typenote/desktop dev"
   },
   "devDependencies": {

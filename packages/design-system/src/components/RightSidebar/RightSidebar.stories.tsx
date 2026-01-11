@@ -1,6 +1,6 @@
 import type { Story } from '@ladle/react';
 import { useState } from 'react';
-import { RightSidebar } from './RightPanel.js';
+import { RightSidebar } from './RightSidebar.js';
 import { CollapsibleSection } from '../CollapsibleSection/index.js';
 import { PropertyItem } from '../PropertyItem/PropertyItem.js';
 import { PropertyTags } from '../PropertyTags/PropertyTags.js';

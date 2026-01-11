@@ -30,7 +30,7 @@ export type AttachmentServiceErrorCode =
 
 export const AttachmentServiceError =
   createServiceError<AttachmentServiceErrorCode>('AttachmentServiceError');
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
 export type AttachmentServiceError = InstanceType<typeof AttachmentServiceError>;
 
 // ============================================================================

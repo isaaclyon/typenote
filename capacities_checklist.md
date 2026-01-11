@@ -25,7 +25,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | **3. Navigation & Views** |   60%    |   20%    |   40%    |
 | **4. Calendar System**    |   100%   |   70%    |   85%    |
 | **5. Task Management**    |   100%   |    0%    |   50%    |
-| **6. Command Palette**    |   70%    |   70%    |   70%    |
+| **6. Command Palette**    |   100%   |   90%    |   95%    |
 | **7. AI Assistant**       |    0%    |    0%    |    0%    |
 | **8. Settings & Config**  |   50%    |    0%    |   25%    |
 | **9. Integrations**       |   60%    |    0%    |   30%    |
@@ -143,7 +143,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Slash command menu (/)         |   N/A   |    ✅    | 15 commands, keyboard nav, 39 tests                         |
 | Markdown shortcuts             |   N/A   |    ⚠️    | Via TipTap StarterKit                                       |
 | Spellcheck                     |   N/A   |    ❌    | Not configured                                              |
-| "Unlinked mentions" detection  |   ⚠️    |    ❌    | Infrastructure ready (FTS5, refs), needs detection function |
+| "Unlinked mentions" detection  |   ✅    |    ❌    | `getUnlinkedMentionsTo()` complete with 18 tests, no UI yet |
 | Auto-save                      |   N/A   |    ✅    | 500ms debounce, `useAutoSave` hook                          |
 
 **Key Files:**
@@ -153,6 +153,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 - Editor: `apps/desktop/src/renderer/components/NoteEditor.tsx`
 - Conversion: `apps/desktop/src/renderer/lib/notateToTiptap.ts`, `tiptapToNotate.ts`
 - Extensions: `apps/desktop/src/renderer/extensions/` (8 custom extensions)
+- Unlinked Mentions: `packages/storage/src/unlinkedMentions.ts` (145 lines, 18 tests)
 
 **Architecture Note:** NotateDoc v1 schema is editor-agnostic (not storing TipTap JSON), enabling future editor swaps without data migration.
 
@@ -307,25 +308,28 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 6. COMMAND PALETTE / QUICK ACTIONS
 
-| Feature                         | Backend | Frontend | Notes                       |
-| ------------------------------- | :-----: | :------: | --------------------------- |
-| Global keyboard shortcut (⌘K)   |   N/A   |    ❌    | No hotkey system            |
-| Universal search across objects |   ✅    |    ❌    | FTS5 via `searchBlocks()`   |
-| Object type filtering           |   ⚠️    |    ❌    | Basic objectId filter only  |
-| Quick actions                   |   N/A   |    ❌    | Not implemented             |
-| Quick create                    |   ✅    |    ❌    | `createObject()` IPC exists |
-| Recent objects list             |   ❌    |    ❌    | No recents tracking         |
-| Paste from clipboard            |   N/A   |    ❌    | No smart paste              |
-| Keyboard navigation             |   N/A   |    ❌    | No hotkey registry          |
-| Open in new tab                 |   N/A   |    ❌    | Single-pane only            |
-| Open in side panel              |   N/A   |    ❌    | No side panel               |
+| Feature                         | Backend | Frontend | Notes                                             |
+| ------------------------------- | :-----: | :------: | ------------------------------------------------- |
+| Global keyboard shortcut (⌘K)   |   N/A   |    ✅    | Working with tests, Cmd+K (Mac) / Ctrl+K (Win)    |
+| Universal search across objects |   ✅    |    ✅    | Title + FTS5, 300ms debounce, deduplication       |
+| Object type filtering           |   ⚠️    |    ⚠️    | Works via search text, no explicit filter UI      |
+| Quick actions                   |   N/A   |    ❌    | Not implemented (only nav/create)                 |
+| Quick create                    |   ✅    |    ✅    | 6 built-in types, auto-navigates to new object    |
+| Recent objects list             |   ✅    |    ✅    | `recordView()` + `getRecentObjects()` fully wired |
+| Paste from clipboard            |   N/A   |    ❌    | No smart paste                                    |
+| Keyboard navigation             |   N/A   |    ✅    | Arrow keys + Enter + Escape working               |
+| Open in new tab                 |   N/A   |    ❌    | Single-pane only                                  |
+| Open in side panel              |   N/A   |    ❌    | No side panel                                     |
 
-**Quick Win:** `cmdk` library (v1.1.1) is installed but not wired.
+**Architecture:** Custom implementation (not using cmdk directly), built with design system primitives.
 
 **Key Files:**
 
-- Search: `packages/storage/src/search.ts`
-- Indexing: `packages/storage/src/indexing.ts`
+- Backend: `packages/storage/src/search.ts`, `packages/storage/src/indexing.ts`
+- Design System: `packages/design-system/src/components/CommandPalette/`
+- Renderer Hooks: `apps/desktop/src/renderer/hooks/useCommandPalette.ts`, `useCommandSearch.ts`, `useCommandActions.ts`, `useRecentObjects.ts`
+- IPC: `apps/desktop/src/main/ipc.ts` (recordView, getRecentObjects, searchBlocks, listObjects)
+- Tests: `apps/desktop/src/renderer/hooks/useCommandPalette.test.ts` (8 tests)
 
 ---
 
