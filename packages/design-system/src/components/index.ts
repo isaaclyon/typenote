@@ -23,3 +23,6 @@ export * from './CommandPalette/index.js';
 export * from './RightSidebar/index.js';
 export * from './CollapsibleSection/index.js';
 export * from './Sidebar/index.js';
+
+// Editor Preview Components
+export * from './EditorPreview/index.js';
