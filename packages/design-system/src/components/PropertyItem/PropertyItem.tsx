@@ -86,7 +86,7 @@ const PropertyItem = React.forwardRef<HTMLDivElement, PropertyItemProps>(
         onClick={handleClick}
       >
         {/* Label column */}
-        <div className="w-20 flex-shrink-0 pt-1.5">
+        <div className="w-20 flex-shrink-0 flex items-center h-7">
           <span className="text-sm text-gray-600">{label}</span>
         </div>
 
@@ -126,8 +126,9 @@ const PropertyItem = React.forwardRef<HTMLDivElement, PropertyItemProps>(
           ) : (
             <div
               className={cn(
-                'px-3 py-1.5 text-sm rounded-md cursor-pointer transition-colors min-h-[36px] flex items-center',
+                'px-3 py-1 text-sm rounded-md cursor-pointer transition-colors h-7 flex items-center',
                 'hover:bg-gray-50',
+                'truncate', // Prevent wrapping, show ellipsis
                 isEmpty && 'text-gray-400'
               )}
               role="button"

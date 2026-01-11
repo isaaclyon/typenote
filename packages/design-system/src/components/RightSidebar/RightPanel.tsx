@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { cn } from '../../utils/cn.js';
 
-export interface RightPanelProps {
+export interface RightSidebarProps {
   children: React.ReactNode;
   className?: string;
 }
 
-const RightPanel = React.forwardRef<HTMLDivElement, RightPanelProps>(
+const RightSidebar = React.forwardRef<HTMLDivElement, RightSidebarProps>(
   ({ children, className }, ref) => {
     return (
       <aside
@@ -21,10 +21,10 @@ const RightPanel = React.forwardRef<HTMLDivElement, RightPanelProps>(
           // Scroll
           'overflow-y-auto',
           // Spacing
-          'flex flex-col gap-6 p-4',
+          'p-4',
           className
         )}
-        aria-label="Document context panel"
+        aria-label="Object properties sidebar"
       >
         {children}
       </aside>
@@ -32,6 +32,6 @@ const RightPanel = React.forwardRef<HTMLDivElement, RightPanelProps>(
   }
 );
 
-RightPanel.displayName = 'RightPanel';
+RightSidebar.displayName = 'RightSidebar';
 
-export { RightPanel };
+export { RightSidebar };

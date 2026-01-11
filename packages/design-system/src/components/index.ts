@@ -8,6 +8,7 @@ export * from './Checkbox/index.js';
 export * from './EmptyState/index.js';
 export * from './KeyboardKey/index.js';
 export * from './PropertyItem/index.js';
+export * from './PropertyTags/index.js';
 export * from './ScrollArea/index.js';
 export * from './Skeleton/index.js';
 export * from './Tag/index.js';
@@ -19,6 +20,6 @@ export * from './SaveStatus/index.js';
 export * from './CommandPalette/index.js';
 
 // Organism Components
-export * from './RightPanel/index.js';
-export * from './RightPanelSection/index.js';
+export * from './RightSidebar/index.js';
+export * from './CollapsibleSection/index.js';
 export * from './Sidebar/index.js';

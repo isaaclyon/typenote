@@ -16,7 +16,7 @@ export const AllTypes: Story = () => {
     <div className="flex flex-col gap-4 w-96">
       <section>
         <h2 className="text-lg font-semibold mb-4">All Property Types</h2>
-        <div className="space-y-3">
+        <div className="space-y-2">
           <PropertyItem
             label="Author"
             value={textValue}
@@ -53,7 +53,7 @@ export const EmptyStates: Story = () => {
     <div className="flex flex-col gap-4 w-96">
       <section>
         <h2 className="text-lg font-semibold mb-4">Empty Values</h2>
-        <div className="space-y-3">
+        <div className="space-y-2">
           <PropertyItem
             label="Author"
             type="text"
@@ -143,7 +143,7 @@ export const DateProperty: Story = () => {
 
 export const WithError: Story = () => {
   return (
-    <div className="w-96 space-y-3">
+    <div className="w-96 space-y-2">
       <PropertyItem
         label="Email"
         value="invalid-email"

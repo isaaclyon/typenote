@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { cn } from '../../utils/cn.js';
 import { ChevronRight } from 'lucide-react';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 
-export interface RightPanelSectionProps {
+export interface CollapsibleSectionProps {
   title: string;
+  icon?: PhosphorIcon; // Optional Phosphor icon for visual differentiation
   count?: number;
   collapsible?: boolean;
   defaultExpanded?: boolean;
@@ -12,9 +14,18 @@ export interface RightPanelSectionProps {
   className?: string;
 }
 
-const RightPanelSection = React.forwardRef<HTMLDivElement, RightPanelSectionProps>(
+const CollapsibleSection = React.forwardRef<HTMLDivElement, CollapsibleSectionProps>(
   (
-    { title, count, collapsible = true, defaultExpanded = true, storageKey, children, className },
+    {
+      title,
+      icon: Icon,
+      count,
+      collapsible = true,
+      defaultExpanded = true,
+      storageKey,
+      children,
+      className,
+    },
     ref
   ) => {
     // Initialize from localStorage if storageKey provided
@@ -56,6 +67,7 @@ const RightPanelSection = React.forwardRef<HTMLDivElement, RightPanelSectionProp
           aria-expanded={isExpanded}
         >
           <div className="flex items-center gap-2">
+            {Icon && <Icon className="w-4 h-4 text-gray-600" weight="regular" />}
             <span>{title}</span>
             {count !== undefined && <span className="text-xs text-gray-500">({count})</span>}
           </div>
@@ -69,6 +81,9 @@ const RightPanelSection = React.forwardRef<HTMLDivElement, RightPanelSectionProp
           )}
         </button>
 
+        {/* Divider */}
+        <div className="border-t border-gray-200" />
+
         {/* Section Content */}
         {isExpanded && <div className="px-3 py-2">{children}</div>}
       </div>
@@ -76,6 +91,6 @@ const RightPanelSection = React.forwardRef<HTMLDivElement, RightPanelSectionProp
   }
 );
 
-RightPanelSection.displayName = 'RightPanelSection';
+CollapsibleSection.displayName = 'CollapsibleSection';
 
-export { RightPanelSection };
+export { CollapsibleSection };
