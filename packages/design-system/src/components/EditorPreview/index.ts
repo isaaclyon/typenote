@@ -1,2 +1,4 @@
 export { EditorPreview } from './EditorPreview.js';
+export { RefNode } from './RefNode.js';
 export type * from './EditorPreview.js';
+export type * from './RefNode.js';
