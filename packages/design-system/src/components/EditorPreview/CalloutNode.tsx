@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Info, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
-
-type CalloutKind = 'info' | 'success' | 'warning' | 'error';
+import { CALLOUT_CONFIG, type CalloutKind } from '../../constants/editorConfig.js';
 
 interface CalloutNodeProps {
   kind: CalloutKind;
@@ -10,41 +8,6 @@ interface CalloutNodeProps {
   children: React.ReactNode;
   className?: string;
 }
-
-const CALLOUT_CONFIG: Record<
-  CalloutKind,
-  {
-    icon: React.ComponentType<{ className?: string }>;
-    bgClass: string;
-    iconClass: string;
-    defaultTitle: string;
-  }
-> = {
-  info: {
-    icon: Info,
-    bgClass: 'bg-accent-50',
-    iconClass: 'text-accent-700',
-    defaultTitle: 'Note',
-  },
-  success: {
-    icon: CheckCircle,
-    bgClass: 'bg-green-50',
-    iconClass: 'text-green-700',
-    defaultTitle: 'Success',
-  },
-  warning: {
-    icon: AlertTriangle,
-    bgClass: 'bg-amber-50',
-    iconClass: 'text-amber-700',
-    defaultTitle: 'Warning',
-  },
-  error: {
-    icon: AlertCircle,
-    bgClass: 'bg-red-50',
-    iconClass: 'text-red-700',
-    defaultTitle: 'Error',
-  },
-};
 
 /**
  * CalloutNode preview - semantic admonition blocks.

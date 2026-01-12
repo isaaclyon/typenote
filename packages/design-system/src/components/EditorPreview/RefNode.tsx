@@ -1,49 +1,11 @@
-import * as React from 'react';
-import { FileText, Folder, User, BookOpen, CheckSquare } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
-
-type ObjectType = 'note' | 'project' | 'person' | 'resource' | 'task';
+import { TYPE_CONFIG, type ObjectType } from '../../constants/editorConfig.js';
 
 interface RefNodeProps {
   type: ObjectType;
   label: string;
   className?: string;
 }
-
-const TYPE_CONFIG: Record<
-  ObjectType,
-  {
-    icon: React.ComponentType<{ className?: string }>;
-    colorClass: string;
-    decorationClass: string;
-  }
-> = {
-  note: {
-    icon: FileText,
-    colorClass: 'text-accent-500',
-    decorationClass: 'decoration-accent-500',
-  },
-  task: {
-    icon: CheckSquare,
-    colorClass: 'text-success',
-    decorationClass: 'decoration-success',
-  },
-  project: {
-    icon: Folder,
-    colorClass: 'text-error',
-    decorationClass: 'decoration-error',
-  },
-  person: {
-    icon: User,
-    colorClass: 'text-warning',
-    decorationClass: 'decoration-warning',
-  },
-  resource: {
-    icon: BookOpen,
-    colorClass: 'text-accent-300',
-    decorationClass: 'decoration-accent-300',
-  },
-};
 
 /**
  * RefNode preview - type-aware wiki-link styling.
