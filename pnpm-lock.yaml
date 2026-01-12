@@ -251,6 +251,9 @@ importers:
 
   packages/design-system:
     dependencies:
+      '@floating-ui/react':
+        specifier: ^0.27.16
+        version: 0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@fontsource/ibm-plex-mono':
         specifier: ^5.0.0
         version: 5.2.7
@@ -266,6 +269,42 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.7)(react@19.2.3)
+      '@tiptap/core':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/pm@3.15.0)
+      '@tiptap/extension-placeholder':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extensions@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/extension-table':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0)
+      '@tiptap/extension-table-cell':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extension-table@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/extension-table-header':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extension-table@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/extension-table-row':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extension-table@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/extension-task-item':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extension-list@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/extension-task-list':
+        specifier: ^3.14.0
+        version: 3.15.0(@tiptap/extension-list@3.15.0(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0))
+      '@tiptap/pm':
+        specifier: ^3.14.0
+        version: 3.15.0
+      '@tiptap/react':
+        specifier: ^3.14.0
+        version: 3.15.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@tiptap/starter-kit':
+        specifier: ^3.14.0
+        version: 3.15.0
+      '@tiptap/suggestion':
+        specifier: ^3.15.1
+        version: 3.15.1(@tiptap/core@3.15.0(@tiptap/pm@3.15.0))(@tiptap/pm@3.15.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
