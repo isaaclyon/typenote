@@ -6,7 +6,12 @@ import type { CommandPaletteInputProps } from './types.js';
 const CommandPaletteInput = React.forwardRef<HTMLInputElement, CommandPaletteInputProps>(
   ({ value, onChange, placeholder = 'Search commands...', className }, ref) => {
     return (
-      <div className={cn('relative flex items-center border-b border-gray-200', className)}>
+      <div
+        className={cn(
+          'relative flex items-center border-b border-gray-200 rounded-t-lg',
+          className
+        )}
+      >
         <Search className="absolute left-3 h-4 w-4 text-gray-400" />
         <input
           ref={ref}

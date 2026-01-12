@@ -50,7 +50,7 @@ function CommandDialog({ open, onOpenChange, children }: CommandDialogProps) {
       data-testid="command-palette-backdrop"
     >
       <div
-        className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2"
+        className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-md"
         onClick={(e) => e.stopPropagation()}
       >
         <Command
@@ -78,7 +78,7 @@ const CommandInput = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+  <div className="flex items-center border-b px-3 rounded-t-md" cmdk-input-wrapper="">
     <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
