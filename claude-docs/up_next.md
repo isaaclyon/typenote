@@ -112,6 +112,10 @@ Full attachment system with content-addressed storage, global deduplication, and
 
 ## Recently Completed
 
+### HTTP Server REST API ✅ (2026-01-11)
+
+Complete `@typenote/http-server` package with Hono framework. 10 endpoints for local third-party integrations (Raycast, Alfred, scripts). Integrated into Electron main process. 38 tests. Commits: `16f0e21`, `87079b9`, `316abf3`, `d8fc26f`, `cb5eb94`
+
 ### Recent Objects Tracking ✅ (2026-01-10)
 
 100-entry LRU cache with command palette integration. Backend service, IPC layer, React hook, UI integration. 13 unit tests + 3 E2E tests. Commit: `b8cb7d6`

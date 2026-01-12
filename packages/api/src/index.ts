@@ -250,3 +250,19 @@ export {
 
 // Events
 export { type EventType, type ObjectCreatedEvent, type TypenoteEvent } from './events.js';
+
+// Settings
+export {
+  ColorModeSchema,
+  WeekStartDaySchema,
+  DateFormatSchema,
+  TimeFormatSchema,
+  UserSettingsSchema,
+  SettingKeys,
+  type ColorMode,
+  type WeekStartDay,
+  type DateFormat,
+  type TimeFormat,
+  type UserSettings,
+  type SettingKey,
+} from './settings.js';

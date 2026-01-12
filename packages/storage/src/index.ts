@@ -18,6 +18,7 @@ export {
   attachments,
   blockAttachments,
   recentObjects,
+  userSettings,
   FTS_BLOCKS_TABLE_NAME,
   FTS_BLOCKS_CREATE_SQL,
 } from './schema.js';
@@ -205,3 +206,12 @@ export {
   clearRecentObjects,
   type RecentObjectSummary,
 } from './recentObjectsService.js';
+
+// Settings Service
+export {
+  getSettings,
+  getSetting,
+  updateSettings,
+  updateSetting,
+  resetSettings,
+} from './settingsService.js';

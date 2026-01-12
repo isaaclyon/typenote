@@ -6,6 +6,8 @@ export * from './Badge/index.js';
 export * from './BacklinkItem/index.js';
 export * from './Card/index.js';
 export * from './Checkbox/index.js';
+export * from './Switch/index.js';
+export * from './Select/index.js';
 export * from './EmptyState/index.js';
 export * from './KeyboardKey/index.js';
 export * from './MiniCalendar/index.js';
@@ -19,6 +21,7 @@ export * from './TagAddButton/index.js';
 export * from './Text/index.js';
 export * from './Toast/index.js';
 export * from './Modal/index.js';
+export * from './SettingsModal/index.js';
 export * from './SaveStatus/index.js';
 export * from './CommandPalette/index.js';
 

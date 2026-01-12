@@ -268,6 +268,16 @@ export const recentObjects = sqliteTable(
 );
 
 // ============================================================================
+// user_settings - Key-value store for user preferences
+// ============================================================================
+
+export const userSettings = sqliteTable('user_settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(), // JSON stringified value
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+});
+
+// ============================================================================
 // fts_blocks - Full-text search virtual table (FTS5)
 // Drizzle doesn't support FTS5 natively, so we use raw SQL
 // ============================================================================
