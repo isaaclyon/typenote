@@ -6,6 +6,8 @@ const ERROR_CODE_TO_HTTP_STATUS: Record<string, ContentfulStatusCode> = {
   NOT_FOUND_BLOCK: 404,
   NOT_FOUND_TAG: 404,
   NOT_FOUND_ATTACHMENT: 404,
+  TYPE_NOT_FOUND: 400,
+  VALIDATION_FAILED: 400,
   VALIDATION: 400,
   CONFLICT_VERSION: 409,
   CONFLICT_ORDERING: 409,
@@ -20,14 +22,20 @@ const ERROR_CODE_TO_HTTP_STATUS: Record<string, ContentfulStatusCode> = {
   INTERNAL: 500,
 };
 
-function isServiceError(
-  error: unknown
-): error is { code: string; message: string; details?: unknown } {
+interface ServiceErrorLike {
+  code: string;
+  message: string;
+  details?: unknown;
+}
+
+function isServiceError(error: unknown): error is ServiceErrorLike {
   return (
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
-    typeof (error as { code: unknown }).code === 'string'
+    typeof (error as { code: unknown }).code === 'string' &&
+    'message' in error &&
+    typeof (error as { message: unknown }).message === 'string'
   );
 }
 
@@ -65,8 +73,27 @@ export function errorHandler(): MiddlewareHandler {
 /**
  * Error handler for uncaught Error instances.
  * Use with app.onError(errorOnError)
+ *
+ * Handles both ServiceError instances (with code property) and generic errors.
  */
-export const errorOnError: ErrorHandler = (_error, c) => {
+export const errorOnError: ErrorHandler = (error, c) => {
+  // Check if it's a service error (Error with code property)
+  if (isServiceError(error)) {
+    const status: ContentfulStatusCode = ERROR_CODE_TO_HTTP_STATUS[error.code] ?? 500;
+    return c.json(
+      {
+        success: false,
+        error: {
+          code: error.code,
+          message: error.message,
+          details: (error as ServiceErrorLike & { details?: unknown }).details,
+        },
+      },
+      status
+    );
+  }
+
+  // Generic error
   return c.json(
     {
       success: false,
