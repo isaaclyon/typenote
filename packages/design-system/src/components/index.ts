@@ -23,9 +23,13 @@ export * from './SaveStatus/index.js';
 export * from './CommandPalette/index.js';
 
 // Organism Components
+export * from './AppShell/index.js';
 export * from './RightSidebar/index.js';
 export * from './CollapsibleSection/index.js';
 export * from './Sidebar/index.js';
 
 // Editor Preview Components
 export * from './EditorPreview/index.js';
+
+// Interactive Editor
+export * from './InteractiveEditor/index.js';
