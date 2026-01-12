@@ -39,7 +39,20 @@ packages/design-system/
 
 ### 1. Build in Ladle Sandbox First
 
-**Always develop components in Ladle before integrating into the desktop app.**
+**🚨 MANDATORY: ALL UI components MUST be developed in Ladle BEFORE implementing in the desktop app. 🚨**
+
+This is a non-negotiable requirement. Do NOT create or modify UI components directly in `apps/desktop/src/renderer/` without following this workflow:
+
+1. **Create component in** `packages/design-system/src/components/`
+2. **Write Ladle stories** covering all variants and states
+3. **Test in Ladle sandbox** at http://localhost:61000
+4. **Verify:**
+   - Design tokens used correctly (no arbitrary values)
+   - 4px spacing grid followed
+   - All interactive states work (hover, focus, active, disabled)
+   - Responsive behavior if needed
+   - Accessibility (keyboard nav, ARIA)
+5. **ONLY THEN** import and use in desktop app
 
 ```bash
 # Start Ladle server
@@ -48,12 +61,14 @@ pnpm --filter @typenote/design-system sandbox
 # Builds live at http://localhost:61000
 ```
 
-**Why Ladle?**
+**Why this is mandatory:**
 
-- Fast iteration without app rebuilds
-- Visual regression testing through stories
-- Component isolation ensures reusability
-- Living documentation for developers
+- **Reusability** — Components built in isolation work everywhere
+- **Fast iteration** — No app rebuilds, instant visual feedback
+- **Visual regression testing** — Stories catch breaking changes
+- **Quality assurance** — Forces variant coverage and edge case handling
+- **Living documentation** — Ladle becomes the source of truth
+- **Prevents design debt** — No ad-hoc, one-off components in app code
 
 ### 2. Bottom-Up Build Sequence
 
@@ -386,6 +401,13 @@ const Component = ({ icon: Icon }: Props) => (
 ```
 
 ## Anti-Patterns to Avoid
+
+### Workflow Violations (CRITICAL)
+
+- [ ] **NEVER build components directly in desktop app** — ALWAYS start in design-system + Ladle
+- [ ] **NEVER skip Ladle stories** — Every component needs stories before integration
+- [ ] **NEVER copy/paste component code** into desktop app — Import from design-system package
+- [ ] **NEVER create UI components in** `apps/desktop/src/renderer/ui/` **that should be in design-system**
 
 ### Styling
 

@@ -36,6 +36,7 @@ import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
 import { DailyNoteNavigation } from './DailyNoteNavigation.js';
+import { EditorBottomSections } from './EditorBottomSections.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -242,6 +243,9 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
           </div>
         )}
         <EditorContent editor={editor} className="prose prose-sm max-w-none" />
+
+        {/* Bottom sections for backlinks and unlinked mentions */}
+        <EditorBottomSections objectId={objectId} {...(onNavigate && { onNavigate })} />
       </div>
     </div>
   );

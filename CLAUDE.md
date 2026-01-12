@@ -24,6 +24,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TypeNote — A local-first desktop knowledge management app. Backend-first architecture with SQLite storage, typed objects, and block-based documents.
 
+## Design System Development
+
+**CRITICAL: ALL UI components MUST be developed in Ladle FIRST before implementing in the desktop app.**
+
+This is non-negotiable. Never create or modify UI components directly in `apps/desktop/src/renderer/` without first:
+
+1. Building the component in `packages/design-system/`
+2. Creating Ladle stories for all variants
+3. Testing in Ladle sandbox at http://localhost:61000
+4. Verifying design tokens, spacing, and behavior
+5. Only then importing into the desktop app
+
+```bash
+# ALWAYS start Ladle when working on UI components
+pnpm --filter @typenote/design-system sandbox
+```
+
+**Why this is mandatory:**
+
+- Components built in isolation are reusable, testable, and maintainable
+- Ladle provides instant visual feedback without app rebuilds
+- Forces proper component API design and variant coverage
+- Creates living documentation for the design system
+- Prevents ad-hoc, one-off components that create design debt
+
+See `.claude/rules/design-system.md` for complete workflow and patterns.
+
 ## Commands
 
 ```bash
