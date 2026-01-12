@@ -3,40 +3,30 @@ import type { Story } from '@ladle/react';
 import { NotesCreatedList, type NotesCreatedItem } from './NotesCreatedList.js';
 import { MiniCalendar } from '../MiniCalendar/MiniCalendar.js';
 import { getTodayKey } from '../MiniCalendar/utils.js';
-import { FileTextIcon } from '@phosphor-icons/react/dist/csr/FileText';
-import { CheckSquareIcon } from '@phosphor-icons/react/dist/csr/CheckSquare';
-import { UserIcon } from '@phosphor-icons/react/dist/csr/User';
-import { FolderIcon } from '@phosphor-icons/react/dist/csr/Folder';
-import { LightbulbIcon } from '@phosphor-icons/react/dist/csr/Lightbulb';
 
 export default {
   title: 'Components/NotesCreatedList',
 };
 
-// Sample items with different types
+// Sample items with different types (using Lucide icon names - matches BacklinkItem pattern)
 const sampleItems: NotesCreatedItem[] = [
-  { id: '1', title: 'Project kickoff notes', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '2', title: 'Review API design', typeIcon: CheckSquareIcon, typeColor: '#10B981' },
-  { id: '3', title: 'Meeting with Sarah', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '4', title: 'Alex Thompson', typeIcon: UserIcon, typeColor: '#8B5CF6' },
+  { id: '1', title: 'Project kickoff notes', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '2', title: 'Review API design', typeIcon: 'CheckSquare', typeColor: '#10B981' },
+  { id: '3', title: 'Meeting with Sarah', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '4', title: 'Alex Thompson', typeIcon: 'User', typeColor: '#8B5CF6' },
 ];
 
 const manyItems: NotesCreatedItem[] = [
-  { id: '1', title: 'Morning standup notes', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '2', title: 'Bug fix: login flow', typeIcon: CheckSquareIcon, typeColor: '#10B981' },
-  { id: '3', title: 'Design review feedback', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '4', title: 'Q1 Planning document', typeIcon: FolderIcon, typeColor: '#F59E0B' },
-  {
-    id: '5',
-    title: 'Research: competitor analysis',
-    typeIcon: LightbulbIcon,
-    typeColor: '#EC4899',
-  },
-  { id: '6', title: 'Team retrospective', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '7', title: 'Deploy checklist', typeIcon: CheckSquareIcon, typeColor: '#10B981' },
-  { id: '8', title: 'Client meeting prep', typeIcon: FileTextIcon, typeColor: '#6495ED' },
-  { id: '9', title: 'New feature brainstorm', typeIcon: LightbulbIcon, typeColor: '#EC4899' },
-  { id: '10', title: 'Performance metrics review', typeIcon: FileTextIcon, typeColor: '#6495ED' },
+  { id: '1', title: 'Morning standup notes', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '2', title: 'Bug fix: login flow', typeIcon: 'CheckSquare', typeColor: '#10B981' },
+  { id: '3', title: 'Design review feedback', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '4', title: 'Q1 Planning document', typeIcon: 'Folder', typeColor: '#F59E0B' },
+  { id: '5', title: 'Research: competitor analysis', typeIcon: 'Lightbulb', typeColor: '#EC4899' },
+  { id: '6', title: 'Team retrospective', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '7', title: 'Deploy checklist', typeIcon: 'CheckSquare', typeColor: '#10B981' },
+  { id: '8', title: 'Client meeting prep', typeIcon: 'FileText', typeColor: '#6495ED' },
+  { id: '9', title: 'New feature brainstorm', typeIcon: 'Lightbulb', typeColor: '#EC4899' },
+  { id: '10', title: 'Performance metrics review', typeIcon: 'FileText', typeColor: '#6495ED' },
 ];
 
 export const AllVariants: Story = () => (
@@ -167,17 +157,17 @@ export const LongTitles: Story = () => {
     {
       id: '1',
       title: 'This is a very long title that should be truncated with an ellipsis',
-      typeIcon: FileTextIcon,
+      typeIcon: 'FileText',
       typeColor: '#6495ED',
     },
     {
       id: '2',
       title:
         'Another extremely long title for testing purposes to ensure truncation works correctly',
-      typeIcon: CheckSquareIcon,
+      typeIcon: 'CheckSquare',
       typeColor: '#10B981',
     },
-    { id: '3', title: 'Short title', typeIcon: UserIcon, typeColor: '#8B5CF6' },
+    { id: '3', title: 'Short title', typeIcon: 'User', typeColor: '#8B5CF6' },
   ];
 
   return (
@@ -190,4 +180,23 @@ export const LongTitles: Story = () => {
 };
 LongTitles.meta = {
   description: 'Long titles are truncated with ellipsis',
+};
+
+export const NoIcons: Story = () => {
+  const itemsWithoutIcons: NotesCreatedItem[] = [
+    { id: '1', title: 'Note without icon' },
+    { id: '2', title: 'Another note without icon' },
+    { id: '3', title: 'Third note' },
+  ];
+
+  return (
+    <NotesCreatedList
+      date={getTodayKey()}
+      items={itemsWithoutIcons}
+      onItemClick={(id) => console.log('Clicked:', id)}
+    />
+  );
+};
+NoIcons.meta = {
+  description: 'Items without icons still render correctly',
 };
