@@ -37,7 +37,6 @@ packages/
 └── storage/    # SQLite schema, Drizzle migrations, services
 
 apps/
-├── cli/        # Backend testing CLI (31 commands)
 └── desktop/    # Electron + React + Vite
     ├── main/       # Main process (DB access)
     ├── preload/    # Context bridge (IPC)
@@ -73,28 +72,6 @@ pnpm --filter @typenote/desktop dev
 
 # Production build
 pnpm --filter @typenote/desktop build
-```
-
-### Using the CLI
-
-```bash
-# Create an object
-pnpm --filter @typenote/cli dev create Page "My First Page"
-
-# List all objects
-pnpm --filter @typenote/cli dev list
-
-# Add a block to an object
-pnpm --filter @typenote/cli dev patch-insert <object-id> paragraph "Hello, world!"
-
-# Search content
-pnpm --filter @typenote/cli dev search "hello"
-
-# Export vault
-pnpm --filter @typenote/cli dev export ./backup
-
-# See all commands
-pnpm --filter @typenote/cli dev --help
 ```
 
 ## Development
@@ -143,7 +120,6 @@ pnpm test:e2e
 | `api`     | zod                             | electron, node fs, db |
 | `core`    | `api`, zod, ulid                | electron, node fs, db |
 | `storage` | `api`, `core`, drizzle, sqlite3 | electron              |
-| `cli`     | All packages, commander         | electron              |
 | `desktop` | All packages, electron, react   | (renderer: no db)     |
 
 ### Domain Model
@@ -175,7 +151,6 @@ The backend is feature-complete with:
 - Global tags system
 - Per-type templates
 - Export/import functionality
-- 31 CLI commands for backend testing
 - 800+ unit/integration tests
 - Mutation testing with Stryker
 

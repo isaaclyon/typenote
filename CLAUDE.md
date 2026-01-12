@@ -67,48 +67,9 @@ pnpm format           # Format all files
 pnpm format:check     # Check formatting
 
 # Package-specific
-pnpm --filter @typenote/cli dev hello          # Test CLI
 pnpm --filter @typenote/api test               # Test API package
 pnpm --filter @typenote/storage test           # Test storage package
 pnpm --filter @typenote/design-system sandbox  # Component sandbox (Ladle)
-```
-
-## CLI Commands
-
-The `@typenote/cli` package provides backend testing commands. Build the CLI with `pnpm --filter @typenote/cli build`, then run:
-
-```bash
-# Daily Notes
-typenote daily today                      # Get or create today's daily note
-typenote daily get <YYYY-MM-DD>           # Get or create daily note for date
-typenote daily list [--from] [--to]       # List daily notes with date filters
-typenote daily slug <YYYY-MM-DD>          # Generate slug for date
-
-# Calendar Events
-typenote calendar types                   # List calendar-enabled object types
-typenote calendar on <YYYY-MM-DD>         # Get events on specific date
-typenote calendar range <start> <end>     # Get events in date range
-typenote calendar upcoming [--days N]     # Get upcoming events (default: 7 days)
-typenote calendar list [--type] [--from] [--to]  # List all calendar items with filters
-
-# Templates
-typenote template create -n <name> -t <typeId> -s <json>  # Create template
-typenote template get <id>                # Get template by ID
-typenote template list [-t <typeId>]      # List all templates
-typenote template apply <templateId> <objectId>  # Apply template to object
-typenote template update <id> [-n] [-s] [-d]  # Update template
-typenote template delete <id>             # Delete template
-
-# Block Operations
-typenote patch-insert <objectId> <blockType> <text>  # Insert block
-typenote patch-update <objectId> <blockId> <text>    # Update block
-typenote patch-delete <objectId> <blockId> [--subtree]  # Delete block
-typenote patch-move <objectId> <blockId> [options]   # Move block
-  # Move options:
-  #   -p, --parent <blockId>   New parent (omit for root)
-  #   -w, --where <position>   Position: start, end (default: end)
-  #   -b, --before <siblingId> Place before sibling
-  #   -a, --after <siblingId>  Place after sibling
 ```
 
 ## Architecture
@@ -127,8 +88,6 @@ packages/
     └── src/          # Drizzle schema, migrations, services
 
 apps/
-├── cli/              # Backend testing CLI
-│   └── src/          # Commander commands
 └── desktop/          # Electron + React + Vite
     └── src/
         ├── main/     # Electron main process (DB access)
@@ -146,7 +105,6 @@ claude-docs/          # Claude context & progress tracking
 | `packages/api`     | zod                                                        | electron, node fs, db  |
 | `packages/core`    | `@typenote/api`, zod, ulid                                 | electron, node fs, db  |
 | `packages/storage` | `@typenote/api`, `@typenote/core`, drizzle, better-sqlite3 | electron               |
-| `apps/cli`         | All packages, commander                                    | electron               |
 | `apps/desktop`     | All packages, electron, react                              | (main only: db access) |
 
 **Critical:** The renderer process must NEVER import storage or access DB directly.
