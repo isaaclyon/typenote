@@ -10,6 +10,7 @@ import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { cn } from '../../utils/cn.js';
 import type { InteractiveEditorProps } from './types.js';
+import { CalloutNode } from './extensions/index.js';
 
 /**
  * InteractiveEditor - A fully functional TipTap editor for design system stories.
@@ -46,6 +47,7 @@ export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEdi
         TableHeader,
         TaskList,
         TaskItem.configure({ nested: true }),
+        CalloutNode,
       ],
       editable,
       autofocus,

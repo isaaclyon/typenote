@@ -257,6 +257,59 @@ export const HorizontalRule: Story = () => (
   </div>
 );
 
+export const Callouts: Story = () => (
+  <div className="p-4 border rounded-lg bg-white">
+    <InteractiveEditor
+      initialContent={wrap([
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Callout blocks for different purposes:' }],
+        },
+        {
+          type: 'callout',
+          attrs: { kind: 'info' },
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'This is an info callout for general notes.' }],
+            },
+          ],
+        },
+        {
+          type: 'callout',
+          attrs: { kind: 'success' },
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'This is a success callout for positive outcomes.' }],
+            },
+          ],
+        },
+        {
+          type: 'callout',
+          attrs: { kind: 'warning' },
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'This is a warning callout for caution.' }],
+            },
+          ],
+        },
+        {
+          type: 'callout',
+          attrs: { kind: 'error' },
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'This is an error callout for problems.' }],
+            },
+          ],
+        },
+      ])}
+    />
+  </div>
+);
+
 export const AllBlockTypes: Story = () => (
   <div className="p-4 border rounded-lg bg-white">
     <InteractiveEditor
