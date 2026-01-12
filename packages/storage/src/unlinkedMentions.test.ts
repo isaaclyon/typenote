@@ -368,4 +368,51 @@ describe('getUnlinkedMentionsTo', () => {
     const objectIds = result.map((r: UnlinkedMentionResult) => r.sourceObjectId).sort();
     expect(objectIds).toEqual([source1.id, source2.id].sort());
   });
+
+  it('returns type metadata for mentioning objects', () => {
+    // Create object type with icon and color
+    createObjectType(db, {
+      key: 'DailyNote',
+      name: 'Daily Note',
+      pluralName: 'Daily Notes',
+      icon: 'calendar',
+      color: '#F59E0B',
+      schema: { properties: [] },
+    });
+
+    // Create target object
+    const target = createObject(db, 'Page', 'Project Alpha');
+
+    // Create source object with DailyNote type
+    const source = createObject(db, 'DailyNote', 'My Daily Note');
+
+    // Add unlinked mention in source
+    applyBlockPatch(db, {
+      apiVersion: 'v1',
+      objectId: source.id,
+      ops: [
+        {
+          op: 'block.insert',
+          blockId: generateId(),
+          parentBlockId: null,
+          place: { where: 'end' },
+          blockType: 'paragraph',
+          content: {
+            inline: [{ t: 'text', text: 'Discussed Project Alpha roadmap' }],
+          },
+        },
+      ],
+    });
+
+    const result = getUnlinkedMentionsTo(db, target.id);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      sourceObjectId: source.id,
+      sourceObjectTitle: 'My Daily Note',
+      sourceTypeId: expect.any(String),
+      sourceTypeKey: 'DailyNote',
+      sourceTypeIcon: 'calendar',
+      sourceTypeColor: '#F59E0B',
+    });
+  });
 });

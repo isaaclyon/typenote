@@ -4,7 +4,7 @@
 
 import { eq, and, isNull } from 'drizzle-orm';
 import type { TypenoteDb } from './db.js';
-import { refs, blocks, objects } from './schema.js';
+import { refs, blocks, objects, objectTypes } from './schema.js';
 
 /**
  * Result of a backlinks query.
@@ -18,6 +18,14 @@ export type BacklinkResult = {
   sourceObjectTitle: string;
   /** The specific block being referenced (null if object-level reference) */
   targetBlockId: string | null;
+  /** The type ID of the source object */
+  sourceTypeId: string;
+  /** The type key of the source object (e.g., "Page", "DailyNote") */
+  sourceTypeKey: string;
+  /** The icon name for the source object's type (e.g., "calendar", "file-text") */
+  sourceTypeIcon: string | null;
+  /** The color hex for the source object's type (e.g., "#F59E0B") */
+  sourceTypeColor: string | null;
 };
 
 /**
@@ -31,16 +39,22 @@ export type BacklinkResult = {
 export function getBacklinks(db: TypenoteDb, objectId: string): BacklinkResult[] {
   // Join refs with blocks to exclude deleted source blocks
   // Join with objects to get the source object title
+  // Join with objectTypes to get type metadata (icon, color)
   const results = db
     .select({
       sourceBlockId: refs.sourceBlockId,
       sourceObjectId: refs.sourceObjectId,
       sourceObjectTitle: objects.title,
       targetBlockId: refs.targetBlockId,
+      sourceTypeId: objects.typeId,
+      sourceTypeKey: objectTypes.key,
+      sourceTypeIcon: objectTypes.icon,
+      sourceTypeColor: objectTypes.color,
     })
     .from(refs)
     .innerJoin(blocks, eq(refs.sourceBlockId, blocks.id))
     .innerJoin(objects, eq(refs.sourceObjectId, objects.id))
+    .innerJoin(objectTypes, eq(objects.typeId, objectTypes.id))
     .where(and(eq(refs.targetObjectId, objectId), isNull(blocks.deletedAt)))
     .all();
 

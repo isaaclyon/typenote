@@ -57,6 +57,10 @@ describe('getBacklinks', () => {
       sourceObjectId: 'source',
       sourceObjectTitle: 'Source Object',
       targetBlockId: null,
+      sourceTypeId: 'type1',
+      sourceTypeKey: 'Page',
+      sourceTypeIcon: null,
+      sourceTypeColor: null,
     });
   });
 
@@ -157,5 +161,43 @@ describe('getBacklinks', () => {
 
     const sourceObjectIds = result.map((r) => r.sourceObjectId).sort();
     expect(sourceObjectIds).toEqual(['source', 'source2']);
+  });
+
+  it('returns type metadata for source objects', () => {
+    // Create object type with icon and color
+    db.run(
+      `INSERT INTO object_types (id, key, name, icon, color, built_in, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      ['type2', 'DailyNote', 'Daily Note', 'calendar', '#F59E0B', 1, now, now]
+    );
+
+    // Create source object with this type
+    db.run(
+      `INSERT INTO objects (id, type_id, title, doc_version, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+      ['daily', 'type2', 'My Daily Note', 0, now, now]
+    );
+
+    // Create block that references target
+    db.run(
+      `INSERT INTO blocks (id, object_id, parent_block_id, order_key, block_type, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      ['block1', 'daily', null, 'a', 'paragraph', '{}', now, now]
+    );
+
+    const content = {
+      inline: [{ t: 'ref', mode: 'link', target: { kind: 'object', objectId: 'target' } }],
+    };
+    updateRefsForBlock(db, 'block1', 'daily', 'paragraph', content);
+
+    const result = getBacklinks(db, 'target');
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      sourceBlockId: 'block1',
+      sourceObjectId: 'daily',
+      sourceObjectTitle: 'My Daily Note',
+      targetBlockId: null,
+      sourceTypeId: 'type2',
+      sourceTypeKey: 'DailyNote',
+      sourceTypeIcon: 'calendar',
+      sourceTypeColor: '#F59E0B',
+    });
   });
 });

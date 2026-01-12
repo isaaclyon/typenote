@@ -7,7 +7,7 @@
 
 import { eq, and, isNull, inArray } from 'drizzle-orm';
 import type { TypenoteDb } from './db.js';
-import { blocks, objects, refs } from './schema.js';
+import { blocks, objects, refs, objectTypes } from './schema.js';
 import { searchBlocks } from './search.js';
 import { getObject } from './objectService.js';
 
@@ -21,6 +21,14 @@ export type UnlinkedMentionResult = {
   sourceObjectId: string;
   /** The title of the source object (for display in UI) */
   sourceObjectTitle: string;
+  /** The type ID of the source object */
+  sourceTypeId: string;
+  /** The type key of the source object (e.g., "Page", "DailyNote") */
+  sourceTypeKey: string;
+  /** The icon name for the source object's type (e.g., "calendar", "file-text") */
+  sourceTypeIcon: string | null;
+  /** The color hex for the source object's type (e.g., "#F59E0B") */
+  sourceTypeColor: string | null;
 };
 
 /**
@@ -89,15 +97,20 @@ export function getUnlinkedMentionsTo(db: TypenoteDb, objectId: string): Unlinke
   // Step 6: Deduplicate by block (already done by FTS5, but belt-and-suspenders)
   const deduplicatedBlockIds = Array.from(new Set(filteredCandidates.map((c) => c.blockId)));
 
-  // Step 7: Enrich with source object titles
+  // Step 7: Enrich with source object titles and type metadata
   const results = db
     .select({
       sourceBlockId: blocks.id,
       sourceObjectId: blocks.objectId,
       sourceObjectTitle: objects.title,
+      sourceTypeId: objects.typeId,
+      sourceTypeKey: objectTypes.key,
+      sourceTypeIcon: objectTypes.icon,
+      sourceTypeColor: objectTypes.color,
     })
     .from(blocks)
     .innerJoin(objects, eq(blocks.objectId, objects.id))
+    .innerJoin(objectTypes, eq(objects.typeId, objectTypes.id))
     .where(
       and(
         inArray(blocks.id, deduplicatedBlockIds),
