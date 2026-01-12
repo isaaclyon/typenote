@@ -37,6 +37,7 @@
     "@typenote/api": "workspace:*",
     "@typenote/core": "workspace:*",
     "@typenote/design-system": "workspace:*",
+    "@typenote/http-server": "workspace:*",
     "@typenote/storage": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

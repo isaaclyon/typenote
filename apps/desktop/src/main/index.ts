@@ -12,6 +12,7 @@ import {
   type TypenoteDb,
   type FileService,
 } from '@typenote/storage';
+import { createHttpServer, type HttpServer } from '@typenote/http-server';
 import { setupIpcHandlers } from './ipc.js';
 import { typenoteEvents } from './events.js';
 import { startAttachmentCleanupScheduler, stopAttachmentCleanupScheduler } from './lifecycle.js';
@@ -22,6 +23,7 @@ const __dirname = path.dirname(__filename);
 let mainWindow: BrowserWindow | null = null;
 let db: TypenoteDb | null = null;
 let fileService: FileService | null = null;
+let httpServer: HttpServer | null = null;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -76,6 +78,28 @@ function setupEventBroadcasting(): void {
   });
 }
 
+async function startHttpServer(): Promise<void> {
+  if (!db) throw new Error('Database not initialized');
+
+  const port = Number(process.env['TYPENOTE_HTTP_PORT']) || 3456;
+  httpServer = createHttpServer({
+    db,
+    port,
+    host: '127.0.0.1',
+  });
+
+  await httpServer.start();
+  console.log(`[TypeNote] HTTP API available at http://127.0.0.1:${port}/api/v1`);
+}
+
+async function stopHttpServer(): Promise<void> {
+  if (httpServer) {
+    await httpServer.stop();
+    httpServer = null;
+    console.log('[TypeNote] HTTP server stopped');
+  }
+}
+
 void app.whenReady().then(async () => {
   initDatabase();
   registerIpcHandlers();
@@ -85,6 +109,9 @@ void app.whenReady().then(async () => {
   if (db && fileService) {
     await startAttachmentCleanupScheduler(db, fileService, 30);
   }
+
+  // Start HTTP server for local API access
+  await startHttpServer();
 
   createWindow();
 
@@ -104,6 +131,9 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   // Stop attachment cleanup scheduler
   stopAttachmentCleanupScheduler();
+
+  // Stop HTTP server
+  void stopHttpServer();
 
   if (db) {
     closeDb(db);

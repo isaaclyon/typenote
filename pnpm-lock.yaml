@@ -110,6 +110,9 @@ importers:
       '@typenote/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
+      '@typenote/http-server':
+        specifier: workspace:*
+        version: link:../../packages/http-server
       '@typenote/storage':
         specifier: workspace:*
         version: link:../../packages/storage
