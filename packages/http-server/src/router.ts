@@ -4,6 +4,7 @@ import { documents } from './routes/documents.js';
 import { search } from './routes/search.js';
 import { recent } from './routes/recent.js';
 import { health } from './routes/health.js';
+import { dailyNotes } from './routes/daily-notes.js';
 import type { ServerContext } from './types.js';
 
 /**
@@ -18,6 +19,7 @@ export function createRouter() {
   router.route('/objects', documents); // Document routes are under /objects/:id/document
   router.route('/search', search);
   router.route('/recent', recent);
+  router.route('/daily-notes', dailyNotes);
 
   return router;
 }
