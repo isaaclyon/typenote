@@ -21,11 +21,25 @@ export interface SlashCommandMenuRef {
 export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashCommandMenuProps>(
   ({ items, selectedIndex, onSelect }, ref) => {
     const [localIndex, setLocalIndex] = React.useState(selectedIndex);
+    // Store refs to all button elements for scrollIntoView
+    const itemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
     // Sync with parent's selectedIndex
     React.useEffect(() => {
       setLocalIndex(selectedIndex);
     }, [selectedIndex]);
+
+    // Auto-scroll selected item into view when navigating with keyboard
+    React.useEffect(() => {
+      const selectedElement = itemRefs.current[localIndex];
+      if (selectedElement) {
+        selectedElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest',
+        });
+      }
+    }, [localIndex]);
 
     // Expose keyboard handler via ref
     React.useImperativeHandle(ref, () => ({
@@ -75,6 +89,9 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
             <button
               key={item.id}
               type="button"
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
               className={cn(
                 'w-full flex items-start gap-3 px-3 py-2 text-left transition-colors duration-100',
                 isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
