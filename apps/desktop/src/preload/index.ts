@@ -120,6 +120,19 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   getRecentObjects: (limit?: number) => ipcRenderer.invoke('typenote:getRecentObjects', limit),
 
+  // Settings operations
+  getSettings: () => ipcRenderer.invoke('typenote:getSettings'),
+
+  updateSettings: (updates: {
+    colorMode?: 'light' | 'dark' | 'system';
+    weekStartDay?: 'sunday' | 'monday';
+    spellcheck?: boolean;
+    dateFormat?: 'iso' | 'us' | 'eu';
+    timeFormat?: '12h' | '24h';
+  }) => ipcRenderer.invoke('typenote:updateSettings', updates),
+
+  resetSettings: () => ipcRenderer.invoke('typenote:resetSettings'),
+
   // Event subscription
   onEvent: (callback: (event: TypenoteEvent) => void) => {
     const listener = (_event: Electron.IpcRendererEvent, data: TypenoteEvent) => {

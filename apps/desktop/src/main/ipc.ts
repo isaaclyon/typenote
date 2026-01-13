@@ -36,6 +36,10 @@ import {
   // Recent objects service
   recordView as recordViewStorage,
   getRecentObjects as getRecentObjectsStorage,
+  // Settings service
+  getSettings as getSettingsStorage,
+  updateSettings as updateSettingsStorage,
+  resetSettings as resetSettingsStorage,
   // Attachment service
   uploadAttachment as uploadAttachmentStorage,
   getAttachment as getAttachmentStorage,
@@ -80,6 +84,7 @@ import {
   type TaskPriority,
   type Attachment,
   type UploadAttachmentResult,
+  type UserSettings,
 } from '@typenote/api';
 
 /**
@@ -215,6 +220,10 @@ export interface IpcHandlers {
   // Recent objects operations
   recordView: (objectId: string) => IpcOutcome<void>;
   getRecentObjects: (limit?: number) => IpcOutcome<RecentObjectSummary[]>;
+  // Settings operations
+  getSettings: () => IpcOutcome<UserSettings>;
+  updateSettings: (updates: Partial<UserSettings>) => IpcOutcome<void>;
+  resetSettings: () => IpcOutcome<void>;
 }
 
 export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {
@@ -400,6 +409,21 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     },
 
     getRecentObjects: (limit) => handleIpcCall(() => getRecentObjectsStorage(db, limit)),
+
+    // Settings operations
+    getSettings: () => handleIpcCall(() => getSettingsStorage(db)),
+
+    updateSettings: (updates) =>
+      handleIpcCall(() => {
+        updateSettingsStorage(db, updates);
+        return undefined;
+      }),
+
+    resetSettings: () =>
+      handleIpcCall(() => {
+        resetSettingsStorage(db);
+        return undefined;
+      }),
   };
 }
 

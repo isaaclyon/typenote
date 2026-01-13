@@ -5,6 +5,7 @@ import type {
   Attachment,
   UploadAttachmentResult,
   TypenoteEvent,
+  UserSettings,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
@@ -70,6 +71,11 @@ export interface TypenoteAPI {
   // Recent objects operations
   recordView: (objectId: string) => Promise<IpcOutcome<void>>;
   getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
+
+  // Settings operations
+  getSettings: () => Promise<IpcOutcome<UserSettings>>;
+  updateSettings: (updates: Partial<UserSettings>) => Promise<IpcOutcome<void>>;
+  resetSettings: () => Promise<IpcOutcome<void>>;
 
   // Events
   onEvent: (callback: (event: TypenoteEvent) => void) => () => void;

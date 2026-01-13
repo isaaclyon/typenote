@@ -1,6 +1,37 @@
 # Recent Work
 
-## Latest Session (2026-01-11 - HTTP Server REST API)
+## Latest Session (2026-01-12 - Design System: AppShell Full Experience Stories)
+
+### AppShell Full Experience + Design Fixes
+
+Built two comprehensive AppShell stories demonstrating the complete note-editing experience with InteractiveEditor, proper daily note layout, and fixed RefNode styling inconsistency.
+
+**Key accomplishments:**
+
+1. **Fixed slash menu keyboard navigation** — Added `scrollIntoView()` to auto-scroll selected items when navigating beyond visible area
+2. **Fixed RefNode styling inconsistency** — Aligned InteractiveEditor RefNodeView with EditorPreview design (removed gray background pill, now clean icon + underline)
+3. **Added AppShell story: `WithNoteEditor`** — Regular note editing with Properties + Tags in right sidebar, Backlinks at bottom
+4. **Added AppShell story: `WithDailyNoteEditor`** — Daily note editing with DailyNoteNav + MiniCalendar + NotesCreatedList (no Properties/Tags per design spec)
+
+**Architecture insights:**
+
+- Daily notes use different layout from regular notes (mini calendar + notes created list instead of properties panel)
+- Backlinks moved from right sidebar to bottom of editor content (Obsidian-like pivot)
+- RefNode had two divergent implementations — consolidated to single clean design
+
+**Files modified:**
+
+- `packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandMenu.tsx` — Added auto-scroll behavior
+- `packages/design-system/src/components/InteractiveEditor/extensions/RefNode/RefNodeView.tsx` — Fixed styling to match EditorPreview
+- `packages/design-system/src/components/AppShell/AppShell.stories.tsx` — Added two comprehensive full-experience stories
+
+**Commits:**
+
+- `18356b4 fix(design-system): add auto-scroll to slash menu keyboard navigation`
+
+---
+
+## Previous Session (2026-01-11 - HTTP Server REST API)
 
 ### REST API for Local Integrations
 

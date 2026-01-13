@@ -58,6 +58,7 @@ Complete reference guide for the TypeNote design system. **Two locations:** `.cl
 | ------------------------------ | ---- | --------- | ------------------------------------------ |
 | **QUICK_REFERENCE.md**         | 10KB | 5 min     | Copy-paste color/spacing/typography values |
 | **COMPONENTS_INVENTORY.md**    | 12KB | 15-20 min | Component catalog with specs               |
+| **COMPONENT_GAPS.md**          | 25KB | 20 min    | Missing components & implementation plan   |
 | **DESIGN_SYSTEM_BREAKDOWN.md** | 23KB | 30-45 min | Complete detailed specifications           |
 
 ### Design Decision Files (.claude/skills/design-principles/typenote/)
@@ -343,6 +344,15 @@ Before building components, ensure you have:
 ---
 
 ## Quick Navigation by Task
+
+### "What components are missing?"
+
+→ **COMPONENT_GAPS.md** — Complete gap analysis
+
+- P0/P1/P2 prioritized missing components
+- Implementation roadmap with effort estimates
+- Backend readiness matrix
+- What to build next
 
 ### "I need a color value"
 
@@ -634,6 +644,16 @@ A: README.md → FAQ section
 ---
 
 ## 📜 Version History
+
+### v1.3 (2026-01-12) — Component Gaps Analysis
+
+- ✅ Added **COMPONENT_GAPS.md** (25KB) — Complete missing component analysis
+- ✅ Identified 9 critical missing components (P0: 3, P1: 4, P2: 2)
+- ✅ Added implementation roadmap with 3 phases (P0, P1, P2)
+- ✅ Backend readiness matrix showing which features are blocked
+- ✅ Strategic insight: Domain-specific molecules are the main gap
+- ✅ Updated INDEX.md with quick navigation to gaps analysis
+- 📊 Clear prioritization: Property Inputs → Date Picker → Dropdown Menu unlock highest value
 
 ### v1.2 (2026-01-10) — Implementation Status Update
 

@@ -18,16 +18,18 @@ export const RefNodeView: React.FC<NodeViewProps> = ({ node }) => {
   return (
     <NodeViewWrapper as="span" className="inline">
       <span
-        className={cn(
-          'inline-flex items-center gap-0.5 px-1 py-0.5 rounded',
-          'bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer',
-          'text-sm font-medium',
-          config.colorClass
-        )}
+        className={cn('inline-flex items-center gap-1 cursor-pointer transition-colors')}
         contentEditable={false}
       >
-        <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-        <span className="underline decoration-1 underline-offset-2">{label}</span>
+        <Icon className={cn('w-3.5 h-3.5 flex-shrink-0', config.colorClass)} />
+        <span
+          className={cn(
+            'underline decoration-1 underline-offset-2 text-gray-700 hover:text-gray-900',
+            config.decorationClass
+          )}
+        >
+          {label}
+        </span>
       </span>
     </NodeViewWrapper>
   );

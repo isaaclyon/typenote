@@ -26,7 +26,7 @@ All 4 critical gaps from CLI coverage analysis now have full command implementat
 
 ## UI/Design System - Organism Components
 
-**Status:** Active (Sidebar committed, in-progress components uncommitted)
+**Status:** Active
 **Plan:** `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md`
 
 Building organism-level components in the design-system package with Ladle sandbox testing before desktop app integration.
@@ -34,25 +34,24 @@ Building organism-level components in the design-system package with Ladle sandb
 ### Completed
 
 - [x] Left Sidebar Navigation organism (8 components, 9 stories) ✅ Commit: `d8c01d3`
-  - Compound component architecture established
-  - CSS-first hover patterns
-  - Full design system adherence
-  - Verified: typecheck, lint, 1677 tests, build
+- [x] Slash menu keyboard navigation auto-scroll ✅ Commit: `18356b4`
+- [x] RefNode styling consistency (clean icon + underline design) ✅ Uncommitted
+- [x] AppShell full experience stories (daily note + regular note) ✅ Uncommitted
+- [x] Daily note special layout (DailyNoteNav + MiniCalendar + NotesCreatedList) ✅ Uncommitted
 
 ### In Progress (Uncommitted)
 
 - PropertyItem component (edit mode, various value types)
-- BacklinkItem component
-- RightPanel components
+- BacklinkItem component (already exists, used in stories)
+- RightPanel components (partially complete)
 
 ### Next Steps
 
-- [ ] Complete PropertyItem component with stories
-- [ ] Complete BacklinkItem component with stories
-- [ ] Build Right Panel organism (backlinks, page info, tags)
-- [ ] Integrate Sidebar into desktop app with real data (wire up IPC)
+- [ ] Commit AppShell stories + RefNode fixes
+- [ ] Complete PropertyItem component with all property types
 - [ ] Build Type Browser organism (data table with sort/filter)
-- [ ] Build App Shell organism (3-panel layout with sidebar collapse)
+- [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
+- [ ] Add InteractiveEditor integration tests for all extensions
 
 ---
 
