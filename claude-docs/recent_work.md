@@ -24,6 +24,8 @@ Enhanced MultiselectDropdown with actions menu and color picker. Audited hardcod
 
 **Plan created:** `docs/plans/2026-01-13-color-centralization.md`
 
+**Commit:** `e74ad09` feat(design-system): add actions menu to MultiselectDropdown
+
 ---
 
 ## Previous Session (2026-01-13 - TypeBrowser Phase 3 Complete)

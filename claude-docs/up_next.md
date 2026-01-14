@@ -53,7 +53,7 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ### Recently Completed
 
-- [x] MultiselectDropdown actions menu ✅ (uncommitted)
+- [x] MultiselectDropdown actions menu ✅ Commit: `e74ad09`
   - OptionActionsMenu component with Edit/Delete/Change Color
   - 12-color picker derived from pill text colors
   - `onOptionsChange` callback for mutations
