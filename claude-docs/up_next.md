@@ -42,15 +42,22 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ### In Progress (Uncommitted)
 
-- PropertyItem with all 8 property types + custom Select integration (testing layout shift fix)
-- MultiselectDropdown component (new, started)
+- PropertyItem with all 8 property types + UX improvements:
+  - `resolveRefs` prop shows titles instead of IDs for ref/refs types
+  - DateTime blur fix (clicking between date/time inputs no longer triggers premature save)
+  - MultiselectDropdown integration (dropdown replaces inline toggle buttons)
+- MultiselectDropdown component (complete):
+  - Dropdown UI with Floating UI positioning
+  - Search/filter input
+  - Checkbox rows with drag handles
+  - @dnd-kit integration for drag-and-drop reordering
+  - `onReorder` callback prop
 - BacklinkItem component (already exists, used in stories)
 - RightPanel components (partially complete)
 
 ### Next Steps
 
-- [ ] Verify Select dropdown layout shift is fixed, then commit PropertyItem
-- [ ] Complete MultiselectDropdown component
+- [ ] Commit PropertyItem UX improvements + MultiselectDropdown component
 - [ ] Build Type Browser organism (data table with sort/filter)
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions

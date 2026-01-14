@@ -8,6 +8,7 @@ export * from './Card/index.js';
 export * from './Checkbox/index.js';
 export * from './Switch/index.js';
 export * from './Select/index.js';
+export * from './MultiselectDropdown/index.js';
 export * from './EmptyState/index.js';
 export * from './KeyboardKey/index.js';
 export * from './MiniCalendar/index.js';

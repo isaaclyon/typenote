@@ -27,8 +27,11 @@ export function formatDateKey(date: Date): string {
  * Parse a YYYY-MM-DD string to a Date (local timezone)
  */
 export function parseDateKey(dateKey: string): Date {
-  const [year, month, day] = dateKey.split('-').map(Number);
-  return new Date(year!, month! - 1, day);
+  const parts = dateKey.split('-').map(Number);
+  const year = parts[0] ?? 0;
+  const month = parts[1] ?? 1;
+  const day = parts[2] ?? 1;
+  return new Date(year, month - 1, day);
 }
 
 /**
@@ -106,7 +109,8 @@ export function getCalendarDays(
 export function getWeekdayLabels(weekStartsOn: 0 | 1 = 0): string[] {
   const labels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
   if (weekStartsOn === 1) {
-    return [...labels.slice(1), labels[0]!];
+    const firstLabel = labels[0] ?? 'Su';
+    return [...labels.slice(1), firstLabel];
   }
   return labels;
 }

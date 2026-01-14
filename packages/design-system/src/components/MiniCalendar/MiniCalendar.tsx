@@ -49,7 +49,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
         setViewingYear(parsed.getFullYear());
         setViewingMonth(parsed.getMonth());
       }
-    }, [selectedDate]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [selectedDate, viewingMonth, viewingYear]);
 
     // Calculate calendar days for current view
     const calendarDays = React.useMemo(

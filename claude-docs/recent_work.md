@@ -1,45 +1,54 @@
 # Recent Work
 
-## Latest Session (2026-01-13 - Select Component UX Improvements)
+## Latest Session (2026-01-13 evening - MultiselectDropdown & PropertyItem UX)
 
-### Custom Select for PropertyItem
+### MultiselectDropdown Component
 
-Replaced native `<select>` element in PropertyItem with custom `Select` component to ensure consistent cross-platform UX (native macOS picker was jarring).
+Built new `MultiselectDropdown` component with dropdown UI, search filtering, checkboxes, and drag-and-drop reordering.
 
 **Key accomplishments:**
 
-1. **Added size prop to Select** — `'sm'` (h-7/28px) and `'md'` (h-9/36px) variants
-2. **Fixed positioning strategy** — Changed to `strategy: 'fixed'` to prevent layout shift when dropdown opens
-3. **Updated PropertyItem** — Now uses custom `Select` with `size="sm"` instead of native `<select>`
-4. **Focus style cleanup** — Changed from ring-offset to border color for cleaner focus indication
+1. **New MultiselectDropdown component** — Dropdown-based multiselect replacing inline toggle buttons
+   - Search/filter input at top
+   - Checkbox rows with drag handles
+   - Floating UI for positioning (same pattern as Select)
+   - @dnd-kit integration for drag-and-drop reordering
+   - `onReorder` callback prop for persisting option order
 
-**Architecture insights:**
+2. **PropertyItem UX improvements:**
+   - Added `resolveRefs` prop to show titles instead of IDs for ref/refs types
+   - Fixed datetime blur behavior — clicking between date/time inputs no longer triggers premature save
+   - Integrated MultiselectDropdown for multiselect type (no longer uses `isEditing` state)
 
-- Floating UI's `size` middleware conflicted with our `size` prop — renamed import to `floatingSize`
-- Fixed positioning removes dropdown from document flow, preventing content shift
-- `FloatingPortal` renders to document.body for proper overlay behavior
+3. **New dependencies:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
 
-**Commits:**
+**New files:**
 
-- `70ec931 feat(design-system): add size prop and fixed positioning to Select`
-- `3b88d2d docs: update session notes with PropertyItem progress`
+- `packages/design-system/src/components/MultiselectDropdown/` — New component folder
+  - `MultiselectDropdown.tsx` — Component with Floating UI + @dnd-kit
+  - `MultiselectDropdown.stories.tsx` — 8 Ladle stories including drag-and-drop demo
+  - `index.ts` — Exports
 
-**Still in progress (uncommitted):**
+**Modified files:**
 
-- PropertyItem full implementation (8 types) — testing layout shift fix
-- MultiselectDropdown new component — started but not complete
+- `packages/design-system/src/components/PropertyItem/PropertyItem.tsx` — Added resolveRefs, datetime blur fix, multiselect integration
+- `packages/design-system/src/components/PropertyItem/PropertyItem.stories.tsx` — Updated stories with resolveRefs demos
+- `packages/design-system/src/components/index.ts` — Export MultiselectDropdown
+- `packages/design-system/package.json` — Added @dnd-kit dependencies
+
+**Status:** Uncommitted — ready for testing in Ladle
+
+---
+
+## Previous Session (2026-01-13 - Select Component UX Improvements)
+
+Replaced native `<select>` in PropertyItem with custom `Select` component. Added size prop (`'sm'`/`'md'`) and fixed positioning strategy. Commits: `70ec931`, `3b88d2d`
 
 ---
 
 ## Previous Session (2026-01-12 evening - PropertyItem: All 8 Property Types)
 
-Extended PropertyItem to support all 8 backend property types (text, number, boolean, date, datetime, select, multiselect, ref, refs). 14 Ladle stories covering all interactions. Work continues with UX refinement.
-
----
-
-## Previous Session (2026-01-12 - AppShell Full Experience Stories)
-
-Built AppShell stories with InteractiveEditor, daily note layout, fixed RefNode styling and slash menu auto-scroll. Commits: `18356b4`, `44da3b6`
+Extended PropertyItem to support all 8 backend property types. 14 Ladle stories covering all interactions.
 
 ---
 
