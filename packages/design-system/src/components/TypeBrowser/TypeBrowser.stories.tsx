@@ -952,3 +952,287 @@ export const MultiselectCellEditing: Story = () => {
     </div>
   );
 };
+
+// ============================================================================
+// Virtualization Stories
+// ============================================================================
+
+/**
+ * Virtualized Many Rows - 1,000 rows for smooth scrolling demo
+ */
+export const VirtualizedManyRows: Story = () => {
+  const manyTasks = React.useMemo(() => generateManyTasks(1000), []);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+        <strong>Virtualization Demo:</strong> This table has 1,000 rows but only renders ~20 visible
+        rows at a time. Scroll to see smooth performance.
+      </div>
+      <div className="h-[500px] border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={manyTasks}
+          columns={columns}
+          getRowId={(row) => row.id}
+          onRowClick={(row) => console.log('Clicked:', row)}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Virtualized Huge Dataset - 10,000 rows stress test
+ */
+export const VirtualizedHugeDataset: Story = () => {
+  const hugeTasks = React.useMemo(() => generateManyTasks(10000), []);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-800">
+        <strong>Stress Test:</strong> This table has 10,000 rows. Virtualization keeps it smooth by
+        only rendering visible rows. Check the scrollbar for scale.
+      </div>
+      <div className="h-[500px] border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={hugeTasks}
+          columns={columns}
+          getRowId={(row) => row.id}
+          onRowClick={(row) => console.log('Clicked:', row)}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// Column Pinning Stories
+// ============================================================================
+
+/**
+ * Column Pinning - Title column pinned to left
+ */
+export const ColumnPinning: Story = () => {
+  const pinnedColumns: TypeBrowserColumn<Task>[] = [
+    {
+      id: 'title',
+      header: 'Title',
+      accessorKey: 'title',
+      type: 'text',
+      width: 200,
+      pinned: 'left',
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessorKey: 'status',
+      type: 'select',
+      options: ['Todo', 'In Progress', 'Done'],
+      width: 120,
+    },
+    { id: 'priority', header: 'Priority', accessorKey: 'priority', type: 'number', width: 80 },
+    { id: 'dueDate', header: 'Due Date', accessorKey: 'dueDate', type: 'date', width: 120 },
+    { id: 'completed', header: 'Done', accessorKey: 'completed', type: 'boolean', width: 60 },
+    { id: 'tags', header: 'Tags', accessorKey: 'tags', type: 'multiselect', width: 150 },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+        <strong>Column Pinning:</strong> The Title column is pinned to the left. Scroll horizontally
+        to see it stay fixed while other columns scroll.
+      </div>
+      <div className="h-96 border rounded-lg overflow-hidden max-w-xl">
+        <TypeBrowser data={mockTasks} columns={pinnedColumns} getRowId={(row) => row.id} />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Column Pinning with Selection - Both checkbox and title pinned left
+ */
+export const ColumnPinningWithSelection: Story = () => {
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set(['2']));
+
+  const pinnedColumns: TypeBrowserColumn<Task>[] = [
+    {
+      id: 'title',
+      header: 'Title',
+      accessorKey: 'title',
+      type: 'text',
+      width: 200,
+      pinned: 'left',
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessorKey: 'status',
+      type: 'select',
+      options: ['Todo', 'In Progress', 'Done'],
+      width: 120,
+    },
+    { id: 'priority', header: 'Priority', accessorKey: 'priority', type: 'number', width: 80 },
+    { id: 'dueDate', header: 'Due Date', accessorKey: 'dueDate', type: 'date', width: 120 },
+    { id: 'completed', header: 'Done', accessorKey: 'completed', type: 'boolean', width: 60 },
+    { id: 'tags', header: 'Tags', accessorKey: 'tags', type: 'multiselect', width: 150 },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+        <strong>Selection + Pinning:</strong> Both the checkbox column and Title are pinned left.
+        Selected: {selectedIds.size} items.
+      </div>
+      <div className="h-96 border rounded-lg overflow-hidden max-w-xl">
+        <TypeBrowser
+          data={mockTasks}
+          columns={pinnedColumns}
+          getRowId={(row) => row.id}
+          enableRowSelection
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Dynamic Column Pinning - Interactive pin/unpin via header menu
+ */
+export const DynamicColumnPinning: Story = () => {
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+        <strong>Dynamic Pinning:</strong> Hover over any column header to see the pin icon. Click it
+        to pin the column left or right. Currently pinned columns show a highlighted pin.
+      </div>
+      <div className="h-96 border rounded-lg overflow-hidden max-w-2xl">
+        <TypeBrowser
+          data={mockTasks}
+          columns={columns}
+          getRowId={(row) => row.id}
+          onColumnPinningChange={(pinning) => console.log('Pinning changed:', pinning)}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// Combined Stories
+// ============================================================================
+
+/**
+ * Virtualized with Column Pinning - 1,000 rows + pinned columns
+ */
+export const VirtualizedWithColumnPinning: Story = () => {
+  const manyTasks = React.useMemo(() => generateManyTasks(1000), []);
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+
+  const pinnedColumns: TypeBrowserColumn<Task>[] = [
+    {
+      id: 'title',
+      header: 'Title',
+      accessorKey: 'title',
+      type: 'text',
+      width: 200,
+      pinned: 'left',
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessorKey: 'status',
+      type: 'select',
+      options: ['Todo', 'In Progress', 'Done'],
+      width: 120,
+    },
+    { id: 'priority', header: 'Priority', accessorKey: 'priority', type: 'number', width: 80 },
+    { id: 'dueDate', header: 'Due Date', accessorKey: 'dueDate', type: 'date', width: 120 },
+    { id: 'completed', header: 'Done', accessorKey: 'completed', type: 'boolean', width: 60 },
+    { id: 'tags', header: 'Tags', accessorKey: 'tags', type: 'multiselect', width: 180 },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-800">
+        <strong>Full Power:</strong> 1,000 virtualized rows with checkbox + title pinned left. Both
+        vertical and horizontal scrolling work smoothly. Selected: {selectedIds.size}
+      </div>
+      <div className="h-[500px] border rounded-lg overflow-hidden max-w-2xl">
+        <TypeBrowser
+          data={manyTasks}
+          columns={pinnedColumns}
+          getRowId={(row) => row.id}
+          enableRowSelection
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Horizontal Scroll - Wide table with many columns
+ */
+export const HorizontalScroll: Story = () => {
+  interface WideRow {
+    [key: string]: unknown;
+    id: string;
+    name: string;
+    col1: string;
+    col2: number;
+    col3: boolean;
+    col4: string;
+    col5: string;
+    col6: number;
+    col7: string;
+    col8: boolean;
+  }
+
+  const wideData: WideRow[] = Array.from({ length: 20 }, (_, i) => ({
+    id: `row-${i + 1}`,
+    name: `Item ${i + 1}`,
+    col1: `Value A${i}`,
+    col2: i * 10,
+    col3: i % 2 === 0,
+    col4: `Value B${i}`,
+    col5: `Value C${i}`,
+    col6: i * 100,
+    col7: `Value D${i}`,
+    col8: i % 3 === 0,
+  }));
+
+  const wideColumns: TypeBrowserColumn<WideRow>[] = [
+    {
+      id: 'name',
+      header: 'Name',
+      accessorKey: 'name',
+      type: 'text',
+      width: 150,
+      pinned: 'left',
+    },
+    { id: 'col1', header: 'Column 1', accessorKey: 'col1', type: 'text', width: 120 },
+    { id: 'col2', header: 'Column 2', accessorKey: 'col2', type: 'number', width: 100 },
+    { id: 'col3', header: 'Column 3', accessorKey: 'col3', type: 'boolean', width: 80 },
+    { id: 'col4', header: 'Column 4', accessorKey: 'col4', type: 'text', width: 120 },
+    { id: 'col5', header: 'Column 5', accessorKey: 'col5', type: 'text', width: 120 },
+    { id: 'col6', header: 'Column 6', accessorKey: 'col6', type: 'number', width: 100 },
+    { id: 'col7', header: 'Column 7', accessorKey: 'col7', type: 'text', width: 120 },
+    { id: 'col8', header: 'Column 8', accessorKey: 'col8', type: 'boolean', width: 80 },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
+        <strong>Wide Table:</strong> 9 columns with Name pinned left. Scroll horizontally to see the
+        pinned column stay fixed. The shadow indicates the pin boundary.
+      </div>
+      <div className="h-96 border rounded-lg overflow-hidden max-w-2xl">
+        <TypeBrowser data={wideData} columns={wideColumns} getRowId={(row) => row.id} />
+      </div>
+    </div>
+  );
+};
