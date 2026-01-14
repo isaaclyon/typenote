@@ -1,77 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-13 - TypeBrowser Phase 1 Complete)
+## Latest Session (2026-01-13 - TypeBrowser Phase 3 Complete)
 
-Built the TypeBrowser data table component using TanStack Table. Full Phase 1 implementation with subagent-driven development workflow.
+Added rich cell types to TypeBrowser for full inline editing support across all 7 cell types.
 
 **Key accomplishments:**
 
-1. **TypeBrowser component** — Notion-style data table with TanStack Table headless library
-   - 7 cell types: text, number, boolean, date, datetime, select, multiselect
-   - Single-column sorting (click headers to toggle asc/desc)
-   - Row selection with checkbox column (select-all with indeterminate state)
-   - Inline editing for text, number, boolean cells
-   - Loading skeleton and empty states
+1. **Rich cell components** — 3 new editable cell types in `cells/` subfolder
+   - DateCell: Native date/datetime picker with formatted display (Jan 15, 2026)
+   - SelectCell: Dropdown using existing Select component
+   - MultiselectCell: Checkbox dropdown with colored pills, "+N" overflow
 
-2. **Cell editor components** — Reusable inline editors in `cells/` subfolder
-   - TextCell: Click-to-edit with Enter/Escape/blur handling
-   - NumberCell: Same UX with number validation
-   - BooleanCell: Immediate toggle checkbox
+2. **Colored option pills** — 12-color palette for multiselect options
+   - New `optionColors.ts` constants file (6 colors × 2 variants)
+   - MultiselectDropdown now renders colored pills instead of plain text
+   - Tailwind safelist + CSS tokens for dynamic color classes
 
-3. **17+ Ladle stories** — Comprehensive visual testing coverage
-   - Default, Empty, Loading, ManyRows, Sorting, AllCellTypes
-   - WithSelection, WithEditing, EdgeCases, and more
+3. **4 new Ladle stories** — Focused demos for rich cell editing
+   - RichCellEditing, DateCellEditing, SelectCellEditing, MultiselectCellEditing
 
 **New files:**
 
 ```
-packages/design-system/src/components/TypeBrowser/
-├── index.ts, types.ts, TypeBrowser.tsx, TypeBrowser.stories.tsx
-└── cells/ (TextCell.tsx, NumberCell.tsx, BooleanCell.tsx, index.ts)
+packages/design-system/src/components/TypeBrowser/cells/
+├── DateCell.tsx, SelectCell.tsx, MultiselectCell.tsx
+packages/design-system/src/constants/optionColors.ts
 ```
 
-**Commits:**
-
-- `d5412b5` chore(design-system): add @tanstack/react-table dependency
-- `fc4dc9f` feat(design-system): add TypeBrowser types and folder structure
-- `d1261eb` feat(design-system): add basic TypeBrowser component with sorting
-- `afc870a` feat(design-system): add TypeBrowser Ladle stories
-- `34c66db` feat(design-system): add row selection to TypeBrowser
-- `9de1cad` feat(design-system): add inline cell editing to TypeBrowser
+**Commit:** `a8c6768` feat(design-system): add rich cell types to TypeBrowser (Phase 3)
 
 ---
 
-## Previous Session (2026-01-13 night - E2E Test Fixes)
+## Previous Session (2026-01-13 - TypeBrowser Phase 1 Complete)
 
-Fixed 8 failing E2E tests with 3 distinct root causes.
-
-**Fixes:**
-
-1. **Empty search query** — Added early return in `searchBlocks()` for empty/whitespace queries (FTS5 MATCH throws on empty strings)
-2. **Toast tests** — Updated selector from `[data-sonner-toaster]` to `section[aria-label*="Notifications"]` for Sonner 2.x compatibility
-3. **Flaky timeouts** — Increased `firstWindow()` timeout to 45s + added 1 retry locally for sporadic Electron startup
-
-**Files modified:**
-
-- `packages/storage/src/search.ts` — Empty query handling
-- `packages/storage/src/search.test.ts` — Added empty/whitespace tests
-- `tests/e2e/specs/toast.spec.ts` — Updated Sonner selectors
-- `tests/e2e/fixtures/app.fixture.ts` — Increased firstWindow timeout
-- `tests/e2e/playwright.config.ts` — Added 1 retry for local runs
-
-Commits: `ce89df4`
+Built the TypeBrowser data table component using TanStack Table. Phase 1: sorting, row selection, inline editing for text/number/boolean. 17+ Ladle stories. Commits: `d5412b5`→`9de1cad`
 
 ---
 
-## Previous Session (2026-01-13 evening - MultiselectDropdown & PropertyItem UX)
+## Previous Sessions (2026-01-13)
 
-Built `MultiselectDropdown` component with Floating UI + @dnd-kit for drag-and-drop reordering. Updated PropertyItem with `resolveRefs` prop and datetime blur fix. Commits: `ded86c9`
-
----
-
-## Previous Session (2026-01-13 - Select Component UX Improvements)
-
-Replaced native `<select>` in PropertyItem with custom `Select` component. Added size prop and fixed positioning. Commits: `70ec931`
+- **E2E Test Fixes** — Fixed empty search query, Toast selectors (Sonner 2.x), flaky timeouts. Commit: `ce89df4`
+- **MultiselectDropdown** — Floating UI + @dnd-kit drag-and-drop. Commit: `ded86c9`
+- **Select Component** — Size prop + fixed positioning for PropertyItem. Commit: `70ec931`
 
 ---
 
@@ -94,3 +64,4 @@ Replaced native `<select>` in PropertyItem with custom `Select` component. Added
 | HTTP API    | REST API for local integrations (10 endpoints) | 2026-01-11 |
 | AppShell    | Full experience stories + RefNode/slash fixes  | 2026-01-12 |
 | TypeBrowser | Phase 1: Data table with sort/select/edit      | 2026-01-13 |
+| TypeBrowser | Phase 3: Rich cell types (date/select/multi)   | 2026-01-13 |
