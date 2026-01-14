@@ -8,6 +8,7 @@
 import type { Story } from '@ladle/react';
 import React from 'react';
 import { Link as LinkIcon, Link2 as Link2Icon } from 'lucide-react';
+import { DEMO_TYPE_COLORS } from '../../constants/demoColors.js';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.js';
 import { BacklinkItem } from '../BacklinkItem/BacklinkItem.js';
 import { EmptyState } from '../EmptyState/EmptyState.js';
@@ -19,21 +20,21 @@ const mockBacklinks = [
     title: 'Daily Note - 2026-01-10',
     snippet: 'Discussed the new feature implementation for backlinks in the editor.',
     typeIcon: 'Calendar',
-    typeColor: '#F59E0B',
+    typeColor: DEMO_TYPE_COLORS.dailyNote,
   },
   {
     id: '2',
     title: 'Project Planning',
     snippet: 'Review the architecture decisions for the TypeNote knowledge base.',
     typeIcon: 'FileText',
-    typeColor: '#6B7280',
+    typeColor: DEMO_TYPE_COLORS.page,
   },
   {
     id: '3',
     title: 'Meeting Notes - Design Review',
     snippet: 'The team agreed on the collapsible section approach for better UX.',
     typeIcon: 'CalendarClock',
-    typeColor: '#8B5CF6',
+    typeColor: DEMO_TYPE_COLORS.people,
   },
 ];
 
@@ -43,14 +44,14 @@ const mockUnlinkedMentions = [
     title: 'Dev Log - 2026-01-09',
     snippet: 'Working on TypeNote editor improvements and refactoring components.',
     typeIcon: 'Calendar',
-    typeColor: '#F59E0B',
+    typeColor: DEMO_TYPE_COLORS.dailyNote,
   },
   {
     id: '5',
     title: 'Research Notes',
     snippet: 'Investigating best practices for knowledge management in TypeNote.',
     typeIcon: 'FileText',
-    typeColor: '#6B7280',
+    typeColor: DEMO_TYPE_COLORS.page,
   },
 ];
 
@@ -209,10 +210,10 @@ export const MixedStates: Story = () => (
  */
 export const ManyItems: Story = () => {
   const typeVariants = [
-    { icon: 'Calendar', color: '#F59E0B' }, // DailyNote
-    { icon: 'FileText', color: '#6B7280' }, // Page
-    { icon: 'CalendarClock', color: '#8B5CF6' }, // Event
-    { icon: 'User', color: '#3B82F6' }, // Person
+    { icon: 'Calendar', color: DEMO_TYPE_COLORS.dailyNote },
+    { icon: 'FileText', color: DEMO_TYPE_COLORS.page },
+    { icon: 'CalendarClock', color: DEMO_TYPE_COLORS.people },
+    { icon: 'User', color: DEMO_TYPE_COLORS.pending },
   ];
 
   const manyBacklinks = Array.from({ length: 15 }, (_, i) => {
@@ -406,42 +407,42 @@ export const AllTypeIcons: Story = () => {
       title: 'Daily Note Example',
       snippet: 'Daily notes use calendar icon with amber color',
       typeIcon: 'Calendar',
-      typeColor: '#F59E0B',
+      typeColor: DEMO_TYPE_COLORS.dailyNote,
     },
     {
       id: 'page',
       title: 'Page Example',
       snippet: 'Pages use file-text icon with gray color',
       typeIcon: 'FileText',
-      typeColor: '#6B7280',
+      typeColor: DEMO_TYPE_COLORS.page,
     },
     {
       id: 'person',
       title: 'Person Example',
       snippet: 'Person objects use user icon with blue color',
       typeIcon: 'User',
-      typeColor: '#3B82F6',
+      typeColor: DEMO_TYPE_COLORS.pending,
     },
     {
       id: 'event',
       title: 'Event Example',
       snippet: 'Events use calendar-clock icon with purple color',
       typeIcon: 'CalendarClock',
-      typeColor: '#8B5CF6',
+      typeColor: DEMO_TYPE_COLORS.people,
     },
     {
       id: 'place',
       title: 'Place Example',
       snippet: 'Places use map-pin icon with green color',
       typeIcon: 'MapPin',
-      typeColor: '#10B981',
+      typeColor: DEMO_TYPE_COLORS.success,
     },
     {
       id: 'task',
       title: 'Task Example',
       snippet: 'Tasks use check-square icon with red color',
       typeIcon: 'CheckSquare',
-      typeColor: '#EF4444',
+      typeColor: DEMO_TYPE_COLORS.urgent,
     },
   ];
 

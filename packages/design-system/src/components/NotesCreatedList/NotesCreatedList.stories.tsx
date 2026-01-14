@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { Story } from '@ladle/react';
+import { DEMO_TYPE_COLORS } from '../../constants/demoColors.js';
 import { NotesCreatedList, type NotesCreatedItem } from './NotesCreatedList.js';
 import { MiniCalendar } from '../MiniCalendar/MiniCalendar.js';
 import { getTodayKey } from '../MiniCalendar/utils.js';
@@ -10,23 +11,78 @@ export default {
 
 // Sample items with different types (using Lucide icon names - matches BacklinkItem pattern)
 const sampleItems: NotesCreatedItem[] = [
-  { id: '1', title: 'Project kickoff notes', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '2', title: 'Review API design', typeIcon: 'CheckSquare', typeColor: '#10B981' },
-  { id: '3', title: 'Meeting with Sarah', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '4', title: 'Alex Thompson', typeIcon: 'User', typeColor: '#8B5CF6' },
+  {
+    id: '1',
+    title: 'Project kickoff notes',
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  },
+  {
+    id: '2',
+    title: 'Review API design',
+    typeIcon: 'CheckSquare',
+    typeColor: DEMO_TYPE_COLORS.success,
+  },
+  { id: '3', title: 'Meeting with Sarah', typeIcon: 'FileText', typeColor: DEMO_TYPE_COLORS.notes },
+  { id: '4', title: 'Alex Thompson', typeIcon: 'User', typeColor: DEMO_TYPE_COLORS.people },
 ];
 
 const manyItems: NotesCreatedItem[] = [
-  { id: '1', title: 'Morning standup notes', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '2', title: 'Bug fix: login flow', typeIcon: 'CheckSquare', typeColor: '#10B981' },
-  { id: '3', title: 'Design review feedback', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '4', title: 'Q1 Planning document', typeIcon: 'Folder', typeColor: '#F59E0B' },
-  { id: '5', title: 'Research: competitor analysis', typeIcon: 'Lightbulb', typeColor: '#EC4899' },
-  { id: '6', title: 'Team retrospective', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '7', title: 'Deploy checklist', typeIcon: 'CheckSquare', typeColor: '#10B981' },
-  { id: '8', title: 'Client meeting prep', typeIcon: 'FileText', typeColor: '#6495ED' },
-  { id: '9', title: 'New feature brainstorm', typeIcon: 'Lightbulb', typeColor: '#EC4899' },
-  { id: '10', title: 'Performance metrics review', typeIcon: 'FileText', typeColor: '#6495ED' },
+  {
+    id: '1',
+    title: 'Morning standup notes',
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  },
+  {
+    id: '2',
+    title: 'Bug fix: login flow',
+    typeIcon: 'CheckSquare',
+    typeColor: DEMO_TYPE_COLORS.success,
+  },
+  {
+    id: '3',
+    title: 'Design review feedback',
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  },
+  {
+    id: '4',
+    title: 'Q1 Planning document',
+    typeIcon: 'Folder',
+    typeColor: DEMO_TYPE_COLORS.dailyNote,
+  },
+  {
+    id: '5',
+    title: 'Research: competitor analysis',
+    typeIcon: 'Lightbulb',
+    typeColor: DEMO_TYPE_COLORS.ideas,
+  },
+  { id: '6', title: 'Team retrospective', typeIcon: 'FileText', typeColor: DEMO_TYPE_COLORS.notes },
+  {
+    id: '7',
+    title: 'Deploy checklist',
+    typeIcon: 'CheckSquare',
+    typeColor: DEMO_TYPE_COLORS.success,
+  },
+  {
+    id: '8',
+    title: 'Client meeting prep',
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  },
+  {
+    id: '9',
+    title: 'New feature brainstorm',
+    typeIcon: 'Lightbulb',
+    typeColor: DEMO_TYPE_COLORS.ideas,
+  },
+  {
+    id: '10',
+    title: 'Performance metrics review',
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  },
 ];
 
 export const AllVariants: Story = () => (
@@ -158,16 +214,16 @@ export const LongTitles: Story = () => {
       id: '1',
       title: 'This is a very long title that should be truncated with an ellipsis',
       typeIcon: 'FileText',
-      typeColor: '#6495ED',
+      typeColor: DEMO_TYPE_COLORS.notes,
     },
     {
       id: '2',
       title:
         'Another extremely long title for testing purposes to ensure truncation works correctly',
       typeIcon: 'CheckSquare',
-      typeColor: '#10B981',
+      typeColor: DEMO_TYPE_COLORS.success,
     },
-    { id: '3', title: 'Short title', typeIcon: 'User', typeColor: '#8B5CF6' },
+    { id: '3', title: 'Short title', typeIcon: 'User', typeColor: DEMO_TYPE_COLORS.people },
   ];
 
   return (

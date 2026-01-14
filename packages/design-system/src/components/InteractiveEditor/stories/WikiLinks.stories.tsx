@@ -1,6 +1,7 @@
 import type { Story } from '@ladle/react';
 import * as React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
+import { DEMO_TYPE_COLORS } from '../../../constants/demoColors.js';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Table } from '@tiptap/extension-table';
@@ -171,9 +172,15 @@ export const WithExistingContent: Story = () => {
           type: 'paragraph',
           content: [
             { type: 'text', text: 'Action items are tagged ' },
-            { type: 'tag', attrs: { id: '1', value: 'in-progress', color: '#3B82F6' } },
+            {
+              type: 'tag',
+              attrs: { id: '1', value: 'in-progress', color: DEMO_TYPE_COLORS.pending },
+            },
             { type: 'text', text: ' and marked ' },
-            { type: 'tag', attrs: { id: '6', value: 'high-priority', color: '#F59E0B' } },
+            {
+              type: 'tag',
+              attrs: { id: '6', value: 'high-priority', color: DEMO_TYPE_COLORS.feature },
+            },
             { type: 'text', text: '.' },
           ],
         },

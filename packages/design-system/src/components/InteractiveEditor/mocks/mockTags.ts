@@ -26,7 +26,7 @@ export const mockTags: MockTag[] = [
 
   // Priority tags
   { id: '6', value: 'high-priority', color: DEMO_TYPE_COLORS.feature },
-  { id: '7', value: 'low-priority', color: '#94A3B8' },
+  { id: '7', value: 'low-priority', color: DEMO_TYPE_COLORS.lowPriority },
   { id: '8', value: 'urgent', color: DEMO_TYPE_COLORS.urgent },
 
   // Topic/category tags

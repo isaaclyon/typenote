@@ -10,6 +10,7 @@ import {
   Link as LinkIcon,
   Link2 as Link2Icon,
 } from 'lucide-react';
+import { DEMO_TYPE_COLORS } from '../../constants/demoColors.js';
 import { AppShell } from './AppShell.js';
 import { ContentArea } from './ContentArea.js';
 import { Sidebar } from '../Sidebar/Sidebar.js';
@@ -35,10 +36,10 @@ export default {
 
 // Mock data for sidebar
 const MOCK_TYPES = [
-  { id: '1', icon: FileText, label: 'Notes', count: 42, color: '#6495ED' },
-  { id: '2', icon: CheckSquare, label: 'Tasks', count: 18, color: '#81c784' },
-  { id: '3', icon: User, label: 'People', count: 7, color: '#ffb74d' },
-  { id: '4', icon: Folder, label: 'Projects', count: 5, color: '#e57373' },
+  { id: '1', icon: FileText, label: 'Notes', count: 42, color: DEMO_TYPE_COLORS.notes },
+  { id: '2', icon: CheckSquare, label: 'Tasks', count: 18, color: DEMO_TYPE_COLORS.tasks },
+  { id: '3', icon: User, label: 'People', count: 7, color: DEMO_TYPE_COLORS.events },
+  { id: '4', icon: Folder, label: 'Projects', count: 5, color: DEMO_TYPE_COLORS.projects },
 ];
 
 // Reusable left sidebar content
@@ -317,19 +318,19 @@ export const WithDailyNoteEditor: Story = () => {
       id: 'note-1',
       title: 'TypeNote Design System Progress',
       typeIcon: 'FileText',
-      typeColor: '#6B7280',
+      typeColor: DEMO_TYPE_COLORS.page,
     },
     {
       id: 'note-2',
       title: 'AppShell Component',
       typeIcon: 'Folder',
-      typeColor: '#e57373',
+      typeColor: DEMO_TYPE_COLORS.projects,
     },
     {
       id: 'task-1',
       title: 'Fix navigation bug',
       typeIcon: 'CheckSquare',
-      typeColor: '#81c784',
+      typeColor: DEMO_TYPE_COLORS.tasks,
     },
   ];
 
@@ -339,14 +340,14 @@ export const WithDailyNoteEditor: Story = () => {
       title: 'Weekly Review - Jan 7-13',
       snippet: 'Reviewed progress on the daily note system implementation.',
       typeIcon: 'FileText',
-      typeColor: '#6B7280',
+      typeColor: DEMO_TYPE_COLORS.page,
     },
     {
       id: '2',
       title: 'Project Planning',
       snippet: "Referenced today's goals and action items in project roadmap.",
       typeIcon: 'Folder',
-      typeColor: '#e57373',
+      typeColor: DEMO_TYPE_COLORS.projects,
     },
   ];
 
@@ -425,7 +426,7 @@ export const WithDailyNoteEditor: Story = () => {
           { type: 'text', text: ' and ' },
           {
             type: 'tagNode',
-            attrs: { id: 'tag-dx', label: 'developer-experience', color: '#6495ED' },
+            attrs: { id: 'tag-dx', label: 'developer-experience', color: DEMO_TYPE_COLORS.notes },
           },
           { type: 'text', text: '.' },
         ],
@@ -505,21 +506,21 @@ export const WithNoteEditor: Story = () => {
       title: 'Design System Architecture',
       snippet: 'References this strategy document for component hierarchy decisions.',
       typeIcon: 'FileText',
-      typeColor: '#6B7280',
+      typeColor: DEMO_TYPE_COLORS.page,
     },
     {
       id: '2',
       title: 'Q1 2026 Roadmap',
       snippet: 'Links to product strategy as key dependency for planning.',
       typeIcon: 'Folder',
-      typeColor: '#e57373',
+      typeColor: DEMO_TYPE_COLORS.projects,
     },
     {
       id: '3',
       title: 'Competitive Analysis',
       snippet: 'Compares our strategy with market positioning of competitors.',
       typeIcon: 'FileText',
-      typeColor: '#6B7280',
+      typeColor: DEMO_TYPE_COLORS.page,
     },
   ];
 
@@ -585,7 +586,10 @@ export const WithNoteEditor: Story = () => {
                     attrs: { id: 'tag-precision', label: 'precision', color: null },
                   },
                   { type: 'text', text: ' and ' },
-                  { type: 'tagNode', attrs: { id: 'tag-craft', label: 'craft', color: '#6495ED' } },
+                  {
+                    type: 'tagNode',
+                    attrs: { id: 'tag-craft', label: 'craft', color: DEMO_TYPE_COLORS.notes },
+                  },
                 ],
               },
             ],
@@ -649,9 +653,15 @@ export const WithNoteEditor: Story = () => {
             attrs: { id: 'proj-ds', label: 'Design System Initiative', type: 'project' },
           },
           { type: 'text', text: '. Tagged with ' },
-          { type: 'tagNode', attrs: { id: 'tag-strategy', label: 'strategy', color: '#e57373' } },
+          {
+            type: 'tagNode',
+            attrs: { id: 'tag-strategy', label: 'strategy', color: DEMO_TYPE_COLORS.projects },
+          },
           { type: 'text', text: ' and ' },
-          { type: 'tagNode', attrs: { id: 'tag-product', label: 'product', color: '#81c784' } },
+          {
+            type: 'tagNode',
+            attrs: { id: 'tag-product', label: 'product', color: DEMO_TYPE_COLORS.tasks },
+          },
           { type: 'text', text: '.' },
         ],
       },

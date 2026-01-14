@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { Story } from '@ladle/react';
 import { FileText, CheckSquare, User, Folder, BookOpen, Archive, Settings } from 'lucide-react';
+import { DEMO_TYPE_COLORS } from '../../constants/demoColors.js';
 import { Sidebar } from './Sidebar.js';
 import { SidebarSection } from './SidebarSection.js';
 import { SidebarSearchTrigger } from './SidebarSearchTrigger.js';
@@ -18,11 +19,11 @@ export default {
 
 // Mock data
 const MOCK_TYPES = [
-  { id: '1', icon: FileText, label: 'Notes', count: 42, color: '#6495ED' },
-  { id: '2', icon: CheckSquare, label: 'Tasks', count: 18, color: '#81c784' },
-  { id: '3', icon: User, label: 'People', count: 7, color: '#ffb74d' },
-  { id: '4', icon: Folder, label: 'Projects', count: 5, color: '#e57373' },
-  { id: '5', icon: BookOpen, label: 'Resources', count: 23, color: '#91a7ff' },
+  { id: '1', icon: FileText, label: 'Notes', count: 42, color: DEMO_TYPE_COLORS.notes },
+  { id: '2', icon: CheckSquare, label: 'Tasks', count: 18, color: DEMO_TYPE_COLORS.tasks },
+  { id: '3', icon: User, label: 'People', count: 7, color: DEMO_TYPE_COLORS.events },
+  { id: '4', icon: Folder, label: 'Projects', count: 5, color: DEMO_TYPE_COLORS.projects },
+  { id: '5', icon: BookOpen, label: 'Resources', count: 23, color: DEMO_TYPE_COLORS.resources },
 ];
 
 const MOCK_MANY_TYPES = Array.from({ length: 25 }, (_, i) => ({
@@ -30,7 +31,7 @@ const MOCK_MANY_TYPES = Array.from({ length: 25 }, (_, i) => ({
   icon: FileText,
   label: `Type ${i + 1}`,
   count: Math.floor(Math.random() * 100),
-  color: '#6495ED',
+  color: DEMO_TYPE_COLORS.notes,
 }));
 
 export const AllVariants: Story = () => (
@@ -78,11 +79,22 @@ export const AllVariants: Story = () => (
       <div className="border border-gray-200 rounded p-4 bg-white space-y-2">
         <div>
           <p className="text-xs text-gray-500 mb-2">Default</p>
-          <SidebarTypeItem icon={FileText} label="Notes" count={42} color="#6495ED" />
+          <SidebarTypeItem
+            icon={FileText}
+            label="Notes"
+            count={42}
+            color={DEMO_TYPE_COLORS.notes}
+          />
         </div>
         <div>
           <p className="text-xs text-gray-500 mb-2">Selected</p>
-          <SidebarTypeItem icon={FileText} label="Notes" count={42} color="#6495ED" selected />
+          <SidebarTypeItem
+            icon={FileText}
+            label="Notes"
+            count={42}
+            color={DEMO_TYPE_COLORS.notes}
+            selected
+          />
         </div>
         <div>
           <p className="text-xs text-gray-500 mb-2">Long Label</p>
@@ -90,12 +102,17 @@ export const AllVariants: Story = () => (
             icon={FileText}
             label="This is a very long type name that should truncate"
             count={999}
-            color="#6495ED"
+            color={DEMO_TYPE_COLORS.notes}
           />
         </div>
         <div>
           <p className="text-xs text-gray-500 mb-2">Zero Count</p>
-          <SidebarTypeItem icon={FileText} label="Empty Type" count={0} color="#6495ED" />
+          <SidebarTypeItem
+            icon={FileText}
+            label="Empty Type"
+            count={0}
+            color={DEMO_TYPE_COLORS.notes}
+          />
         </div>
       </div>
     </section>
@@ -264,16 +281,27 @@ export const TypeItemVariants: Story = () => (
     <section>
       <h3 className="text-sm font-semibold mb-2">Default States</h3>
       <div className="border border-gray-200 rounded p-2 bg-white space-y-1">
-        <SidebarTypeItem icon={FileText} label="Notes" count={42} color="#6495ED" />
-        <SidebarTypeItem icon={CheckSquare} label="Tasks" count={18} color="#81c784" />
-        <SidebarTypeItem icon={User} label="People" count={7} color="#ffb74d" />
+        <SidebarTypeItem icon={FileText} label="Notes" count={42} color={DEMO_TYPE_COLORS.notes} />
+        <SidebarTypeItem
+          icon={CheckSquare}
+          label="Tasks"
+          count={18}
+          color={DEMO_TYPE_COLORS.tasks}
+        />
+        <SidebarTypeItem icon={User} label="People" count={7} color={DEMO_TYPE_COLORS.events} />
       </div>
     </section>
 
     <section>
       <h3 className="text-sm font-semibold mb-2">Selected State</h3>
       <div className="border border-gray-200 rounded p-2 bg-white space-y-1">
-        <SidebarTypeItem icon={FileText} label="Notes" count={42} color="#6495ED" selected />
+        <SidebarTypeItem
+          icon={FileText}
+          label="Notes"
+          count={42}
+          color={DEMO_TYPE_COLORS.notes}
+          selected
+        />
       </div>
     </section>
 
@@ -284,10 +312,20 @@ export const TypeItemVariants: Story = () => (
           icon={FileText}
           label="Very long type name that should truncate gracefully"
           count={999}
-          color="#6495ED"
+          color={DEMO_TYPE_COLORS.notes}
         />
-        <SidebarTypeItem icon={FileText} label="Zero Count" count={0} color="#6495ED" />
-        <SidebarTypeItem icon={FileText} label="Large Count" count={12345} color="#6495ED" />
+        <SidebarTypeItem
+          icon={FileText}
+          label="Zero Count"
+          count={0}
+          color={DEMO_TYPE_COLORS.notes}
+        />
+        <SidebarTypeItem
+          icon={FileText}
+          label="Large Count"
+          count={12345}
+          color={DEMO_TYPE_COLORS.notes}
+        />
       </div>
     </section>
   </div>
