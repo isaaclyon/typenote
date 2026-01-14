@@ -10,7 +10,7 @@ import {
   FloatingFocusManager,
   offset,
   flip,
-  size,
+  size as floatingSize,
 } from '@floating-ui/react';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
@@ -31,6 +31,8 @@ export interface SelectProps {
   placeholder?: string;
   /** Whether the select is disabled */
   disabled?: boolean;
+  /** Size variant: 'sm' (28px/h-7) or 'md' (36px/h-9, default) */
+  size?: 'sm' | 'md';
   /** Additional class name for the trigger */
   className?: string;
 }
@@ -40,7 +42,18 @@ export interface SelectProps {
  * Uses Floating UI for positioning and keyboard navigation.
  */
 const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
-  ({ value, onChange, options, placeholder = 'Select...', disabled = false, className }, ref) => {
+  (
+    {
+      value,
+      onChange,
+      options,
+      placeholder = 'Select...',
+      disabled = false,
+      size = 'md',
+      className,
+    },
+    ref
+  ) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
 
@@ -52,10 +65,11 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       open: isOpen,
       onOpenChange: setIsOpen,
       placement: 'bottom-start',
+      strategy: 'fixed', // Use fixed positioning to prevent layout shift
       middleware: [
         offset(4),
         flip({ padding: 8 }),
-        size({
+        floatingSize({
           apply({ rects, elements }) {
             Object.assign(elements.floating.style, {
               minWidth: `${rects.reference.width}px`,
@@ -105,14 +119,16 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           className={cn(
             // Base styles
             'inline-flex items-center justify-between gap-2',
-            'h-9 px-3 min-w-[120px]',
+            'px-3 min-w-[120px]',
+            // Size variants
+            size === 'sm' ? 'h-7' : 'h-9',
             'text-sm text-gray-700',
             'bg-white border border-gray-200 rounded',
             'transition-colors duration-150 ease-out',
             // Hover
             'hover:border-gray-300',
-            // Focus
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2',
+            // Focus - use border color change instead of ring to avoid layout shift
+            'focus:outline-none focus-visible:border-accent-500',
             // Disabled
             'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200',
             // Open state
