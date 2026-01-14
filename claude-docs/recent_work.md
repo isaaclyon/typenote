@@ -36,7 +36,25 @@ Implemented row virtualization and sticky column pinning for TypeBrowser.
 
 ---
 
-## Previous Session (2026-01-13 evening - Color Centralization)
+## Previous Session (2026-01-14 - Color Centralization Complete)
+
+Completed color centralization: fixed swatch color bug and updated all story files.
+
+**Key accomplishments:**
+
+1. **Fixed swatch color picker** — Color picker was only showing one blue swatch
+   - Root cause: Tailwind can't detect dynamically-constructed class names (`bg-${variable}`)
+   - Solution: Created `SWATCH_COLORS` object with explicit static class strings
+   - Commit: `54fb16b`
+
+2. **Story files updated** — All story files now use `DEMO_TYPE_COLORS` constants
+   - Added new colors: projects, resources, success, ideas, dailyNote, page
+   - Updated: Sidebar, AppShell, NotesCreatedList, EditorBottomSections, WikiLinks stories
+   - Commit: `eca6846`
+
+---
+
+## Previous Session (2026-01-13 evening - Color Centralization Phase 1)
 
 Implemented high+medium priority tasks from color centralization plan.
 
@@ -154,3 +172,4 @@ Built the TypeBrowser data table component using TanStack Table. Phase 1: sortin
 | TypeBrowser | Phase 1: Data table with sort/select/edit      | 2026-01-13 |
 | TypeBrowser | Phase 3: Rich cell types (date/select/multi)   | 2026-01-13 |
 | TypeBrowser | Phase 2: Virtualization + column pinning       | 2026-01-14 |
+| Colors      | Color centralization (semantic + demo colors)  | 2026-01-14 |

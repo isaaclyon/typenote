@@ -82,7 +82,7 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ## Color Centralization
 
-**Status:** ✅ High+Medium Priority COMPLETE (2026-01-13)
+**Status:** ✅ COMPLETE (2026-01-14)
 **Plan:** `docs/plans/2026-01-13-color-centralization.md`
 
 Centralized hardcoded hex values into semantic tokens and shared constants.
@@ -96,11 +96,12 @@ Centralized hardcoded hex values into semantic tokens and shared constants.
 - [x] Create `demoColors.ts` for story mock data ✅
 - [x] Update mockTags.ts to use demo colors ✅
 - [x] Create `defaults.ts` with DEFAULT_ICON_COLOR ✅
+- [x] Fix swatch color picker (static class names for Tailwind) ✅ Commit: `54fb16b`
+- [x] Update story files to use DEMO_TYPE_COLORS ✅ Commit: `eca6846`
 
 ### Low Priority (Optional)
 
 - [ ] Extract InteractiveEditor inline styles to CSS file
-- [ ] Update story files to use DEMO_TYPE_COLORS
 
 ---
 
