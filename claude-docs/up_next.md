@@ -53,6 +53,10 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ### Recently Completed
 
+- [x] MultiselectDropdown actions menu ✅ (uncommitted)
+  - OptionActionsMenu component with Edit/Delete/Change Color
+  - 12-color picker derived from pill text colors
+  - `onOptionsChange` callback for mutations
 - [x] TypeBrowser Phase 1 (data table with TanStack Table) ✅ Commits: `d5412b5`→`9de1cad`
   - Sorting, row selection, inline editing (text/number/boolean)
   - 17+ Ladle stories, 8 new component files
@@ -66,6 +70,32 @@ Building organism-level components in the design-system package with Ladle sandb
 - [ ] TypeBrowser Phase 2 (optional): Virtualization with @tanstack/react-virtual, column pinning
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions
+
+---
+
+## Color Centralization
+
+**Status:** Planned
+**Plan:** `docs/plans/2026-01-13-color-centralization.md`
+
+Centralize 40+ hardcoded hex values into semantic tokens and shared constants.
+
+### High Priority
+
+- [ ] Create `semanticColors.ts` (success/error/warning/info)
+- [ ] Update Toast component to use semantic colors
+- [ ] Update Badge component to use semantic colors
+
+### Medium Priority
+
+- [ ] Create `demoColors.ts` for story mock data
+- [ ] Update mockTags.ts to use demo colors
+- [ ] Create `defaults.ts` with DEFAULT_ICON_COLOR
+
+### Low Priority (Optional)
+
+- [ ] Extract InteractiveEditor inline styles to CSS file
+- [ ] Update story files to use DEMO_TYPE_COLORS
 
 ---
 

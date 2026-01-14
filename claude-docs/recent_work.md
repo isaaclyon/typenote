@@ -1,6 +1,32 @@
 # Recent Work
 
-## Latest Session (2026-01-13 - TypeBrowser Phase 3 Complete)
+## Latest Session (2026-01-13 evening - MultiselectDropdown Actions Menu)
+
+Enhanced MultiselectDropdown with actions menu and color picker. Audited hardcoded colors across design system.
+
+**Key accomplishments:**
+
+1. **Actions menu** — "..." button on option rows with Edit/Delete/Change Color
+   - Nested Floating UI menu with proper z-index stacking
+   - 12-color picker (6 colors × 2 variants) derived from pill text colors
+   - `onOptionsChange` callback for option mutations
+
+2. **Color system improvements**
+   - Derived swatch colors from pill text colors (single source of truth)
+   - Audited 40+ hardcoded hex values across 12 component files
+   - Created implementation plan for centralization
+
+**Files changed:**
+
+- `MultiselectDropdown.tsx` — OptionActionsMenu component, color picker
+- `optionColors.ts` — `getSwatchColorClass()` derives from text colors
+- `MultiselectDropdown.stories.tsx` — WithActionsMenu, FullFeatured stories
+
+**Plan created:** `docs/plans/2026-01-13-color-centralization.md`
+
+---
+
+## Previous Session (2026-01-13 - TypeBrowser Phase 3 Complete)
 
 Added rich cell types to TypeBrowser for full inline editing support across all 7 cell types.
 

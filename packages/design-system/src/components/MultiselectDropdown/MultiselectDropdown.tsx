@@ -29,11 +29,13 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronDown, GripVertical } from 'lucide-react';
+import { ChevronDown, GripVertical, MoreHorizontal, Pencil, Trash2, Palette } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import {
+  OPTION_COLORS,
   getOptionColorClasses,
+  getSwatchColorClass,
   type OptionColor,
   type OptionColorVariant,
 } from '../../constants/optionColors.js';
@@ -54,6 +56,8 @@ export interface MultiselectDropdownProps {
   options: MultiselectOption[];
   /** Callback when options are reordered via drag-and-drop */
   onReorder?: (options: MultiselectOption[]) => void;
+  /** Callback when options are mutated (edit, delete, color change) */
+  onOptionsChange?: (options: MultiselectOption[]) => void;
   /** Placeholder text when no values selected */
   placeholder?: string;
   /** Whether the component is disabled */
@@ -62,13 +66,190 @@ export interface MultiselectDropdownProps {
   className?: string;
 }
 
+/** Props for the option actions menu */
+interface OptionActionsMenuProps {
+  option: MultiselectOption;
+  onEdit: () => void;
+  onDelete: () => void;
+  onColorChange: (color: OptionColor, variant: OptionColorVariant) => void;
+}
+
+/** Actions menu with edit/delete/color options */
+const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionActionsMenuProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [showColorPicker, setShowColorPicker] = React.useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: (open) => {
+      setIsOpen(open);
+      if (!open) setShowColorPicker(false);
+    },
+    placement: 'bottom-end',
+    middleware: [offset(4), flip({ padding: 8 })],
+  });
+
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context, { role: 'menu' });
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
+
+  const handleEdit = () => {
+    setIsOpen(false);
+    onEdit();
+  };
+
+  const handleDelete = () => {
+    setIsOpen(false);
+    onDelete();
+  };
+
+  const handleColorSelect = (color: OptionColor, variant: OptionColorVariant) => {
+    setIsOpen(false);
+    setShowColorPicker(false);
+    onColorChange(color, variant);
+  };
+
+  const colorKeys = Object.keys(OPTION_COLORS) as OptionColor[];
+
+  return (
+    <>
+      <button
+        ref={refs.setReference}
+        type="button"
+        className={cn(
+          'flex-shrink-0',
+          'opacity-0 group-hover:opacity-100',
+          'p-1 rounded',
+          'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+          'transition-all duration-150',
+          isOpen && 'opacity-100'
+        )}
+        onClick={(e) => e.stopPropagation()}
+        {...getReferenceProps()}
+      >
+        <MoreHorizontal className="w-4 h-4" />
+      </button>
+
+      {isOpen && (
+        <FloatingPortal>
+          <div
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className={cn(
+              'z-[60]',
+              'bg-white border border-gray-200 rounded shadow-lg',
+              'py-1 min-w-[140px]'
+            )}
+            onClick={(e) => e.stopPropagation()}
+            {...getFloatingProps()}
+          >
+            {!showColorPicker ? (
+              <>
+                <button
+                  type="button"
+                  className={cn(
+                    'w-full px-3 py-1.5 text-sm text-left',
+                    'flex items-center gap-2',
+                    'hover:bg-gray-50 transition-colors'
+                  )}
+                  onClick={handleEdit}
+                >
+                  <Pencil className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Edit</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={cn(
+                    'w-full px-3 py-1.5 text-sm text-left',
+                    'flex items-center gap-2',
+                    'hover:bg-gray-50 transition-colors'
+                  )}
+                  onClick={() => setShowColorPicker(true)}
+                >
+                  <Palette className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Change color</span>
+                </button>
+
+                <div className="h-px bg-gray-100 my-1" />
+
+                <button
+                  type="button"
+                  className={cn(
+                    'w-full px-3 py-1.5 text-sm text-left',
+                    'flex items-center gap-2',
+                    'text-red-600 hover:bg-red-50 transition-colors'
+                  )}
+                  onClick={handleDelete}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
+                </button>
+              </>
+            ) : (
+              <div className="px-2 py-1">
+                <p className="text-xs text-gray-500 mb-2 px-1">Select color</p>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {colorKeys.map((color) => (
+                    <React.Fragment key={color}>
+                      {/* Light variant */}
+                      <button
+                        type="button"
+                        className={cn(
+                          'w-6 h-6 rounded-full',
+                          'ring-offset-1 hover:ring-2 hover:ring-gray-400',
+                          'transition-all duration-100',
+                          getSwatchColorClass(color, 'light'),
+                          option.color === color &&
+                            option.variant === 'light' &&
+                            'ring-2 ring-gray-500'
+                        )}
+                        onClick={() => handleColorSelect(color, 'light')}
+                        title={`${color} light`}
+                      />
+                    </React.Fragment>
+                  ))}
+                  {colorKeys.map((color) => (
+                    <React.Fragment key={`${color}-regular`}>
+                      {/* Regular variant */}
+                      <button
+                        type="button"
+                        className={cn(
+                          'w-6 h-6 rounded-full',
+                          'ring-offset-1 hover:ring-2 hover:ring-gray-400',
+                          'transition-all duration-100',
+                          getSwatchColorClass(color, 'regular'),
+                          option.color === color &&
+                            option.variant === 'regular' &&
+                            'ring-2 ring-gray-500'
+                        )}
+                        onClick={() => handleColorSelect(color, 'regular')}
+                        title={`${color} regular`}
+                      />
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </FloatingPortal>
+      )}
+    </>
+  );
+};
+
 interface SortableItemProps {
   option: MultiselectOption;
   isSelected: boolean;
   isActive: boolean;
   onToggle: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onColorChange?: (color: OptionColor, variant: OptionColorVariant) => void;
   isDraggingDisabled: boolean;
-  listRef: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  listRef: React.RefObject<(HTMLDivElement | null)[]>;
   index: number;
   getItemProps: (userProps?: React.HTMLAttributes<HTMLElement>) => Record<string, unknown>;
 }
@@ -78,6 +259,9 @@ const SortableItem = ({
   isSelected,
   isActive,
   onToggle,
+  onEdit,
+  onDelete,
+  onColorChange,
   isDraggingDisabled,
   listRef,
   index,
@@ -104,7 +288,7 @@ const SortableItem = ({
       aria-selected={isSelected}
       tabIndex={isActive ? 0 : -1}
       className={cn(
-        'flex items-center gap-2',
+        'group flex items-center gap-2',
         'px-2 py-2 cursor-pointer',
         'transition-colors duration-100',
         'bg-white',
@@ -158,6 +342,16 @@ const SortableItem = ({
         }}
         className="flex-shrink-0"
       />
+
+      {/* Actions menu */}
+      {onEdit && onDelete && onColorChange && (
+        <OptionActionsMenu
+          option={option}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onColorChange={onColorChange}
+        />
+      )}
     </div>
   );
 };
@@ -168,7 +362,16 @@ const SortableItem = ({
  */
 const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropdownProps>(
   (
-    { value, onChange, options, onReorder, placeholder = 'Select...', disabled = false, className },
+    {
+      value,
+      onChange,
+      options,
+      onReorder,
+      onOptionsChange,
+      placeholder = 'Select...',
+      disabled = false,
+      className,
+    },
     ref
   ) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -276,6 +479,37 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
       }
     };
 
+    // Option mutation handlers (for actions menu)
+    const handleEditOption = React.useCallback((optionValue: string) => {
+      // For now, just log - edit inline would need more state
+      // TODO: Implement inline editing with input field
+      console.log('Edit option:', optionValue);
+    }, []);
+
+    const handleDeleteOption = React.useCallback(
+      (optionValue: string) => {
+        if (!onOptionsChange) return;
+        const newOptions = options.filter((opt) => opt.value !== optionValue);
+        onOptionsChange(newOptions);
+        // Also remove from selection if selected
+        if (value.includes(optionValue)) {
+          onChange(value.filter((v) => v !== optionValue));
+        }
+      },
+      [options, onOptionsChange, value, onChange]
+    );
+
+    const handleColorChangeOption = React.useCallback(
+      (optionValue: string, color: OptionColor, variant: OptionColorVariant) => {
+        if (!onOptionsChange) return;
+        const newOptions = options.map((opt) =>
+          opt.value === optionValue ? { ...opt, color, variant } : opt
+        );
+        onOptionsChange(newOptions);
+      },
+      [options, onOptionsChange]
+    );
+
     // Display text for the trigger button
     const displayText = React.useMemo(() => {
       if (value.length === 0) return placeholder;
@@ -380,6 +614,12 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
                             isSelected={value.includes(option.value)}
                             isActive={activeIndex === index}
                             onToggle={() => handleToggle(option.value)}
+                            {...(onOptionsChange && {
+                              onEdit: () => handleEditOption(option.value),
+                              onDelete: () => handleDeleteOption(option.value),
+                              onColorChange: (color, variant) =>
+                                handleColorChangeOption(option.value, color, variant),
+                            })}
                             isDraggingDisabled={isDraggingDisabled}
                             listRef={listRef}
                             index={index}

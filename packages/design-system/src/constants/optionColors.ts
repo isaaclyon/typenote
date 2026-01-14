@@ -53,3 +53,23 @@ export function getOptionColorClasses(
 ): string {
   return OPTION_COLORS[color][variant];
 }
+
+/**
+ * Get swatch background class derived from pill text color.
+ * The swatch shows the text color as a solid background, making it
+ * clearly identifiable at small sizes.
+ *
+ * e.g., pill with 'text-blue-700' → swatch with 'bg-blue-700'
+ */
+export function getSwatchColorClass(
+  color: OptionColor = 'gray',
+  variant: OptionColorVariant = 'light'
+): string {
+  const classes = OPTION_COLORS[color][variant];
+  // Extract text-* class and convert to bg-*
+  const textMatch = classes.match(/text-(\S+)/);
+  if (textMatch?.[1]) {
+    return `bg-${textMatch[1]}`;
+  }
+  return 'bg-gray-500'; // fallback
+}

@@ -324,3 +324,73 @@ export const AllColors: Story = () => {
     </div>
   );
 };
+
+export const WithActionsMenu: Story = () => {
+  const [selected, setSelected] = useState<string[]>(['frontend', 'bug']);
+  const [options, setOptions] = useState<MultiselectOption[]>(coloredTagOptions);
+
+  return (
+    <div className="w-80">
+      <h3 className="text-sm font-medium mb-2">Actions Menu (Edit, Delete, Color)</h3>
+      <MultiselectDropdown
+        value={selected}
+        onChange={setSelected}
+        options={options}
+        onReorder={setOptions}
+        onOptionsChange={setOptions}
+        placeholder="Select tags..."
+      />
+      <div className="mt-4 text-xs text-gray-500 space-y-2">
+        <p>
+          <strong>Options:</strong> {options.length}
+        </p>
+        <p>
+          <strong>Selected:</strong> {selected.join(', ') || 'none'}
+        </p>
+        <div className="text-gray-400 space-y-1 mt-2">
+          <p>• Hover over an option to see the "..." menu</p>
+          <p>• Click menu to Edit, Change color, or Delete</p>
+          <p>• Color picker shows 12 colors (6 × 2 variants)</p>
+          <p>• Delete removes from options and selection</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FullFeatured: Story = () => {
+  const [selected, setSelected] = useState<string[]>(['frontend', 'design-system']);
+  const [options, setOptions] = useState<MultiselectOption[]>([
+    { value: 'frontend', label: 'Frontend', color: 'blue' },
+    { value: 'backend', label: 'Backend', color: 'green' },
+    { value: 'design-system', label: 'Design System', color: 'purple' },
+    { value: 'bug', label: 'Bug', color: 'red' },
+    { value: 'feature', label: 'Feature', color: 'amber' },
+    { value: 'docs', label: 'Documentation', color: 'gray' },
+  ]);
+
+  return (
+    <div className="w-80 p-4 border border-gray-200 rounded-md">
+      <h3 className="text-sm font-medium text-gray-900 mb-3">Project Tags</h3>
+      <MultiselectDropdown
+        value={selected}
+        onChange={setSelected}
+        options={options}
+        onReorder={setOptions}
+        onOptionsChange={setOptions}
+        placeholder="Select tags..."
+      />
+      <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
+        <p className="font-medium text-gray-700 mb-1">All features enabled:</p>
+        <ul className="space-y-0.5 text-gray-400">
+          <li>✓ Search/filter options</li>
+          <li>✓ Drag to reorder</li>
+          <li>✓ Colored pills</li>
+          <li>✓ Actions menu (hover row → ...)</li>
+          <li>✓ Change color via picker</li>
+          <li>✓ Delete options</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
