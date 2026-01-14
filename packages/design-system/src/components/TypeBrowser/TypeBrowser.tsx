@@ -7,10 +7,11 @@ import {
   type SortingState,
   type ColumnDef,
   type RowSelectionState,
+  type ColumnPinningState,
 } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { cn } from '../../utils/cn.js';
-import { ScrollArea } from '../ScrollArea/index.js';
 import { EmptyState } from '../EmptyState/index.js';
 import { Skeleton } from '../Skeleton/index.js';
 import {
@@ -21,7 +22,13 @@ import {
   SelectCell,
   MultiselectCell,
 } from './cells/index.js';
+import { getColumnPinningStyles, buildInitialPinningState } from './pinningStyles.js';
+import { ColumnPinMenu } from './ColumnPinMenu.js';
 import type { TypeBrowserProps, TypeBrowserColumn, CellType } from './types.js';
+
+// Constants for virtualization
+const ROW_HEIGHT = 40;
+const OVERSCAN = 5;
 
 /**
  * Format a cell value based on its type
@@ -211,6 +218,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     enableRowSelection = false,
     selectedIds,
     onSelectionChange,
+    onColumnPinningChange,
   }: TypeBrowserProps<TData>,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
@@ -236,6 +244,30 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
       onSelectionChange(newSelectedIds);
     },
     [onSelectionChange, rowSelection]
+  );
+
+  // Build initial pinning state from column definitions
+  const initialColumnPinning = React.useMemo(
+    () => buildInitialPinningState(columns, enableRowSelection),
+    [columns, enableRowSelection]
+  );
+
+  // Track column pinning state
+  const [columnPinning, setColumnPinning] =
+    React.useState<ColumnPinningState>(initialColumnPinning);
+
+  // Handle pinning changes
+  const handleColumnPinningChange = React.useCallback(
+    (updater: ColumnPinningState | ((old: ColumnPinningState) => ColumnPinningState)) => {
+      const newState = typeof updater === 'function' ? updater(columnPinning) : updater;
+      setColumnPinning(newState);
+      // Convert to required left/right format for external callback
+      onColumnPinningChange?.({
+        left: newState.left ?? [],
+        right: newState.right ?? [],
+      });
+    },
+    [columnPinning, onColumnPinningChange]
   );
 
   // Create checkbox column for row selection
@@ -276,13 +308,29 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     state: {
       sorting,
       rowSelection,
+      columnPinning,
     },
     onSortingChange: setSorting,
     onRowSelectionChange: handleRowSelectionChange,
+    onColumnPinningChange: handleColumnPinningChange,
     enableRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getRowId,
+  });
+
+  // Container ref for virtualization
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  // Get rows for virtualization
+  const { rows } = table.getRowModel();
+
+  // Row virtualizer
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => ROW_HEIGHT,
+    getScrollElement: () => containerRef.current,
+    overscan: OVERSCAN,
   });
 
   // Loading state
@@ -303,27 +351,56 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     );
   }
 
+  // Create a map of column IDs to original column definitions for pinning info
+  const columnDefMap = React.useMemo(() => {
+    const map = new Map<string, TypeBrowserColumn<TData>>();
+    for (const col of columns) {
+      map.set(col.id, col);
+    }
+    return map;
+  }, [columns]);
+
+  // Get virtual items
+  const virtualRows = rowVirtualizer.getVirtualItems();
+
   return (
     <div ref={ref} className="w-full h-full flex flex-col">
-      <ScrollArea className="flex-1">
-        <table className="w-full border-collapse">
-          <thead className="sticky top-0 z-10 bg-white">
+      <div ref={containerRef} className="flex-1 overflow-auto" style={{ contain: 'strict' }}>
+        <table style={{ display: 'grid', minWidth: '100%' }} className="border-collapse">
+          <thead style={{ display: 'contents' }}>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-gray-200">
+              <tr
+                key={headerGroup.id}
+                className="border-b border-gray-200"
+                style={{
+                  display: 'flex',
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 10,
+                }}
+              >
                 {headerGroup.headers.map((header) => {
                   const sortDirection = header.column.getIsSorted();
                   const canSort = header.column.getCanSort();
+                  const columnDef = columnDefMap.get(header.id);
+                  const pinStyles = getColumnPinningStyles(header.column);
+                  const isPinned = header.column.getIsPinned();
 
                   return (
                     <th
                       key={header.id}
                       className={cn(
-                        'px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                        'group px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
                         'bg-gray-50 border-b border-gray-200',
                         canSort && 'cursor-pointer select-none hover:bg-gray-100 transition-colors'
                       )}
                       style={{
                         width: header.getSize() !== 150 ? header.getSize() : undefined,
+                        minWidth: header.getSize() !== 150 ? header.getSize() : 100,
+                        flex: header.getSize() === 150 ? '1 1 0%' : `0 0 ${header.getSize()}px`,
+                        ...pinStyles,
+                        // Pinned headers need higher z-index
+                        zIndex: isPinned ? 11 : undefined,
                       }}
                       onClick={header.column.getToggleSortingHandler()}
                     >
@@ -334,6 +411,14 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                             {sortDirection === 'asc' ? '↑' : '↓'}
                           </span>
                         )}
+                        {header.id !== '_selection' && columnDef?.allowPinning !== false && (
+                          <ColumnPinMenu
+                            column={header.column}
+                            isPermanentlyPinned={
+                              header.id === '_selection' || columnDef?.pinned !== undefined
+                            }
+                          />
+                        )}
                       </div>
                     </th>
                   );
@@ -341,26 +426,62 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
               </tr>
             ))}
           </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className={cn(
-                  'border-b border-gray-100 transition-colors',
-                  onRowClick && 'cursor-pointer hover:bg-gray-50'
-                )}
-                onClick={() => onRowClick?.(row.original)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-3 py-2.5 text-sm text-gray-900">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
+          <tbody
+            style={{
+              display: 'grid',
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              position: 'relative',
+            }}
+          >
+            {virtualRows.map((virtualRow) => {
+              const row = rows[virtualRow.index];
+              if (!row) return null;
+
+              return (
+                <tr
+                  key={row.id}
+                  data-index={virtualRow.index}
+                  ref={(node) => rowVirtualizer.measureElement(node)}
+                  className={cn(
+                    'border-b border-gray-100 transition-colors',
+                    onRowClick && 'cursor-pointer hover:bg-gray-50'
+                  )}
+                  style={{
+                    display: 'flex',
+                    position: 'absolute',
+                    transform: `translateY(${virtualRow.start}px)`,
+                    width: '100%',
+                    height: `${ROW_HEIGHT}px`,
+                  }}
+                  onClick={() => onRowClick?.(row.original)}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const pinStyles = getColumnPinningStyles(cell.column);
+
+                    return (
+                      <td
+                        key={cell.id}
+                        className="px-3 py-2.5 text-sm text-gray-900"
+                        style={{
+                          width: cell.column.getSize() !== 150 ? cell.column.getSize() : undefined,
+                          minWidth: cell.column.getSize() !== 150 ? cell.column.getSize() : 100,
+                          flex:
+                            cell.column.getSize() === 150
+                              ? '1 1 0%'
+                              : `0 0 ${cell.column.getSize()}px`,
+                          ...pinStyles,
+                        }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

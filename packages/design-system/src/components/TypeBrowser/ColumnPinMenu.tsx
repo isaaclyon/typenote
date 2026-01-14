@@ -14,9 +14,9 @@ import {
 import { Pin, PinOff } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
 
-export interface ColumnPinMenuProps {
+export interface ColumnPinMenuProps<TData> {
   /** The column to control pinning for */
-  column: Column<unknown, unknown>;
+  column: Column<TData, unknown>;
   /** Whether this column is permanently pinned (cannot be changed by user) */
   isPermanentlyPinned: boolean;
 }
@@ -25,7 +25,7 @@ export interface ColumnPinMenuProps {
  * Dropdown menu for pinning/unpinning a column.
  * Shows pin icon that reveals menu on click.
  */
-export function ColumnPinMenu({ column, isPermanentlyPinned }: ColumnPinMenuProps) {
+export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinMenuProps<TData>) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const isPinned = column.getIsPinned();
