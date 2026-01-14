@@ -253,12 +253,12 @@ export const ManyItems: Story = () => {
           <div className="space-y-1">
             {manyBacklinks.map((backlink) => (
               <BacklinkItem
-              key={backlink.id}
-              title={backlink.title}
-              snippet={backlink.snippet}
-              typeIcon={backlink.typeIcon}
-              typeColor={backlink.typeColor}
-            />
+                key={backlink.id}
+                title={backlink.title}
+                snippet={backlink.snippet}
+                typeIcon={backlink.typeIcon}
+                typeColor={backlink.typeColor}
+              />
             ))}
           </div>
         </CollapsibleSection>
@@ -272,12 +272,12 @@ export const ManyItems: Story = () => {
           <div className="space-y-1">
             {manyMentions.map((mention) => (
               <BacklinkItem
-              key={mention.id}
-              title={mention.title}
-              snippet={mention.snippet}
-              typeIcon={mention.typeIcon}
-              typeColor={mention.typeColor}
-            />
+                key={mention.id}
+                title={mention.title}
+                snippet={mention.snippet}
+                typeIcon={mention.typeIcon}
+                typeColor={mention.typeColor}
+              />
             ))}
           </div>
         </CollapsibleSection>

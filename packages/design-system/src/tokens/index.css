@@ -7,6 +7,7 @@
 /* Tell Tailwind v4 where to find source files for utility generation */
 @source '../components';
 @source '../stories';
+@source '../constants';
 @source '../../.ladle';
 
 @theme {
@@ -38,6 +39,28 @@
   --color-success: #81c784;
   --color-warning: #ffb74d;
   --color-info: #6495ed;
+
+  /* ========== Option Pill Colors ========== */
+  /* Blue */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  /* Green */
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  /* Red */
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  /* Violet/Purple */
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
 
   /* ========== Shadcn-Compatible Aliases ========== */
   --color-border: var(--color-gray-200);

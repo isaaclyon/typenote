@@ -32,10 +32,17 @@ import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, GripVertical } from 'lucide-react';
 import { cn } from '../../utils/cn.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
+import {
+  getOptionColorClasses,
+  type OptionColor,
+  type OptionColorVariant,
+} from '../../constants/optionColors.js';
 
 export interface MultiselectOption {
   value: string;
   label: string;
+  color?: OptionColor;
+  variant?: OptionColorVariant;
 }
 
 export interface MultiselectDropdownProps {
@@ -130,8 +137,17 @@ const SortableItem = ({
         <GripVertical className="w-3.5 h-3.5 text-gray-300" />
       </div>
 
-      {/* Label */}
-      <span className="flex-1 text-sm text-gray-700 truncate">{option.label}</span>
+      {/* Colored pill label */}
+      <span className={cn('flex-1 min-w-0', 'flex items-center')}>
+        <span
+          className={cn(
+            'px-2 py-0.5 rounded text-sm font-medium truncate',
+            getOptionColorClasses(option.color, option.variant)
+          )}
+        >
+          {option.label}
+        </span>
+      </span>
 
       {/* Checkbox */}
       <Checkbox

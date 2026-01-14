@@ -650,3 +650,305 @@ export const WithEditingAndSelection: Story = () => {
     </div>
   );
 };
+
+/**
+ * Rich Cell Editing - All cell types with full editing support
+ */
+export const RichCellEditing: Story = () => {
+  const [data, setData] = React.useState(allTypesData);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Cell edited:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+        <strong>Rich Cell Editing:</strong> All cell types are now editable!
+        <ul className="mt-2 space-y-1 text-xs">
+          <li>
+            • <strong>Text/Number:</strong> Click to edit inline
+          </li>
+          <li>
+            • <strong>Boolean:</strong> Click checkbox to toggle
+          </li>
+          <li>
+            • <strong>Date/Datetime:</strong> Click to open native date picker
+          </li>
+          <li>
+            • <strong>Select:</strong> Click to open dropdown
+          </li>
+          <li>
+            • <strong>Multiselect:</strong> Click to open checkbox dropdown with colored pills
+          </li>
+        </ul>
+      </div>
+      <div className="h-80 border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={data}
+          columns={allTypesColumns}
+          getRowId={(row) => row.id}
+          onCellEdit={handleCellEdit}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Date Cell Editing - Focus on date/datetime editing
+ */
+export const DateCellEditing: Story = () => {
+  interface DateRow {
+    [key: string]: unknown;
+    id: string;
+    event: string;
+    date: string;
+    datetime: string;
+    completed: boolean;
+  }
+
+  const initialData: DateRow[] = [
+    {
+      id: '1',
+      event: 'Project kickoff',
+      date: '2026-01-15',
+      datetime: '2026-01-15T09:00:00',
+      completed: false,
+    },
+    {
+      id: '2',
+      event: 'Design review',
+      date: '2026-01-20',
+      datetime: '2026-01-20T14:30:00',
+      completed: false,
+    },
+    {
+      id: '3',
+      event: 'Sprint planning',
+      date: '2026-02-01',
+      datetime: '2026-02-01T10:00:00',
+      completed: true,
+    },
+    { id: '4', event: 'No date set', date: '', datetime: '', completed: false },
+  ];
+
+  const dateColumns: TypeBrowserColumn<DateRow>[] = [
+    { id: 'event', header: 'Event', accessorKey: 'event', type: 'text', width: 200 },
+    { id: 'date', header: 'Date', accessorKey: 'date', type: 'date', width: 140 },
+    {
+      id: 'datetime',
+      header: 'Date & Time',
+      accessorKey: 'datetime',
+      type: 'datetime',
+      width: 200,
+    },
+    { id: 'completed', header: 'Done', accessorKey: 'completed', type: 'boolean', width: 60 },
+  ];
+
+  const [data, setData] = React.useState(initialData);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Date edited:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+        <strong>Tip:</strong> Click any date cell to open the native date picker. The Date column
+        shows date only, while Date & Time includes time selection.
+      </div>
+      <div className="h-80 border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={data}
+          columns={dateColumns}
+          getRowId={(row) => row.id}
+          onCellEdit={handleCellEdit}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Select Cell Editing - Focus on select dropdown editing
+ */
+export const SelectCellEditing: Story = () => {
+  interface ProjectRow {
+    [key: string]: unknown;
+    id: string;
+    name: string;
+    status: string;
+    priority: string;
+    department: string;
+  }
+
+  const initialData: ProjectRow[] = [
+    {
+      id: '1',
+      name: 'Website Redesign',
+      status: 'In Progress',
+      priority: 'High',
+      department: 'Design',
+    },
+    {
+      id: '2',
+      name: 'API Migration',
+      status: 'Planning',
+      priority: 'Medium',
+      department: 'Engineering',
+    },
+    { id: '3', name: 'Mobile App', status: 'Done', priority: 'High', department: 'Product' },
+    { id: '4', name: 'Documentation', status: 'Todo', priority: 'Low', department: 'Support' },
+  ];
+
+  const selectColumns: TypeBrowserColumn<ProjectRow>[] = [
+    { id: 'name', header: 'Project', accessorKey: 'name', type: 'text', width: 180 },
+    {
+      id: 'status',
+      header: 'Status',
+      accessorKey: 'status',
+      type: 'select',
+      options: ['Todo', 'Planning', 'In Progress', 'Review', 'Done'],
+      width: 120,
+    },
+    {
+      id: 'priority',
+      header: 'Priority',
+      accessorKey: 'priority',
+      type: 'select',
+      options: ['Low', 'Medium', 'High', 'Critical'],
+      width: 100,
+    },
+    {
+      id: 'department',
+      header: 'Department',
+      accessorKey: 'department',
+      type: 'select',
+      options: ['Design', 'Engineering', 'Product', 'Marketing', 'Support'],
+      width: 120,
+    },
+  ];
+
+  const [data, setData] = React.useState(initialData);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Select changed:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-800">
+        <strong>Tip:</strong> Click any status, priority, or department cell to open the dropdown.
+        Selection changes immediately on click.
+      </div>
+      <div className="h-80 border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={data}
+          columns={selectColumns}
+          getRowId={(row) => row.id}
+          onCellEdit={handleCellEdit}
+        />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Multiselect Cell Editing - Focus on multiselect dropdown editing
+ */
+export const MultiselectCellEditing: Story = () => {
+  interface ArticleRow {
+    [key: string]: unknown;
+    id: string;
+    title: string;
+    tags: string[];
+    categories: string[];
+    authors: string[];
+  }
+
+  const tagOptions = ['React', 'TypeScript', 'CSS', 'Testing', 'Performance', 'Accessibility'];
+  const categoryOptions = ['Tutorial', 'Guide', 'Reference', 'Case Study', 'Opinion'];
+  const authorOptions = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+
+  const initialData: ArticleRow[] = [
+    {
+      id: '1',
+      title: 'Getting Started with React',
+      tags: ['React', 'TypeScript'],
+      categories: ['Tutorial', 'Guide'],
+      authors: ['Alice', 'Bob'],
+    },
+    {
+      id: '2',
+      title: 'Advanced CSS Techniques',
+      tags: ['CSS', 'Performance'],
+      categories: ['Guide'],
+      authors: ['Charlie'],
+    },
+    {
+      id: '3',
+      title: 'Testing Best Practices',
+      tags: ['Testing', 'TypeScript', 'React'],
+      categories: ['Reference', 'Tutorial'],
+      authors: ['Diana', 'Eve', 'Alice'],
+    },
+    { id: '4', title: 'New Article Draft', tags: [], categories: [], authors: [] },
+  ];
+
+  const multiselectColumns: TypeBrowserColumn<ArticleRow>[] = [
+    { id: 'title', header: 'Article', accessorKey: 'title', type: 'text', width: 200 },
+    {
+      id: 'tags',
+      header: 'Tags',
+      accessorKey: 'tags',
+      type: 'multiselect',
+      options: tagOptions,
+      width: 180,
+    },
+    {
+      id: 'categories',
+      header: 'Categories',
+      accessorKey: 'categories',
+      type: 'multiselect',
+      options: categoryOptions,
+      width: 180,
+    },
+    {
+      id: 'authors',
+      header: 'Authors',
+      accessorKey: 'authors',
+      type: 'multiselect',
+      options: authorOptions,
+      width: 150,
+    },
+  ];
+
+  const [data, setData] = React.useState(initialData);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Multiselect changed:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+        <strong>Tip:</strong> Click any tags, categories, or authors cell to open the dropdown. Use
+        checkboxes to select multiple values. Selected items appear as colored pills. When there are
+        more than 3 items, a "+N" indicator shows the overflow.
+      </div>
+      <div className="h-80 border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={data}
+          columns={multiselectColumns}
+          getRowId={(row) => row.id}
+          onCellEdit={handleCellEdit}
+        />
+      </div>
+    </div>
+  );
+};

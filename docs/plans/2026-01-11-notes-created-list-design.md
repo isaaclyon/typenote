@@ -9,12 +9,12 @@ A compact list showing objects created on a selected date. Sits below the MiniCa
 
 ## Design Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Content scope | Non-daily notes only | Daily note is already the context |
-| Item display | Title + type icon | Compact, scannable |
-| Click action | Navigate to object | Simple, expected behavior |
-| Long lists | Scrollable (200px max) | Better to have scroll ready |
+| Decision      | Choice                 | Rationale                         |
+| ------------- | ---------------------- | --------------------------------- |
+| Content scope | Non-daily notes only   | Daily note is already the context |
+| Item display  | Title + type icon      | Compact, scannable                |
+| Click action  | Navigate to object     | Simple, expected behavior         |
+| Long lists    | Scrollable (200px max) | Better to have scroll ready       |
 
 ## Component Interface
 
@@ -61,25 +61,28 @@ interface NotesCreatedListProps {
 
 ## Styling
 
-| Element | Classes |
-|---------|---------|
-| Container | `w-56` (224px, matches MiniCalendar) |
-| Header | `text-xs font-medium text-gray-500 mb-2` |
-| List area | `max-h-[200px]` with ScrollArea |
-| Item row | `flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50` |
-| Type icon | `w-4 h-4 flex-shrink-0` with type color |
-| Title | `text-sm text-gray-700 truncate` |
-| Empty text | `text-sm text-gray-400 text-center py-4` |
+| Element    | Classes                                                        |
+| ---------- | -------------------------------------------------------------- |
+| Container  | `w-56` (224px, matches MiniCalendar)                           |
+| Header     | `text-xs font-medium text-gray-500 mb-2`                       |
+| List area  | `max-h-[200px]` with ScrollArea                                |
+| Item row   | `flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50` |
+| Type icon  | `w-4 h-4 flex-shrink-0` with type color                        |
+| Title      | `text-sm text-gray-700 truncate`                               |
+| Empty text | `text-sm text-gray-400 text-center py-4`                       |
 
 ## States
 
 ### Empty
+
 - Shows "No notes created" centered, muted gray
 
 ### Loading
+
 - 3 skeleton rows using existing Skeleton component
 
 ### With items
+
 - Scrollable list with hover states
 
 ## Files to Create

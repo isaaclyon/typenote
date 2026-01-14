@@ -9,12 +9,12 @@ A compact monthly calendar component for daily note navigation. Shows dot indica
 
 ## Design Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Architecture | Standalone primitive | Matches DailyNoteNav pattern, reusable anywhere |
+| Decision       | Choice                  | Rationale                                           |
+| -------------- | ----------------------- | --------------------------------------------------- |
+| Architecture   | Standalone primitive    | Matches DailyNoteNav pattern, reusable anywhere     |
 | Data interface | `Set<string>` for dates | O(1) lookup, matches `date_key` format from backend |
-| Week start | Configurable prop (0/1) | Flexibility for user preferences |
-| Click behavior | Creates note if missing | Seamless "just click a date" UX |
+| Week start     | Configurable prop (0/1) | Flexibility for user preferences                    |
+| Click behavior | Creates note if missing | Seamless "just click a date" UX                     |
 
 ## Component Interface
 
@@ -58,14 +58,14 @@ interface MiniCalendarProps {
 
 ## Visual States
 
-| State | Style |
-|-------|-------|
-| Default | `text-gray-700`, no background |
-| Today | `text-accent-600 font-medium` |
-| Selected | `bg-accent-500 text-white rounded` |
-| Has note | Small dot below number (`bg-accent-400`, 4px) |
-| Other month | `text-gray-300` |
-| Hover | `bg-gray-100 rounded` |
+| State       | Style                                         |
+| ----------- | --------------------------------------------- |
+| Default     | `text-gray-700`, no background                |
+| Today       | `text-accent-600 font-medium`                 |
+| Selected    | `bg-accent-500 text-white rounded`            |
+| Has note    | Small dot below number (`bg-accent-400`, 4px) |
+| Other month | `text-gray-300`                               |
+| Hover       | `bg-gray-100 rounded`                         |
 
 ## Sizing
 
@@ -90,13 +90,13 @@ packages/design-system/src/components/MiniCalendar/
 
 ```typescript
 // Get days to display for a month (including padding from adjacent months)
-function getCalendarDays(year: number, month: number, weekStartsOn: 0 | 1): CalendarDay[]
+function getCalendarDays(year: number, month: number, weekStartsOn: 0 | 1): CalendarDay[];
 
 // Format date to YYYY-MM-DD
-function formatDateKey(date: Date): string
+function formatDateKey(date: Date): string;
 
 // Parse YYYY-MM-DD to Date
-function parseDateKey(dateKey: string): Date
+function parseDateKey(dateKey: string): Date;
 ```
 
 ### Month Navigation

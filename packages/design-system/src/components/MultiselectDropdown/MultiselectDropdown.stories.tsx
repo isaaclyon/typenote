@@ -6,7 +6,8 @@ export default {
   title: 'Components/MultiselectDropdown',
 };
 
-const genreOptions = [
+// Options without colors (default gray)
+const genreOptions: MultiselectOption[] = [
   { value: 'fiction', label: 'Fiction' },
   { value: 'non-fiction', label: 'Non-Fiction' },
   { value: 'classic', label: 'Classic' },
@@ -17,7 +18,19 @@ const genreOptions = [
   { value: 'romance', label: 'Romance' },
 ];
 
-const tagOptions = [
+// Options with colors
+const coloredTagOptions: MultiselectOption[] = [
+  { value: 'frontend', label: 'Frontend', color: 'blue' },
+  { value: 'backend', label: 'Backend', color: 'green' },
+  { value: 'design-system', label: 'Design System', color: 'purple' },
+  { value: 'bug', label: 'Bug', color: 'red' },
+  { value: 'feature', label: 'Feature', color: 'amber' },
+  { value: 'docs', label: 'Documentation', color: 'gray' },
+  { value: 'testing', label: 'Testing', color: 'blue', variant: 'regular' },
+  { value: 'performance', label: 'Performance', color: 'green', variant: 'regular' },
+];
+
+const tagOptions: MultiselectOption[] = [
   { value: 'frontend', label: 'Frontend' },
   { value: 'backend', label: 'Backend' },
   { value: 'design-system', label: 'Design System' },
@@ -240,6 +253,72 @@ export const WithDragAndDrop: Story = () => {
         </p>
         <p className="text-gray-400 mt-2">
           Drag the grip handle (⠿) to reorder. Drag is disabled while searching.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const WithColors: Story = () => {
+  const [selected, setSelected] = useState<string[]>(['frontend', 'bug']);
+  const [options, setOptions] = useState<MultiselectOption[]>(coloredTagOptions);
+
+  return (
+    <div className="w-72">
+      <h3 className="text-sm font-medium mb-2">Colored Option Pills</h3>
+      <MultiselectDropdown
+        value={selected}
+        onChange={setSelected}
+        options={options}
+        onReorder={setOptions}
+        placeholder="Select tags..."
+      />
+      <div className="mt-4 text-xs text-gray-500 space-y-2">
+        <p>
+          <strong>Selected:</strong> {selected.join(', ') || 'none'}
+        </p>
+        <p className="text-gray-400">
+          Each option has a color. Testing and Performance use the "regular" variant (more
+          saturated).
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const AllColors: Story = () => {
+  const allColorOptions: MultiselectOption[] = [
+    // Light variants
+    { value: 'blue-light', label: 'Blue Light', color: 'blue', variant: 'light' },
+    { value: 'green-light', label: 'Green Light', color: 'green', variant: 'light' },
+    { value: 'amber-light', label: 'Amber Light', color: 'amber', variant: 'light' },
+    { value: 'red-light', label: 'Red Light', color: 'red', variant: 'light' },
+    { value: 'purple-light', label: 'Purple Light', color: 'purple', variant: 'light' },
+    { value: 'gray-light', label: 'Gray Light', color: 'gray', variant: 'light' },
+    // Regular variants
+    { value: 'blue-regular', label: 'Blue Regular', color: 'blue', variant: 'regular' },
+    { value: 'green-regular', label: 'Green Regular', color: 'green', variant: 'regular' },
+    { value: 'amber-regular', label: 'Amber Regular', color: 'amber', variant: 'regular' },
+    { value: 'red-regular', label: 'Red Regular', color: 'red', variant: 'regular' },
+    { value: 'purple-regular', label: 'Purple Regular', color: 'purple', variant: 'regular' },
+    { value: 'gray-regular', label: 'Gray Regular', color: 'gray', variant: 'regular' },
+  ];
+
+  const [selected, setSelected] = useState<string[]>([]);
+
+  return (
+    <div className="w-80">
+      <h3 className="text-sm font-medium mb-2">12-Color Palette</h3>
+      <MultiselectDropdown
+        value={selected}
+        onChange={setSelected}
+        options={allColorOptions}
+        placeholder="See all colors..."
+      />
+      <div className="mt-4 text-xs text-gray-500">
+        <p>6 base colors × 2 variants (light/regular) = 12 options</p>
+        <p className="mt-1 text-gray-400">
+          Light variants are subtle pastels. Regular variants are more saturated.
         </p>
       </div>
     </div>

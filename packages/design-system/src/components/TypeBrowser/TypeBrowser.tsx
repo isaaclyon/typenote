@@ -13,7 +13,14 @@ import { cn } from '../../utils/cn.js';
 import { ScrollArea } from '../ScrollArea/index.js';
 import { EmptyState } from '../EmptyState/index.js';
 import { Skeleton } from '../Skeleton/index.js';
-import { TextCell, NumberCell, BooleanCell } from './cells/index.js';
+import {
+  TextCell,
+  NumberCell,
+  BooleanCell,
+  DateCell,
+  SelectCell,
+  MultiselectCell,
+} from './cells/index.js';
 import type { TypeBrowserProps, TypeBrowserColumn, CellType } from './types.js';
 
 /**
@@ -92,7 +99,6 @@ function createColumnDefs<TData extends Record<string, unknown>>(
         // Render editable cell based on type
         switch (col.type) {
           case 'text':
-          case 'select': // select renders as text for now
             return (
               <TextCell
                 value={(cellValue as string) ?? ''}
@@ -113,8 +119,39 @@ function createColumnDefs<TData extends Record<string, unknown>>(
                 onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
               />
             );
+          case 'date':
+            return (
+              <DateCell
+                value={(cellValue as string) ?? ''}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+                includeTime={false}
+              />
+            );
+          case 'datetime':
+            return (
+              <DateCell
+                value={(cellValue as string) ?? ''}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+                includeTime={true}
+              />
+            );
+          case 'select':
+            return (
+              <SelectCell
+                value={(cellValue as string) ?? ''}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+                options={col.options ?? []}
+              />
+            );
+          case 'multiselect':
+            return (
+              <MultiselectCell
+                value={(cellValue as string[]) ?? []}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+                options={col.options ?? []}
+              />
+            );
           default:
-            // Other types (date, datetime, multiselect) are read-only for now
             return formatCellValue(cellValue, col.type);
         }
       },
