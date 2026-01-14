@@ -1,6 +1,42 @@
 # Recent Work
 
-## Latest Session (2026-01-13 evening - Color Centralization)
+## Latest Session (2026-01-14 - TypeBrowser Phase 2 Complete)
+
+Implemented row virtualization and sticky column pinning for TypeBrowser.
+
+**Key accomplishments:**
+
+1. **Row virtualization** — @tanstack/react-virtual integration
+   - Renders only visible rows + overscan buffer (ROW_HEIGHT=40, OVERSCAN=5)
+   - Handles 10,000+ rows smoothly
+   - CSS Grid layout with absolute positioned rows using translateY
+
+2. **Column pinning** — TanStack Table column pinning state
+   - `getColumnPinningStyles()` utility for sticky positioning
+   - `buildInitialPinningState()` converts column defs to TanStack format
+   - Checkbox column auto-pinned left when selection enabled
+   - Visual shadow separator on pinned group edges
+
+3. **Dynamic pinning UI** — ColumnPinMenu component
+   - Dropdown menu with "Pin Left" / "Pin Right" / "Unpin"
+   - Pin icon appears on header hover, accent color when pinned
+   - Floating UI for dropdown positioning
+
+4. **7 new Ladle stories**
+   - VirtualizedManyRows (1,000 rows), VirtualizedHugeDataset (10,000 rows)
+   - ColumnPinning, ColumnPinningWithSelection, DynamicColumnPinning
+   - VirtualizedWithColumnPinning (combined), HorizontalScroll
+
+**New files:**
+
+- `pinningStyles.ts` — Column pinning CSS utilities
+- `ColumnPinMenu.tsx` — Pin/unpin dropdown component
+
+**Commits:** `b15a096`→`b332714` (8 commits for Phase 2)
+
+---
+
+## Previous Session (2026-01-13 evening - Color Centralization)
 
 Implemented high+medium priority tasks from color centralization plan.
 
@@ -117,3 +153,4 @@ Built the TypeBrowser data table component using TanStack Table. Phase 1: sortin
 | AppShell    | Full experience stories + RefNode/slash fixes  | 2026-01-12 |
 | TypeBrowser | Phase 1: Data table with sort/select/edit      | 2026-01-13 |
 | TypeBrowser | Phase 3: Rich cell types (date/select/multi)   | 2026-01-13 |
+| TypeBrowser | Phase 2: Virtualization + column pinning       | 2026-01-14 |

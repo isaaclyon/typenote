@@ -65,9 +65,16 @@ Building organism-level components in the design-system package with Ladle sandb
   - Colored option pills (12-color palette)
   - 4 new Ladle stories for rich cell editing
 
+### Recently Completed
+
+- [x] TypeBrowser Phase 2: Virtualization + Column Pinning ✅ Commits: `b15a096`→`b332714`
+  - Row virtualization with @tanstack/react-virtual (handles 10,000+ rows)
+  - Sticky column pinning with CSS position: sticky
+  - ColumnPinMenu for dynamic pin/unpin via dropdown
+  - 7 new Ladle stories for virtualization and pinning demos
+
 ### Next Steps
 
-- [ ] TypeBrowser Phase 2 (optional): Virtualization with @tanstack/react-virtual, column pinning
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions
 
