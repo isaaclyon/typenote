@@ -40,24 +40,19 @@ Building organism-level components in the design-system package with Ladle sandb
 - [x] Daily note special layout (DailyNoteNav + MiniCalendar + NotesCreatedList) ✅ Commit: `44da3b6`
 - [x] Select component size prop + fixed positioning ✅ Commit: `70ec931`
 
-### In Progress (Uncommitted)
+### Recently Completed
 
-- PropertyItem with all 8 property types + UX improvements:
+- [x] PropertyItem with all 8 property types + UX improvements ✅ Commit: `ded86c9`
   - `resolveRefs` prop shows titles instead of IDs for ref/refs types
   - DateTime blur fix (clicking between date/time inputs no longer triggers premature save)
   - MultiselectDropdown integration (dropdown replaces inline toggle buttons)
-- MultiselectDropdown component (complete):
+- [x] MultiselectDropdown component ✅ Commit: `ded86c9`
   - Dropdown UI with Floating UI positioning
-  - Search/filter input
-  - Checkbox rows with drag handles
+  - Search/filter input, checkbox rows with drag handles
   - @dnd-kit integration for drag-and-drop reordering
-  - `onReorder` callback prop
-- BacklinkItem component (already exists, used in stories)
-- RightPanel components (partially complete)
 
 ### Next Steps
 
-- [ ] Commit PropertyItem UX improvements + MultiselectDropdown component
 - [ ] Build Type Browser organism (data table with sort/filter)
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions

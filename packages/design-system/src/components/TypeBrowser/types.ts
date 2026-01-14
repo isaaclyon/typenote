@@ -1,3 +1,4 @@
+/** Supported cell editor types for TypeBrowser columns */
 export type CellType =
   | 'text'
   | 'number'
@@ -7,22 +8,38 @@ export type CellType =
   | 'select'
   | 'multiselect';
 
-export interface TypeBrowserColumn<TData> {
+/** Column configuration for TypeBrowser */
+export interface TypeBrowserColumn<TData extends Record<string, unknown>> {
+  /** Unique column identifier */
   id: string;
+  /** Column header text */
   header: string;
+  /** Key to access row data */
   accessorKey: keyof TData;
+  /** Cell type determines rendering and editing behavior */
   type: CellType;
-  options?: string[]; // For select/multiselect
+  /** Options for select/multiselect types */
+  options?: string[];
+  /** Column width in pixels */
   width?: number;
+  /** Pin column to left or right edge */
   pinned?: 'left' | 'right';
 }
 
-export interface TypeBrowserProps<TData> {
+/** Props for TypeBrowser data table component */
+export interface TypeBrowserProps<TData extends Record<string, unknown>> {
+  /** Array of data rows to display */
   data: TData[];
+  /** Column definitions */
   columns: TypeBrowserColumn<TData>[];
+  /** Callback when a row is clicked */
   onRowClick?: (row: TData) => void;
+  /** Callback when a cell value is edited */
   onCellEdit?: (rowId: string, columnId: string, value: unknown) => void;
+  /** Function to extract unique ID from each row */
   getRowId: (row: TData) => string;
+  /** Show loading state */
   isLoading?: boolean;
+  /** Message to display when data is empty */
   emptyMessage?: string;
 }
