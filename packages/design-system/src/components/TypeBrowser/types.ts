@@ -22,8 +22,10 @@ export interface TypeBrowserColumn<TData extends Record<string, unknown>> {
   options?: string[];
   /** Column width in pixels */
   width?: number;
-  /** Pin column to left or right edge */
+  /** Pin column permanently to left or right edge (cannot be unpinned by user) */
   pinned?: 'left' | 'right';
+  /** Allow user to dynamically pin/unpin this column via header menu (default: true) */
+  allowPinning?: boolean;
 }
 
 /** Props for TypeBrowser data table component */
@@ -48,4 +50,12 @@ export interface TypeBrowserProps<TData extends Record<string, unknown>> {
   selectedIds?: Set<string>;
   /** Callback when selection changes */
   onSelectionChange?: (selectedIds: Set<string>) => void;
+  /** Callback when column pinning changes (for persistence) */
+  onColumnPinningChange?: (pinning: { left: string[]; right: string[] }) => void;
+}
+
+/** Column pinning state */
+export interface ColumnPinningState {
+  left: string[];
+  right: string[];
 }
