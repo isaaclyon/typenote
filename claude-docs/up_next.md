@@ -51,9 +51,16 @@ Building organism-level components in the design-system package with Ladle sandb
   - Search/filter input, checkbox rows with drag handles
   - @dnd-kit integration for drag-and-drop reordering
 
+### Recently Completed
+
+- [x] TypeBrowser Phase 1 (data table with TanStack Table) ✅ Commits: `d5412b5`→`9de1cad`
+  - Sorting, row selection, inline editing (text/number/boolean)
+  - 17+ Ladle stories, 8 new component files
+
 ### Next Steps
 
-- [ ] Build Type Browser organism (data table with sort/filter)
+- [ ] TypeBrowser Phase 2 (optional): Virtualization with @tanstack/react-virtual, column pinning
+- [ ] TypeBrowser Phase 3: Rich cell types (DateCell, SelectCell, MultiselectCell)
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions
 

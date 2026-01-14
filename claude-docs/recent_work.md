@@ -1,6 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-13 night - E2E Test Fixes)
+## Latest Session (2026-01-13 - TypeBrowser Phase 1 Complete)
+
+Built the TypeBrowser data table component using TanStack Table. Full Phase 1 implementation with subagent-driven development workflow.
+
+**Key accomplishments:**
+
+1. **TypeBrowser component** — Notion-style data table with TanStack Table headless library
+   - 7 cell types: text, number, boolean, date, datetime, select, multiselect
+   - Single-column sorting (click headers to toggle asc/desc)
+   - Row selection with checkbox column (select-all with indeterminate state)
+   - Inline editing for text, number, boolean cells
+   - Loading skeleton and empty states
+
+2. **Cell editor components** — Reusable inline editors in `cells/` subfolder
+   - TextCell: Click-to-edit with Enter/Escape/blur handling
+   - NumberCell: Same UX with number validation
+   - BooleanCell: Immediate toggle checkbox
+
+3. **17+ Ladle stories** — Comprehensive visual testing coverage
+   - Default, Empty, Loading, ManyRows, Sorting, AllCellTypes
+   - WithSelection, WithEditing, EdgeCases, and more
+
+**New files:**
+
+```
+packages/design-system/src/components/TypeBrowser/
+├── index.ts, types.ts, TypeBrowser.tsx, TypeBrowser.stories.tsx
+└── cells/ (TextCell.tsx, NumberCell.tsx, BooleanCell.tsx, index.ts)
+```
+
+**Commits:**
+
+- `d5412b5` chore(design-system): add @tanstack/react-table dependency
+- `fc4dc9f` feat(design-system): add TypeBrowser types and folder structure
+- `d1261eb` feat(design-system): add basic TypeBrowser component with sorting
+- `afc870a` feat(design-system): add TypeBrowser Ladle stories
+- `34c66db` feat(design-system): add row selection to TypeBrowser
+- `9de1cad` feat(design-system): add inline cell editing to TypeBrowser
+
+---
+
+## Previous Session (2026-01-13 night - E2E Test Fixes)
 
 Fixed 8 failing E2E tests with 3 distinct root causes.
 
@@ -30,13 +71,7 @@ Built `MultiselectDropdown` component with Floating UI + @dnd-kit for drag-and-d
 
 ## Previous Session (2026-01-13 - Select Component UX Improvements)
 
-Replaced native `<select>` in PropertyItem with custom `Select` component. Added size prop (`'sm'`/`'md'`) and fixed positioning strategy. Commits: `70ec931`, `3b88d2d`
-
----
-
-## Previous Session (2026-01-12 evening - PropertyItem: All 8 Property Types)
-
-Extended PropertyItem to support all 8 backend property types. 14 Ladle stories covering all interactions.
+Replaced native `<select>` in PropertyItem with custom `Select` component. Added size prop and fixed positioning. Commits: `70ec931`
 
 ---
 
@@ -58,3 +93,4 @@ Extended PropertyItem to support all 8 backend property types. 14 Ladle stories 
 | CLI Gaps    | Daily/calendar/template/move commands          | 2026-01-10 |
 | HTTP API    | REST API for local integrations (10 endpoints) | 2026-01-11 |
 | AppShell    | Full experience stories + RefNode/slash fixes  | 2026-01-12 |
+| TypeBrowser | Phase 1: Data table with sort/select/edit      | 2026-01-13 |
