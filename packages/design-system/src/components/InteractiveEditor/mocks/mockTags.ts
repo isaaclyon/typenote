@@ -1,3 +1,5 @@
+import { DEMO_TYPE_COLORS } from '../../../constants/demoColors.js';
+
 /**
  * Represents a tag that can be applied to notes/content.
  */
@@ -16,16 +18,16 @@ export interface MockTag {
  */
 export const mockTags: MockTag[] = [
   // Status tags
-  { id: '1', value: 'in-progress', color: '#3B82F6' },
-  { id: '2', value: 'done', color: '#22C55E' },
-  { id: '3', value: 'blocked', color: '#EF4444' },
-  { id: '4', value: 'on-hold', color: '#6B7280' },
-  { id: '5', value: 'review', color: '#8B5CF6' },
+  { id: '1', value: 'in-progress', color: DEMO_TYPE_COLORS.pending },
+  { id: '2', value: 'done', color: DEMO_TYPE_COLORS.active },
+  { id: '3', value: 'blocked', color: DEMO_TYPE_COLORS.bug },
+  { id: '4', value: 'on-hold', color: DEMO_TYPE_COLORS.inactive },
+  { id: '5', value: 'review', color: DEMO_TYPE_COLORS.design },
 
   // Priority tags
-  { id: '6', value: 'high-priority', color: '#F59E0B' },
+  { id: '6', value: 'high-priority', color: DEMO_TYPE_COLORS.feature },
   { id: '7', value: 'low-priority', color: '#94A3B8' },
-  { id: '8', value: 'urgent', color: '#DC2626' },
+  { id: '8', value: 'urgent', color: DEMO_TYPE_COLORS.urgent },
 
   // Topic/category tags
   { id: '9', value: 'frontend' },

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { cn } from '../../utils/cn.js';
+import { DEFAULT_ICON_COLOR } from '../../constants/defaults.js';
 import { ScrollArea } from '../ScrollArea/ScrollArea.js';
 import { Skeleton } from '../Skeleton/Skeleton.js';
 
@@ -44,9 +45,6 @@ function formatHeaderDate(dateKey: string): string {
   const date = new Date(year, month - 1, day);
   return `Created ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 }
-
-/** Default icon color (warm gray, matches BacklinkItem) */
-const DEFAULT_ICON_COLOR = '#78716c';
 
 const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>(
   ({ date, items, onItemClick, showHeader = true, isLoading = false, className }, ref) => {

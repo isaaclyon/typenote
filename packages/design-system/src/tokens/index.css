@@ -36,9 +36,13 @@
 
   /* ========== Semantic Colors ========== */
   --color-error: #e57373;
+  --color-error-dark: #d32f2f;
   --color-success: #81c784;
+  --color-success-dark: #2e7d32;
   --color-warning: #ffb74d;
+  --color-warning-dark: #e65100;
   --color-info: #6495ed;
+  --color-info-dark: #3d5fc2;
 
   /* ========== Option Pill Colors ========== */
   /* Blue */

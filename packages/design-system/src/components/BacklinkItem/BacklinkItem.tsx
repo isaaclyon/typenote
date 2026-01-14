@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { cn } from '../../utils/cn.js';
+import { DEFAULT_ICON_COLOR } from '../../constants/defaults.js';
 
 export interface BacklinkItemProps {
   title: string;
@@ -27,7 +28,7 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
       if (!IconComponent) return null;
 
       return (
-        <div className="flex-shrink-0" style={{ color: typeColor || '#78716c' }}>
+        <div className="flex-shrink-0" style={{ color: typeColor || DEFAULT_ICON_COLOR }}>
           <IconComponent className="w-4 h-4" />
         </div>
       );
