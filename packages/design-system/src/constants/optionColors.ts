@@ -30,6 +30,38 @@ export const OPTION_COLORS = {
   },
 } as const;
 
+/**
+ * Swatch background colors for the color picker.
+ * These must be defined statically for Tailwind to generate the CSS.
+ * Each swatch uses the pill's text color as a solid background.
+ */
+export const SWATCH_COLORS = {
+  blue: {
+    light: 'bg-blue-700',
+    regular: 'bg-blue-800',
+  },
+  green: {
+    light: 'bg-green-700',
+    regular: 'bg-green-800',
+  },
+  amber: {
+    light: 'bg-amber-700',
+    regular: 'bg-amber-800',
+  },
+  red: {
+    light: 'bg-red-700',
+    regular: 'bg-red-800',
+  },
+  purple: {
+    light: 'bg-violet-700',
+    regular: 'bg-violet-800',
+  },
+  gray: {
+    light: 'bg-gray-600',
+    regular: 'bg-gray-700',
+  },
+} as const;
+
 export type OptionColor = keyof typeof OPTION_COLORS;
 export type OptionColorVariant = 'light' | 'regular';
 
@@ -55,9 +87,8 @@ export function getOptionColorClasses(
 }
 
 /**
- * Get swatch background class derived from pill text color.
- * The swatch shows the text color as a solid background, making it
- * clearly identifiable at small sizes.
+ * Get swatch background class for the color picker.
+ * Uses statically-defined classes so Tailwind can generate the CSS.
  *
  * e.g., pill with 'text-blue-700' → swatch with 'bg-blue-700'
  */
@@ -65,11 +96,5 @@ export function getSwatchColorClass(
   color: OptionColor = 'gray',
   variant: OptionColorVariant = 'light'
 ): string {
-  const classes = OPTION_COLORS[color][variant];
-  // Extract text-* class and convert to bg-*
-  const textMatch = classes.match(/text-(\S+)/);
-  if (textMatch?.[1]) {
-    return `bg-${textMatch[1]}`;
-  }
-  return 'bg-gray-500'; // fallback
+  return SWATCH_COLORS[color][variant];
 }
