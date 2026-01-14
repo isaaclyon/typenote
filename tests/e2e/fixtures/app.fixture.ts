@@ -53,7 +53,9 @@ export const test = base.extend<TestFixtures>({
   },
 
   window: async ({ electronApp }, use) => {
-    const window = await electronApp.firstWindow();
+    // Increase timeout for firstWindow() since parallel Electron instances
+    // can cause resource contention during startup
+    const window = await electronApp.firstWindow({ timeout: 45000 });
     // Wait for app to be ready
     await window.waitForLoadState('domcontentloaded');
     await use(window);

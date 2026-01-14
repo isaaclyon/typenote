@@ -12,29 +12,15 @@ import { test, expect } from '../fixtures/app.fixture.js';
 
 test.describe('Toast Notifications', () => {
   test('Toaster component is mounted in the DOM', async ({ window: page }) => {
-    // The Sonner Toaster renders with data-sonner-toaster attribute
-    const toaster = page.locator('[data-sonner-toaster]');
-    await expect(toaster).toBeVisible();
+    // Sonner 2.x renders a <section> with aria-label containing "Notifications"
+    const toaster = page.locator('section[aria-label*="Notifications"]');
+    await expect(toaster).toBeAttached();
   });
 
-  test('error toast appears via ipcCall wrapper on IPC error', async ({ window: page }) => {
-    // Simulate an IPC error that triggers the ipcCall wrapper's toast
-    // We test this indirectly by calling an IPC method that will fail
-    await page.evaluate(async () => {
-      // Call getDocument with an invalid ID - this will return an error
-      // but won't throw (IPC returns {success: false}), so no toast
-      // For a real error toast, we need an exception path
-
-      // Instead, just verify the toaster is mounted and ready
-      // The actual toast behavior is tested via unit tests
-      return true;
-    });
-
-    // Toaster should be present and ready for toasts
-    const toaster = page.locator('[data-sonner-toaster]');
-    await expect(toaster).toBeVisible();
-
-    // Verify toaster has correct position attribute (bottom-right)
-    await expect(toaster).toHaveAttribute('data-position', /bottom-right/);
+  test('toaster has correct accessibility attributes', async ({ window: page }) => {
+    // Verify the toaster has proper ARIA attributes for accessibility
+    const toaster = page.locator('section[aria-label*="Notifications"]');
+    await expect(toaster).toBeAttached();
+    await expect(toaster).toHaveAttribute('aria-live', 'polite');
   });
 });

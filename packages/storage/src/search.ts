@@ -38,6 +38,12 @@ export function searchBlocks(
   query: string,
   filters?: SearchFilters
 ): SearchResult[] {
+  // Empty or whitespace-only queries return empty results
+  // FTS5 MATCH doesn't accept empty strings
+  if (!query.trim()) {
+    return [];
+  }
+
   const limit = filters?.limit ?? 50;
 
   // Build the query with optional object filter

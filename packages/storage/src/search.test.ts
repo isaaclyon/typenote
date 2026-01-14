@@ -36,6 +36,16 @@ describe('searchBlocks', () => {
     expect(result).toHaveLength(0);
   });
 
+  it('returns empty array for empty query', () => {
+    const result = searchBlocks(db, '');
+    expect(result).toHaveLength(0);
+  });
+
+  it('returns empty array for whitespace-only query', () => {
+    const result = searchBlocks(db, '   ');
+    expect(result).toHaveLength(0);
+  });
+
   it('returns matching blocks', () => {
     // Create a block with searchable content
     db.run(
