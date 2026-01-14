@@ -1,6 +1,45 @@
 # Recent Work
 
-## Latest Session (2026-01-12 - Design System: AppShell Full Experience Stories)
+## Latest Session (2026-01-12 evening - PropertyItem: All 8 Property Types)
+
+### Complete Property Input System
+
+Extended PropertyItem component to support all 8 backend property types, unblocking the entire property editing feature (task management, custom object properties, right sidebar).
+
+**Key accomplishments:**
+
+1. **Added 5 new property types** — boolean (checkbox), datetime (date+time), multiselect (toggle options), ref (object search), refs (multi-object search)
+2. **14 comprehensive Ladle stories** — Covering all types, interactions, and real-world examples (Task properties, Book properties)
+3. **Fixed layout shift bug** — Matched all input heights to `h-7` (28px) to eliminate jarring content shift when clicking to edit
+4. **Cleaned up duplicate stories** — Removed old `AllTypes` story, kept comprehensive `AllPropertyTypes`
+
+**Architecture insights:**
+
+- Boolean type saves immediately on checkbox click (no edit mode)
+- DateTime uses split inputs (date + time) with formatted display
+- Multiselect shows toggle buttons with Done/Cancel workflow
+- Ref/Refs use search input with debounced results dropdown (200ms)
+- All inputs now `h-7` to match display mode height (zero layout shift)
+
+**Files modified:**
+
+- `packages/design-system/src/components/PropertyItem/PropertyItem.tsx` — Extended from 4 types to 8 types (~400 lines)
+- `packages/design-system/src/components/PropertyItem/PropertyItem.stories.tsx` — Added 7 new stories, deleted duplicate
+
+**Impact:**
+
+Backend property system (100% ready) is now usable in UI. Unblocks:
+
+- Task editing (completed checkbox, priority select, due datetime)
+- Object type custom properties
+- Right sidebar property panel
+- Settings panels
+
+**No commits yet** — Work in progress, ready for further UX iteration in Ladle.
+
+---
+
+## Previous Session (2026-01-12 - Design System: AppShell Full Experience Stories)
 
 ### AppShell Full Experience + Design Fixes
 

@@ -35,20 +35,21 @@ Building organism-level components in the design-system package with Ladle sandb
 
 - [x] Left Sidebar Navigation organism (8 components, 9 stories) ✅ Commit: `d8c01d3`
 - [x] Slash menu keyboard navigation auto-scroll ✅ Commit: `18356b4`
-- [x] RefNode styling consistency (clean icon + underline design) ✅ Uncommitted
-- [x] AppShell full experience stories (daily note + regular note) ✅ Uncommitted
-- [x] Daily note special layout (DailyNoteNav + MiniCalendar + NotesCreatedList) ✅ Uncommitted
+- [x] RefNode styling consistency (clean icon + underline design) ✅ Commit: `44da3b6`
+- [x] AppShell full experience stories (daily note + regular note) ✅ Commit: `44da3b6`
+- [x] Daily note special layout (DailyNoteNav + MiniCalendar + NotesCreatedList) ✅ Commit: `44da3b6`
+- [x] PropertyItem component with all 8 property types ✅ Uncommitted (ready for commit after UX iteration)
 
 ### In Progress (Uncommitted)
 
-- PropertyItem component (edit mode, various value types)
+- PropertyItem UX refinement (testing interactions in Ladle, fixing layout shift bugs)
 - BacklinkItem component (already exists, used in stories)
 - RightPanel components (partially complete)
 
 ### Next Steps
 
-- [ ] Commit AppShell stories + RefNode fixes
-- [ ] Complete PropertyItem component with all property types
+- [ ] Commit PropertyItem complete implementation (all 8 types + 14 stories)
+- [ ] Continue PropertyItem UX iteration (more feedback from Ladle testing)
 - [ ] Build Type Browser organism (data table with sort/filter)
 - [ ] Integrate Sidebar + AppShell into desktop app with real data (wire up IPC)
 - [ ] Add InteractiveEditor integration tests for all extensions
