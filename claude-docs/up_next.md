@@ -91,15 +91,16 @@ Full attachment system with content-addressed storage, global deduplication, and
 
 ### E2E Test Fixes
 
-**Status:** Partial — 185 passing, 20 failing (was 164/41)
+**Status:** Mostly resolved — 231+ passing, flaky tests handled with retry
 
 - [x] Fix blockId lengths (28 invalid ULIDs) ✅ Commit: `b5a9382`
 - [x] Add `sourceObjectTitle` to backlinks API ✅
 - [x] Fix templates-workflow tests (`type` → `blockType`) ✅
-- [ ] Fix RefNode rendering (11 failures) — `span[data-ref]` not appearing in editor
-- [ ] Fix autocomplete popup (4 failures) — `[[` trigger not showing `.bg-popover`
-- [ ] Fix block rendering (2 failures) — blockquote/HR not rendering
-- [ ] Fix editor persistence (3 failures) — content not persisting after reload
+- [x] Fix empty search query returning error ✅ Commit: `ce89df4`
+- [x] Fix Toast tests (Sonner 2.x selector change) ✅ Commit: `ce89df4`
+- [x] Fix flaky Electron startup timeouts (increased timeout + retry) ✅ Commit: `ce89df4`
+- [ ] Fix RefNode rendering — `span[data-ref]` not appearing in editor (investigate if still failing)
+- [ ] Fix autocomplete popup — `[[` trigger not showing `.bg-popover` (investigate if still failing)
 
 ### Quality & Performance
 

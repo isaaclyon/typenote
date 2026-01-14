@@ -1,42 +1,30 @@
 # Recent Work
 
-## Latest Session (2026-01-13 evening - MultiselectDropdown & PropertyItem UX)
+## Latest Session (2026-01-13 night - E2E Test Fixes)
 
-### MultiselectDropdown Component
+Fixed 8 failing E2E tests with 3 distinct root causes.
 
-Built new `MultiselectDropdown` component with dropdown UI, search filtering, checkboxes, and drag-and-drop reordering.
+**Fixes:**
 
-**Key accomplishments:**
+1. **Empty search query** — Added early return in `searchBlocks()` for empty/whitespace queries (FTS5 MATCH throws on empty strings)
+2. **Toast tests** — Updated selector from `[data-sonner-toaster]` to `section[aria-label*="Notifications"]` for Sonner 2.x compatibility
+3. **Flaky timeouts** — Increased `firstWindow()` timeout to 45s + added 1 retry locally for sporadic Electron startup
 
-1. **New MultiselectDropdown component** — Dropdown-based multiselect replacing inline toggle buttons
-   - Search/filter input at top
-   - Checkbox rows with drag handles
-   - Floating UI for positioning (same pattern as Select)
-   - @dnd-kit integration for drag-and-drop reordering
-   - `onReorder` callback prop for persisting option order
+**Files modified:**
 
-2. **PropertyItem UX improvements:**
-   - Added `resolveRefs` prop to show titles instead of IDs for ref/refs types
-   - Fixed datetime blur behavior — clicking between date/time inputs no longer triggers premature save
-   - Integrated MultiselectDropdown for multiselect type (no longer uses `isEditing` state)
+- `packages/storage/src/search.ts` — Empty query handling
+- `packages/storage/src/search.test.ts` — Added empty/whitespace tests
+- `tests/e2e/specs/toast.spec.ts` — Updated Sonner selectors
+- `tests/e2e/fixtures/app.fixture.ts` — Increased firstWindow timeout
+- `tests/e2e/playwright.config.ts` — Added 1 retry for local runs
 
-3. **New dependencies:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+Commits: `ce89df4`
 
-**New files:**
+---
 
-- `packages/design-system/src/components/MultiselectDropdown/` — New component folder
-  - `MultiselectDropdown.tsx` — Component with Floating UI + @dnd-kit
-  - `MultiselectDropdown.stories.tsx` — 8 Ladle stories including drag-and-drop demo
-  - `index.ts` — Exports
+## Previous Session (2026-01-13 evening - MultiselectDropdown & PropertyItem UX)
 
-**Modified files:**
-
-- `packages/design-system/src/components/PropertyItem/PropertyItem.tsx` — Added resolveRefs, datetime blur fix, multiselect integration
-- `packages/design-system/src/components/PropertyItem/PropertyItem.stories.tsx` — Updated stories with resolveRefs demos
-- `packages/design-system/src/components/index.ts` — Export MultiselectDropdown
-- `packages/design-system/package.json` — Added @dnd-kit dependencies
-
-**Status:** Uncommitted — ready for testing in Ladle
+Built `MultiselectDropdown` component with Floating UI + @dnd-kit for drag-and-drop reordering. Updated PropertyItem with `resolveRefs` prop and datetime blur fix. Commits: `ded86c9`
 
 ---
 
