@@ -512,3 +512,85 @@ export const SingleRow: Story = () => (
     />
   </div>
 );
+
+/**
+ * With Selection - Row selection with checkboxes
+ */
+export const WithSelection: Story = () => {
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set(['2', '4']));
+
+  return (
+    <div className="h-96 border rounded-lg overflow-hidden">
+      <div className="p-2 bg-gray-50 text-xs text-gray-600 border-b">
+        Selected: {selectedIds.size} items ({[...selectedIds].join(', ')})
+      </div>
+      <TypeBrowser
+        data={mockTasks}
+        columns={columns}
+        getRowId={(row) => row.id}
+        enableRowSelection
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+      />
+    </div>
+  );
+};
+
+/**
+ * Selection with Many Rows - Tests selection with large datasets
+ */
+export const SelectionWithManyRows: Story = () => {
+  const manyTasks = React.useMemo(() => generateManyTasks(50), []);
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(
+    new Set(['task-1', 'task-5', 'task-10'])
+  );
+
+  return (
+    <div className="h-96 border rounded-lg overflow-hidden">
+      <div className="p-2 bg-gray-50 text-xs text-gray-600 border-b">
+        Selected: {selectedIds.size} items
+      </div>
+      <TypeBrowser
+        data={manyTasks}
+        columns={columns}
+        getRowId={(row) => row.id}
+        enableRowSelection
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        onRowClick={(row) => console.log('Clicked:', row)}
+      />
+    </div>
+  );
+};
+
+/**
+ * Selection with Row Click - Both selection and row click work together
+ */
+export const SelectionWithRowClick: Story = () => {
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+  const [lastClicked, setLastClicked] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+        <strong>Note:</strong> Clicking the checkbox selects the row. Clicking anywhere else on the
+        row triggers onRowClick. Both work independently.
+      </div>
+      <div className="h-96 border rounded-lg overflow-hidden">
+        <div className="p-2 bg-gray-50 text-xs text-gray-600 border-b flex gap-4">
+          <span>Selected: {selectedIds.size} items</span>
+          <span>Last clicked: {lastClicked ?? 'None'}</span>
+        </div>
+        <TypeBrowser
+          data={mockTasks}
+          columns={columns}
+          getRowId={(row) => row.id}
+          enableRowSelection
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          onRowClick={(row) => setLastClicked(row.id)}
+        />
+      </div>
+    </div>
+  );
+};

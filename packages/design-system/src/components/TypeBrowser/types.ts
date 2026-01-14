@@ -42,4 +42,10 @@ export interface TypeBrowserProps<TData extends Record<string, unknown>> {
   isLoading?: boolean;
   /** Message to display when data is empty */
   emptyMessage?: string;
+  /** Enable row selection with checkboxes */
+  enableRowSelection?: boolean;
+  /** Currently selected row IDs */
+  selectedIds?: Set<string>;
+  /** Callback when selection changes */
+  onSelectionChange?: (selectedIds: Set<string>) => void;
 }

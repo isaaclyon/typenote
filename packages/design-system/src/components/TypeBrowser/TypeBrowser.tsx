@@ -6,7 +6,9 @@ import {
   flexRender,
   type SortingState,
   type ColumnDef,
+  type RowSelectionState,
 } from '@tanstack/react-table';
+import { Checkbox } from '../Checkbox/Checkbox.js';
 import { cn } from '../../utils/cn.js';
 import { ScrollArea } from '../ScrollArea/index.js';
 import { EmptyState } from '../EmptyState/index.js';
@@ -129,20 +131,78 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     getRowId,
     isLoading = false,
     emptyMessage = 'No items to display',
+    enableRowSelection = false,
+    selectedIds,
+    onSelectionChange,
   }: TypeBrowserProps<TData>,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const columnDefs = React.useMemo(() => createColumnDefs(columns), [columns]);
+  // Convert Set<string> to RowSelectionState object for TanStack Table
+  const rowSelection = React.useMemo<RowSelectionState>(() => {
+    if (!selectedIds) return {};
+    const state: RowSelectionState = {};
+    for (const id of selectedIds) {
+      state[id] = true;
+    }
+    return state;
+  }, [selectedIds]);
+
+  // Handle row selection changes from TanStack Table
+  const handleRowSelectionChange = React.useCallback(
+    (updaterOrValue: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => {
+      if (!onSelectionChange) return;
+      const newState =
+        typeof updaterOrValue === 'function' ? updaterOrValue(rowSelection) : updaterOrValue;
+      const newSelectedIds = new Set<string>(Object.keys(newState).filter((key) => newState[key]));
+      onSelectionChange(newSelectedIds);
+    },
+    [onSelectionChange, rowSelection]
+  );
+
+  // Create checkbox column for row selection
+  const checkboxColumn = React.useMemo<ColumnDef<TData>>(
+    () => ({
+      id: '_selection',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllRowsSelected()}
+          indeterminate={table.getIsSomeRowsSelected()}
+          onChange={table.getToggleAllRowsSelectedHandler()}
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Select all rows"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onChange={row.getToggleSelectedHandler()}
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Select row ${row.id}`}
+        />
+      ),
+      size: 40,
+      enableSorting: false,
+    }),
+    []
+  );
+
+  const columnDefs = React.useMemo(() => {
+    const baseCols = createColumnDefs(columns);
+    return enableRowSelection ? [checkboxColumn, ...baseCols] : baseCols;
+  }, [columns, enableRowSelection, checkboxColumn]);
 
   const table = useReactTable({
     data,
     columns: columnDefs,
     state: {
       sorting,
+      rowSelection,
     },
     onSortingChange: setSorting,
+    onRowSelectionChange: handleRowSelectionChange,
+    enableRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getRowId,
