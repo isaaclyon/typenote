@@ -37,3 +37,6 @@ export * from './EditorPreview/index.js';
 
 // Interactive Editor
 export * from './InteractiveEditor/index.js';
+
+// Data Display
+export * from './TypeBrowser/index.js';

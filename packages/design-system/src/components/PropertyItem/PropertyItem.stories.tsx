@@ -229,6 +229,21 @@ export const DateTimeProperty: Story = () => {
 export const MultiSelectProperty: Story = () => {
   const [tags, setTags] = useState<string[]>(['Fiction', 'Classic']);
   const [categories, setCategories] = useState<string[]>([]);
+  const [genreOptions, setGenreOptions] = useState([
+    'Fiction',
+    'Non-Fiction',
+    'Classic',
+    'Modern',
+    'Science Fiction',
+    'Fantasy',
+  ]);
+  const [categoryOptions, setCategoryOptions] = useState([
+    'Work',
+    'Personal',
+    'Urgent',
+    'Reference',
+    'Archive',
+  ]);
 
   return (
     <div className="w-96 space-y-3">
@@ -237,21 +252,25 @@ export const MultiSelectProperty: Story = () => {
         label="Genres"
         value={tags}
         type="multiselect"
-        options={['Fiction', 'Non-Fiction', 'Classic', 'Modern', 'Science Fiction', 'Fantasy']}
+        options={genreOptions}
         onSave={(val) => setTags(val as string[])}
+        onOptionsReorder={setGenreOptions}
       />
       <PropertyItem
         label="Categories"
         value={categories}
         type="multiselect"
-        options={['Work', 'Personal', 'Urgent', 'Reference', 'Archive']}
+        options={categoryOptions}
         placeholder="None selected"
         onSave={(val) => setCategories(val as string[])}
+        onOptionsReorder={setCategoryOptions}
       />
       <p className="text-xs text-gray-500 mt-4">
         Current genres: {tags.length > 0 ? tags.join(', ') : 'none'}
         <br />
         Current categories: {categories.length > 0 ? categories.join(', ') : 'none'}
+        <br />
+        <strong>Drag handles now work!</strong> Reorder options in the dropdown.
       </p>
     </div>
   );
@@ -356,6 +375,12 @@ export const AllPropertyTypes: Story = () => {
   const [datetime, setDatetime] = useState('2026-01-15T14:30');
   const [select, setSelect] = useState('Option B');
   const [multiselect, setMultiselect] = useState<string[]>(['Tag 1', 'Tag 3']);
+  const [multiselectOptions, setMultiselectOptions] = useState([
+    'Tag 1',
+    'Tag 2',
+    'Tag 3',
+    'Tag 4',
+  ]);
   const [ref, setRef] = useState('ref-001');
   const [refs, setRefs] = useState<string[]>(['ref-001', 'ref-002']);
 
@@ -420,8 +445,9 @@ export const AllPropertyTypes: Story = () => {
           label="Multi"
           value={multiselect}
           type="multiselect"
-          options={['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4']}
+          options={multiselectOptions}
           onSave={(val) => setMultiselect(val as string[])}
+          onOptionsReorder={setMultiselectOptions}
         />
         <PropertyItem
           label="Ref"
@@ -450,6 +476,14 @@ export const TaskExample: Story = () => {
   const [priority, setPriority] = useState('High');
   const [dueDate, setDueDate] = useState('2026-01-20T17:00');
   const [tags, setTags] = useState<string[]>(['frontend', 'design-system']);
+  const [tagOptions, setTagOptions] = useState([
+    'frontend',
+    'backend',
+    'design-system',
+    'bug',
+    'feature',
+    'docs',
+  ]);
   const [assignee, setAssignee] = useState('user-001');
 
   const mockUsers = [
@@ -501,8 +535,9 @@ export const TaskExample: Story = () => {
           label="Tags"
           value={tags}
           type="multiselect"
-          options={['frontend', 'backend', 'design-system', 'bug', 'feature', 'docs']}
+          options={tagOptions}
           onSave={(val) => setTags(val as string[])}
+          onOptionsReorder={setTagOptions}
         />
         <PropertyItem
           label="Assignee"

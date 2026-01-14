@@ -29,6 +29,7 @@ export interface PropertyItemProps {
   options?: string[]; // For select/multiselect types
   placeholder?: string;
   onSave?: (value: string | number | boolean | string[]) => void;
+  onOptionsReorder?: (options: string[]) => void; // For multiselect type - reorder options via drag
   onSearch?: (query: string) => Promise<RefItem[]>; // For ref/refs types
   resolveRefs?: (ids: string[]) => Promise<RefItem[]>; // Resolve IDs to titles for display
   error?: string;
@@ -44,6 +45,7 @@ const PropertyItem = React.forwardRef<HTMLDivElement, PropertyItemProps>(
       options = [],
       placeholder,
       onSave,
+      onOptionsReorder,
       onSearch,
       resolveRefs,
       error,
@@ -272,6 +274,10 @@ const PropertyItem = React.forwardRef<HTMLDivElement, PropertyItemProps>(
                 }
               }}
               options={options.map((opt) => ({ value: opt, label: opt }))}
+              {...(onOptionsReorder && {
+                onReorder: (reorderedOptions) =>
+                  onOptionsReorder(reorderedOptions.map((opt) => opt.value)),
+              })}
               placeholder={placeholder ?? 'Select...'}
             />
           ) : isEditing ? (
