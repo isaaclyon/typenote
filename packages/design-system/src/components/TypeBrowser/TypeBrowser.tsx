@@ -13,6 +13,7 @@ import { cn } from '../../utils/cn.js';
 import { ScrollArea } from '../ScrollArea/index.js';
 import { EmptyState } from '../EmptyState/index.js';
 import { Skeleton } from '../Skeleton/index.js';
+import { TextCell, NumberCell, BooleanCell } from './cells/index.js';
 import type { TypeBrowserProps, TypeBrowserColumn, CellType } from './types.js';
 
 /**
@@ -71,14 +72,52 @@ function formatCellValue(value: unknown, type: CellType): React.ReactNode {
  * Convert TypeBrowserColumn definitions to TanStack Table column definitions
  */
 function createColumnDefs<TData extends Record<string, unknown>>(
-  columns: TypeBrowserColumn<TData>[]
+  columns: TypeBrowserColumn<TData>[],
+  onCellEdit?: (rowId: string, columnId: string, value: unknown) => void
 ): ColumnDef<TData>[] {
   return columns.map((col) => {
     const columnDef: ColumnDef<TData> = {
       id: col.id,
       accessorKey: col.accessorKey as string,
       header: col.header,
-      cell: ({ getValue }) => formatCellValue(getValue(), col.type),
+      cell: ({ getValue, row }) => {
+        const cellValue = getValue();
+        const rowId = row.id;
+
+        // If no onCellEdit, render read-only
+        if (!onCellEdit) {
+          return formatCellValue(cellValue, col.type);
+        }
+
+        // Render editable cell based on type
+        switch (col.type) {
+          case 'text':
+          case 'select': // select renders as text for now
+            return (
+              <TextCell
+                value={(cellValue as string) ?? ''}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+              />
+            );
+          case 'number':
+            return (
+              <NumberCell
+                value={cellValue as number | null}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+              />
+            );
+          case 'boolean':
+            return (
+              <BooleanCell
+                value={(cellValue as boolean) ?? false}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+              />
+            );
+          default:
+            // Other types (date, datetime, multiselect) are read-only for now
+            return formatCellValue(cellValue, col.type);
+        }
+      },
     };
 
     // Only set size if width is defined (exactOptionalPropertyTypes compliance)
@@ -128,6 +167,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     data,
     columns,
     onRowClick,
+    onCellEdit,
     getRowId,
     isLoading = false,
     emptyMessage = 'No items to display',
@@ -189,9 +229,9 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
   );
 
   const columnDefs = React.useMemo(() => {
-    const baseCols = createColumnDefs(columns);
+    const baseCols = createColumnDefs(columns, onCellEdit);
     return enableRowSelection ? [checkboxColumn, ...baseCols] : baseCols;
-  }, [columns, enableRowSelection, checkboxColumn]);
+  }, [columns, onCellEdit, enableRowSelection, checkboxColumn]);
 
   const table = useReactTable({
     data,

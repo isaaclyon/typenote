@@ -594,3 +594,59 @@ export const SelectionWithRowClick: Story = () => {
     </div>
   );
 };
+
+/**
+ * With Editing - Inline cell editing for text, number, and boolean types
+ */
+export const WithEditing: Story = () => {
+  const [data, setData] = React.useState(mockTasks);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Cell edited:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="h-96 border rounded-lg overflow-hidden">
+      <div className="p-2 bg-gray-50 text-xs text-gray-600 border-b">
+        Click any text/number cell to edit. Checkboxes toggle immediately.
+      </div>
+      <TypeBrowser
+        data={data}
+        columns={columns}
+        getRowId={(row) => row.id}
+        onCellEdit={handleCellEdit}
+      />
+    </div>
+  );
+};
+
+/**
+ * With Editing and Selection - Editing and row selection work together
+ */
+export const WithEditingAndSelection: Story = () => {
+  const [data, setData] = React.useState(mockTasks);
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Cell edited:', { rowId, columnId, value });
+  };
+
+  return (
+    <div className="h-96 border rounded-lg overflow-hidden">
+      <div className="p-2 bg-gray-50 text-xs text-gray-600 border-b">
+        Selected: {selectedIds.size} items. Click cells to edit, checkboxes to select.
+      </div>
+      <TypeBrowser
+        data={data}
+        columns={columns}
+        getRowId={(row) => row.id}
+        onCellEdit={handleCellEdit}
+        enableRowSelection
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+      />
+    </div>
+  );
+};
