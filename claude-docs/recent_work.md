@@ -1,6 +1,30 @@
 # Recent Work
 
-## Latest Session (2026-01-13 evening - MultiselectDropdown Actions Menu)
+## Latest Session (2026-01-13 evening - Color Centralization)
+
+Implemented high+medium priority tasks from color centralization plan.
+
+**Key accomplishments:**
+
+1. **CSS token improvements** — Added dark variants for semantic colors in `tokens/index.css`
+   - `--color-success-dark`, `--color-error-dark`, `--color-warning-dark`, `--color-info-dark`
+
+2. **New constant files** — Created 3 new files in `constants/`:
+   - `semanticColors.ts` — TypeScript constants matching CSS tokens
+   - `demoColors.ts` — Color palette for Ladle story mock data
+   - `defaults.ts` — `DEFAULT_ICON_COLOR` for consistent fallbacks
+
+3. **Component updates**
+   - Toast: Replaced hardcoded hex with CSS variable references (`bg-success/10 text-success-dark`)
+   - Badge: Updated success/warning variants to use semantic colors
+   - mockTags.ts: Now uses `DEMO_TYPE_COLORS` constants
+   - BacklinkItem + NotesCreatedList: Share `DEFAULT_ICON_COLOR`
+
+**Commit:** `208609f` refactor(design-system): centralize color constants
+
+---
+
+## Previous Session (2026-01-13 evening - MultiselectDropdown Actions Menu)
 
 Enhanced MultiselectDropdown with actions menu and color picker. Audited hardcoded colors across design system.
 

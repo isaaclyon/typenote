@@ -75,22 +75,20 @@ Building organism-level components in the design-system package with Ladle sandb
 
 ## Color Centralization
 
-**Status:** Planned
+**Status:** ✅ High+Medium Priority COMPLETE (2026-01-13)
 **Plan:** `docs/plans/2026-01-13-color-centralization.md`
 
-Centralize 40+ hardcoded hex values into semantic tokens and shared constants.
+Centralized hardcoded hex values into semantic tokens and shared constants.
 
-### High Priority
+### Completed
 
-- [ ] Create `semanticColors.ts` (success/error/warning/info)
-- [ ] Update Toast component to use semantic colors
-- [ ] Update Badge component to use semantic colors
-
-### Medium Priority
-
-- [ ] Create `demoColors.ts` for story mock data
-- [ ] Update mockTags.ts to use demo colors
-- [ ] Create `defaults.ts` with DEFAULT_ICON_COLOR
+- [x] Add CSS custom properties for semantic color dark variants ✅ Commit: `208609f`
+- [x] Create `semanticColors.ts` (success/error/warning/info) ✅
+- [x] Update Toast component to use CSS variable references ✅
+- [x] Update Badge component to use semantic colors ✅
+- [x] Create `demoColors.ts` for story mock data ✅
+- [x] Update mockTags.ts to use demo colors ✅
+- [x] Create `defaults.ts` with DEFAULT_ICON_COLOR ✅
 
 ### Low Priority (Optional)
 
