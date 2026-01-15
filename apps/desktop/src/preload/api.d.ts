@@ -16,6 +16,7 @@ import type {
   CreatedObject,
   CalendarItem,
   RecentObjectSummary,
+  PinnedObjectSummary,
 } from '@typenote/storage';
 
 interface IpcSuccess<T> {
@@ -71,6 +72,13 @@ export interface TypenoteAPI {
   // Recent objects operations
   recordView: (objectId: string) => Promise<IpcOutcome<void>>;
   getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
+
+  // Pinned objects operations
+  pinObject: (objectId: string) => Promise<IpcOutcome<void>>;
+  unpinObject: (objectId: string) => Promise<IpcOutcome<void>>;
+  isPinned: (objectId: string) => Promise<IpcOutcome<boolean>>;
+  getPinnedObjects: () => Promise<IpcOutcome<PinnedObjectSummary[]>>;
+  reorderPinnedObjects: (orderedIds: string[]) => Promise<IpcOutcome<void>>;
 
   // Settings operations
   getSettings: () => Promise<IpcOutcome<UserSettings>>;

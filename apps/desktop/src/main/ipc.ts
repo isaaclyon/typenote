@@ -36,6 +36,13 @@ import {
   // Recent objects service
   recordView as recordViewStorage,
   getRecentObjects as getRecentObjectsStorage,
+  // Pinned objects service
+  pinObject as pinObjectStorage,
+  unpinObject as unpinObjectStorage,
+  isPinned as isPinnedStorage,
+  getPinnedObjects as getPinnedObjectsStorage,
+  reorderPinnedObjects as reorderPinnedObjectsStorage,
+  type PinnedObjectSummary,
   // Settings service
   getSettings as getSettingsStorage,
   updateSettings as updateSettingsStorage,
@@ -47,7 +54,11 @@ import {
   linkBlockToAttachment as linkBlockToAttachmentStorage,
   unlinkBlockFromAttachment as unlinkBlockFromAttachmentStorage,
   getBlockAttachments as getBlockAttachmentsStorage,
+  // Trash service
+  listDeletedObjects as listDeletedObjectsStorage,
+  restoreObject as restoreObjectStorage,
   AttachmentServiceError,
+  TrashServiceError,
   DocumentNotFoundError,
   CreateObjectError,
   DailyNoteError,
@@ -69,6 +80,9 @@ import {
   type ListAttachmentsOptions,
   type CalendarItem,
   type RecentObjectSummary,
+  type DeletedObjectSummary,
+  type RestoreObjectResult,
+  type ListDeletedObjectsOptions,
 } from '@typenote/storage';
 import {
   ApplyBlockPatchInputSchema,
@@ -220,10 +234,19 @@ export interface IpcHandlers {
   // Recent objects operations
   recordView: (objectId: string) => IpcOutcome<void>;
   getRecentObjects: (limit?: number) => IpcOutcome<RecentObjectSummary[]>;
+  // Pinned objects operations
+  pinObject: (objectId: string) => IpcOutcome<void>;
+  unpinObject: (objectId: string) => IpcOutcome<void>;
+  isPinned: (objectId: string) => IpcOutcome<boolean>;
+  getPinnedObjects: () => IpcOutcome<PinnedObjectSummary[]>;
+  reorderPinnedObjects: (orderedIds: string[]) => IpcOutcome<void>;
   // Settings operations
   getSettings: () => IpcOutcome<UserSettings>;
   updateSettings: (updates: Partial<UserSettings>) => IpcOutcome<void>;
   resetSettings: () => IpcOutcome<void>;
+  // Trash operations
+  listDeletedObjects: (options?: ListDeletedObjectsOptions) => IpcOutcome<DeletedObjectSummary[]>;
+  restoreObject: (objectId: string) => IpcOutcome<RestoreObjectResult>;
 }
 
 export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {
@@ -410,6 +433,29 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
 
     getRecentObjects: (limit) => handleIpcCall(() => getRecentObjectsStorage(db, limit)),
 
+    // Pinned objects operations
+    pinObject: (objectId) =>
+      handleIpcCall(() => {
+        pinObjectStorage(db, objectId);
+        return undefined;
+      }),
+
+    unpinObject: (objectId) =>
+      handleIpcCall(() => {
+        unpinObjectStorage(db, objectId);
+        return undefined;
+      }),
+
+    isPinned: (objectId) => handleIpcCall(() => isPinnedStorage(db, objectId)),
+
+    getPinnedObjects: () => handleIpcCall(() => getPinnedObjectsStorage(db)),
+
+    reorderPinnedObjects: (orderedIds) =>
+      handleIpcCall(() => {
+        reorderPinnedObjectsStorage(db, orderedIds);
+        return undefined;
+      }),
+
     // Settings operations
     getSettings: () => handleIpcCall(() => getSettingsStorage(db)),
 
@@ -424,6 +470,24 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
         resetSettingsStorage(db);
         return undefined;
       }),
+
+    // Trash operations
+    listDeletedObjects: (options) => handleIpcCall(() => listDeletedObjectsStorage(db, options)),
+
+    restoreObject: (objectId) => {
+      const outcome = handleIpcCall(() => restoreObjectStorage(db, objectId), TrashServiceError);
+      if (outcome.success) {
+        typenoteEvents.emit({
+          type: 'object:restored',
+          payload: {
+            id: outcome.result.id,
+            title: outcome.result.title,
+            typeKey: outcome.result.typeKey,
+          },
+        });
+      }
+      return outcome;
+    },
   };
 }
 

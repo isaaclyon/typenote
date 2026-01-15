@@ -6,4 +6,6 @@ export { SidebarTypesList } from './SidebarTypesList.js';
 export { SidebarTypeItem } from './SidebarTypeItem.js';
 export { SidebarActionButton } from './SidebarActionButton.js';
 export { SidebarNewTypeButton } from './SidebarNewTypeButton.js';
+export { SidebarPinnedItem } from './SidebarPinnedItem.js';
+export { SidebarPinnedSection } from './SidebarPinnedSection.js';
 export type * from './types.js';

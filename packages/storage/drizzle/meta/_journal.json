@@ -64,6 +64,13 @@
       "when": 1767559000000,
       "tag": "0008_add_user_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1767559100000,
+      "tag": "0009_add_pinned_objects",
+      "breakpoints": true
     }
   ]
 }

@@ -22,6 +22,7 @@ export {
   unsupportedFileType,
   idempotencyConflict,
   internalError,
+  dailyNoteNotDuplicable,
   type ApiError,
   type ApiErrorCode,
 } from './errors.js';

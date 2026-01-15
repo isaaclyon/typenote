@@ -268,6 +268,25 @@ export const recentObjects = sqliteTable(
 );
 
 // ============================================================================
+// pinned_objects - User-pinned objects for quick access
+// ============================================================================
+
+export const pinnedObjects = sqliteTable(
+  'pinned_objects',
+  {
+    objectId: text('object_id')
+      .primaryKey()
+      .references(() => objects.id, { onDelete: 'cascade' }),
+    pinnedAt: integer('pinned_at', { mode: 'timestamp' }).notNull(),
+    order: integer('order').notNull().default(0),
+  },
+  (table) => [
+    // Index for ordering pinned objects
+    index('pinned_objects_order_idx').on(table.order),
+  ]
+);
+
+// ============================================================================
 // user_settings - Key-value store for user preferences
 // ============================================================================
 

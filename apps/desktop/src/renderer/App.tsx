@@ -5,10 +5,11 @@ import type { ReactElement } from 'react';
 import { ObjectList } from './components/ObjectList.js';
 import { NoteEditor } from './components/NoteEditor.js';
 import { CalendarView } from './components/calendar/index.js';
-import { Button } from '@typenote/design-system';
+import { Button, SidebarPinnedSection } from '@typenote/design-system';
 import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
+import { usePinnedObjects } from './hooks/usePinnedObjects.js';
 
 type ViewMode = 'notes' | 'calendar';
 
@@ -16,6 +17,8 @@ function App(): ReactElement {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('notes');
   const { isOpen, close } = useCommandPalette();
+  const { pinnedObjects, reorderPinnedObjects, unpinObject, isPinned, pinObject } =
+    usePinnedObjects();
 
   const handleCreateDailyNote = async () => {
     const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
@@ -62,8 +65,31 @@ function App(): ReactElement {
               Calendar
             </Button>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <ObjectList onSelect={setSelectedObjectId} selectedId={selectedObjectId} />
+          <div className="flex-1 overflow-hidden flex flex-col">
+            {pinnedObjects.length > 0 && (
+              <div className="px-2 py-1 border-b">
+                <div className="text-xs font-medium text-gray-500 px-3 mb-1">Pinned</div>
+                <SidebarPinnedSection
+                  items={pinnedObjects.map((p) => ({
+                    id: p.id,
+                    title: p.title,
+                    typeKey: p.typeKey,
+                  }))}
+                  onReorder={reorderPinnedObjects}
+                  onSelect={setSelectedObjectId}
+                  selectedId={selectedObjectId}
+                />
+              </div>
+            )}
+            <div className="flex-1 overflow-hidden">
+              <ObjectList
+                onSelect={setSelectedObjectId}
+                selectedId={selectedObjectId}
+                onPin={pinObject}
+                onUnpin={unpinObject}
+                isPinned={isPinned}
+              />
+            </div>
           </div>
         </aside>
 

@@ -4,6 +4,8 @@ import type {
   ApplyBlockPatchResult,
   Attachment,
   UploadAttachmentResult,
+  TypenoteEvent,
+  UserSettings,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
@@ -12,6 +14,9 @@ import type {
   BacklinkResult,
   UnlinkedMentionResult,
   CreatedObject,
+  CalendarItem,
+  RecentObjectSummary,
+  PinnedObjectSummary,
 } from '@typenote/storage';
 
 interface IpcSuccess<T> {
@@ -29,7 +34,7 @@ interface IpcError {
 
 type IpcOutcome<T> = IpcSuccess<T> | IpcError;
 
-export interface TypenoteAPI {
+interface TypenoteAPI {
   version: string;
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
@@ -61,6 +66,28 @@ export interface TypenoteAPI {
   linkBlockToAttachment: (blockId: string, attachmentId: string) => Promise<IpcOutcome<void>>;
   unlinkBlockFromAttachment: (blockId: string, attachmentId: string) => Promise<IpcOutcome<void>>;
   getBlockAttachments: (blockId: string) => Promise<IpcOutcome<Attachment[]>>;
+
+  // Calendar operations
+  getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
+
+  // Recent objects operations
+  recordView: (objectId: string) => Promise<IpcOutcome<void>>;
+  getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
+
+  // Pinned objects operations
+  pinObject: (objectId: string) => Promise<IpcOutcome<void>>;
+  unpinObject: (objectId: string) => Promise<IpcOutcome<void>>;
+  isPinned: (objectId: string) => Promise<IpcOutcome<boolean>>;
+  getPinnedObjects: () => Promise<IpcOutcome<PinnedObjectSummary[]>>;
+  reorderPinnedObjects: (orderedIds: string[]) => Promise<IpcOutcome<void>>;
+
+  // Settings operations
+  getSettings: () => Promise<IpcOutcome<UserSettings>>;
+  updateSettings: (updates: Partial<UserSettings>) => Promise<IpcOutcome<void>>;
+  resetSettings: () => Promise<IpcOutcome<void>>;
+
+  // Events
+  onEvent: (callback: (event: TypenoteEvent) => void) => () => void;
 }
 
 declare global {

@@ -15,9 +15,12 @@ type LoadState =
 interface ObjectListProps {
   onSelect: (id: string) => void;
   selectedId: string | null;
+  onPin?: (id: string) => void;
+  onUnpin?: (id: string) => void;
+  isPinned?: (id: string) => boolean;
 }
 
-export function ObjectList({ onSelect, selectedId }: ObjectListProps) {
+export function ObjectList({ onSelect, selectedId, onPin, onUnpin, isPinned }: ObjectListProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
 
   useEffect(() => {
@@ -87,6 +90,20 @@ export function ObjectList({ onSelect, selectedId }: ObjectListProps) {
               selectedId === obj.id && 'ring-2 ring-primary'
             )}
             onClick={() => onSelect(obj.id)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              // Simple approach: use window.confirm for now
+              const pinned = isPinned?.(obj.id);
+              if (pinned) {
+                if (window.confirm('Unpin from sidebar?')) {
+                  onUnpin?.(obj.id);
+                }
+              } else {
+                if (window.confirm('Pin to sidebar?')) {
+                  onPin?.(obj.id);
+                }
+              }
+            }}
             data-testid={`object-card-${obj.id}`}
           >
             <CardHeader className="p-4">

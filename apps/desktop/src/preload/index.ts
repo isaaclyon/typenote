@@ -120,6 +120,18 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   getRecentObjects: (limit?: number) => ipcRenderer.invoke('typenote:getRecentObjects', limit),
 
+  // Pinned objects operations
+  pinObject: (objectId: string) => ipcRenderer.invoke('typenote:pinObject', objectId),
+
+  unpinObject: (objectId: string) => ipcRenderer.invoke('typenote:unpinObject', objectId),
+
+  isPinned: (objectId: string) => ipcRenderer.invoke('typenote:isPinned', objectId),
+
+  getPinnedObjects: () => ipcRenderer.invoke('typenote:getPinnedObjects'),
+
+  reorderPinnedObjects: (orderedIds: string[]) =>
+    ipcRenderer.invoke('typenote:reorderPinnedObjects', orderedIds),
+
   // Settings operations
   getSettings: () => ipcRenderer.invoke('typenote:getSettings'),
 
@@ -132,6 +144,12 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   }) => ipcRenderer.invoke('typenote:updateSettings', updates),
 
   resetSettings: () => ipcRenderer.invoke('typenote:resetSettings'),
+
+  // Trash operations
+  listDeletedObjects: (options?: { limit?: number; typeKey?: string }) =>
+    ipcRenderer.invoke('typenote:listDeletedObjects', options),
+
+  restoreObject: (objectId: string) => ipcRenderer.invoke('typenote:restoreObject', objectId),
 
   // Event subscription
   onEvent: (callback: (event: TypenoteEvent) => void) => {

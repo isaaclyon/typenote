@@ -60,3 +60,26 @@ export interface SidebarTypesListProps {
   className?: string;
   children?: React.ReactNode;
 }
+
+// Pinned item
+export interface SidebarPinnedItemProps {
+  id: string;
+  icon: LucideIcon;
+  label: string;
+  color?: string;
+  selected?: boolean;
+  onClick?: () => void;
+}
+
+// Pinned section
+export interface SidebarPinnedSectionProps {
+  items: Array<{
+    id: string;
+    title: string;
+    typeKey: string;
+    color?: string;
+  }>;
+  onReorder: (orderedIds: string[]) => void;
+  onSelect: (id: string) => void;
+  selectedId?: string | null;
+}
