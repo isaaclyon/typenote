@@ -2,7 +2,7 @@
 
 Based on my exploration, here's what you'd hand to a developer to build Capacities from scratch.
 
-**Last Updated:** 2026-01-14
+**Last Updated:** 2026-01-15 (updateObject unblocks "Change object type")
 
 ## Status Legend
 
@@ -27,12 +27,12 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | **5. Task Management**    |   100%   |    0%    |   50%    |
 | **6. Command Palette**    |   100%   |   90%    |   95%    |
 | **7. AI Assistant**       |    0%    |    0%    |    0%    |
-| **8. Settings & Config**  |   50%    |    0%    |   25%    |
+| **8. Settings & Config**  |   60%    |    0%    |   30%    |
 | **9. Integrations**       |   60%    |    0%    |   30%    |
 | **10. Sharing & Collab**  |   50%    |   25%    |   37%    |
 | **11. System Features**   |   85%    |   28%    |   56%    |
 | **12. UI Components**     |   N/A    |   45%    |   45%    |
-| **OVERALL**               | **~65%** | **~25%** | **~45%** |
+| **OVERALL**               | **~66%** | **~25%** | **~45%** |
 
 ---
 
@@ -351,14 +351,14 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### General Settings
 
-| Feature                   | Backend | Frontend | Notes                    |
-| ------------------------- | :-----: | :------: | ------------------------ |
-| Account management        |   ❌    |    ❌    | No user/auth system      |
-| Editor preferences        |   ❌    |    ❌    | No settings persistence  |
-| Appearance (theme)        |   N/A   |    ❌    | Basic Tailwind, no theme |
-| Language                  |   ❌    |    ❌    | Not implemented          |
-| Date & Time format        |   ❌    |    ❌    | Not implemented          |
-| Password & Authentication |   ❌    |    ❌    | No auth system           |
+| Feature                   | Backend | Frontend | Notes                                             |
+| ------------------------- | :-----: | :------: | ------------------------------------------------- |
+| Account management        |   ❌    |    ❌    | No user/auth system                               |
+| Editor preferences        |   ✅    |    🔧    | settingsService.ts complete (115 lines), IPC only |
+| Appearance (theme)        |   N/A   |    ❌    | Basic Tailwind, no theme                          |
+| Language                  |   ❌    |    ❌    | Not implemented                                   |
+| Date & Time format        |   ❌    |    ❌    | Not implemented                                   |
+| Password & Authentication |   ❌    |    ❌    | No auth system                                    |
 
 ### Space Settings
 
@@ -393,6 +393,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 - Object Type Service: `packages/storage/src/objectTypeService.ts`
 - Export Service: `packages/storage/src/exportService.ts`
+- Settings Service: `packages/storage/src/settingsService.ts` (complete)
 
 ---
 
@@ -435,7 +436,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Share (public link) |   ❌    |    ❌    | Not implemented                                                                            |
 | Pin to sidebar      |   ✅    |    ✅    | Complete with drag-to-reorder (pinnedObjectsService, 11 tests, UI in SidebarPinnedSection) |
 | Duplicate objects   |   ✅    |    🔧    | Complete backend (duplicateObjectService, 19 tests), no UI - internal ref remapping works  |
-| Change object type  |   ❌    |    ❌    | No implementation - no updateObject() or type conversion                                   |
+| Change object type  |   ✅    |    ❌    | Backend complete (updateObject with property migration), needs UI                          |
 
 ---
 
@@ -443,13 +444,13 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Data Management
 
-| Feature                  | Backend | Frontend | Notes                           |
-| ------------------------ | :-----: | :------: | ------------------------------- |
-| Trash (soft delete)      |   ✅    |    ❌    | `deletedAt` on objects/blocks   |
-| Restore from trash       |   ❌    |    ❌    | No undelete function            |
-| Offline capability       |   ✅    |    ✅    | SQLite local, no network needed |
-| Cloud sync               |   ❌    |    ❌    | No sync layer                   |
-| Local-first architecture |   ✅    |    ✅    | SQLite in main process          |
+| Feature                  | Backend | Frontend | Notes                                                                                    |
+| ------------------------ | :-----: | :------: | ---------------------------------------------------------------------------------------- |
+| Trash (soft delete)      |   ✅    |    ❌    | `deletedAt` on objects/blocks                                                            |
+| Restore from trash       |   ✅    |    🔧    | Complete backend (trashService with listDeletedObjects + restoreObject, 13 tests), no UI |
+| Offline capability       |   ✅    |    ✅    | SQLite local, no network needed                                                          |
+| Cloud sync               |   ❌    |    ❌    | No sync layer                                                                            |
+| Local-first architecture |   ✅    |    ✅    | SQLite in main process                                                                   |
 
 ### Performance
 
@@ -554,6 +555,9 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Object Types         | `packages/storage/src/objectTypeService.ts`           |
 | Tasks                | `packages/storage/src/taskService.ts`                 |
 | Daily Notes          | `packages/storage/src/dailyNoteService.ts`            |
+| Pinned Objects       | `packages/storage/src/pinnedObjectsService.ts`        |
+| Duplicate Objects    | `packages/storage/src/duplicateObjectService.ts`      |
+| Trash & Restore      | `packages/storage/src/trashService.ts`                |
 | Export/Import        | `packages/storage/src/exportService.ts`               |
 | Search               | `packages/storage/src/search.ts`                      |
 | Content Schema       | `packages/api/src/notateDoc.ts`                       |
