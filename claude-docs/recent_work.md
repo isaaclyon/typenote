@@ -1,6 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-14 - TypeBrowser Phase 2 Complete)
+## Latest Session (2026-01-14 - Pinning Feature + Trash Service)
+
+Completed two backend features: object pinning/favorites and restore from trash functionality.
+
+**Key accomplishments:**
+
+1. **Object Pinning Feature** — Full pinning system for sidebar quick access
+   - `pinnedObjects` table with manual sorting via `order` column
+   - `pinnedObjectsService` with pin/unpin/reorder/isPinned functions
+   - IPC handlers and preload API integration
+   - `SidebarPinnedItem` and `SidebarPinnedSection` design-system components
+   - Right-click context menu for pin/unpin on object cards
+   - 54 tests (31 API + 23 storage service)
+   - Commit: `ae7ca66`
+
+2. **Trash Service (TDD)** — Restore soft-deleted objects with full re-indexing
+   - `listDeletedObjects()` — Query deleted objects with limit/typeKey filters
+   - `restoreObject()` — Clear deletedAt, restore blocks, re-index FTS and refs atomically
+   - `TrashServiceError` with OBJECT_NOT_FOUND error code
+   - `object:restored` event type for UI notifications
+   - 14 comprehensive tests covering FTS/refs re-indexing edge cases
+   - Commit: `0f39751`
+
+**Other commits:**
+
+- `ab37f42` test(storage): add Phase 6 edge case tests for duplicateObject
+- `b9dd229` feat(storage): add error validation for duplicateObject (Phase 5)
+- `cecfe19` feat(storage): add internal ref remapping to duplicateObject
+- `4a7ad56` fix(storage): handle null properties in duplicateObject service
+- `9dddd91` feat(storage): add duplicateObject service (Phase 3 - TDD happy path)
+- `4596648` feat(api): add INVARIANT_DAILY_NOTE_NOT_DUPLICABLE error code
+
+---
+
+## Previous Session (2026-01-14 - TypeBrowser Phase 2 Complete)
 
 Implemented row virtualization and sticky column pinning for TypeBrowser.
 
@@ -153,23 +187,26 @@ Built the TypeBrowser data table component using TanStack Table. Phase 1: sortin
 
 ## Completed Milestones
 
-| Phase       | Description                                    | Date       |
-| ----------- | ---------------------------------------------- | ---------- |
-| 0-7         | Core Bootstrap Phases                          | 2026-01-04 |
-| Template    | Template System (7 phases)                     | 2026-01-06 |
-| Tags        | Global Tags System (5 phases)                  | 2026-01-07 |
-| Tasks       | Task Management (built-in + service)           | 2026-01-08 |
-| Inheritance | Object Type Inheritance (4 days)               | 2026-01-08 |
-| CLI         | Full CLI command coverage                      | 2026-01-08 |
-| E2E Fixes   | Fixed 21 test failures (blockIds)              | 2026-01-08 |
-| Design      | Left Sidebar Navigation organism               | 2026-01-10 |
-| Recent      | Recent Objects Tracking (LRU cache)            | 2026-01-10 |
-| Testing     | Mutation testing improvements                  | 2026-01-10 |
-| Attachments | Complete system - Phases 1-9 (190+ tests)      | 2026-01-10 |
-| CLI Gaps    | Daily/calendar/template/move commands          | 2026-01-10 |
-| HTTP API    | REST API for local integrations (10 endpoints) | 2026-01-11 |
-| AppShell    | Full experience stories + RefNode/slash fixes  | 2026-01-12 |
-| TypeBrowser | Phase 1: Data table with sort/select/edit      | 2026-01-13 |
-| TypeBrowser | Phase 3: Rich cell types (date/select/multi)   | 2026-01-13 |
-| TypeBrowser | Phase 2: Virtualization + column pinning       | 2026-01-14 |
-| Colors      | Color centralization (semantic + demo colors)  | 2026-01-14 |
+| Phase       | Description                                     | Date       |
+| ----------- | ----------------------------------------------- | ---------- |
+| 0-7         | Core Bootstrap Phases                           | 2026-01-04 |
+| Template    | Template System (7 phases)                      | 2026-01-06 |
+| Tags        | Global Tags System (5 phases)                   | 2026-01-07 |
+| Tasks       | Task Management (built-in + service)            | 2026-01-08 |
+| Inheritance | Object Type Inheritance (4 days)                | 2026-01-08 |
+| CLI         | Full CLI command coverage                       | 2026-01-08 |
+| E2E Fixes   | Fixed 21 test failures (blockIds)               | 2026-01-08 |
+| Design      | Left Sidebar Navigation organism                | 2026-01-10 |
+| Recent      | Recent Objects Tracking (LRU cache)             | 2026-01-10 |
+| Testing     | Mutation testing improvements                   | 2026-01-10 |
+| Attachments | Complete system - Phases 1-9 (190+ tests)       | 2026-01-10 |
+| CLI Gaps    | Daily/calendar/template/move commands           | 2026-01-10 |
+| HTTP API    | REST API for local integrations (10 endpoints)  | 2026-01-11 |
+| AppShell    | Full experience stories + RefNode/slash fixes   | 2026-01-12 |
+| TypeBrowser | Phase 1: Data table with sort/select/edit       | 2026-01-13 |
+| TypeBrowser | Phase 3: Rich cell types (date/select/multi)    | 2026-01-13 |
+| TypeBrowser | Phase 2: Virtualization + column pinning        | 2026-01-14 |
+| Colors      | Color centralization (semantic + demo colors)   | 2026-01-14 |
+| Pinning     | Object pinning/favorites for sidebar (54 tests) | 2026-01-14 |
+| Trash       | Restore from trash with FTS/refs re-index (TDD) | 2026-01-14 |
+| Duplicate   | duplicateObject service (6 phases, edge cases)  | 2026-01-14 |

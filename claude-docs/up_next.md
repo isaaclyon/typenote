@@ -162,6 +162,18 @@ Full attachment system with content-addressed storage, global deduplication, and
 
 ## Recently Completed
 
+### Pinning Feature ✅ (2026-01-14)
+
+Object pinning/favorites system for sidebar quick access with drag-and-drop reordering. 54 tests (31 API + 23 storage service). Commit: `ae7ca66`
+
+### Trash Service ✅ (2026-01-14)
+
+Restore soft-deleted objects with full FTS and refs re-indexing. TDD implementation (RED→GREEN→REFACTOR). `listDeletedObjects()` and `restoreObject()` functions. 14 comprehensive tests. Commit: `0f39751`
+
+### Duplicate Object Service ✅ (2026-01-14)
+
+`duplicateObject()` service with 6 implementation phases covering happy path, edge cases, property handling, internal ref remapping, and error validation. Commits: `4596648`→`ab37f42`
+
 ### HTTP Server REST API ✅ (2026-01-11)
 
 Complete `@typenote/http-server` package with Hono framework. 10 endpoints for local third-party integrations (Raycast, Alfred, scripts). Integrated into Electron main process. 38 tests. Commits: `16f0e21`, `87079b9`, `316abf3`, `d8fc26f`, `cb5eb94`
