@@ -236,3 +236,296 @@ export function createObject(
     updatedAt: now,
   };
 }
+
+// ============================================================================
+// Update Object
+// ============================================================================
+
+export type UpdateObjectErrorCode =
+  | 'NOT_FOUND'
+  | 'TYPE_NOT_FOUND'
+  | 'VALIDATION_FAILED'
+  | 'CONFLICT_VERSION'
+  | 'PROPERTY_TYPE_MISMATCH';
+
+export const UpdateObjectError = createServiceError<UpdateObjectErrorCode>('UpdateObjectError');
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- Intentional type/value namespace sharing
+export type UpdateObjectError = InstanceType<typeof UpdateObjectError>;
+
+export interface UpdateObjectOptions {
+  objectId: string;
+  baseDocVersion?: number | undefined;
+  patch: {
+    title?: string | undefined;
+    typeKey?: string | undefined;
+    properties?: Record<string, unknown> | undefined;
+  };
+  propertyMapping?: Record<string, string> | undefined;
+}
+
+export interface UpdateObjectResult {
+  id: string;
+  typeId: string;
+  typeKey: string;
+  title: string;
+  properties: Record<string, unknown>;
+  docVersion: number;
+  updatedAt: Date;
+  droppedProperties?: string[];
+}
+
+/**
+ * Check if two property types are compatible for migration.
+ * Compatible means the value can be transferred without loss.
+ */
+function areTypesCompatible(sourceType: string, targetType: string): boolean {
+  if (sourceType === targetType) return true;
+
+  // text and richtext are compatible
+  if (
+    (sourceType === 'text' && targetType === 'richtext') ||
+    (sourceType === 'richtext' && targetType === 'text')
+  ) {
+    return true;
+  }
+
+  // date and datetime are compatible
+  if (
+    (sourceType === 'date' && targetType === 'datetime') ||
+    (sourceType === 'datetime' && targetType === 'date')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Migrate properties from old type to new type.
+ *
+ * @param oldProperties - Existing property values
+ * @param oldSchema - Old type's property definitions (keyed by property key)
+ * @param newSchema - New type's property definitions
+ * @param propertyMapping - Explicit mapping from old keys to new keys
+ * @returns Migrated properties and list of dropped property keys
+ */
+function migrateProperties(
+  oldProperties: Record<string, unknown>,
+  oldSchema: Map<string, { type: string }>,
+  newSchema: Map<string, { type: string }>,
+  propertyMapping?: Record<string, string>
+): { properties: Record<string, unknown>; droppedProperties: string[]; typeMismatch?: string } {
+  const newProperties: Record<string, unknown> = {};
+  const usedOldKeys = new Set<string>();
+
+  // For each property in new schema, try to find a source value
+  for (const [newKey, newDef] of newSchema) {
+    let sourceKey: string | undefined;
+    let sourceValue: unknown;
+
+    // Check explicit mapping first
+    if (propertyMapping) {
+      const mappedOldKey = Object.entries(propertyMapping).find(([, v]) => v === newKey)?.[0];
+      if (mappedOldKey && mappedOldKey in oldProperties) {
+        sourceKey = mappedOldKey;
+        sourceValue = oldProperties[mappedOldKey];
+      }
+    }
+
+    // Then check auto-mapping (same key name)
+    if (sourceKey === undefined && newKey in oldProperties) {
+      sourceKey = newKey;
+      sourceValue = oldProperties[newKey];
+    }
+
+    // If we found a source, check type compatibility
+    if (sourceKey !== undefined && sourceValue !== undefined) {
+      const sourceDef = oldSchema.get(sourceKey);
+      if (sourceDef) {
+        if (!areTypesCompatible(sourceDef.type, newDef.type)) {
+          return {
+            properties: {},
+            droppedProperties: [],
+            typeMismatch: `Cannot map '${sourceKey}' (${sourceDef.type}) to '${newKey}' (${newDef.type})`,
+          };
+        }
+        newProperties[newKey] = sourceValue;
+        usedOldKeys.add(sourceKey);
+      }
+    }
+  }
+
+  // Find dropped properties (old properties not used)
+  const droppedProperties = Object.keys(oldProperties).filter((key) => !usedOldKeys.has(key));
+
+  return { properties: newProperties, droppedProperties };
+}
+
+/**
+ * Update an existing object's metadata (title, properties, type).
+ *
+ * @param db - Database connection
+ * @param options - Update options including objectId, patch, and optional mapping
+ * @returns The updated object
+ * @throws UpdateObjectError if object not found or validation fails
+ */
+export function updateObject(db: TypenoteDb, options: UpdateObjectOptions): UpdateObjectResult {
+  const { objectId, baseDocVersion, patch, propertyMapping } = options;
+
+  // 1. Fetch existing object
+  const existing = db
+    .select({
+      id: objects.id,
+      title: objects.title,
+      typeId: objects.typeId,
+      properties: objects.properties,
+      docVersion: objects.docVersion,
+      deletedAt: objects.deletedAt,
+    })
+    .from(objects)
+    .leftJoin(objectTypes, eq(objects.typeId, objectTypes.id))
+    .where(eq(objects.id, objectId))
+    .get();
+
+  if (!existing || existing.deletedAt !== null) {
+    throw new UpdateObjectError('NOT_FOUND', `Object not found: ${objectId}`, { objectId });
+  }
+
+  // 2. Check version conflict (optimistic concurrency)
+  if (baseDocVersion !== undefined && baseDocVersion !== existing.docVersion) {
+    throw new UpdateObjectError(
+      'CONFLICT_VERSION',
+      `Version conflict: expected ${baseDocVersion}, got ${existing.docVersion}`,
+      { expected: baseDocVersion, actual: existing.docVersion }
+    );
+  }
+
+  // 3. Parse existing properties
+  let existingProperties: Record<string, unknown> = {};
+  if (existing.properties) {
+    try {
+      existingProperties = JSON.parse(existing.properties) as Record<string, unknown>;
+    } catch {
+      // If parsing fails, use empty object
+    }
+  }
+
+  // 4. Get current type info
+  const currentTypeRow = db
+    .select({ id: objectTypes.id, key: objectTypes.key, schema: objectTypes.schema })
+    .from(objectTypes)
+    .where(eq(objectTypes.id, existing.typeId))
+    .get();
+
+  let finalTypeId = existing.typeId;
+  let finalTypeKey = currentTypeRow?.key ?? 'Unknown';
+  let finalProperties = existingProperties;
+  let droppedProperties: string[] | undefined;
+
+  // 5. Handle type change if requested
+  if (patch.typeKey !== undefined) {
+    const newType = getObjectTypeByKey(db, patch.typeKey);
+    if (!newType) {
+      throw new UpdateObjectError('TYPE_NOT_FOUND', `Object type not found: ${patch.typeKey}`, {
+        typeKey: patch.typeKey,
+      });
+    }
+
+    // Build schema maps for old and new types
+    const oldSchemaMap = new Map<string, { type: string }>();
+    if (currentTypeRow?.schema) {
+      try {
+        const parsed = JSON.parse(currentTypeRow.schema) as {
+          properties?: Array<{ key: string; type: string }>;
+        };
+        for (const prop of parsed.properties ?? []) {
+          oldSchemaMap.set(prop.key, { type: prop.type });
+        }
+      } catch {
+        // Invalid schema, use empty
+      }
+    }
+
+    const newSchemaMap = new Map<string, { type: string }>();
+    if (newType.schema?.properties) {
+      for (const prop of newType.schema.properties) {
+        newSchemaMap.set(prop.key, { type: prop.type });
+      }
+    }
+
+    // Migrate properties
+    const migration = migrateProperties(
+      existingProperties,
+      oldSchemaMap,
+      newSchemaMap,
+      propertyMapping
+    );
+
+    if (migration.typeMismatch) {
+      throw new UpdateObjectError('PROPERTY_TYPE_MISMATCH', migration.typeMismatch, {
+        mapping: propertyMapping,
+      });
+    }
+
+    finalTypeId = newType.id;
+    finalTypeKey = newType.key;
+    finalProperties = migration.properties;
+    droppedProperties =
+      migration.droppedProperties.length > 0 ? migration.droppedProperties : undefined;
+
+    // Apply any additional property updates from patch (allows type change + property update in one call)
+    if (patch.properties !== undefined) {
+      finalProperties = { ...finalProperties, ...patch.properties };
+    }
+
+    // Merge with new type's defaults and validate
+    const mergedProperties = mergeWithDefaults(finalProperties, newType.schema);
+    const validationResult = validateProperties(mergedProperties, newType.schema);
+    if (!validationResult.valid) {
+      throw new UpdateObjectError(
+        'VALIDATION_FAILED',
+        `Property validation failed: ${validationResult.errors.map((e) => e.message).join(', ')}`,
+        { errors: validationResult.errors }
+      );
+    }
+    finalProperties = mergedProperties;
+  }
+
+  // 6. Merge property updates (if not changing type)
+  if (patch.typeKey === undefined && patch.properties !== undefined) {
+    finalProperties = { ...existingProperties, ...patch.properties };
+  }
+
+  // 7. Apply updates
+  const newTitle = patch.title ?? existing.title;
+  const newDocVersion = existing.docVersion + 1;
+  const now = new Date();
+
+  // 8. Update database
+  db.update(objects)
+    .set({
+      title: newTitle,
+      typeId: finalTypeId,
+      properties: JSON.stringify(finalProperties),
+      docVersion: newDocVersion,
+      updatedAt: now,
+    })
+    .where(eq(objects.id, objectId))
+    .run();
+
+  const result: UpdateObjectResult = {
+    id: existing.id,
+    typeId: finalTypeId,
+    typeKey: finalTypeKey,
+    title: newTitle,
+    properties: finalProperties,
+    docVersion: newDocVersion,
+    updatedAt: now,
+  };
+
+  if (droppedProperties !== undefined) {
+    result.droppedProperties = droppedProperties;
+  }
+
+  return result;
+}

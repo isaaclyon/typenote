@@ -31,6 +31,17 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
   duplicateObject: (objectId: string) => ipcRenderer.invoke('typenote:duplicateObject', objectId),
 
+  updateObject: (request: {
+    objectId: string;
+    baseDocVersion?: number;
+    patch: {
+      title?: string;
+      typeKey?: string;
+      properties?: Record<string, unknown>;
+    };
+    propertyMapping?: Record<string, string>;
+  }) => ipcRenderer.invoke('typenote:updateObject', request),
+
   // Tag operations
   createTag: (input: {
     name: string;

@@ -147,6 +147,11 @@ export {
   DuplicateObjectResponseSchema,
   type DuplicateObjectRequest,
   type DuplicateObjectResponse,
+  // Update operation
+  UpdateObjectRequestSchema,
+  UpdateObjectResponseSchema,
+  type UpdateObjectRequest,
+  type UpdateObjectResponse,
 } from './object.js';
 
 // Query Results

@@ -92,12 +92,17 @@ export {
   listObjects,
   getObject,
   createObject,
+  updateObject,
   CreateObjectError,
+  UpdateObjectError,
   type CreateObjectErrorCode,
+  type UpdateObjectErrorCode,
   type ObjectSummary,
   type ObjectDetails,
   type CreatedObject,
   type CreateObjectOptions,
+  type UpdateObjectOptions,
+  type UpdateObjectResult,
 } from './objectService.js';
 
 // Object Duplication Service

@@ -13,6 +13,8 @@ import {
   getUnlinkedMentionsTo as getUnlinkedMentionsToStorage,
   createObject as createObjectStorage,
   duplicateObject as duplicateObjectStorage,
+  updateObject as updateObjectStorage,
+  UpdateObjectError,
   createTag as createTagStorage,
   getTag as getTagStorage,
   updateTag as updateTagStorage,
@@ -101,6 +103,9 @@ import {
   type UploadAttachmentResult,
   type UserSettings,
   type DuplicateObjectResponse,
+  UpdateObjectRequestSchema,
+  type UpdateObjectRequest,
+  type UpdateObjectResponse,
 } from '@typenote/api';
 
 /**
@@ -205,6 +210,7 @@ export interface IpcHandlers {
     properties?: Record<string, unknown>
   ) => IpcOutcome<CreatedObject>;
   duplicateObject: (objectId: string) => IpcOutcome<DuplicateObjectResponse>;
+  updateObject: (request: UpdateObjectRequest) => IpcOutcome<UpdateObjectResponse>;
   // Tag operations
   createTag: (input: CreateTagInput) => IpcOutcome<Tag>;
   getTag: (tagId: string) => IpcOutcome<Tag | null>;
@@ -342,6 +348,57 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
         // Unexpected error type - rethrow
         throw error;
       }
+    },
+
+    updateObject: (request) => {
+      // Validate request with Zod
+      const parseResult = UpdateObjectRequestSchema.safeParse(request);
+      if (!parseResult.success) {
+        return {
+          success: false,
+          error: {
+            code: 'VALIDATION',
+            message: parseResult.error.errors[0]?.message ?? 'Validation failed',
+          },
+        };
+      }
+
+      const { objectId, baseDocVersion, patch, propertyMapping } = parseResult.data;
+
+      const outcome = handleIpcCall(
+        () =>
+          updateObjectStorage(db, {
+            objectId,
+            baseDocVersion,
+            patch,
+            propertyMapping,
+          }),
+        UpdateObjectError
+      );
+
+      if (!outcome.success) {
+        return outcome;
+      }
+
+      // Transform to API response format
+      const result = outcome.result;
+      const response: UpdateObjectResponse = {
+        object: {
+          id: result.id,
+          typeId: result.typeId,
+          typeKey: result.typeKey,
+          title: result.title,
+          properties: result.properties,
+          docVersion: result.docVersion,
+          updatedAt: result.updatedAt.toISOString(),
+        },
+      };
+
+      if (result.droppedProperties !== undefined) {
+        response.droppedProperties = result.droppedProperties;
+      }
+
+      return { success: true, result: response };
     },
 
     // Tag operations

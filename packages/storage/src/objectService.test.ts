@@ -1,7 +1,15 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTestDb, closeDb, type TypenoteDb } from './db.js';
 import { seedBuiltInTypes, createObjectType, getObjectTypeByKey } from './objectTypeService.js';
-import { listObjects, createObject, getObject, CreateObjectError } from './objectService.js';
+import {
+  listObjects,
+  createObject,
+  getObject,
+  updateObject,
+  CreateObjectError,
+  UpdateObjectError,
+} from './objectService.js';
+import { eq } from 'drizzle-orm';
 import { createTemplate } from './templateService.js';
 import { getDocument } from './getDocument.js';
 import { objects } from './schema.js';
@@ -697,6 +705,526 @@ describe('ObjectService', () => {
         make: 'Toyota',
         model: 'Camry',
         num_doors: 4,
+      });
+    });
+  });
+
+  describe('updateObject', () => {
+    it('updates an object title', () => {
+      seedBuiltInTypes(db);
+
+      // Create an object first
+      const created = createObject(db, 'Page', 'Original Title');
+      expect(created.title).toBe('Original Title');
+
+      // Update the title
+      const updated = updateObject(db, {
+        objectId: created.id,
+        patch: { title: 'Updated Title' },
+      });
+
+      // Verify the update result
+      expect(updated.id).toBe(created.id);
+      expect(updated.title).toBe('Updated Title');
+      expect(updated.typeKey).toBe('Page');
+      expect(updated.docVersion).toBe(1); // Should increment
+
+      // Verify persistence
+      const retrieved = getObject(db, created.id);
+      expect(retrieved?.title).toBe('Updated Title');
+      expect(retrieved?.docVersion).toBe(1);
+    });
+
+    it('updates object properties', () => {
+      seedBuiltInTypes(db);
+
+      // Create a Person with initial properties
+      const created = createObject(db, 'Person', 'John Doe', {
+        email: 'john@old.com',
+      });
+
+      // Update the properties
+      const updated = updateObject(db, {
+        objectId: created.id,
+        patch: { properties: { email: 'john@new.com' } },
+      });
+
+      expect(updated.properties).toEqual({ email: 'john@new.com' });
+      expect(updated.docVersion).toBe(1);
+
+      // Verify persistence
+      const retrieved = getObject(db, created.id);
+      expect(retrieved?.properties).toEqual({ email: 'john@new.com' });
+    });
+
+    it('merges partial property updates with existing properties', () => {
+      seedBuiltInTypes(db);
+
+      // Create a type with multiple properties
+      createObjectType(db, {
+        key: 'Contact',
+        name: 'Contact',
+        schema: {
+          properties: [
+            { key: 'email', name: 'Email', type: 'text', required: false },
+            { key: 'phone', name: 'Phone', type: 'text', required: false },
+          ],
+        },
+      });
+
+      const created = createObject(db, 'Contact', 'Jane', {
+        email: 'jane@example.com',
+        phone: '555-1234',
+      });
+
+      // Update only phone, email should be preserved
+      const updated = updateObject(db, {
+        objectId: created.id,
+        patch: { properties: { phone: '555-9999' } },
+      });
+
+      expect(updated.properties).toEqual({
+        email: 'jane@example.com',
+        phone: '555-9999',
+      });
+    });
+
+    it('updates both title and properties together', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Person', 'Old Name', {
+        email: 'old@email.com',
+      });
+
+      const updated = updateObject(db, {
+        objectId: created.id,
+        patch: {
+          title: 'New Name',
+          properties: { email: 'new@email.com' },
+        },
+      });
+
+      expect(updated.title).toBe('New Name');
+      expect(updated.properties).toEqual({ email: 'new@email.com' });
+    });
+
+    it('throws NOT_FOUND for non-existent object', () => {
+      seedBuiltInTypes(db);
+
+      expect(() =>
+        updateObject(db, {
+          objectId: '01JJJJJJJJJJJJJJJJJJJJJJJJ', // Non-existent ULID
+          patch: { title: 'New Title' },
+        })
+      ).toThrow(UpdateObjectError);
+
+      try {
+        updateObject(db, {
+          objectId: '01JJJJJJJJJJJJJJJJJJJJJJJJ',
+          patch: { title: 'New Title' },
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(UpdateObjectError);
+        expect((error as UpdateObjectError).code).toBe('NOT_FOUND');
+      }
+    });
+
+    it('throws NOT_FOUND for soft-deleted object', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Will Be Deleted');
+
+      // Soft delete the object
+      const now = new Date();
+      db.update(objects).set({ deletedAt: now }).where(eq(objects.id, created.id)).run();
+
+      expect(() =>
+        updateObject(db, {
+          objectId: created.id,
+          patch: { title: 'Should Fail' },
+        })
+      ).toThrow(UpdateObjectError);
+    });
+
+    it('throws CONFLICT_VERSION when baseDocVersion does not match', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Original');
+
+      // First update succeeds (version goes from 0 to 1)
+      updateObject(db, {
+        objectId: created.id,
+        patch: { title: 'Updated Once' },
+      });
+
+      // Second update with stale baseDocVersion should fail
+      expect(() =>
+        updateObject(db, {
+          objectId: created.id,
+          baseDocVersion: 0, // Stale version
+          patch: { title: 'Should Fail' },
+        })
+      ).toThrow(UpdateObjectError);
+
+      try {
+        updateObject(db, {
+          objectId: created.id,
+          baseDocVersion: 0,
+          patch: { title: 'Should Fail' },
+        });
+      } catch (error) {
+        expect((error as UpdateObjectError).code).toBe('CONFLICT_VERSION');
+      }
+    });
+
+    it('succeeds when baseDocVersion matches', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Original');
+
+      // Update with correct baseDocVersion
+      const updated = updateObject(db, {
+        objectId: created.id,
+        baseDocVersion: 0, // Matches current version
+        patch: { title: 'Updated' },
+      });
+
+      expect(updated.title).toBe('Updated');
+      expect(updated.docVersion).toBe(1);
+    });
+
+    it('returns empty droppedProperties when no properties change', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'My Page');
+
+      const updated = updateObject(db, {
+        objectId: created.id,
+        patch: { title: 'New Title' },
+      });
+
+      // No type change, no droppedProperties
+      expect(updated.droppedProperties).toBeUndefined();
+    });
+
+    describe('type change', () => {
+      it('changes object type', () => {
+        seedBuiltInTypes(db);
+
+        // Create types with different schemas
+        createObjectType(db, {
+          key: 'Article',
+          name: 'Article',
+          schema: {
+            properties: [{ key: 'author', name: 'Author', type: 'text', required: false }],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'BlogPost',
+          name: 'Blog Post',
+          schema: {
+            properties: [{ key: 'author', name: 'Author', type: 'text', required: false }],
+          },
+        });
+
+        const created = createObject(db, 'Article', 'My Article', { author: 'John' });
+        expect(created.typeKey).toBe('Article');
+
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: { typeKey: 'BlogPost' },
+        });
+
+        expect(updated.typeKey).toBe('BlogPost');
+        expect(updated.properties).toEqual({ author: 'John' }); // Auto-mapped same key
+      });
+
+      it('auto-maps properties with same key name', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'TypeA',
+          name: 'Type A',
+          schema: {
+            properties: [
+              { key: 'name', name: 'Name', type: 'text', required: false },
+              { key: 'email', name: 'Email', type: 'text', required: false },
+            ],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'TypeB',
+          name: 'Type B',
+          schema: {
+            properties: [
+              { key: 'name', name: 'Name', type: 'text', required: false },
+              { key: 'phone', name: 'Phone', type: 'text', required: false },
+            ],
+          },
+        });
+
+        const created = createObject(db, 'TypeA', 'Test', {
+          name: 'John',
+          email: 'john@example.com',
+        });
+
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: { typeKey: 'TypeB' },
+        });
+
+        // name should be auto-mapped (same key), email should be dropped
+        expect(updated.properties).toEqual({ name: 'John' });
+        expect(updated.droppedProperties).toContain('email');
+      });
+
+      it('uses explicit propertyMapping for different key names', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'OldFormat',
+          name: 'Old Format',
+          schema: {
+            properties: [{ key: 'user_email', name: 'User Email', type: 'text', required: false }],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'NewFormat',
+          name: 'New Format',
+          schema: {
+            properties: [
+              { key: 'contact_email', name: 'Contact Email', type: 'text', required: false },
+            ],
+          },
+        });
+
+        const created = createObject(db, 'OldFormat', 'Test', {
+          user_email: 'user@example.com',
+        });
+
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: { typeKey: 'NewFormat' },
+          propertyMapping: { user_email: 'contact_email' },
+        });
+
+        expect(updated.properties).toEqual({ contact_email: 'user@example.com' });
+        expect(updated.droppedProperties).toBeUndefined();
+      });
+
+      it('throws PROPERTY_TYPE_MISMATCH for incompatible type mapping', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'TextType',
+          name: 'Text Type',
+          schema: {
+            properties: [{ key: 'value', name: 'Value', type: 'text', required: false }],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'NumberType',
+          name: 'Number Type',
+          schema: {
+            properties: [{ key: 'value', name: 'Value', type: 'number', required: false }],
+          },
+        });
+
+        const created = createObject(db, 'TextType', 'Test', { value: 'hello' });
+
+        // Auto-mapping 'value' (text) to 'value' (number) should fail
+        expect(() =>
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'NumberType' },
+          })
+        ).toThrow(UpdateObjectError);
+
+        try {
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'NumberType' },
+          });
+        } catch (error) {
+          expect((error as UpdateObjectError).code).toBe('PROPERTY_TYPE_MISMATCH');
+        }
+      });
+
+      it('throws TYPE_NOT_FOUND for non-existent type', () => {
+        seedBuiltInTypes(db);
+
+        const created = createObject(db, 'Page', 'My Page');
+
+        expect(() =>
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'NonExistentType' },
+          })
+        ).toThrow(UpdateObjectError);
+
+        try {
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'NonExistentType' },
+          });
+        } catch (error) {
+          expect((error as UpdateObjectError).code).toBe('TYPE_NOT_FOUND');
+        }
+      });
+
+      it('returns droppedProperties for unmapped properties', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'Full',
+          name: 'Full',
+          schema: {
+            properties: [
+              { key: 'a', name: 'A', type: 'text', required: false },
+              { key: 'b', name: 'B', type: 'text', required: false },
+              { key: 'c', name: 'C', type: 'text', required: false },
+            ],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'Partial',
+          name: 'Partial',
+          schema: {
+            properties: [{ key: 'a', name: 'A', type: 'text', required: false }],
+          },
+        });
+
+        const created = createObject(db, 'Full', 'Test', { a: '1', b: '2', c: '3' });
+
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: { typeKey: 'Partial' },
+        });
+
+        expect(updated.properties).toEqual({ a: '1' });
+        expect(updated.droppedProperties).toHaveLength(2);
+        expect(updated.droppedProperties).toContain('b');
+        expect(updated.droppedProperties).toContain('c');
+      });
+
+      it('allows type change with additional property updates in one call', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'OldType',
+          name: 'Old Type',
+          schema: {
+            properties: [{ key: 'shared', name: 'Shared', type: 'text', required: false }],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'NewType',
+          name: 'New Type',
+          schema: {
+            properties: [
+              { key: 'shared', name: 'Shared', type: 'text', required: false },
+              { key: 'newProp', name: 'New Prop', type: 'text', required: false },
+            ],
+          },
+        });
+
+        const created = createObject(db, 'OldType', 'Test', { shared: 'value1' });
+
+        // Change type AND add a new property in one atomic call
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: {
+            typeKey: 'NewType',
+            properties: { newProp: 'value2' },
+          },
+        });
+
+        expect(updated.typeKey).toBe('NewType');
+        expect(updated.properties).toEqual({ shared: 'value1', newProp: 'value2' });
+      });
+
+      it('validates properties against new type schema after migration', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'OldType',
+          name: 'Old Type',
+          schema: {
+            properties: [],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'RequiredPropType',
+          name: 'Required Prop Type',
+          schema: {
+            properties: [
+              { key: 'required_field', name: 'Required Field', type: 'text', required: true },
+            ],
+          },
+        });
+
+        const created = createObject(db, 'OldType', 'Test');
+
+        // Type change should fail because new type has a required property we don't provide
+        expect(() =>
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'RequiredPropType' },
+          })
+        ).toThrow(UpdateObjectError);
+
+        try {
+          updateObject(db, {
+            objectId: created.id,
+            patch: { typeKey: 'RequiredPropType' },
+          });
+        } catch (error) {
+          expect((error as UpdateObjectError).code).toBe('VALIDATION_FAILED');
+        }
+      });
+
+      it('applies defaults from new type schema after migration', () => {
+        seedBuiltInTypes(db);
+
+        createObjectType(db, {
+          key: 'OldType',
+          name: 'Old Type',
+          schema: {
+            properties: [],
+          },
+        });
+
+        createObjectType(db, {
+          key: 'DefaultsType',
+          name: 'Defaults Type',
+          schema: {
+            properties: [
+              {
+                key: 'with_default',
+                name: 'With Default',
+                type: 'text',
+                required: false,
+                defaultValue: 'default_value',
+              },
+            ],
+          },
+        });
+
+        const created = createObject(db, 'OldType', 'Test');
+
+        const updated = updateObject(db, {
+          objectId: created.id,
+          patch: { typeKey: 'DefaultsType' },
+        });
+
+        expect(updated.properties).toEqual({ with_default: 'default_value' });
       });
     });
   });
