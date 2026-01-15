@@ -5,6 +5,8 @@ import { search } from './routes/search.js';
 import { recent } from './routes/recent.js';
 import { health } from './routes/health.js';
 import { dailyNotes } from './routes/daily-notes.js';
+import { tags } from './routes/tags.js';
+import { trash } from './routes/trash.js';
 import type { ServerContext } from './types.js';
 
 /**
@@ -20,6 +22,8 @@ export function createRouter() {
   router.route('/search', search);
   router.route('/recent', recent);
   router.route('/daily-notes', dailyNotes);
+  router.route('/tags', tags);
+  router.route('/trash', trash);
 
   return router;
 }

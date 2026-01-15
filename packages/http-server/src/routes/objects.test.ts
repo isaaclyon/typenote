@@ -6,6 +6,8 @@ import {
   type TypenoteDb,
   seedBuiltInTypes,
   createObject,
+  createTag,
+  assignTags,
 } from '@typenote/storage';
 import { objects } from './objects.js';
 import { errorHandler, errorOnError } from '../middleware/errorHandler.js';
@@ -166,6 +168,281 @@ describe('Objects Routes', () => {
       expect(body.success).toBe(false);
       // createObject throws CreateObjectError with TYPE_NOT_FOUND
       expect(body.error.code).toBe('TYPE_NOT_FOUND');
+    });
+  });
+
+  describe('PATCH /objects/:id', () => {
+    it('updates object title', async () => {
+      const obj = createObject(db, 'Page', 'Original Title');
+
+      const res = await app.request(`/objects/${obj.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patch: { title: 'Updated Title' },
+        }),
+      });
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { title: string; docVersion: number };
+      };
+      expect(body.success).toBe(true);
+      expect(body.data.title).toBe('Updated Title');
+      expect(body.data.docVersion).toBe(1); // Incremented
+    });
+
+    it('returns 404 for non-existent object', async () => {
+      const fakeId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+
+      const res = await app.request(`/objects/${fakeId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patch: { title: 'New Title' },
+        }),
+      });
+
+      expect(res.status).toBe(404);
+    });
+
+    it('returns 409 for version conflict', async () => {
+      const obj = createObject(db, 'Page', 'Original');
+
+      const res = await app.request(`/objects/${obj.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          baseDocVersion: 999, // Wrong version
+          patch: { title: 'Updated' },
+        }),
+      });
+
+      expect(res.status).toBe(409);
+      const body = (await res.json()) as {
+        success: boolean;
+        error: { code: string };
+      };
+      expect(body.error.code).toBe('CONFLICT_VERSION');
+    });
+  });
+
+  describe('DELETE /objects/:id', () => {
+    it('soft-deletes an object', async () => {
+      const obj = createObject(db, 'Page', 'To Delete');
+
+      const res = await app.request(`/objects/${obj.id}`, {
+        method: 'DELETE',
+      });
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { id: string; deletedAt: string };
+      };
+      expect(body.success).toBe(true);
+      expect(body.data.id).toBe(obj.id);
+      expect(body.data.deletedAt).toBeDefined();
+
+      // Verify object is no longer in the list (listObjects filters deleted)
+      const listRes = await app.request('/objects');
+      const listBody = (await listRes.json()) as {
+        data: Array<{ id: string }>;
+      };
+      const ids = listBody.data.map((o) => o.id);
+      expect(ids).not.toContain(obj.id);
+    });
+
+    it('returns 404 for non-existent object', async () => {
+      const fakeId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+
+      const res = await app.request(`/objects/${fakeId}`, {
+        method: 'DELETE',
+      });
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('POST /objects/:id/duplicate', () => {
+    it('duplicates an object', async () => {
+      const obj = createObject(db, 'Page', 'Original');
+
+      const res = await app.request(`/objects/${obj.id}/duplicate`, {
+        method: 'POST',
+      });
+
+      expect(res.status).toBe(201);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { object: { id: string; title: string }; blockCount: number };
+      };
+      expect(body.success).toBe(true);
+      expect(body.data.object.title).toBe('Original (Copy)');
+      expect(body.data.object.id).not.toBe(obj.id);
+    });
+
+    it('returns 404 for non-existent object', async () => {
+      const fakeId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+
+      const res = await app.request(`/objects/${fakeId}/duplicate`, {
+        method: 'POST',
+      });
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('GET /objects/:id/tags', () => {
+    it('returns empty array when no tags assigned', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+
+      const res = await app.request(`/objects/${obj.id}/tags`);
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: unknown[];
+      };
+      expect(body.success).toBe(true);
+      expect(body.data).toEqual([]);
+    });
+
+    it('returns assigned tags', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+      const tag = createTag(db, { name: 'Important', slug: 'important' });
+      assignTags(db, { objectId: obj.id, tagIds: [tag.id] });
+
+      const res = await app.request(`/objects/${obj.id}/tags`);
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: Array<{ id: string; name: string }>;
+      };
+      expect(body.data).toHaveLength(1);
+      expect(body.data[0]?.name).toBe('Important');
+    });
+  });
+
+  describe('POST /objects/:id/tags', () => {
+    it('assigns tags to object', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+      const tag = createTag(db, { name: 'Work', slug: 'work' });
+
+      const res = await app.request(`/objects/${obj.id}/tags`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tagIds: [tag.id],
+        }),
+      });
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { assignedTagIds: string[]; skippedTagIds: string[] };
+      };
+      expect(body.success).toBe(true);
+      expect(body.data.assignedTagIds).toContain(tag.id);
+    });
+
+    it('is idempotent - skips already assigned tags', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+      const tag = createTag(db, { name: 'Work', slug: 'work' });
+      assignTags(db, { objectId: obj.id, tagIds: [tag.id] });
+
+      const res = await app.request(`/objects/${obj.id}/tags`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tagIds: [tag.id],
+        }),
+      });
+
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { assignedTagIds: string[]; skippedTagIds: string[] };
+      };
+      expect(body.data.skippedTagIds).toContain(tag.id);
+      expect(body.data.assignedTagIds).toHaveLength(0);
+    });
+  });
+
+  describe('DELETE /objects/:id/tags', () => {
+    it('removes tags from object', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+      const tag = createTag(db, { name: 'Work', slug: 'work' });
+      assignTags(db, { objectId: obj.id, tagIds: [tag.id] });
+
+      const res = await app.request(`/objects/${obj.id}/tags`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tagIds: [tag.id],
+        }),
+      });
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: { removedTagIds: string[] };
+      };
+      expect(body.data.removedTagIds).toContain(tag.id);
+
+      // Verify tag is removed
+      const getRes = await app.request(`/objects/${obj.id}/tags`);
+      const getBody = (await getRes.json()) as { data: unknown[] };
+      expect(getBody.data).toHaveLength(0);
+    });
+  });
+
+  describe('GET /objects/:id/backlinks', () => {
+    it('returns empty array when no backlinks', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+
+      const res = await app.request(`/objects/${obj.id}/backlinks`);
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: unknown[];
+      };
+      expect(body.success).toBe(true);
+      expect(body.data).toEqual([]);
+    });
+
+    it('returns 404 for non-existent object', async () => {
+      const fakeId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+
+      const res = await app.request(`/objects/${fakeId}/backlinks`);
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('GET /objects/:id/unlinked-mentions', () => {
+    it('returns empty array when no mentions', async () => {
+      const obj = createObject(db, 'Page', 'Test');
+
+      const res = await app.request(`/objects/${obj.id}/unlinked-mentions`);
+
+      expect(res.status).toBe(200);
+      const body = (await res.json()) as {
+        success: boolean;
+        data: unknown[];
+      };
+      expect(body.success).toBe(true);
+      expect(body.data).toEqual([]);
+    });
+
+    it('returns 404 for non-existent object', async () => {
+      const fakeId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
+
+      const res = await app.request(`/objects/${fakeId}/unlinked-mentions`);
+
+      expect(res.status).toBe(404);
     });
   });
 });

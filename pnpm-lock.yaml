@@ -384,6 +384,9 @@ importers:
       '@typenote/storage':
         specifier: workspace:*
         version: link:../storage
+      drizzle-orm:
+        specifier: ^0.38.4
+        version: 0.38.4(@types/better-sqlite3@7.6.13)(@types/react@19.2.7)(better-sqlite3@11.10.0)(react@19.2.3)
       hono:
         specifier: ^4.6.14
         version: 4.11.3

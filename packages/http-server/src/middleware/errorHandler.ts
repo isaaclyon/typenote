@@ -21,6 +21,17 @@ const ERROR_CODE_TO_HTTP_STATUS: Record<string, ContentfulStatusCode> = {
   FILE_TOO_LARGE: 413,
   UNSUPPORTED_FILE_TYPE: 415,
   INTERNAL: 500,
+  // TagService error codes
+  TAG_NOT_FOUND: 404,
+  TAG_SLUG_EXISTS: 409,
+  TAG_IN_USE: 409,
+  // TrashService error codes
+  OBJECT_NOT_FOUND: 404,
+  // UpdateObjectService error codes
+  NOT_FOUND: 404,
+  PROPERTY_TYPE_MISMATCH: 400,
+  // DuplicateObjectService error codes
+  INVARIANT_DAILY_NOTE_NOT_DUPLICABLE: 400,
 };
 
 interface ServiceErrorLike {
