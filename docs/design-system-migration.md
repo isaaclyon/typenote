@@ -6,9 +6,9 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 26     | 79%        |
+| ✅ Migrated              | 29     | 88%        |
 | 🟡 Ready for Integration | 0      | 0%         |
-| 🟠 Major Refactor        | 5      | 15%        |
+| 🟠 Major Refactor        | 2      | 6%         |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
 
@@ -48,6 +48,14 @@ Drop-in components already used in the desktop app.
   - Includes: CommandPaletteInput, CommandPaletteItem, CommandPaletteList, CommandPaletteGroup, CommandPaletteEmpty, CommandPaletteLoading, CommandPaletteSeparator
 - [x] **AppShell** — Main app layout wrapper with collapsible sidebars
   - Includes: ContentArea, SidebarCollapseButton, useCollapsibleSidebar
+- [x] **Sidebar** — Full left sidebar with type list, pinning, search, calendar
+  - Includes: SidebarTypeItem, SidebarTypesList, SidebarSearchTrigger, SidebarPinnedSection, SidebarActionButton, SidebarCalendarButton, SidebarNewTypeButton, SidebarPinnedItem
+  - Status: Fully integrated in LeftSidebar.tsx with useTypeCounts and usePinnedObjects hooks (2026-01-15)
+- [x] **RightSidebar** — Metadata panel for object properties
+  - Status: Fully integrated in PropertiesPanel.tsx with property display and tag management (2026-01-15)
+- [x] **TypeBrowser** — Rich table view for object collections
+  - Includes: ColumnPinMenu
+  - Status: Fully integrated with sorting, virtualization, and IPC wiring (2026-01-15)
 
 ---
 
@@ -59,24 +67,15 @@ Drop-in components already used in the desktop app.
 
 ## Tier 3: Major Refactors 🟠
 
-Organism-level components requiring architectural changes. Do after Tier 2.
-
-- [ ] **Sidebar** (~1-2 days) — Full left sidebar replacement
-  - Includes: SidebarTypeItem, SidebarTypesList, SidebarSection, SidebarSearchTrigger, SidebarActionButton, SidebarCalendarButton, SidebarNewTypeButton, SidebarPinnedItem
-  - Note: Pinning UI complete, needs type list wiring
-
-- [ ] **RightSidebar** (~1 day) — Metadata panel for object properties
+Remaining organism-level components requiring architectural changes.
 
 - [ ] **InteractiveEditor** (~2-3 days) — Replace `NoteEditor.tsx` + custom extensions
   - Includes: RefNode, TagNode, SlashCommand, and other TipTap extensions
-  - Note: Full TipTap integration already built
+  - Note: Full TipTap integration already built, needs desktop app integration
 
 - [ ] **EditorPreview** (~1-2 days) — Read-only editor preview
   - Includes: AttachmentNode, CalloutNode, CodeBlock, MathBlock, MathInline, RefNode, TagNode
-
-- [ ] **TypeBrowser** (~1 day) — Rich table view for object collections
-  - Includes: ColumnPinMenu
-  - Note: Phase 1-3 complete with sorting, virtualization
+  - Note: Component exists, needs integration into object list views
 
 ---
 

@@ -110,6 +110,14 @@ pkg package *args:
     pnpm --filter @typenote/{{package}} {{args}}
 
 # ─────────────────────────────────────────────────
+# Audit & Analysis
+# ─────────────────────────────────────────────────
+
+# Audit design system migration status
+audit-design-system:
+    pnpm exec tsx scripts/audit-design-system.ts
+
+# ─────────────────────────────────────────────────
 # Git shortcuts
 # ─────────────────────────────────────────────────
 
