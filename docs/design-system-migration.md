@@ -6,8 +6,8 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 21     | 64%        |
-| 🟡 Ready for Integration | 4      | 12%        |
+| ✅ Migrated              | 25     | 76%        |
+| 🟡 Ready for Integration | 0      | 0%         |
 | 🟠 Major Refactor        | 6      | 18%        |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
@@ -29,41 +29,29 @@ Drop-in components already used in the desktop app.
 - [x] **CollapsibleSection** — `BacklinksSection.tsx`, `UnlinkedMentionsSection.tsx`
 - [x] **SidebarPinnedSection** — `App.tsx`
 - [x] **Toast** — Wired via Sonner in `App.tsx`
-
----
-
-## Tier 2: Ready for Integration 🟡
-
-Complete implementations with Ladle stories. Need IPC wiring or minor integration work.
-
-### High Priority
-
 - [x] **DailyNoteNav** — Replaced custom `DailyNoteNavigation.tsx` with design-system component
 - [x] **SettingsModal** — Wired to useSettings hook with optimistic updates
   - Includes: SettingsSection, SettingsRow, Select, Switch
-
-### Medium Priority
-
+- [x] **Select** — Used in `SettingsModalWrapper.tsx` for all dropdown settings
+- [x] **Switch** — Used in `SettingsModalWrapper.tsx` for toggle settings
+- [x] **Input** — Used in `TagPickerModal.tsx` for tag search
 - [x] **SaveStatus** — Connected to editor save state via useAutoSave hook
 - [x] **PropertyItem** — Displaying Created, Modified, Type in PropertiesPanel
 - [x] **PropertyTags** — Full tag management (add + remove) via TagPickerModal
 - [x] **Modal** — Used for TagPickerModal
   - Includes: ModalHeader, ModalContent, ModalFooter
-- [ ] **Select** — Form control component
-- [ ] **Switch** — For settings toggles
-- [ ] **Input** — Text input primitive
 - [x] **Text** — Adopted in TypeBrowserView, PropertiesPanel, CalendarSidebar, CalendarHeader
 - [x] **Tag** — Used in PropertiesPanel with removal support
-- [x] **TagAddButton** — Used in PropertiesPanel (add functionality pending)
-
-### Low Priority
-
+- [x] **TagAddButton** — Used in PropertiesPanel
 - [x] **MiniCalendar** — Integrated into LeftSidebar for daily note navigation
+- [x] **CommandPalette** — Full implementation with keyboard navigation
+  - Includes: CommandPaletteInput, CommandPaletteItem, CommandPaletteList, CommandPaletteGroup, CommandPaletteEmpty, CommandPaletteLoading, CommandPaletteSeparator
 
-### Already Wired
+---
 
-- [x] **CommandPalette** — Already wired, tests complete
-  - Includes: CommandPaletteInput, CommandPaletteItem, CommandPaletteList
+## Tier 2: Ready for Integration 🟡
+
+**All components from this tier have been migrated! 🎉**
 
 ---
 
