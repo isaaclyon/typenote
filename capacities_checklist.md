@@ -2,7 +2,7 @@
 
 Based on my exploration, here's what you'd hand to a developer to build Capacities from scratch.
 
-**Last Updated:** 2026-01-10
+**Last Updated:** 2026-01-14
 
 ## Status Legend
 
@@ -29,8 +29,8 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | **7. AI Assistant**       |    0%    |    0%    |    0%    |
 | **8. Settings & Config**  |   50%    |    0%    |   25%    |
 | **9. Integrations**       |   60%    |    0%    |   30%    |
-| **10. Sharing & Collab**  |   10%    |    0%    |    5%    |
-| **11. System Features**   |   70%    |   10%    |   40%    |
+| **10. Sharing & Collab**  |   50%    |   25%    |   37%    |
+| **11. System Features**   |   85%    |   28%    |   56%    |
 | **12. UI Components**     |   N/A    |   45%    |   45%    |
 | **OVERALL**               | **~65%** | **~25%** | **~45%** |
 
@@ -163,18 +163,18 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Sidebar
 
-| Feature                           | Backend | Frontend | Notes                              |
-| --------------------------------- | :-----: | :------: | ---------------------------------- |
-| Workspace switcher (top)          |   ❌    |    ❌    | No multi-workspace support         |
-| Calendar shortcut                 |   N/A   |    ❌    | No sidebar shortcuts               |
-| Tasks shortcut                    |   N/A   |    ❌    | No sidebar shortcuts               |
-| Pinned items section              |   ❌    |    ❌    | No pinning mechanism               |
-| Object Types section (expandable) |   ✅    |    ❌    | Types queryable, not grouped in UI |
-| "Add section" capability          |   ❌    |    ❌    | Static sidebar                     |
-| Bottom utilities                  |   N/A   |    ❌    | No utilities section               |
-| Settings gear icon                |   N/A   |    ❌    | No settings UI                     |
-| Dark mode toggle                  |   N/A   |    ❌    | No theme system                    |
-| User profile                      |   ❌    |    ❌    | No user/auth system                |
+| Feature                           | Backend | Frontend | Notes                                                               |
+| --------------------------------- | :-----: | :------: | ------------------------------------------------------------------- |
+| Workspace switcher (top)          |   ❌    |    ❌    | No multi-workspace support                                          |
+| Calendar shortcut                 |   N/A   |    ❌    | No sidebar shortcuts                                                |
+| Tasks shortcut                    |   N/A   |    ❌    | No sidebar shortcuts                                                |
+| Pinned items section              |   ✅    |    ✅    | Full pinning/favorites with drag-to-reorder (11 tests, UI complete) |
+| Object Types section (expandable) |   ✅    |    ❌    | Types queryable, not grouped in UI                                  |
+| "Add section" capability          |   ❌    |    ❌    | Static sidebar                                                      |
+| Bottom utilities                  |   N/A   |    ❌    | No utilities section                                                |
+| Settings gear icon                |   N/A   |    ❌    | No settings UI                                                      |
+| Dark mode toggle                  |   N/A   |    ❌    | No theme system                                                     |
+| User profile                      |   ❌    |    ❌    | No user/auth system                                                 |
 
 **Current Sidebar:** Fixed 264px width, TypeNote header, "Create Daily Note" button, scrollable object list.
 
@@ -430,12 +430,12 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 10. SHARING & COLLABORATION
 
-| Feature             | Backend | Frontend | Notes                                                    |
-| ------------------- | :-----: | :------: | -------------------------------------------------------- |
-| Share (public link) |   ❌    |    ❌    | Not implemented                                          |
-| Pin to sidebar      |   ❌    |    ❌    | No pinning mechanism                                     |
-| Duplicate objects   |   ❌    |    ❌    | No clone functionality                                   |
-| Change object type  |   ❌    |    ❌    | No implementation - no updateObject() or type conversion |
+| Feature             | Backend | Frontend | Notes                                                                                      |
+| ------------------- | :-----: | :------: | ------------------------------------------------------------------------------------------ |
+| Share (public link) |   ❌    |    ❌    | Not implemented                                                                            |
+| Pin to sidebar      |   ✅    |    ✅    | Complete with drag-to-reorder (pinnedObjectsService, 11 tests, UI in SidebarPinnedSection) |
+| Duplicate objects   |   ✅    |    🔧    | Complete backend (duplicateObjectService, 19 tests), no UI - internal ref remapping works  |
+| Change object type  |   ❌    |    ❌    | No implementation - no updateObject() or type conversion                                   |
 
 ---
 
