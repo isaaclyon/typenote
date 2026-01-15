@@ -22,8 +22,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 - [x] RightSidebar — PropertiesPanel showing Created/Modified/Type/Tags
 - [x] useTypeCounts hook — Type counts for sidebar (5 TDD tests)
 - [x] useSelectedObject hook — Object details for properties (7 TDD tests)
-- [ ] TypeBrowser integration — Clicking types (deferred)
-- [ ] InteractiveEditor — Replace NoteEditor + extensions (future)
+- [x] TypeBrowser integration — Fully wired with useObjectType/useObjectsByType hooks
+- [x] InteractiveEditor — Replaced NoteEditor with design-system component + callback props
 
 ### Tier 3.5 CommandPalette Enhancement ✅ COMPLETE (2026-01-15)
 
@@ -48,10 +48,13 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 ### Next Steps
 
-- [ ] TypeBrowser integration — Clicking type in sidebar opens TypeBrowser
-  - Fixed: Rules of Hooks bug (`columnDefMap` useMemo after early returns)
-  - In progress: Integration in desktop app (uncommitted work in `TypeBrowserView.tsx`)
-- [ ] Add InteractiveEditor integration tests for all extensions
+- [x] **InteractiveEditor migration** — ✅ COMPLETE (2026-01-15)
+  - Design-system owns editor with callback props for IPC integration
+  - Desktop's DocumentEditor wraps InteractiveEditor
+  - ~30 extension files deleted from desktop
+
+- [ ] **EditorPreview component** — Read-only editor for object previews (~1-2 days)
+  - Component exists, needs integration into object list views
 
 ---
 
@@ -89,14 +92,13 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| InteractiveEditor Migration      | 2026-01-15 | `260c23c`            |
 | CommandPalette DS Migration      | 2026-01-15 | `09f280a`, `73b1a7c` |
-| Mutation Testing Parallel Agents | 2026-01-15 | (uncommitted)        |
+| Mutation Testing Parallel Agents | 2026-01-15 | `d60ac2a`            |
 | Design System Tier 2 Migration   | 2026-01-15 | `ec8748b`, `47749a3` |
 | AppShell Full Migration          | 2026-01-15 | `ae451b0`            |
 | updateObject() Service           | 2026-01-14 | `6dff951`            |
 | Design System Migration (Tier 1) | 2026-01-14 | `d95f1e7`            |
 | Settings Persistence             | 2026-01-15 | `9a85158`            |
-| Duplicate Object                 | 2026-01-15 | `7856a54`→`7cb8353`  |
-| Pinning + Trash                  | 2026-01-14 | `ae7ca66`, `0f39751` |
 
 See `recent_work.md` Milestones table for full history.

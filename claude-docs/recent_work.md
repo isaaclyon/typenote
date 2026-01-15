@@ -1,6 +1,42 @@
 # Recent Work
 
-## Latest Session (2026-01-15 - CommandPalette Design System Migration)
+## Latest Session (2026-01-15 - InteractiveEditor Migration)
+
+Replaced desktop's NoteEditor with design-system's InteractiveEditor. Added callback props for IPC integration while keeping mock fallbacks for Ladle stories.
+
+**Key Architectural Pattern:**
+
+- Design-system owns editor with optional callbacks (`refSuggestionCallbacks`, `tagSuggestionCallbacks`)
+- Desktop's `DocumentEditor` wraps InteractiveEditor and wires IPC callbacks
+- ~30 redundant extension files deleted from desktop
+
+**Design-System Changes:**
+
+- `packages/design-system/src/components/InteractiveEditor/types.ts` — Added callback interfaces + InteractiveEditorRef
+- `packages/design-system/.../useRefSuggestion.tsx` — Async callback support with mock fallback
+- `packages/design-system/.../useTagSuggestion.tsx` — Async callback support
+- `packages/design-system/.../RefNode.tsx` — Added onNavigate click handler
+- New extensions migrated: MathBlock, MathInline, Highlight, LineNavigation, AttachmentNode
+
+**Desktop Changes:**
+
+- `apps/desktop/src/renderer/components/DocumentEditor.tsx` — New wrapper with IPC integration
+- `apps/desktop/src/renderer/App.tsx` — Uses DocumentEditor instead of NoteEditor
+- Deleted: NoteEditor.tsx, SlashCommandMenu/, extensions/\* (~30 files)
+
+**Verification:**
+
+- ✅ Typecheck: All 8 packages pass
+- ✅ Tests: 358 desktop tests pass
+- ✅ Ladle: Stories work with mock fallbacks
+
+**Commit:**
+
+- `260c23c feat(desktop): replace NoteEditor with InteractiveEditor from design-system`
+
+---
+
+## Previous Session (2026-01-15 - CommandPalette Design System Migration)
 
 Enhanced design-system CommandPalette to match desktop app needs (groups, async/loading states, keyboard navigation). Fully replaced cmdk dependency with design-system components.
 
