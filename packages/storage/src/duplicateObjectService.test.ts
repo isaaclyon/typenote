@@ -655,6 +655,314 @@ describe('duplicateObject', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────────
+  // Phase 6: Edge Cases (TDD - RED → GREEN)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  describe('edge cases', () => {
+    it('object with no blocks duplicates correctly', () => {
+      seedBuiltInTypes(db);
+
+      // Create object with no blocks
+      const source = createObject(db, 'Page', 'Empty Page');
+
+      // Verify source has no blocks
+      const sourceDoc = getDocument(db, source.id);
+      expect(sourceDoc.blocks).toHaveLength(0);
+
+      // Duplicate it
+      const result = duplicateObject(db, source.id);
+
+      // Should succeed with blockCount: 0
+      expect(result.blockCount).toBe(0);
+      expect(result.object.id).not.toBe(source.id);
+      expect(result.object.title).toBe('Empty Page (Copy)');
+      expect(result.object.typeId).toBe(source.typeId);
+      expect(result.object.docVersion).toBe(0);
+
+      // Verify duplicate also has no blocks
+      const duplicateDoc = getDocument(db, result.object.id);
+      expect(duplicateDoc.blocks).toHaveLength(0);
+    });
+
+    it('object with deeply nested blocks (4 levels) preserves hierarchy', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Deep Nesting');
+
+      // Create 4-level hierarchy: Parent → Child → Grandchild → Great-grandchild
+      const parentId = generateId();
+      const childId = generateId();
+      const grandchildId = generateId();
+      const greatGrandchildId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: parentId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'list',
+            content: { kind: 'bullet' },
+          },
+          {
+            op: 'block.insert',
+            blockId: childId,
+            parentBlockId: parentId,
+            place: { where: 'start' },
+            blockType: 'list_item',
+            content: { inline: [{ t: 'text', text: 'Level 1' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: grandchildId,
+            parentBlockId: childId,
+            place: { where: 'start' },
+            blockType: 'list',
+            content: { kind: 'bullet' },
+          },
+          {
+            op: 'block.insert',
+            blockId: greatGrandchildId,
+            parentBlockId: grandchildId,
+            place: { where: 'start' },
+            blockType: 'list_item',
+            content: { inline: [{ t: 'text', text: 'Level 2' }] },
+          },
+        ],
+      });
+
+      // Duplicate
+      const result = duplicateObject(db, source.id);
+
+      // Should report 4 blocks
+      expect(result.blockCount).toBe(4);
+
+      // Get duplicated document
+      const doc = getDocument(db, result.object.id);
+
+      // Verify 4-level hierarchy is preserved
+      expect(doc.blocks).toHaveLength(1); // 1 root block
+
+      const level0 = doc.blocks[0]; // Parent list
+      expect(level0).toBeDefined();
+      expect(level0?.blockType).toBe('list');
+      expect(level0?.children).toHaveLength(1);
+
+      const level1 = level0?.children[0]; // Child list_item
+      expect(level1).toBeDefined();
+      expect(level1?.blockType).toBe('list_item');
+      expect(level1?.children).toHaveLength(1);
+
+      const level2 = level1?.children[0]; // Grandchild list
+      expect(level2).toBeDefined();
+      expect(level2?.blockType).toBe('list');
+      expect(level2?.children).toHaveLength(1);
+
+      const level3 = level2?.children[0]; // Great-grandchild list_item
+      expect(level3).toBeDefined();
+      expect(level3?.blockType).toBe('list_item');
+      expect(level3?.children).toHaveLength(0);
+
+      // Verify content is preserved at deepest level
+      expect(level3?.content).toEqual({
+        inline: [{ t: 'text', text: 'Level 2' }],
+      });
+
+      // Verify all block IDs are different from source
+      const allBlockIds = [level0?.id, level1?.id, level2?.id, level3?.id];
+      expect(allBlockIds).not.toContain(parentId);
+      expect(allBlockIds).not.toContain(childId);
+      expect(allBlockIds).not.toContain(grandchildId);
+      expect(allBlockIds).not.toContain(greatGrandchildId);
+    });
+
+    it('block with multiple internal refs in same content remaps all refs', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Multi-Ref');
+
+      // Create two target blocks and one block that refs both
+      const target1Id = generateId();
+      const target2Id = generateId();
+      const refBlockId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: target1Id,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 2, inline: [{ t: 'text', text: 'First Target' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: target2Id,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'heading',
+            content: { level: 2, inline: [{ t: 'text', text: 'Second Target' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: refBlockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'See ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: {
+                    kind: 'block',
+                    objectId: source.id,
+                    blockId: target1Id,
+                  },
+                },
+                { t: 'text', text: ' and ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: {
+                    kind: 'block',
+                    objectId: source.id,
+                    blockId: target2Id,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      // Duplicate
+      const result = duplicateObject(db, source.id);
+
+      // Get duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(3);
+
+      // Find the duplicated blocks
+      const duplicatedTarget1 = doc.blocks.find((b) => {
+        const content = b.content as { level?: number; inline: Array<{ t: string; text: string }> };
+        return content.inline?.[0]?.text === 'First Target';
+      });
+      const duplicatedTarget2 = doc.blocks.find((b) => {
+        const content = b.content as { level?: number; inline: Array<{ t: string; text: string }> };
+        return content.inline?.[0]?.text === 'Second Target';
+      });
+      const duplicatedRefBlock = doc.blocks.find((b) => {
+        const content = b.content as { inline: Array<{ t: string; text?: string }> };
+        return content.inline?.[0]?.text === 'See ';
+      });
+
+      expect(duplicatedTarget1).toBeDefined();
+      expect(duplicatedTarget2).toBeDefined();
+      expect(duplicatedRefBlock).toBeDefined();
+
+      if (!duplicatedTarget1 || !duplicatedTarget2 || !duplicatedRefBlock) {
+        throw new Error('Expected all blocks to exist');
+      }
+
+      // Verify both refs are remapped
+      expect(duplicatedRefBlock.content).toEqual({
+        inline: [
+          { t: 'text', text: 'See ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: {
+              kind: 'block',
+              objectId: result.object.id, // Remapped to new object
+              blockId: duplicatedTarget1.id, // Remapped to new block
+            },
+          },
+          { t: 'text', text: ' and ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: {
+              kind: 'block',
+              objectId: result.object.id, // Remapped to new object
+              blockId: duplicatedTarget2.id, // Remapped to new block
+            },
+          },
+        ],
+      });
+    });
+
+    it('blocks with empty content clone correctly', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Empty Content');
+
+      // Add blocks with empty inline arrays
+      const emptyParagraphId = generateId();
+      const emptyHeadingId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: emptyParagraphId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: { inline: [] }, // Empty inline array
+          },
+          {
+            op: 'block.insert',
+            blockId: emptyHeadingId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'heading',
+            content: { level: 1, inline: [] }, // Empty inline array
+          },
+        ],
+      });
+
+      // Duplicate
+      const result = duplicateObject(db, source.id);
+
+      // Should report 2 blocks
+      expect(result.blockCount).toBe(2);
+
+      // Get duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Verify empty content is preserved
+      const paragraph = doc.blocks.find((b) => b.blockType === 'paragraph');
+      const heading = doc.blocks.find((b) => b.blockType === 'heading');
+
+      expect(paragraph).toBeDefined();
+      expect(heading).toBeDefined();
+
+      if (!paragraph || !heading) {
+        throw new Error('Expected both blocks to exist');
+      }
+
+      // Both should have empty inline arrays
+      expect(paragraph.content).toEqual({ inline: [] });
+      expect(heading.content).toEqual({ level: 1, inline: [] });
+
+      // Block IDs should be different
+      expect(paragraph.id).not.toBe(emptyParagraphId);
+      expect(heading.id).not.toBe(emptyHeadingId);
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
   // Phase 5: Error Cases (TDD - RED → GREEN)
   // ─────────────────────────────────────────────────────────────────────────────
 
