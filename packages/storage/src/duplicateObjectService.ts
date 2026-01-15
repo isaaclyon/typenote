@@ -99,7 +99,7 @@ export function duplicateObject(db: TypenoteDb, objectId: string): DuplicateObje
         id: newObjectId,
         typeId: sourceObject.typeId,
         title: newTitle,
-        properties: sourceObject.properties,
+        properties: sourceObject.properties ?? '{}',
         docVersion: 0, // Reset to 0
         createdAt: now,
         updatedAt: now,
@@ -119,7 +119,7 @@ export function duplicateObject(db: TypenoteDb, objectId: string): DuplicateObje
       id: newObjectId,
       typeId: sourceObject.typeId,
       title: newTitle,
-      properties: JSON.parse(sourceObject.properties) as Record<string, unknown>,
+      properties: sourceObject.properties ? JSON.parse(sourceObject.properties) : {},
       docVersion: 0,
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
