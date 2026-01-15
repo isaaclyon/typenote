@@ -139,6 +139,15 @@ export {
   type ObjectTypeErrorCode,
 } from './objectType.js';
 
+// Objects
+export {
+  // Duplicate operation
+  DuplicateObjectRequestSchema,
+  DuplicateObjectResponseSchema,
+  type DuplicateObjectRequest,
+  type DuplicateObjectResponse,
+} from './object.js';
+
 // Query Results
 export { type DocumentBlock, type GetDocumentResult, type ObjectSummary } from './queries.js';
 
@@ -266,3 +275,27 @@ export {
   type UserSettings,
   type SettingKey,
 } from './settings.js';
+
+// Pinning
+export {
+  // Entity
+  PinnedObjectSummarySchema,
+  type PinnedObjectSummary,
+  // API operations
+  PinObjectInputSchema,
+  UnpinObjectInputSchema,
+  ReorderPinnedObjectsInputSchema,
+  type PinObjectInput,
+  type UnpinObjectInput,
+  type ReorderPinnedObjectsInput,
+  // Results
+  PinObjectResultSchema,
+  UnpinObjectResultSchema,
+  ReorderPinnedObjectsResultSchema,
+  type PinObjectResult,
+  type UnpinObjectResult,
+  type ReorderPinnedObjectsResult,
+  // Error codes
+  PinningErrorCodeSchema,
+  type PinningErrorCode,
+} from './pinning.js';
