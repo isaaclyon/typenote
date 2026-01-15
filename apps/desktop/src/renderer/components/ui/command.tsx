@@ -8,6 +8,7 @@
 import * as React from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { Search } from 'lucide-react';
+import { KeyboardKey } from '@typenote/design-system';
 
 import { cn } from '../../lib/utils.js';
 
@@ -179,12 +180,11 @@ CommandItem.displayName = CommandPrimitive.Item.displayName;
 // Command Shortcut
 // -----------------------------------------------------------------------------
 
-function CommandShortcut({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
+function CommandShortcut({ className, children, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <span
-      className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
-      {...props}
-    />
+    <KeyboardKey className={cn('ml-auto', className)} {...props}>
+      {children}
+    </KeyboardKey>
   );
 }
 CommandShortcut.displayName = 'CommandShortcut';

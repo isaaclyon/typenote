@@ -37,6 +37,7 @@ import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
 import { DailyNoteNavigation } from './DailyNoteNavigation.js';
 import { EditorBottomSections } from './EditorBottomSections.js';
+import { Skeleton } from '@typenote/design-system';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -207,8 +208,23 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   // Loading state
   if (state.status === 'loading') {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
-        Loading...
+      <div className="h-full overflow-auto" data-testid="loading-skeleton">
+        <div className="max-w-3xl mx-auto p-8">
+          {/* Save status placeholder */}
+          <div className="flex items-center justify-end mb-2 h-4">
+            <Skeleton className="h-3 w-16" />
+          </div>
+          {/* Title placeholder */}
+          <Skeleton className="h-8 w-64 mb-6" />
+          {/* Content placeholders */}
+          <div className="space-y-4">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
       </div>
     );
   }

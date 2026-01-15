@@ -6,7 +6,7 @@
 
 import type { CalendarItem } from '@typenote/storage';
 import { cn } from '../../lib/utils.js';
-import { Card, CardHeader, CardTitle } from '@typenote/design-system';
+import { Card, CardHeader, CardTitle, Badge } from '@typenote/design-system';
 
 export interface EventCardProps {
   event: CalendarItem;
@@ -52,9 +52,9 @@ export function EventCard({ event, onClick }: EventCardProps) {
       <CardHeader className="p-3">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="truncate text-sm">{event.title}</CardTitle>
-          <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded shrink-0">
+          <Badge variant="secondary" className="shrink-0">
             {event.typeKey}
-          </span>
+          </Badge>
         </div>
         <div className="text-xs text-muted-foreground">{getTimeDisplay(event.dateInfo)}</div>
       </CardHeader>

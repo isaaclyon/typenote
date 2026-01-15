@@ -186,7 +186,7 @@ describe('CalendarView', () => {
 
       render(<CalendarView {...defaultProps} />);
 
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
+      expect(screen.getByTestId('loading-skeleton')).toBeInTheDocument();
     });
 
     it('shows error state on fetch failure (exception)', async () => {

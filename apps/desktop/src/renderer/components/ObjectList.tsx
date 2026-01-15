@@ -1,8 +1,15 @@
 /// <reference path="../global.d.ts" />
 
 import { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@typenote/design-system';
-import { ScrollArea } from '@typenote/design-system';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  Badge,
+  ScrollArea,
+  Skeleton,
+} from '@typenote/design-system';
 import { cn } from '../lib/utils.js';
 import type { ObjectSummary } from '@typenote/api';
 import { useTypenoteEvents } from '../hooks/useTypenoteEvents.js';
@@ -57,9 +64,21 @@ export function ObjectList({ onSelect, selectedId, onPin, onUnpin, isPinned }: O
 
   if (state.status === 'loading') {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
-        Loading...
-      </div>
+      <ScrollArea className="h-full" data-testid="loading-skeleton">
+        <div className="p-4 space-y-2">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardHeader className="p-4">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-5 w-12 rounded-full" />
+                </div>
+                <Skeleton className="h-3 w-20 mt-2" />
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </ScrollArea>
     );
   }
 
@@ -109,9 +128,7 @@ export function ObjectList({ onSelect, selectedId, onPin, onUnpin, isPinned }: O
             <CardHeader className="p-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="truncate">{obj.title}</CardTitle>
-                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                  {obj.typeKey}
-                </span>
+                <Badge variant="secondary">{obj.typeKey}</Badge>
               </div>
               <CardDescription className="text-xs">
                 {new Date(obj.updatedAt).toLocaleDateString()}

@@ -45,7 +45,7 @@ describe('NoteEditor', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument();
       });
 
       // TipTap renders contenteditable div
@@ -65,7 +65,7 @@ describe('NoteEditor', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument();
       });
 
       // Should have a save status container (data-testid for easy testing)
@@ -88,7 +88,7 @@ describe('NoteEditor', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument();
       });
 
       // Simulate typing to trigger auto-save
@@ -124,7 +124,7 @@ describe('NoteEditor', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument();
       });
 
       // Verify getDocument was called with the correct objectId
@@ -146,7 +146,7 @@ describe('NoteEditor', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument();
       });
 
       // Editor should render with empty content

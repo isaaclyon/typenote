@@ -5,6 +5,7 @@
  */
 
 import type { CalendarItem } from '@typenote/storage';
+import { Skeleton } from '@typenote/design-system';
 import { EventList } from './EventList.js';
 
 export type LoadState<T> =
@@ -56,8 +57,13 @@ export function CalendarSidebar({
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         {loadState.status === 'loading' && (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            Loading...
+          <div className="p-4 space-y-3" data-testid="loading-skeleton">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            ))}
           </div>
         )}
 

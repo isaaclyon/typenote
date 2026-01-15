@@ -5,7 +5,7 @@
  */
 
 import { Link as LinkIcon } from 'lucide-react';
-import { CollapsibleSection, BacklinkItem, EmptyState } from '@typenote/design-system';
+import { CollapsibleSection, BacklinkItem, EmptyState, Skeleton } from '@typenote/design-system';
 import { useBacklinks } from '../hooks/useBacklinks.js';
 
 export interface BacklinksSectionProps {
@@ -21,9 +21,9 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
     return (
       <CollapsibleSection title="Backlinks" icon={LinkIcon}>
         <div className="space-y-2">
-          <div className="h-10 w-full bg-gray-100 rounded-md animate-pulse" />
-          <div className="h-10 w-full bg-gray-100 rounded-md animate-pulse" />
-          <div className="h-10 w-full bg-gray-100 rounded-md animate-pulse" />
+          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded-md" />
         </div>
       </CollapsibleSection>
     );
