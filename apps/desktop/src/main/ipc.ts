@@ -101,7 +101,6 @@ import {
   type UploadAttachmentResult,
   type UserSettings,
   type DuplicateObjectResponse,
-  type ApiError,
 } from '@typenote/api';
 
 /**
@@ -334,7 +333,7 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
           typeof error.code === 'string' &&
           typeof error.message === 'string'
         ) {
-          const apiError = error as ApiError;
+          const apiError = error as { code: string; message: string };
           return {
             success: false,
             error: { code: apiError.code, message: apiError.message },
