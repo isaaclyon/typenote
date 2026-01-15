@@ -5,6 +5,7 @@ import type { ReactElement } from 'react';
 import { AppShell } from '@typenote/design-system';
 import { NoteEditor } from './components/NoteEditor.js';
 import { CalendarView } from './components/calendar/index.js';
+import { TypeBrowserView } from './components/TypeBrowserView.js';
 import { LeftSidebar } from './components/LeftSidebar.js';
 import { PropertiesPanel } from './components/PropertiesPanel.js';
 import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
@@ -15,10 +16,11 @@ import { usePinnedObjects } from './hooks/usePinnedObjects.js';
 import { useTypeCounts } from './hooks/useTypeCounts.js';
 import { useSelectedObject } from './hooks/useSelectedObject.js';
 
-type ViewMode = 'notes' | 'calendar';
+type ViewMode = 'notes' | 'calendar' | 'type';
 
 function App(): ReactElement {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+  const [selectedTypeKey, setSelectedTypeKey] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('notes');
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -34,6 +36,16 @@ function App(): ReactElement {
       setSelectedObjectId(result.result.dailyNote.id);
       setViewMode('notes');
     }
+  };
+
+  const handleSelectType = (typeKey: string) => {
+    setSelectedTypeKey(typeKey);
+    setViewMode('type');
+  };
+
+  const handleOpenObjectFromTypeBrowser = (objectId: string) => {
+    setSelectedObjectId(objectId);
+    setViewMode('notes');
   };
 
   // Show right sidebar only when viewing a note
@@ -64,6 +76,8 @@ function App(): ReactElement {
             onSelectObject={setSelectedObjectId}
             typeCounts={typeCounts}
             onOpenSettings={() => setSettingsOpen(true)}
+            selectedTypeKey={selectedTypeKey}
+            onSelectType={handleSelectType}
           />
         )}
         {...rightSidebarProp}
@@ -78,6 +92,11 @@ function App(): ReactElement {
               setSelectedObjectId(id);
               setViewMode('notes');
             }}
+          />
+        ) : viewMode === 'type' && selectedTypeKey ? (
+          <TypeBrowserView
+            typeKey={selectedTypeKey}
+            onOpenObject={handleOpenObjectFromTypeBrowser}
           />
         ) : selectedObjectId ? (
           <NoteEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />

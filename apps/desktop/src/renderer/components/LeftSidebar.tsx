@@ -12,7 +12,7 @@ import {
 } from '@typenote/design-system';
 import type { PinnedObjectSummary } from '@typenote/storage';
 
-type ViewMode = 'notes' | 'calendar';
+type ViewMode = 'notes' | 'calendar' | 'type';
 
 interface LeftSidebarProps {
   collapsed: boolean;
@@ -26,6 +26,10 @@ interface LeftSidebarProps {
   onSelectObject: (id: string) => void;
   typeCounts: Record<string, number>;
   onOpenSettings: () => void;
+  /** Currently selected type key (for TypeBrowser view) */
+  selectedTypeKey: string | null;
+  /** Called when a type is clicked in the sidebar */
+  onSelectType: (typeKey: string) => void;
 }
 
 // Map typeKey to icon
@@ -56,6 +60,8 @@ export function LeftSidebar({
   onSelectObject,
   typeCounts,
   onOpenSettings,
+  selectedTypeKey,
+  onSelectType,
 }: LeftSidebarProps): ReactElement {
   // Get sorted type keys for consistent display order
   const typeKeys = Object.keys(typeCounts).sort();
@@ -111,10 +117,8 @@ export function LeftSidebar({
                 icon={getIconForType(typeKey)}
                 label={typeKey}
                 count={typeCounts[typeKey] ?? 0}
-                // TypeBrowser deferred - clicks do nothing for now
-                onClick={() => {
-                  // Future: open TypeBrowser for this type
-                }}
+                selected={viewMode === 'type' && selectedTypeKey === typeKey}
+                onClick={() => onSelectType(typeKey)}
               />
             ))}
           </SidebarTypesList>
