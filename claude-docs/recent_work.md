@@ -1,73 +1,91 @@
 # Recent Work
 
-## Latest Session (2026-01-15 - Tier 2 Design System Migration)
+## Latest Session (2026-01-15 - CommandPalette Design System Migration)
 
-Migrated three Tier 2 design-system components to the desktop app.
+Enhanced design-system CommandPalette to match desktop app needs (groups, async/loading states, keyboard navigation). Fully replaced cmdk dependency with design-system components.
 
-**Components migrated:**
+**Phases Completed:**
 
-1. **DailyNoteNav** — Replaced custom `DailyNoteNavigation.tsx` with design-system component
-   - Icon-based navigation (← Today →) instead of text buttons
-   - Added `data-testid` attributes and `disabled` state to design-system component
-   - Deleted old component and tests (E2E tests provide coverage)
+- Phase 1 (Brainstorming) — Design exploration via questions, chose compound component architecture
+- Phase 2 (Feature Dev) — Codebase exploration, design document created
+- Phase 3 (TDD) — Wrote 10 keyboard hook tests (all passing)
+- Phase 4 (Implementation) — Built 8 components + Ladle stories, desktop migration complete
 
-2. **SaveStatus** — Connected design-system component to editor save state
-   - Computed `SaveState` from `useAutoSave` hook values (`isSaving`, `lastSaved`, `saveError`)
-   - Updated types to support `exactOptionalPropertyTypes`
+**Key Changes:**
 
-3. **SettingsModal** — Full modal with IPC wiring
-   - Created `SettingsModalWrapper.tsx` using `useSettings` hook (optimistic updates)
-   - Wired Settings button in LeftSidebar to open modal
-   - Includes: colorMode, weekStartDay, spellcheck, dateFormat, timeFormat
+- `packages/design-system/src/components/CommandPalette/` — 8 new components (root, input, list, group, item, empty, loading, separator)
+- `packages/design-system/src/components/CommandPalette/useCommandPaletteKeyboard.ts` — Keyboard navigation hook with wrap-around
+- `packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx` — Comprehensive Ladle stories (8 exports)
+- `apps/desktop/src/renderer/components/CommandPalette/index.tsx` — Migrated from cmdk wrapper to design-system components
+- Deleted: `apps/desktop/src/renderer/components/ui/command.tsx` (cmdk wrapper)
+- Removed: `cmdk` dependency from desktop package.json
 
-**Migration progress:** 14/33 components (42%) migrated
+**Verification:**
+
+- ✅ Typecheck: 6/6 packages pass
+- ✅ Unit tests: 10/10 keyboard hook tests passing
+- ✅ Desktop build: Successful (2 MB JS bundle)
+- ✅ No cmdk imports remaining
+- ✅ Design document: `docs/plans/2026-01-15-command-palette-enhancement-design.md`
 
 **Commits:**
 
-- `ec8748b refactor(desktop): remove DailyNoteNavigation in favor of design-system component`
-- `47749a3 refactor(tests): split large test files into focused modules` (included Tier 2 changes)
+- `09f280a feat(desktop): migrate CommandPalette to design-system`
+- `73b1a7c docs: add CommandPalette enhancement design`
+
+---
+
+## Previous Session (2026-01-15 - Mutation Testing with Parallel Agents)
+
+Ran Stryker mutation testing across all packages and dispatched 5 parallel agents (haiku/sonnet/opus) to improve coverage for files with low scores.
+
+**Mutation Testing Results:**
+
+| Package           | Score  | Status                 |
+| ----------------- | ------ | ---------------------- |
+| @typenote/api     | 86.92% | ✅ Above 45% threshold |
+| @typenote/core    | 96.50% | ✅ Above 80% threshold |
+| @typenote/storage | 77.51% | ✅ Above 75% threshold |
+
+**Parallel Agent Results:**
+
+| File                                  | Model    | Before     | After      | Outcome                              |
+| ------------------------------------- | -------- | ---------- | ---------- | ------------------------------------ |
+| api/object.ts                         | haiku    | 37.50%     | 37.50%     | Zod ObjectLiteral mutants untestable |
+| api/blockPatch.ts                     | sonnet   | 57.89%     | 57.89%     | Static mutants break module load     |
+| api/notateDoc.ts                      | sonnet   | 68.97%     | 68.97%     | Stryker static analysis limitation   |
+| core/calendarDateUtils.ts             | haiku    | 82.14%     | 82.14%     | Unreachable defensive code           |
+| **storage/duplicateObjectService.ts** | **opus** | **58.39%** | **74.45%** | **✅ +16% improvement!**             |
+
+**Key Finding:** Most "unkillable" mutants fall into 3 categories:
+
+1. Static mutants (break at module load, can't be runtime tested)
+2. Zod permissive validation (empty `z.object({})` accepts any object)
+3. Unreachable defensive code (guards that can never trigger)
+
+**Recommendation:** Enable `ignoreStatic: true` in Stryker config for more accurate scores.
+
+**Tests Added:** ~80 new tests across 5 files (no commits yet — changes uncommitted)
+
+---
+
+## Previous Session (2026-01-15 - TypeBrowser Hooks Bug Fix)
+
+Fixed Rules of Hooks violation in TypeBrowser.tsx — moved `columnDefMap` useMemo before early returns.
+
+---
+
+## Previous Session (2026-01-15 - Tier 2 Design System Migration)
+
+Migrated DailyNoteNav, SaveStatus, SettingsModal to design-system components.
+Commits: `ec8748b`, `47749a3`
 
 ---
 
 ## Previous Session (2026-01-15 - AppShell Full Migration)
 
-Implemented full AppShell migration using full-feature-workflow (brainstorming → feature-dev → TDD → implementation).
-
-**Key accomplishments:**
-
-1. **Design Phase** — Brainstormed scope with user:
-   - Full 3-column AppShell with collapsible sidebars
-   - Left sidebar: design-system Sidebar components (Search, Calendar, TypesList, Pinned, Settings)
-   - Right sidebar: Properties panel (notes view only, no backlinks)
-   - Type-based navigation (TypeBrowser integration deferred)
-
-2. **TDD Implementation** (12 new tests)
-   - `useTypeCounts` hook (5 tests) — Computes type counts from listObjects
-   - `useSelectedObject` hook (7 tests) — Fetches ObjectDetails for properties panel
-
-3. **New Components**
-   - `LeftSidebar.tsx` — Wraps design-system Sidebar with app-specific content
-   - `PropertiesPanel.tsx` — Right sidebar showing Created, Modified, Type, Tags
-
-4. **App.tsx Refactor**
-   - Replaced inline `<aside>` with AppShell
-   - Collapsible sidebars with localStorage persistence
-   - Conditional right sidebar (only when viewing notes)
-
-5. **Documentation**
-   - Created `docs/design-system-migration.md` — Checklist tracking component migration status
-
-**Files created:**
-
-- `hooks/useTypeCounts.ts` + test (5 tests)
-- `hooks/useSelectedObject.ts` + test (7 tests)
-- `components/LeftSidebar.tsx`
-- `components/PropertiesPanel.tsx`
-- `docs/design-system-migration.md`
-
-**Verification:** 368 tests pass, typecheck passes
-
-**Commits:** `ae451b0 feat(desktop): implement full AppShell with collapsible sidebars`
+3-column AppShell with collapsible sidebars, LeftSidebar, PropertiesPanel, useTypeCounts/useSelectedObject hooks.
+Commits: `ae451b0`
 
 ---
 

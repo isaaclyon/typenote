@@ -25,6 +25,12 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 - [ ] TypeBrowser integration — Clicking types (deferred)
 - [ ] InteractiveEditor — Replace NoteEditor + extensions (future)
 
+### Tier 3.5 CommandPalette Enhancement ✅ COMPLETE (2026-01-15)
+
+- [x] Design system CommandPalette enhancement — Compound components, keyboard navigation hook
+- [x] Desktop CommandPalette migration — Replaced cmdk with design-system components
+- [x] Remove cmdk dependency — Deleted wrapper, removed from package.json
+
 ---
 
 ## UI/Design System - Organism Components
@@ -43,6 +49,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 ### Next Steps
 
 - [ ] TypeBrowser integration — Clicking type in sidebar opens TypeBrowser
+  - Fixed: Rules of Hooks bug (`columnDefMap` useMemo after early returns)
+  - In progress: Integration in desktop app (uncommitted work in `TypeBrowserView.tsx`)
 - [ ] Add InteractiveEditor integration tests for all extensions
 
 ---
@@ -64,8 +72,9 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 ### Quality & Performance
 
-- [x] Improve mutation testing scores (api: 87.42%, core: 96.30%, storage: 78.30%)
-- [ ] Further mutation improvements: objectType.ts (84.91%), calendar.ts (86.36%)
+- [x] Improve mutation testing scores (api: 86.92%, core: 96.50%, storage: 77.51%)
+- [x] Mutation testing parallel agent experiment — ~80 tests added, +16% on duplicateObjectService.ts
+- [ ] Enable `ignoreStatic: true` in Stryker configs for more accurate scores
 - [ ] Performance benchmarks for 10k+ objects / 100k+ blocks
 
 ### Features (Future)
@@ -80,6 +89,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| CommandPalette DS Migration      | 2026-01-15 | `09f280a`, `73b1a7c` |
+| Mutation Testing Parallel Agents | 2026-01-15 | (uncommitted)        |
 | Design System Tier 2 Migration   | 2026-01-15 | `ec8748b`, `47749a3` |
 | AppShell Full Migration          | 2026-01-15 | `ae451b0`            |
 | updateObject() Service           | 2026-01-14 | `6dff951`            |
