@@ -10,9 +10,11 @@
 
 import { generateId } from '@typenote/core';
 import type { DuplicateObjectResponse } from '@typenote/api';
+import { notFoundObject, dailyNoteNotDuplicable } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
 import { objects, blocks } from './schema.js';
 import { eq } from 'drizzle-orm';
+import { getObjectType } from './objectTypeService.js';
 
 /**
  * Type guard to check if a value is an object (and not null).
@@ -157,7 +159,9 @@ function remapContentRefs(
 /**
  * Duplicate an object and all its blocks.
  *
- * Phase 4: Full implementation with ref remapping
+ * Phase 5: Error handling
+ * - Validates object exists and is not deleted
+ * - Prevents duplication of DailyNote objects
  * - Creates new object with " (Copy)" suffix
  * - Clones all blocks with new IDs
  * - Preserves block tree structure via parentBlockId remapping
@@ -166,42 +170,69 @@ function remapContentRefs(
  * @param db - Database connection
  * @param objectId - Source object ID to duplicate
  * @returns Response with new object metadata and block count
+ * @throws {ApiError} NOT_FOUND_OBJECT if object doesn't exist or is deleted
+ * @throws {ApiError} INVARIANT_DAILY_NOTE_NOT_DUPLICABLE if object is a DailyNote
  */
 export function duplicateObject(db: TypenoteDb, objectId: string): DuplicateObjectResponse {
-  // 1. Fetch source object
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Phase 5: Validation Checks
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // 1. Fetch source object (including deletedAt for soft delete check)
   const sourceObject = db
     .select({
       id: objects.id,
       typeId: objects.typeId,
       title: objects.title,
       properties: objects.properties,
+      deletedAt: objects.deletedAt,
     })
     .from(objects)
     .where(eq(objects.id, objectId))
     .limit(1)
     .all()[0];
 
+  // Check object exists
   if (!sourceObject) {
-    throw new Error(`Object not found: ${objectId}`);
+    throw notFoundObject(objectId);
   }
 
-  // 2. Generate new object ID
+  // Check object is not soft-deleted
+  if (sourceObject.deletedAt !== null) {
+    throw notFoundObject(objectId);
+  }
+
+  // 2. Check if object type is DailyNote (cannot be duplicated)
+  const objectType = getObjectType(db, sourceObject.typeId);
+  if (!objectType) {
+    throw new Error(`Object type not found: ${sourceObject.typeId}`);
+  }
+
+  if (objectType.key === 'DailyNote') {
+    throw dailyNoteNotDuplicable(objectId);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Happy Path: Clone Object and Blocks
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // 3. Generate new object ID
   const newObjectId = generateId();
 
-  // 3. Clone object with new title
+  // 4. Clone object with new title
   const newTitle = `${sourceObject.title} (Copy)`;
   const now = new Date();
 
-  // 4. Fetch all blocks for source object
+  // 5. Fetch all blocks for source object
   const sourceBlocks = db.select().from(blocks).where(eq(blocks.objectId, objectId)).all();
 
-  // 5. Build ID mapping: oldBlockId -> newBlockId
+  // 6. Build ID mapping: oldBlockId -> newBlockId
   const idMap = new Map<string, string>();
   for (const block of sourceBlocks) {
     idMap.set(block.id, generateId());
   }
 
-  // 6. Clone each block with remapped IDs and transformed content
+  // 7. Clone each block with remapped IDs and transformed content
   const duplicatedBlocks = sourceBlocks.map((block) => {
     const newBlockId = idMap.get(block.id);
     if (!newBlockId) {
@@ -240,7 +271,7 @@ export function duplicateObject(db: TypenoteDb, objectId: string): DuplicateObje
     };
   });
 
-  // 7. Single atomic transaction: insert object + all blocks
+  // 8. Single atomic transaction: insert object + all blocks
   db.atomic(() => {
     // Insert new object
     db.insert(objects)
@@ -262,7 +293,7 @@ export function duplicateObject(db: TypenoteDb, objectId: string): DuplicateObje
     }
   });
 
-  // 8. Return response
+  // 9. Return response
   return {
     object: {
       id: newObjectId,

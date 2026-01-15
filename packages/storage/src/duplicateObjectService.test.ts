@@ -6,6 +6,8 @@ import { applyBlockPatch } from './applyBlockPatch.js';
 import { getDocument } from './getDocument.js';
 import { duplicateObject } from './duplicateObjectService.js';
 import { generateId } from '@typenote/core';
+import { objects } from './schema.js';
+import { eq } from 'drizzle-orm';
 
 describe('duplicateObject', () => {
   let db: TypenoteDb;
@@ -649,6 +651,92 @@ describe('duplicateObject', () => {
           },
         ],
       });
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Phase 5: Error Cases (TDD - RED → GREEN)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  describe('error cases', () => {
+    it('throws OBJECT_NOT_FOUND for non-existent object', () => {
+      seedBuiltInTypes(db);
+
+      const nonExistentId = generateId();
+
+      expect(() => duplicateObject(db, nonExistentId)).toThrow();
+
+      try {
+        duplicateObject(db, nonExistentId);
+        throw new Error('Expected function to throw');
+      } catch (error) {
+        const apiError = error as {
+          apiVersion: string;
+          code: string;
+          message: string;
+          details?: unknown;
+        };
+        expect(apiError.apiVersion).toBe('v1');
+        expect(apiError.code).toBe('NOT_FOUND_OBJECT');
+        expect(apiError.message).toContain(nonExistentId);
+        expect(apiError.details).toEqual({ objectId: nonExistentId });
+      }
+    });
+
+    it('throws OBJECT_DELETED for soft-deleted object', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'To Be Deleted');
+
+      // Soft-delete the object
+      db.update(objects).set({ deletedAt: new Date() }).where(eq(objects.id, source.id)).run();
+
+      expect(() => duplicateObject(db, source.id)).toThrow();
+
+      try {
+        duplicateObject(db, source.id);
+        throw new Error('Expected function to throw');
+      } catch (error) {
+        const apiError = error as {
+          apiVersion: string;
+          code: string;
+          message: string;
+          details?: unknown;
+        };
+        expect(apiError.apiVersion).toBe('v1');
+        expect(apiError.code).toBe('NOT_FOUND_OBJECT');
+        expect(apiError.message).toContain(source.id);
+      }
+    });
+
+    it('throws DAILY_NOTE_NOT_DUPLICABLE for DailyNote type', () => {
+      seedBuiltInTypes(db);
+
+      // Create a DailyNote object
+      const dailyNote = createObject(db, 'DailyNote', '2024-01-15', {
+        date_key: '2024-01-15',
+      });
+
+      // Verify the object was created with DailyNote type
+      expect(dailyNote).toBeDefined();
+      expect(dailyNote.typeKey).toBe('DailyNote');
+
+      // Try to duplicate and expect error
+      try {
+        duplicateObject(db, dailyNote.id);
+        throw new Error('Expected function to throw');
+      } catch (error) {
+        const apiError = error as {
+          apiVersion: string;
+          code: string;
+          message: string;
+          details?: unknown;
+        };
+        expect(apiError.apiVersion).toBe('v1');
+        expect(apiError.code).toBe('INVARIANT_DAILY_NOTE_NOT_DUPLICABLE');
+        expect(apiError.message).toContain('Cannot duplicate DailyNote objects');
+        expect(apiError.details).toEqual({ objectId: dailyNote.id });
+      }
     });
   });
 });
