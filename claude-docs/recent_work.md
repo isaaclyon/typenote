@@ -1,6 +1,35 @@
 # Recent Work
 
-## Latest Session (2026-01-15 - AppShell Full Migration)
+## Latest Session (2026-01-15 - Tier 2 Design System Migration)
+
+Migrated three Tier 2 design-system components to the desktop app.
+
+**Components migrated:**
+
+1. **DailyNoteNav** — Replaced custom `DailyNoteNavigation.tsx` with design-system component
+   - Icon-based navigation (← Today →) instead of text buttons
+   - Added `data-testid` attributes and `disabled` state to design-system component
+   - Deleted old component and tests (E2E tests provide coverage)
+
+2. **SaveStatus** — Connected design-system component to editor save state
+   - Computed `SaveState` from `useAutoSave` hook values (`isSaving`, `lastSaved`, `saveError`)
+   - Updated types to support `exactOptionalPropertyTypes`
+
+3. **SettingsModal** — Full modal with IPC wiring
+   - Created `SettingsModalWrapper.tsx` using `useSettings` hook (optimistic updates)
+   - Wired Settings button in LeftSidebar to open modal
+   - Includes: colorMode, weekStartDay, spellcheck, dateFormat, timeFormat
+
+**Migration progress:** 14/33 components (42%) migrated
+
+**Commits:**
+
+- `ec8748b refactor(desktop): remove DailyNoteNavigation in favor of design-system component`
+- `47749a3 refactor(tests): split large test files into focused modules` (included Tier 2 changes)
+
+---
+
+## Previous Session (2026-01-15 - AppShell Full Migration)
 
 Implemented full AppShell migration using full-feature-workflow (brainstorming → feature-dev → TDD → implementation).
 
@@ -29,6 +58,7 @@ Implemented full AppShell migration using full-feature-workflow (brainstorming �
    - Created `docs/design-system-migration.md` — Checklist tracking component migration status
 
 **Files created:**
+
 - `hooks/useTypeCounts.ts` + test (5 tests)
 - `hooks/useSelectedObject.ts` + test (7 tests)
 - `components/LeftSidebar.tsx`
@@ -37,52 +67,7 @@ Implemented full AppShell migration using full-feature-workflow (brainstorming �
 
 **Verification:** 368 tests pass, typecheck passes
 
-**Not committed yet** — Session ended before commit
-
----
-
-## Previous Session (2026-01-14 - updateObject() Service Implementation)
-
-Implemented the missing CRUD "Update" operation using full-feature-workflow with TDD.
-
-**Key accomplishments:**
-
-1. **Design Phase** — Brainstormed and documented design at `docs/plans/2026-01-14-update-object-design.md`
-   - Capacities-style property migration for type changes
-   - Optional optimistic concurrency via `baseDocVersion`
-   - Partial property updates (merge, not replace)
-
-2. **TDD Implementation** (17 new tests, 808 total)
-   - Title updates, property updates, both together
-   - Type change with auto-mapping (same key names transfer)
-   - Explicit mapping via `propertyMapping` param
-   - Type compatibility checking (text↔richtext, date↔datetime)
-   - Validation against new schema after migration
-   - Default value population for new type
-   - Dropped properties tracking in response
-
-3. **Code Review & Bug Fixes**
-   - Fixed: Property updates were ignored during type change
-   - Fixed: Missing validation after migration
-   - Now allows atomic type change + property update in one call
-
-4. **IPC Layer Wiring**
-   - API contracts (`UpdateObjectRequest/Response` schemas)
-   - IPC handler with Zod validation
-   - Preload binding
-
-**Files created/modified:**
-
-- `packages/storage/src/objectService.ts` — `updateObject()` + helpers
-- `packages/storage/src/objectService.test.ts` — 17 new tests
-- `packages/api/src/object.ts` — Zod schemas
-- `apps/desktop/src/main/ipc.ts` — Handler
-- `apps/desktop/src/preload/index.ts` — Binding
-
-**Commits:**
-
-- `8a7d881 docs: add updateObject() service design`
-- `6dff951 feat(storage): add updateObject() service for CRUD update operations`
+**Commits:** `ae451b0 feat(desktop): implement full AppShell with collapsible sidebars`
 
 ---
 
@@ -112,3 +97,4 @@ Implemented the missing CRUD "Update" operation using full-feature-workflow with
 | Settings    | Settings persistence (React hook, 12 tests)     | 2026-01-15 |
 | Update      | updateObject() service (17 tests, TDD)          | 2026-01-14 |
 | Tier 1 DS   | Design System Tier 1 migration                  | 2026-01-14 |
+| Tier 2 DS   | Design System Tier 2 migration (3 components)   | 2026-01-15 |

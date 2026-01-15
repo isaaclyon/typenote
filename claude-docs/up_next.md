@@ -9,11 +9,11 @@
 
 All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, etc.)
 
-### Tier 2 In Progress
+### Tier 2 ✅ COMPLETE (2026-01-15)
 
-- [ ] DailyNoteNav — Replace custom DailyNoteNavigation.tsx
-- [ ] SaveStatus — Connect to save state
-- [ ] SettingsModal — Wire up to settings IPC
+- [x] DailyNoteNav — Replaced with design-system component (icon buttons)
+- [x] SaveStatus — Connected to useAutoSave hook
+- [x] SettingsModal — Wired to useSettings hook with optimistic updates
 
 ### Tier 3 AppShell Migration ✅ COMPLETE (2026-01-15)
 
@@ -80,7 +80,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
-| AppShell Full Migration          | 2026-01-15 | (not committed)      |
+| Design System Tier 2 Migration   | 2026-01-15 | `ec8748b`, `47749a3` |
+| AppShell Full Migration          | 2026-01-15 | `ae451b0`            |
 | updateObject() Service           | 2026-01-14 | `6dff951`            |
 | Design System Migration (Tier 1) | 2026-01-14 | `d95f1e7`            |
 | Settings Persistence             | 2026-01-15 | `9a85158`            |
