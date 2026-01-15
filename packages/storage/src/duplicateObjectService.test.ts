@@ -334,4 +334,321 @@ describe('duplicateObject', () => {
 
     expect(duplicateKeys).toEqual(sourceKeys);
   });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Phase 4: Internal Ref Remapping Tests
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  describe('internal ref remapping', () => {
+    it('remaps internal object ref to new object ID', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Add block with internal object ref
+      const blockId = generateId();
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'Link to self: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'object', objectId: source.id },
+                  alias: 'self',
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      // Get the duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(1);
+
+      const block = doc.blocks[0];
+      expect(block).toBeDefined();
+      if (!block) throw new Error('Expected block');
+
+      // Content should have ref remapped to new object ID
+      expect(block.content).toEqual({
+        inline: [
+          { t: 'text', text: 'Link to self: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: { kind: 'object', objectId: result.object.id },
+            alias: 'self',
+          },
+        ],
+      });
+    });
+
+    it('remaps internal block ref with both objectId and blockId', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Add two blocks: one that references the other
+      const targetBlockId = generateId();
+      const refBlockId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 2, inline: [{ t: 'text', text: 'Target Heading' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: refBlockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'See: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: {
+                    kind: 'block',
+                    objectId: source.id,
+                    blockId: targetBlockId,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      // Get the duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Find the paragraph block (second block)
+      const refBlock = doc.blocks[1];
+      expect(refBlock).toBeDefined();
+      if (!refBlock) throw new Error('Expected ref block');
+
+      // Find the heading block (first block)
+      const targetBlock = doc.blocks[0];
+      expect(targetBlock).toBeDefined();
+      if (!targetBlock) throw new Error('Expected target block');
+
+      // Content should have ref remapped to new IDs
+      expect(refBlock.content).toEqual({
+        inline: [
+          { t: 'text', text: 'See: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: {
+              kind: 'block',
+              objectId: result.object.id, // New object ID
+              blockId: targetBlock.id, // New block ID
+            },
+          },
+        ],
+      });
+
+      // Original should be unchanged
+      const sourceDoc = getDocument(db, source.id);
+      const sourceRefBlock = sourceDoc.blocks[1];
+      expect(sourceRefBlock?.content).toEqual({
+        inline: [
+          { t: 'text', text: 'See: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: {
+              kind: 'block',
+              objectId: source.id,
+              blockId: targetBlockId,
+            },
+          },
+        ],
+      });
+    });
+
+    it('leaves external refs unchanged', () => {
+      seedBuiltInTypes(db);
+
+      // Create two objects
+      const external = createObject(db, 'Page', 'External Page');
+      const source = createObject(db, 'Page', 'Source');
+
+      // Add block in source that refs external object
+      const blockId = generateId();
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'Link to external: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'object', objectId: external.id },
+                  alias: 'external',
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      // Get the duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(1);
+
+      const block = doc.blocks[0];
+      expect(block).toBeDefined();
+      if (!block) throw new Error('Expected block');
+
+      // External ref should be UNCHANGED
+      expect(block.content).toEqual({
+        inline: [
+          { t: 'text', text: 'Link to external: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: { kind: 'object', objectId: external.id }, // Still external.id!
+            alias: 'external',
+          },
+        ],
+      });
+    });
+
+    it('handles mixed internal and external refs in same content', () => {
+      seedBuiltInTypes(db);
+
+      const external = createObject(db, 'Page', 'External Page');
+      const source = createObject(db, 'Page', 'Source');
+
+      // Add block with both internal and external refs
+      const targetBlockId = generateId();
+      const mixedBlockId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 1, inline: [{ t: 'text', text: 'Internal Heading' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: mixedBlockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'Internal: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'object', objectId: source.id },
+                },
+                { t: 'text', text: ', block ref: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: {
+                    kind: 'block',
+                    objectId: source.id,
+                    blockId: targetBlockId,
+                  },
+                },
+                { t: 'text', text: ', external: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'object', objectId: external.id },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      // Get the duplicated document
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      const mixedBlock = doc.blocks[1];
+      expect(mixedBlock).toBeDefined();
+      if (!mixedBlock) throw new Error('Expected mixed block');
+
+      const targetBlock = doc.blocks[0];
+      expect(targetBlock).toBeDefined();
+      if (!targetBlock) throw new Error('Expected target block');
+
+      // Mixed content: internal refs remapped, external unchanged
+      expect(mixedBlock.content).toEqual({
+        inline: [
+          { t: 'text', text: 'Internal: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: { kind: 'object', objectId: result.object.id }, // Remapped!
+          },
+          { t: 'text', text: ', block ref: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: {
+              kind: 'block',
+              objectId: result.object.id, // Remapped!
+              blockId: targetBlock.id, // Remapped!
+            },
+          },
+          { t: 'text', text: ', external: ' },
+          {
+            t: 'ref',
+            mode: 'link',
+            target: { kind: 'object', objectId: external.id }, // Unchanged!
+          },
+        ],
+      });
+    });
+  });
 });
