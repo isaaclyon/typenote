@@ -29,8 +29,8 @@ const DuplicatedObjectSchema = z.object({
   title: z.string(),
   properties: z.record(z.unknown()), // JSON properties per type schema
   docVersion: z.number().int().nonnegative(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
 /**
