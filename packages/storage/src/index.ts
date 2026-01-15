@@ -18,6 +18,7 @@ export {
   attachments,
   blockAttachments,
   recentObjects,
+  pinnedObjects,
   userSettings,
   FTS_BLOCKS_TABLE_NAME,
   FTS_BLOCKS_CREATE_SQL,
@@ -98,6 +99,9 @@ export {
   type CreatedObject,
   type CreateObjectOptions,
 } from './objectService.js';
+
+// Object Duplication Service
+export { duplicateObject } from './duplicateObjectService.js';
 
 // Export/Import Service
 export {
@@ -207,6 +211,17 @@ export {
   type RecentObjectSummary,
 } from './recentObjectsService.js';
 
+// Pinned Objects Service
+export {
+  pinObject,
+  unpinObject,
+  isPinned,
+  getPinnedObjects,
+  reorderPinnedObjects,
+  clearPinnedObjects,
+  type PinnedObjectSummary,
+} from './pinnedObjectsService.js';
+
 // Settings Service
 export {
   getSettings,
@@ -215,3 +230,14 @@ export {
   updateSetting,
   resetSettings,
 } from './settingsService.js';
+
+// Trash Service
+export {
+  listDeletedObjects,
+  restoreObject,
+  TrashServiceError,
+  type TrashServiceErrorCode,
+  type DeletedObjectSummary,
+  type RestoreObjectResult,
+  type ListDeletedObjectsOptions,
+} from './trashService.js';
