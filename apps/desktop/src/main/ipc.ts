@@ -12,6 +12,7 @@ import {
   getBacklinks as getBacklinksStorage,
   getUnlinkedMentionsTo as getUnlinkedMentionsToStorage,
   createObject as createObjectStorage,
+  duplicateObject as duplicateObjectStorage,
   createTag as createTagStorage,
   getTag as getTagStorage,
   updateTag as updateTagStorage,
@@ -99,6 +100,8 @@ import {
   type Attachment,
   type UploadAttachmentResult,
   type UserSettings,
+  type DuplicateObjectResponse,
+  type ApiError,
 } from '@typenote/api';
 
 /**
@@ -202,6 +205,7 @@ export interface IpcHandlers {
     title: string,
     properties?: Record<string, unknown>
   ) => IpcOutcome<CreatedObject>;
+  duplicateObject: (objectId: string) => IpcOutcome<DuplicateObjectResponse>;
   // Tag operations
   createTag: (input: CreateTagInput) => IpcOutcome<Tag>;
   getTag: (tagId: string) => IpcOutcome<Tag | null>;
@@ -312,6 +316,33 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
       }
 
       return outcome;
+    },
+
+    duplicateObject: (objectId) => {
+      // duplicateObject throws plain ApiError objects (not Error instances)
+      // so we need to handle it manually instead of using handleIpcCall
+      try {
+        const result = duplicateObjectStorage(db, objectId);
+        return { success: true, result };
+      } catch (error) {
+        // Check if it's an ApiError object (has code and message properties)
+        if (
+          error !== null &&
+          typeof error === 'object' &&
+          'code' in error &&
+          'message' in error &&
+          typeof error.code === 'string' &&
+          typeof error.message === 'string'
+        ) {
+          const apiError = error as ApiError;
+          return {
+            success: false,
+            error: { code: apiError.code, message: apiError.message },
+          };
+        }
+        // Unexpected error type - rethrow
+        throw error;
+      }
     },
 
     // Tag operations

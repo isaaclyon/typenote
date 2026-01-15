@@ -6,6 +6,7 @@ import type {
   UploadAttachmentResult,
   TypenoteEvent,
   UserSettings,
+  DuplicateObjectResponse,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
@@ -53,6 +54,7 @@ export interface TypenoteAPI {
     title: string,
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
+  duplicateObject: (objectId: string) => Promise<IpcOutcome<DuplicateObjectResponse>>;
   // Attachment operations
   uploadAttachment: (input: {
     filename: string;

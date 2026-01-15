@@ -1015,4 +1015,128 @@ describe('IPC Handlers', () => {
       });
     });
   });
+
+  describe('duplicateObject', () => {
+    it('duplicates object with new ID and title', () => {
+      // Arrange: Create source object with blocks
+      const sourceObject = createObject(db, 'Page', 'Original Page');
+      const rootBlockId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: sourceObject.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: rootBlockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: { inline: [{ t: 'text', text: 'Test content' }] },
+          },
+        ],
+      });
+
+      // Act: Duplicate the object
+      const result = handlers.duplicateObject(sourceObject.id);
+
+      // Assert: Success with new object
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.result.object.id).not.toBe(sourceObject.id);
+        expect(result.result.object.title).toBe('Original Page (Copy)');
+        expect(result.result.object.typeId).toBe(sourceObject.typeId);
+        expect(result.result.blockCount).toBe(1);
+      }
+    });
+
+    it('returns error for non-existent object', () => {
+      const fakeId = generateId();
+      const result = handlers.duplicateObject(fakeId);
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: 'NOT_FOUND_OBJECT',
+          message: expect.stringContaining(fakeId),
+        },
+      });
+    });
+
+    it('returns error when trying to duplicate a DailyNote', () => {
+      // Create a DailyNote
+      const { dailyNote } = getOrCreateTodayDailyNote(db);
+
+      // Try to duplicate it
+      const result = handlers.duplicateObject(dailyNote.id);
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: 'INVARIANT_DAILY_NOTE_NOT_DUPLICABLE',
+          message: expect.any(String),
+        },
+      });
+    });
+
+    it('duplicates object with multiple blocks preserving tree structure', () => {
+      // Arrange: Create object with nested blocks
+      const sourceObject = createObject(db, 'Page', 'Multi-block Page');
+      const rootId = generateId();
+      const childId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: sourceObject.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: rootId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: { inline: [{ t: 'text', text: 'Root block' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: childId,
+            parentBlockId: rootId,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: { inline: [{ t: 'text', text: 'Child block' }] },
+          },
+        ],
+      });
+
+      // Act
+      const result = handlers.duplicateObject(sourceObject.id);
+
+      // Assert
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.result.blockCount).toBe(2);
+      }
+    });
+
+    it('returns error for soft-deleted object', () => {
+      // Arrange: Create object
+      const sourceObject = createObject(db, 'Page', 'Deleted Page');
+
+      // Soft delete using raw SQL
+      // Note: In production, there would be a deleteObject service function
+      db.run(`UPDATE objects SET deleted_at = datetime('now') WHERE id = ?`, [sourceObject.id]);
+
+      // Act: Try to duplicate deleted object
+      const result = handlers.duplicateObject(sourceObject.id);
+
+      // Assert: Should fail with NOT_FOUND_OBJECT
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: 'NOT_FOUND_OBJECT',
+          message: expect.stringContaining(sourceObject.id),
+        },
+      });
+    });
+  });
 });
