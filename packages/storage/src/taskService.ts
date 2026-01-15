@@ -14,6 +14,7 @@
  */
 
 import { and, eq, isNull, sql, gte, lt } from 'drizzle-orm';
+import { getTodayDateKey } from '@typenote/core';
 import type { TaskStatus, TaskPriority } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
 import { objects } from './schema.js';
@@ -70,13 +71,6 @@ function rowToTaskObject(row: typeof objects.$inferSelect): TaskObject {
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
-}
-
-/**
- * Get today's date as YYYY-MM-DD.
- */
-function getTodayDateKey(): string {
-  return new Date().toISOString().split('T')[0] ?? '';
 }
 
 /**

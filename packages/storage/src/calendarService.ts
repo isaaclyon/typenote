@@ -10,6 +10,7 @@
  */
 
 import { and, eq, isNull, sql, or } from 'drizzle-orm';
+import { getTodayDateKey } from '@typenote/core';
 import type { TypenoteDb } from './db.js';
 import { objects } from './schema.js';
 import { listObjectTypes } from './objectTypeService.js';
@@ -102,13 +103,6 @@ function getStartOfDay(dateKey: string): string {
  */
 function getEndOfDay(dateKey: string): string {
   return `${dateKey}T23:59:59.999Z`;
-}
-
-/**
- * Get today's date as YYYY-MM-DD.
- */
-function getTodayDateKey(): string {
-  return new Date().toISOString().split('T')[0] ?? '';
 }
 
 /**

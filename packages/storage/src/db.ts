@@ -77,8 +77,18 @@ export interface TypenoteDb extends BetterSQLite3Database<typeof schema> {
 
 /**
  * Create a database connection with Drizzle ORM.
+ *
+ * Configures SQLite with optimal settings:
+ * - WAL mode for better concurrency (readers don't block writers)
+ * - NORMAL synchronous (safe with WAL, faster than FULL)
+ * - Foreign key enforcement enabled
  */
 function createDb(sqlite: BetterSqlite3Database): TypenoteDb {
+  // Configure SQLite pragmas for optimal performance and safety
+  sqlite.pragma('journal_mode = WAL');
+  sqlite.pragma('synchronous = NORMAL');
+  sqlite.pragma('foreign_keys = ON');
+
   const db = drizzle(sqlite, { schema });
 
   // Create the drizzle wrapper with raw query helpers

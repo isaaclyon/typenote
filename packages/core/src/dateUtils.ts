@@ -15,25 +15,36 @@ export function isValidDateKey(dateKey: string): boolean {
 /**
  * Get the previous day's date key.
  *
+ * Uses UTC arithmetic to avoid timezone/DST edge cases.
+ *
  * @param dateKey - Date in YYYY-MM-DD format
  * @returns Previous day in YYYY-MM-DD format
  */
 export function getPreviousDate(dateKey: string): string {
-  // Parse as local date at midnight to avoid timezone issues
-  const date = new Date(dateKey + 'T00:00:00');
-  date.setDate(date.getDate() - 1);
+  const parts = dateKey.split('-').map(Number);
+  const year = parts[0] ?? 0;
+  const month = parts[1] ?? 1;
+  const day = parts[2] ?? 1;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  date.setUTCDate(date.getUTCDate() - 1);
   return date.toISOString().slice(0, 10);
 }
 
 /**
  * Get the next day's date key.
  *
+ * Uses UTC arithmetic to avoid timezone/DST edge cases.
+ *
  * @param dateKey - Date in YYYY-MM-DD format
  * @returns Next day in YYYY-MM-DD format
  */
 export function getNextDate(dateKey: string): string {
-  const date = new Date(dateKey + 'T00:00:00');
-  date.setDate(date.getDate() + 1);
+  const parts = dateKey.split('-').map(Number);
+  const year = parts[0] ?? 0;
+  const month = parts[1] ?? 1;
+  const day = parts[2] ?? 1;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  date.setUTCDate(date.getUTCDate() + 1);
   return date.toISOString().slice(0, 10);
 }
 
