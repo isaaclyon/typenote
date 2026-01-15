@@ -16,6 +16,7 @@ export const ApiErrorCodeSchema = z.enum([
   'INVARIANT_CROSS_OBJECT',
   'INVARIANT_PARENT_DELETED',
   'INVARIANT_TAG_IN_USE',
+  'INVARIANT_DAILY_NOTE_NOT_DUPLICABLE',
   'FILE_TOO_LARGE',
   'UNSUPPORTED_FILE_TYPE',
   'IDEMPOTENCY_CONFLICT',
@@ -181,5 +182,14 @@ export function unsupportedFileType(mimeType: string): ApiError {
     code: 'UNSUPPORTED_FILE_TYPE',
     message: `File type '${mimeType}' is not supported`,
     details: { mimeType },
+  };
+}
+
+export function dailyNoteNotDuplicable(objectId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'INVARIANT_DAILY_NOTE_NOT_DUPLICABLE',
+    message: 'Cannot duplicate DailyNote objects',
+    details: { objectId },
   };
 }

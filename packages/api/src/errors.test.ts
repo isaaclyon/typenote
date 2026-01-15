@@ -15,6 +15,7 @@ import {
   notFoundTag,
   tagSlugConflict,
   tagInUse,
+  dailyNoteNotDuplicable,
   type ApiError,
   type ApiErrorCode,
 } from './errors.js';
@@ -32,6 +33,7 @@ describe('ApiErrorCodeSchema', () => {
     'INVARIANT_CROSS_OBJECT',
     'INVARIANT_PARENT_DELETED',
     'INVARIANT_TAG_IN_USE',
+    'INVARIANT_DAILY_NOTE_NOT_DUPLICABLE',
     'IDEMPOTENCY_CONFLICT',
     'INTERNAL',
   ];
@@ -222,6 +224,17 @@ describe('Error factory functions', () => {
         tagId: '01ARZ3NDEKTSV4RRFFQ69G5FAV',
         usageCount: 5,
       });
+    });
+  });
+
+  describe('dailyNoteNotDuplicable', () => {
+    it('creates INVARIANT_DAILY_NOTE_NOT_DUPLICABLE error', () => {
+      const error = dailyNoteNotDuplicable('01ARZ3NDEKTSV4RRFFQ69G5FAV');
+
+      expect(error.apiVersion).toBe('v1');
+      expect(error.code).toBe('INVARIANT_DAILY_NOTE_NOT_DUPLICABLE');
+      expect(error.message).toBe('Cannot duplicate DailyNote objects');
+      expect(error.details).toEqual({ objectId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' });
     });
   });
 });
