@@ -5,7 +5,7 @@
  */
 
 import type { CalendarItem } from '@typenote/storage';
-import { Skeleton } from '@typenote/design-system';
+import { Skeleton, Text } from '@typenote/design-system';
 import { EventList } from './EventList.js';
 
 export type LoadState<T> =
@@ -48,9 +48,11 @@ export function CalendarSidebar({
       {/* Header */}
       <div className="p-4 border-b">
         {selectedDate ? (
-          <h2 className="text-lg font-semibold">{formatDateHeader(selectedDate)}</h2>
+          <Text variant="heading4">{formatDateHeader(selectedDate)}</Text>
         ) : (
-          <h2 className="text-lg font-semibold text-muted-foreground">Select a date</h2>
+          <Text variant="heading4" muted>
+            Select a date
+          </Text>
         )}
       </div>
 

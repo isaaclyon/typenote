@@ -5,6 +5,8 @@ interface UseSelectedObjectResult {
   object: ObjectDetails | null;
   isLoading: boolean;
   error: string | null;
+  /** Re-fetch the current object to get updated data */
+  refetch: () => void;
 }
 
 /**
@@ -49,9 +51,16 @@ export function useSelectedObject(objectId: string | null): UseSelectedObjectRes
     void fetchObject(objectId);
   }, [objectId, fetchObject]);
 
+  const refetch = useCallback(() => {
+    if (objectId) {
+      void fetchObject(objectId);
+    }
+  }, [objectId, fetchObject]);
+
   return {
     object,
     isLoading,
     error,
+    refetch,
   };
 }

@@ -7,7 +7,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatMonthYear } from '@typenote/core';
-import { Button } from '@typenote/design-system';
+import { Button, Text } from '@typenote/design-system';
 
 export interface CalendarHeaderProps {
   viewingMonth: Date;
@@ -37,7 +37,9 @@ export function CalendarHeader({
           <ChevronLeft className="h-4 w-4" />
         </Button>
 
-        <span className="min-w-32 text-center font-medium">{monthYearDisplay}</span>
+        <Text as="span" variant="body" className="min-w-32 text-center font-medium">
+          {monthYearDisplay}
+        </Text>
 
         <Button
           variant="ghost"

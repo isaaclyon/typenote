@@ -8,7 +8,7 @@
 /// <reference path="../global.d.ts" />
 
 import * as React from 'react';
-import { TypeBrowser } from '@typenote/design-system';
+import { TypeBrowser, Text } from '@typenote/design-system';
 import { useObjectType } from '../hooks/useObjectType.js';
 import { useObjectsByType } from '../hooks/useObjectsByType.js';
 import {
@@ -74,8 +74,12 @@ export function TypeBrowserView({
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="text-center">
-          <p className="text-gray-500 mb-2">Failed to load {typeKey}</p>
-          <p className="text-sm text-gray-400">{error}</p>
+          <Text variant="bodySmall" muted className="mb-2">
+            Failed to load {typeKey}
+          </Text>
+          <Text variant="caption" muted>
+            {error}
+          </Text>
         </div>
       </div>
     );

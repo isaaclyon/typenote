@@ -132,6 +132,10 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getEventsInDateRange: (startDate: string, endDate: string) =>
     ipcRenderer.invoke('typenote:getEventsInDateRange', startDate, endDate),
 
+  // Daily note operations
+  getDatesWithDailyNotes: (startDate: string, endDate: string) =>
+    ipcRenderer.invoke('typenote:getDatesWithDailyNotes', startDate, endDate),
+
   // Recent objects operations
   recordView: (objectId: string) => ipcRenderer.invoke('typenote:recordView', objectId),
 

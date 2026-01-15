@@ -5,6 +5,7 @@ import {
   PropertyTags,
   Tag,
   TagAddButton,
+  Text,
 } from '@typenote/design-system';
 import type { ObjectDetails } from '@typenote/storage';
 
@@ -12,7 +13,8 @@ interface PropertiesPanelProps {
   collapsed: boolean;
   object: ObjectDetails | null;
   onAddTagClick?: () => void;
-  onRemoveTag?: (tagName: string) => void;
+  /** Called when user clicks remove on a tag. Receives the tag ID. */
+  onRemoveTag?: (tagId: string) => void;
 }
 
 function formatDateTime(date: Date): string {
@@ -43,7 +45,9 @@ export function PropertiesPanel({
     <RightSidebar collapsed={collapsed}>
       <div className="space-y-4">
         {/* Section header */}
-        <h3 className="text-sm font-semibold text-gray-900">Properties</h3>
+        <Text variant="label" className="font-semibold text-gray-900">
+          Properties
+        </Text>
 
         {/* Property items */}
         <div className="space-y-3">
@@ -69,7 +73,7 @@ export function PropertiesPanel({
           <PropertyTags label="Tags">
             {object.tags.map((tag) =>
               onRemoveTag ? (
-                <Tag key={tag.id} onRemove={() => onRemoveTag(tag.name)}>
+                <Tag key={tag.id} onRemove={() => onRemoveTag(tag.id)}>
                   {tag.name}
                 </Tag>
               ) : (

@@ -1,26 +1,55 @@
 import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../utils/cn.js';
 import type { CommandPaletteItemProps } from './types.js';
 
+const itemVariants = cva(
+  'flex items-center gap-2 px-2 py-1.5 mx-1 rounded-sm cursor-pointer transition-colors text-sm',
+  {
+    variants: {
+      selected: {
+        true: 'bg-accent-50 text-accent-700',
+        false: 'hover:bg-gray-50',
+      },
+      disabled: {
+        true: 'opacity-50 pointer-events-none',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      selected: false,
+      disabled: false,
+    },
+  }
+);
+
+export interface ItemVariantProps extends VariantProps<typeof itemVariants> {}
+
+/**
+ * CommandPaletteItem - Individual selectable command.
+ *
+ * Renders children as content (icons, text, badges). Use selected prop
+ * to highlight the item, and onSelect for click/Enter handling.
+ */
 const CommandPaletteItem = React.forwardRef<HTMLDivElement, CommandPaletteItemProps>(
-  ({ item, selected, onClick, className }, ref) => {
-    const Icon = item.icon;
+  ({ value, selected = false, disabled = false, onSelect, children, className }, ref) => {
+    const handleClick = () => {
+      if (!disabled) {
+        onSelect();
+      }
+    };
 
     return (
       <div
         ref={ref}
         role="option"
         aria-selected={selected}
-        onClick={onClick}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors',
-          selected ? 'bg-accent-50 text-accent-700' : 'hover:bg-gray-50',
-          className
-        )}
+        aria-disabled={disabled}
+        data-value={value}
+        onClick={handleClick}
+        className={cn(itemVariants({ selected, disabled }), className)}
       >
-        {Icon && <Icon className="h-4 w-4 flex-shrink-0 text-gray-500" />}
-        <span className="flex-1 text-sm font-medium">{item.label}</span>
-        {item.shortcut && <span className="text-xs text-gray-400 font-mono">{item.shortcut}</span>}
+        {children}
       </div>
     );
   }
@@ -28,4 +57,4 @@ const CommandPaletteItem = React.forwardRef<HTMLDivElement, CommandPaletteItemPr
 
 CommandPaletteItem.displayName = 'CommandPaletteItem';
 
-export { CommandPaletteItem };
+export { CommandPaletteItem, itemVariants };

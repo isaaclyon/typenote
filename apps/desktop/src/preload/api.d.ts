@@ -8,6 +8,9 @@ import type {
   UserSettings,
   DuplicateObjectResponse,
   ObjectType,
+  Tag,
+  AssignTagsResult,
+  RemoveTagsResult,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
@@ -77,6 +80,9 @@ export interface TypenoteAPI {
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
 
+  // Daily note operations
+  getDatesWithDailyNotes: (startDate: string, endDate: string) => Promise<IpcOutcome<string[]>>;
+
   // Recent objects operations
   recordView: (objectId: string) => Promise<IpcOutcome<void>>;
   getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
@@ -87,6 +93,16 @@ export interface TypenoteAPI {
   isPinned: (objectId: string) => Promise<IpcOutcome<boolean>>;
   getPinnedObjects: () => Promise<IpcOutcome<PinnedObjectSummary[]>>;
   reorderPinnedObjects: (orderedIds: string[]) => Promise<IpcOutcome<void>>;
+
+  // Tag operations
+  listTags: (options?: {
+    includeUsageCount?: boolean;
+    sortBy?: string;
+    sortOrder?: string;
+  }) => Promise<IpcOutcome<Tag[]>>;
+  assignTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<AssignTagsResult>>;
+  removeTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<RemoveTagsResult>>;
+  getObjectTags: (objectId: string) => Promise<IpcOutcome<Tag[]>>;
 
   // Settings operations
   getSettings: () => Promise<IpcOutcome<UserSettings>>;

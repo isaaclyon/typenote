@@ -6,8 +6,8 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 14     | 42%        |
-| 🟡 Ready for Integration | 11     | 33%        |
+| ✅ Migrated              | 21     | 64%        |
+| 🟡 Ready for Integration | 4      | 12%        |
 | 🟠 Major Refactor        | 6      | 18%        |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
@@ -45,20 +45,20 @@ Complete implementations with Ladle stories. Need IPC wiring or minor integratio
 ### Medium Priority
 
 - [x] **SaveStatus** — Connected to editor save state via useAutoSave hook
-- [ ] **PropertyItem** — Connect to object metadata IPC (~1-2 hrs)
-- [ ] **PropertyTags** — Connect to tag system IPC (~1-2 hrs)
-- [ ] **Modal** — Radix-based compound component
+- [x] **PropertyItem** — Displaying Created, Modified, Type in PropertiesPanel
+- [x] **PropertyTags** — Full tag management (add + remove) via TagPickerModal
+- [x] **Modal** — Used for TagPickerModal
   - Includes: ModalHeader, ModalContent, ModalFooter
 - [ ] **Select** — Form control component
 - [ ] **Switch** — For settings toggles
 - [ ] **Input** — Text input primitive
-- [ ] **Text** — Typography component
-- [ ] **Tag** — Single tag display
-- [ ] **TagAddButton** — Add tag button with interaction
+- [x] **Text** — Adopted in TypeBrowserView, PropertiesPanel, CalendarSidebar, CalendarHeader
+- [x] **Tag** — Used in PropertiesPanel with removal support
+- [x] **TagAddButton** — Used in PropertiesPanel (add functionality pending)
 
 ### Low Priority
 
-- [ ] **MiniCalendar** — `react-day-picker` based
+- [x] **MiniCalendar** — Integrated into LeftSidebar for daily note navigation
 
 ### Already Wired
 

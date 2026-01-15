@@ -9,6 +9,7 @@ import { TypeBrowserView } from './components/TypeBrowserView.js';
 import { LeftSidebar } from './components/LeftSidebar.js';
 import { PropertiesPanel } from './components/PropertiesPanel.js';
 import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
+import { TagPickerModal } from './components/TagPickerModal.js';
 import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
@@ -23,15 +24,25 @@ function App(): ReactElement {
   const [selectedTypeKey, setSelectedTypeKey] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('notes');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tagPickerOpen, setTagPickerOpen] = useState(false);
 
   // Hooks
   const { isOpen, close, open } = useCommandPalette();
   const { pinnedObjects, reorderPinnedObjects } = usePinnedObjects();
   const { counts: typeCounts } = useTypeCounts();
-  const { object: selectedObject } = useSelectedObject(selectedObjectId);
+  const { object: selectedObject, refetch: refetchSelectedObject } =
+    useSelectedObject(selectedObjectId);
 
   const handleCreateDailyNote = async () => {
     const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
+    if (result.success) {
+      setSelectedObjectId(result.result.dailyNote.id);
+      setViewMode('notes');
+    }
+  };
+
+  const handleNavigateToDailyNote = async (dateKey: string) => {
+    const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(dateKey);
     if (result.success) {
       setSelectedObjectId(result.result.dailyNote.id);
       setViewMode('notes');
@@ -48,6 +59,22 @@ function App(): ReactElement {
     setViewMode('notes');
   };
 
+  const handleRemoveTag = async (tagId: string) => {
+    if (!selectedObjectId) return;
+    const result = await window.typenoteAPI.removeTags(selectedObjectId, [tagId]);
+    if (result.success) {
+      refetchSelectedObject();
+    }
+  };
+
+  const handleAddTag = async (tagId: string) => {
+    if (!selectedObjectId) return;
+    const result = await window.typenoteAPI.assignTags(selectedObjectId, [tagId]);
+    if (result.success) {
+      refetchSelectedObject();
+    }
+  };
+
   // Show right sidebar only when viewing a note
   const showRightSidebar = viewMode === 'notes' && selectedObjectId !== null;
 
@@ -55,7 +82,12 @@ function App(): ReactElement {
   const rightSidebarProp = showRightSidebar
     ? {
         rightSidebar: ({ collapsed }: { collapsed: boolean }) => (
-          <PropertiesPanel collapsed={collapsed} object={selectedObject} />
+          <PropertiesPanel
+            collapsed={collapsed}
+            object={selectedObject}
+            onRemoveTag={(tagId) => void handleRemoveTag(tagId)}
+            onAddTagClick={() => setTagPickerOpen(true)}
+          />
         ),
       }
     : {};
@@ -67,7 +99,6 @@ function App(): ReactElement {
           <LeftSidebar
             collapsed={collapsed}
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
             onOpenCommandPalette={open}
             onCreateDailyNote={() => void handleCreateDailyNote()}
             pinnedObjects={pinnedObjects}
@@ -78,6 +109,7 @@ function App(): ReactElement {
             onOpenSettings={() => setSettingsOpen(true)}
             selectedTypeKey={selectedTypeKey}
             onSelectType={handleSelectType}
+            onNavigateToDailyNote={(dateKey) => void handleNavigateToDailyNote(dateKey)}
           />
         )}
         {...rightSidebarProp}
@@ -110,6 +142,12 @@ function App(): ReactElement {
       <Toaster />
       <CommandPalette isOpen={isOpen} onClose={close} onNavigate={setSelectedObjectId} />
       <SettingsModalWrapper open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <TagPickerModal
+        open={tagPickerOpen}
+        onClose={() => setTagPickerOpen(false)}
+        existingTagIds={selectedObject?.tags.map((t) => t.id) ?? []}
+        onSelectTag={(tagId) => void handleAddTag(tagId)}
+      />
     </>
   );
 }

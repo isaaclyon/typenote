@@ -37,6 +37,8 @@ import {
   reopenTask as reopenTaskStorage,
   // Calendar service
   getEventsInDateRange as getEventsInDateRangeStorage,
+  // Daily note service
+  listDailyNotes as listDailyNotesStorage,
   // Recent objects service
   recordView as recordViewStorage,
   getRecentObjects as getRecentObjectsStorage,
@@ -247,6 +249,8 @@ export interface IpcHandlers {
   getBlockAttachments: (blockId: string) => IpcOutcome<Attachment[]>;
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => IpcOutcome<CalendarItem[]>;
+  // Daily note operations
+  getDatesWithDailyNotes: (startDate: string, endDate: string) => IpcOutcome<string[]>;
   // Recent objects operations
   recordView: (objectId: string) => IpcOutcome<void>;
   getRecentObjects: (limit?: number) => IpcOutcome<RecentObjectSummary[]>;
@@ -520,6 +524,13 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     // Calendar operations
     getEventsInDateRange: (startDate, endDate) =>
       handleIpcCall(() => getEventsInDateRangeStorage(db, startDate, endDate)),
+
+    // Daily note operations
+    getDatesWithDailyNotes: (startDate, endDate) =>
+      handleIpcCall(() => {
+        const result = listDailyNotesStorage(db, { startDate, endDate });
+        return result.items.map((item) => item.properties.date_key);
+      }),
 
     // Recent objects operations
     recordView: (objectId) => {

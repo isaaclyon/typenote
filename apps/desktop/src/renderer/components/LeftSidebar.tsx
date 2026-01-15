@@ -1,5 +1,6 @@
+import { useState, useCallback, useEffect } from 'react';
 import type { ReactElement } from 'react';
-import { FileText, CheckSquare, Calendar, Settings, CalendarDays, StickyNote } from 'lucide-react';
+import { FileText, CheckSquare, Settings, CalendarDays, StickyNote } from 'lucide-react';
 import {
   Sidebar,
   SidebarSection,
@@ -9,15 +10,17 @@ import {
   SidebarPinnedSection,
   SidebarActionButton,
   Button,
+  MiniCalendar,
 } from '@typenote/design-system';
+import { getCalendarTodayDateKey } from '@typenote/core';
 import type { PinnedObjectSummary } from '@typenote/storage';
+import { useDatesWithNotes } from '../hooks/useDatesWithNotes.js';
 
 type ViewMode = 'notes' | 'calendar' | 'type';
 
 interface LeftSidebarProps {
   collapsed: boolean;
   viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
   onOpenCommandPalette: () => void;
   onCreateDailyNote: () => void;
   pinnedObjects: PinnedObjectSummary[];
@@ -30,6 +33,8 @@ interface LeftSidebarProps {
   selectedTypeKey: string | null;
   /** Called when a type is clicked in the sidebar */
   onSelectType: (typeKey: string) => void;
+  /** Called when a date is selected in the mini calendar to navigate to its daily note */
+  onNavigateToDailyNote: (dateKey: string) => void;
 }
 
 // Map typeKey to icon
@@ -51,7 +56,6 @@ function getIconForType(typeKey: string): typeof FileText {
 export function LeftSidebar({
   collapsed,
   viewMode,
-  onViewModeChange,
   onOpenCommandPalette,
   onCreateDailyNote,
   pinnedObjects,
@@ -62,17 +66,58 @@ export function LeftSidebar({
   onOpenSettings,
   selectedTypeKey,
   onSelectType,
+  onNavigateToDailyNote,
 }: LeftSidebarProps): ReactElement {
   // Get sorted type keys for consistent display order
   const typeKeys = Object.keys(typeCounts).sort();
+
+  // Mini calendar state
+  const [selectedDate, setSelectedDate] = useState<string>(getCalendarTodayDateKey());
+  const { datesWithNotes, fetchForMonth } = useDatesWithNotes();
+
+  // Handle date selection - navigate to daily note
+  const handleDateSelect = useCallback(
+    (dateKey: string) => {
+      setSelectedDate(dateKey);
+      onNavigateToDailyNote(dateKey);
+    },
+    [onNavigateToDailyNote]
+  );
+
+  // Handle month change - fetch dates with notes for new month
+  const handleMonthChange = useCallback(
+    (year: number, month: number) => {
+      void fetchForMonth(year, month);
+    },
+    [fetchForMonth]
+  );
+
+  // Fetch dates with notes for current month on mount
+  useEffect(() => {
+    const today = new Date();
+    void fetchForMonth(today.getFullYear(), today.getMonth());
+  }, [fetchForMonth]);
 
   return (
     <Sidebar collapsed={collapsed}>
       {/* Search trigger */}
       <SidebarSearchTrigger onClick={onOpenCommandPalette} />
 
-      {/* Quick actions */}
-      <div className="mt-2 space-y-1">
+      {/* Mini Calendar for daily note navigation - below search */}
+      {!collapsed && (
+        <div className="mt-3 px-2">
+          <MiniCalendar
+            selectedDate={selectedDate}
+            datesWithNotes={datesWithNotes}
+            onDateSelect={handleDateSelect}
+            onMonthChange={handleMonthChange}
+            className="mx-auto"
+          />
+        </div>
+      )}
+
+      {/* Today's Note button */}
+      <div className="mt-3 px-2">
         <Button
           variant="ghost"
           size="sm"
@@ -82,28 +127,6 @@ export function LeftSidebar({
         >
           <CalendarDays className="w-4 h-4 mr-2" />
           Today's Note
-        </Button>
-
-        <Button
-          variant={viewMode === 'notes' ? 'secondary' : 'ghost'}
-          size="sm"
-          className="w-full justify-start"
-          onClick={() => onViewModeChange('notes')}
-          data-testid="notes-button"
-        >
-          <FileText className="w-4 h-4 mr-2" />
-          Notes
-        </Button>
-
-        <Button
-          variant={viewMode === 'calendar' ? 'secondary' : 'ghost'}
-          size="sm"
-          className="w-full justify-start"
-          onClick={() => onViewModeChange('calendar')}
-          data-testid="calendar-button"
-        >
-          <Calendar className="w-4 h-4 mr-2" />
-          Calendar
         </Button>
       </div>
 
