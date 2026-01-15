@@ -6,7 +6,7 @@
  */
 
 // Event type discriminator
-export type EventType = 'object:created';
+export type EventType = 'object:created' | 'object:restored';
 
 /**
  * Emitted when a new object is successfully created
@@ -22,6 +22,18 @@ export interface ObjectCreatedEvent {
 }
 
 /**
+ * Emitted when a deleted object is successfully restored
+ */
+export interface ObjectRestoredEvent {
+  type: 'object:restored';
+  payload: {
+    id: string;
+    title: string;
+    typeKey: string;
+  };
+}
+
+/**
  * Union of all TypeNote events
  *
  * To add new event types:
@@ -30,4 +42,4 @@ export interface ObjectCreatedEvent {
  * 3. Add to TypenoteEvent union
  * 4. Emit from relevant IPC handler in main process
  */
-export type TypenoteEvent = ObjectCreatedEvent;
+export type TypenoteEvent = ObjectCreatedEvent | ObjectRestoredEvent;
