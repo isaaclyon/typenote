@@ -1,4 +1,4 @@
-import { desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
 import type { ObjectSummary, Tag } from '@typenote/api';
 import { objects, objectTypes } from './schema.js';
@@ -12,6 +12,28 @@ import { createServiceError } from './errors.js';
 
 // Re-export from API for convenience
 export type { ObjectSummary };
+
+// ============================================================================
+// List Objects Options & Extended Types
+// ============================================================================
+
+/**
+ * Options for filtering and extending listObjects results.
+ */
+export interface ListObjectsOptions {
+  /** Filter by object type key (e.g., 'Page', 'Task') */
+  typeKey?: string;
+  /** Include properties in the response (for TypeBrowser table) */
+  includeProperties?: boolean;
+}
+
+/**
+ * Extended ObjectSummary that includes properties.
+ * Returned when includeProperties: true.
+ */
+export interface ObjectSummaryWithProperties extends ObjectSummary {
+  properties: Record<string, unknown>;
+}
 
 export interface ObjectDetails {
   id: string;
@@ -55,28 +77,104 @@ export interface CreatedObject {
 // Service Functions
 // ============================================================================
 
-export function listObjects(db: TypenoteDb): ObjectSummary[] {
+/**
+ * List objects with optional filtering and property inclusion.
+ *
+ * @param db - Database connection
+ * @param options - Optional filtering and extension options
+ * @returns Array of object summaries, optionally with properties
+ *
+ * @example
+ * // List all objects
+ * listObjects(db)
+ *
+ * @example
+ * // List only Tasks
+ * listObjects(db, { typeKey: 'Task' })
+ *
+ * @example
+ * // List Tasks with properties (for TypeBrowser)
+ * listObjects(db, { typeKey: 'Task', includeProperties: true })
+ */
+export function listObjects(db: TypenoteDb, options?: ListObjectsOptions): ObjectSummary[];
+export function listObjects(
+  db: TypenoteDb,
+  options: ListObjectsOptions & { includeProperties: true }
+): ObjectSummaryWithProperties[];
+export function listObjects(
+  db: TypenoteDb,
+  options?: ListObjectsOptions
+): ObjectSummary[] | ObjectSummaryWithProperties[] {
+  const { typeKey, includeProperties } = options ?? {};
+
+  // Build select fields - always include base fields
+  const selectFields: {
+    id: typeof objects.id;
+    title: typeof objects.title;
+    typeId: typeof objects.typeId;
+    typeKey: typeof objectTypes.key;
+    updatedAt: typeof objects.updatedAt;
+    properties?: typeof objects.properties;
+  } = {
+    id: objects.id,
+    title: objects.title,
+    typeId: objects.typeId,
+    typeKey: objectTypes.key,
+    updatedAt: objects.updatedAt,
+  };
+
+  // Only fetch properties if requested
+  if (includeProperties) {
+    selectFields.properties = objects.properties;
+  }
+
+  // Build where conditions
+  const conditions = [isNull(objects.deletedAt)];
+  if (typeKey !== undefined) {
+    conditions.push(eq(objectTypes.key, typeKey));
+  }
+
   const rows = db
-    .select({
-      id: objects.id,
-      title: objects.title,
-      typeId: objects.typeId,
-      typeKey: objectTypes.key,
-      updatedAt: objects.updatedAt,
-    })
+    .select(selectFields)
     .from(objects)
     .leftJoin(objectTypes, eq(objects.typeId, objectTypes.id))
-    .where(isNull(objects.deletedAt))
+    .where(and(...conditions))
     .orderBy(desc(objects.updatedAt))
     .all();
 
-  return rows.map((row) => ({
-    id: row.id,
-    title: row.title,
-    typeId: row.typeId,
-    typeKey: row.typeKey ?? 'Unknown',
-    updatedAt: row.updatedAt,
-  }));
+  return rows.map((row) => {
+    const base: ObjectSummary = {
+      id: row.id,
+      title: row.title,
+      typeId: row.typeId,
+      typeKey: row.typeKey ?? 'Unknown',
+      updatedAt: row.updatedAt,
+    };
+
+    if (includeProperties) {
+      // Parse properties JSON
+      let parsedProperties: Record<string, unknown> = {};
+      const propsValue = (row as { properties?: string }).properties;
+      if (propsValue) {
+        try {
+          const parsed: unknown = JSON.parse(propsValue);
+          // Only use if parsed value is a non-null object
+          if (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            parsedProperties = parsed as Record<string, unknown>;
+          }
+        } catch {
+          // If parsing fails, use empty object
+        }
+      }
+
+      return {
+        ...base,
+        properties: parsedProperties,
+      } as ObjectSummaryWithProperties;
+    }
+
+    return base;
+  });
 }
 
 /**

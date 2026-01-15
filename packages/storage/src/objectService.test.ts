@@ -8,6 +8,7 @@ import {
   updateObject,
   CreateObjectError,
   UpdateObjectError,
+  type ObjectSummaryWithProperties,
 } from './objectService.js';
 import { eq } from 'drizzle-orm';
 import { createTemplate } from './templateService.js';
@@ -126,6 +127,193 @@ describe('ObjectService', () => {
       const result = listObjects(db);
 
       expect(result).toEqual([]);
+    });
+
+    it('filters by typeKey when provided', () => {
+      seedBuiltInTypes(db);
+
+      // Create objects of different types - use custom types to avoid conflict
+      const articleType = createObjectType(db, { key: 'Article', name: 'Article' });
+      const projectType = createObjectType(db, { key: 'Project', name: 'Project' });
+
+      const now = new Date();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: articleType.id,
+          title: 'Article 1',
+          docVersion: 0,
+          properties: '{}',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: projectType.id,
+          title: 'Project 1',
+          docVersion: 0,
+          properties: '{}',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: projectType.id,
+          title: 'Project 2',
+          docVersion: 0,
+          properties: '{}',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      // Filter by Project type
+      const projects = listObjects(db, { typeKey: 'Project' });
+      expect(projects).toHaveLength(2);
+      expect(projects.every((t) => t.typeKey === 'Project')).toBe(true);
+
+      // Filter by Article type
+      const articles = listObjects(db, { typeKey: 'Article' });
+      expect(articles).toHaveLength(1);
+      expect(articles[0]?.typeKey).toBe('Article');
+
+      // Without filter returns all
+      const all = listObjects(db);
+      expect(all).toHaveLength(3);
+    });
+
+    it('includes properties when includeProperties is true', () => {
+      seedBuiltInTypes(db);
+
+      const projectType = createObjectType(db, {
+        key: 'Project',
+        name: 'Project',
+        schema: {
+          properties: [
+            { key: 'status', name: 'Status', type: 'text', required: false },
+            { key: 'priority', name: 'Priority', type: 'number', required: false },
+          ],
+        },
+      });
+
+      const now = new Date();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: projectType.id,
+          title: 'Project Alpha',
+          docVersion: 0,
+          properties: JSON.stringify({ status: 'active', priority: 1 }),
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      // Without includeProperties - no properties field
+      const withoutProps = listObjects(db);
+      expect(withoutProps[0]).not.toHaveProperty('properties');
+
+      // With includeProperties - includes parsed properties
+      const withProps = listObjects(db, {
+        includeProperties: true,
+      }) as ObjectSummaryWithProperties[];
+      expect(withProps[0]).toHaveProperty('properties');
+      expect(withProps[0]?.properties).toEqual({ status: 'active', priority: 1 });
+    });
+
+    it('combines typeKey filter with includeProperties', () => {
+      seedBuiltInTypes(db);
+
+      const articleType = createObjectType(db, { key: 'Article', name: 'Article' });
+      const todoType = createObjectType(db, {
+        key: 'Todo',
+        name: 'Todo',
+        schema: {
+          properties: [{ key: 'done', name: 'Done', type: 'boolean', required: false }],
+        },
+      });
+
+      const now = new Date();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: articleType.id,
+          title: 'Article 1',
+          docVersion: 0,
+          properties: '{}',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: todoType.id,
+          title: 'Todo 1',
+          docVersion: 0,
+          properties: JSON.stringify({ done: true }),
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      // Filter by Todo AND include properties
+      const todos = listObjects(db, {
+        typeKey: 'Todo',
+        includeProperties: true,
+      }) as ObjectSummaryWithProperties[];
+      expect(todos).toHaveLength(1);
+      expect(todos[0]?.title).toBe('Todo 1');
+      expect(todos[0]?.properties).toEqual({ done: true });
+    });
+
+    it('handles empty properties gracefully', () => {
+      seedBuiltInTypes(db);
+
+      const noteType = createObjectType(db, { key: 'Memo', name: 'Memo' });
+      const now = new Date();
+
+      // Object with empty JSON object
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: noteType.id,
+          title: 'Memo with empty props',
+          docVersion: 0,
+          properties: '{}',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      // Object with null properties value (valid JSON null)
+      db.insert(objects)
+        .values({
+          id: generateId(),
+          typeId: noteType.id,
+          title: 'Memo with null props',
+          docVersion: 0,
+          properties: 'null',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      const result = listObjects(db, { includeProperties: true }) as ObjectSummaryWithProperties[];
+      expect(result).toHaveLength(2);
+      // Both should have empty object for properties
+      expect(result[0]?.properties).toEqual({});
+      expect(result[1]?.properties).toEqual({});
     });
   });
 

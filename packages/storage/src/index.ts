@@ -98,6 +98,8 @@ export {
   type CreateObjectErrorCode,
   type UpdateObjectErrorCode,
   type ObjectSummary,
+  type ObjectSummaryWithProperties,
+  type ListObjectsOptions,
   type ObjectDetails,
   type CreatedObject,
   type CreateObjectOptions,
