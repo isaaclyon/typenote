@@ -14,9 +14,13 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getOrCreateDailyNoteByDate: (dateKey: string) =>
     ipcRenderer.invoke('typenote:getOrCreateDailyNoteByDate', dateKey),
 
-  listObjects: () => ipcRenderer.invoke('typenote:listObjects'),
+  listObjects: (options?: { typeKey?: string; includeProperties?: boolean }) =>
+    ipcRenderer.invoke('typenote:listObjects', options),
 
   getObject: (objectId: string) => ipcRenderer.invoke('typenote:getObject', objectId),
+
+  getObjectTypeByKey: (typeKey: string) =>
+    ipcRenderer.invoke('typenote:getObjectTypeByKey', typeKey),
 
   searchBlocks: (query: string, filters?: { objectId?: string; limit?: number }) =>
     ipcRenderer.invoke('typenote:searchBlocks', query, filters),

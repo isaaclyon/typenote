@@ -8,6 +8,7 @@ import {
   getOrCreateDailyNoteByDate as getOrCreateDailyNoteByDateStorage,
   listObjects as listObjectsStorage,
   getObject as getObjectStorage,
+  getObjectTypeByKey as getObjectTypeByKeyStorage,
   searchBlocks as searchBlocksStorage,
   getBacklinks as getBacklinksStorage,
   getUnlinkedMentionsTo as getUnlinkedMentionsToStorage,
@@ -72,6 +73,8 @@ import {
   type ApplyBlockPatchOutcome,
   type GetOrCreateResult,
   type ObjectSummary,
+  type ObjectSummaryWithProperties,
+  type ListObjectsOptions,
   type ObjectDetails,
   type SearchResult,
   type SearchFilters,
@@ -103,6 +106,7 @@ import {
   type UploadAttachmentResult,
   type UserSettings,
   type DuplicateObjectResponse,
+  type ObjectType,
   UpdateObjectRequestSchema,
   type UpdateObjectRequest,
   type UpdateObjectResponse,
@@ -199,8 +203,11 @@ export interface IpcHandlers {
   applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
   getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
   getOrCreateDailyNoteByDate: (dateKey: string) => IpcOutcome<GetOrCreateResult>;
-  listObjects: () => IpcOutcome<ObjectSummary[]>;
+  listObjects: (
+    options?: ListObjectsOptions
+  ) => IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>;
   getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
+  getObjectTypeByKey: (typeKey: string) => IpcOutcome<ObjectType | null>;
   searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
   getBacklinks: (objectId: string) => IpcOutcome<BacklinkResult[]>;
   getUnlinkedMentions: (objectId: string) => IpcOutcome<UnlinkedMentionResult[]>;
@@ -290,9 +297,11 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
     getOrCreateDailyNoteByDate: (dateKey) =>
       handleIpcCall(() => getOrCreateDailyNoteByDateStorage(db, dateKey), DailyNoteError),
 
-    listObjects: () => handleIpcCall(() => listObjectsStorage(db)),
+    listObjects: (options) => handleIpcCall(() => listObjectsStorage(db, options)),
 
     getObject: (objectId) => handleIpcCall(() => getObjectStorage(db, objectId)),
+
+    getObjectTypeByKey: (typeKey) => handleIpcCall(() => getObjectTypeByKeyStorage(db, typeKey)),
 
     searchBlocks: (query, filters) => handleIpcCall(() => searchBlocksStorage(db, query, filters)),
 

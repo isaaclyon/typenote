@@ -7,10 +7,12 @@ import type {
   TypenoteEvent,
   UserSettings,
   DuplicateObjectResponse,
+  ObjectType,
 } from '@typenote/api';
 import type {
   GetOrCreateResult,
   ObjectDetails,
+  ObjectSummaryWithProperties,
   SearchResult,
   BacklinkResult,
   UnlinkedMentionResult,
@@ -41,8 +43,12 @@ export interface TypenoteAPI {
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
   getOrCreateTodayDailyNote: () => Promise<IpcOutcome<GetOrCreateResult>>;
   getOrCreateDailyNoteByDate: (dateKey: string) => Promise<IpcOutcome<GetOrCreateResult>>;
-  listObjects: () => Promise<IpcOutcome<ObjectSummary[]>>;
+  listObjects: (options?: {
+    typeKey?: string;
+    includeProperties?: boolean;
+  }) => Promise<IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>>;
   getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
+  getObjectTypeByKey: (typeKey: string) => Promise<IpcOutcome<ObjectType | null>>;
   searchBlocks: (
     query: string,
     filters?: { objectId?: string; limit?: number }
