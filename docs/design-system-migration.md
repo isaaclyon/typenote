@@ -6,9 +6,9 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 25     | 76%        |
+| ✅ Migrated              | 26     | 79%        |
 | 🟡 Ready for Integration | 0      | 0%         |
-| 🟠 Major Refactor        | 6      | 18%        |
+| 🟠 Major Refactor        | 5      | 15%        |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
 
@@ -46,6 +46,8 @@ Drop-in components already used in the desktop app.
 - [x] **MiniCalendar** — Integrated into LeftSidebar for daily note navigation
 - [x] **CommandPalette** — Full implementation with keyboard navigation
   - Includes: CommandPaletteInput, CommandPaletteItem, CommandPaletteList, CommandPaletteGroup, CommandPaletteEmpty, CommandPaletteLoading, CommandPaletteSeparator
+- [x] **AppShell** — Main app layout wrapper with collapsible sidebars
+  - Includes: ContentArea, SidebarCollapseButton, useCollapsibleSidebar
 
 ---
 
@@ -62,10 +64,6 @@ Organism-level components requiring architectural changes. Do after Tier 2.
 - [ ] **Sidebar** (~1-2 days) — Full left sidebar replacement
   - Includes: SidebarTypeItem, SidebarTypesList, SidebarSection, SidebarSearchTrigger, SidebarActionButton, SidebarCalendarButton, SidebarNewTypeButton, SidebarPinnedItem
   - Note: Pinning UI complete, needs type list wiring
-
-- [ ] **AppShell** (~2-3 days) — Complete app layout wrapper
-  - Includes: ContentArea, SidebarCollapseButton, useCollapsibleSidebar
-  - Note: Stories show daily note + regular note views
 
 - [ ] **RightSidebar** (~1 day) — Metadata panel for object properties
 
