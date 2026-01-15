@@ -1,5 +1,6 @@
 /** Supported cell editor types for TypeBrowser columns */
 export type CellType =
+  | 'title'
   | 'text'
   | 'number'
   | 'boolean'
@@ -38,6 +39,8 @@ export interface TypeBrowserProps<TData extends Record<string, unknown>> {
   onRowClick?: (row: TData) => void;
   /** Callback when a cell value is edited */
   onCellEdit?: (rowId: string, columnId: string, value: unknown) => void;
+  /** Callback when the "Open" button is clicked in a title cell */
+  onTitleOpen?: (row: TData) => void;
   /** Function to extract unique ID from each row */
   getRowId: (row: TData) => string;
   /** Show loading state */

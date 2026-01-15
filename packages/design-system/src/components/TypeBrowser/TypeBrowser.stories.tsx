@@ -1236,3 +1236,120 @@ export const HorizontalScroll: Story = () => {
     </div>
   );
 };
+
+// ============================================================================
+// Title Cell Stories
+// ============================================================================
+
+/**
+ * Title Cell Type - Demonstrates the special title column with Open button
+ */
+export const TitleCellType: Story = () => {
+  interface DocumentRow {
+    [key: string]: unknown;
+    id: string;
+    title: string;
+    status: string;
+    createdAt: string;
+    tags: string[];
+  }
+
+  const initialData: DocumentRow[] = [
+    {
+      id: '1',
+      title: 'Product Roadmap 2026',
+      status: 'Active',
+      createdAt: '2026-01-10',
+      tags: ['planning', 'roadmap'],
+    },
+    {
+      id: '2',
+      title: 'Weekly Team Meeting Notes',
+      status: 'Active',
+      createdAt: '2026-01-14',
+      tags: ['meetings'],
+    },
+    {
+      id: '3',
+      title: 'Bug Triage Process',
+      status: 'Draft',
+      createdAt: '2026-01-12',
+      tags: ['process', 'bugs'],
+    },
+    {
+      id: '4',
+      title: '',
+      status: 'Draft',
+      createdAt: '2026-01-15',
+      tags: [],
+    },
+  ];
+
+  const titleColumns: TypeBrowserColumn<DocumentRow>[] = [
+    {
+      id: 'title',
+      header: 'Title',
+      accessorKey: 'title',
+      type: 'title',
+      width: 240,
+      pinned: 'left',
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessorKey: 'status',
+      type: 'select',
+      options: ['Active', 'Draft', 'Archived'],
+      width: 100,
+    },
+    {
+      id: 'createdAt',
+      header: 'Created',
+      accessorKey: 'createdAt',
+      type: 'date',
+      width: 120,
+    },
+    {
+      id: 'tags',
+      header: 'Tags',
+      accessorKey: 'tags',
+      type: 'multiselect',
+      options: ['planning', 'roadmap', 'meetings', 'process', 'bugs', 'feature'],
+      width: 180,
+    },
+  ];
+
+  const [data, setData] = React.useState(initialData);
+
+  const handleCellEdit = (rowId: string, columnId: string, value: unknown) => {
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row)));
+    console.log('Cell edited:', { rowId, columnId, value });
+  };
+
+  const handleTitleOpen = (row: DocumentRow) => {
+    alert(`Opening document: ${row.title || 'Untitled'}\nID: ${row.id}`);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-800">
+        <strong>Title Cell Type:</strong> The Title column uses the special "title" cell type.
+        <ul className="mt-2 space-y-1 text-xs">
+          <li>• Hover over a row to see the "Open" button appear on the right side of the title</li>
+          <li>• Click the text area to edit the title inline</li>
+          <li>• Click the arrow icon to "open" the document (shows alert in this demo)</li>
+          <li>• Empty titles show a placeholder dash</li>
+        </ul>
+      </div>
+      <div className="h-80 border rounded-lg overflow-hidden">
+        <TypeBrowser
+          data={data}
+          columns={titleColumns}
+          getRowId={(row) => row.id}
+          onCellEdit={handleCellEdit}
+          onTitleOpen={handleTitleOpen}
+        />
+      </div>
+    </div>
+  );
+};

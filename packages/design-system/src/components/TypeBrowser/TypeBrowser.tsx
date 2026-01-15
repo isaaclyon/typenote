@@ -15,6 +15,7 @@ import { cn } from '../../utils/cn.js';
 import { EmptyState } from '../EmptyState/index.js';
 import { Skeleton } from '../Skeleton/index.js';
 import {
+  TitleCell,
   TextCell,
   NumberCell,
   BooleanCell,
@@ -39,6 +40,10 @@ function formatCellValue(value: unknown, type: CellType): React.ReactNode {
   }
 
   switch (type) {
+    case 'title':
+      // Title type displays same as text in read-only mode
+      return String(value);
+
     case 'boolean':
       return value ? '✓' : '–';
 
@@ -87,7 +92,8 @@ function formatCellValue(value: unknown, type: CellType): React.ReactNode {
  */
 function createColumnDefs<TData extends Record<string, unknown>>(
   columns: TypeBrowserColumn<TData>[],
-  onCellEdit?: (rowId: string, columnId: string, value: unknown) => void
+  onCellEdit?: (rowId: string, columnId: string, value: unknown) => void,
+  onTitleOpen?: (row: TData) => void
 ): ColumnDef<TData>[] {
   return columns.map((col) => {
     const columnDef: ColumnDef<TData> = {
@@ -105,6 +111,14 @@ function createColumnDefs<TData extends Record<string, unknown>>(
 
         // Render editable cell based on type
         switch (col.type) {
+          case 'title':
+            return (
+              <TitleCell
+                value={(cellValue as string) ?? ''}
+                onSave={(newValue) => onCellEdit(rowId, col.id, newValue)}
+                onOpen={() => onTitleOpen?.(row.original)}
+              />
+            );
           case 'text':
             return (
               <TextCell
@@ -212,6 +226,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     columns,
     onRowClick,
     onCellEdit,
+    onTitleOpen,
     getRowId,
     isLoading = false,
     emptyMessage = 'No items to display',
@@ -298,9 +313,9 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
   );
 
   const columnDefs = React.useMemo(() => {
-    const baseCols = createColumnDefs(columns, onCellEdit);
+    const baseCols = createColumnDefs(columns, onCellEdit, onTitleOpen);
     return enableRowSelection ? [checkboxColumn, ...baseCols] : baseCols;
-  }, [columns, onCellEdit, enableRowSelection, checkboxColumn]);
+  }, [columns, onCellEdit, onTitleOpen, enableRowSelection, checkboxColumn]);
 
   const table = useReactTable({
     data,
@@ -333,6 +348,16 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
     overscan: OVERSCAN,
   });
 
+  // Create a map of column IDs to original column definitions for pinning info
+  // NOTE: This must be BEFORE early returns to satisfy Rules of Hooks
+  const columnDefMap = React.useMemo(() => {
+    const map = new Map<string, TypeBrowserColumn<TData>>();
+    for (const col of columns) {
+      map.set(col.id, col);
+    }
+    return map;
+  }, [columns]);
+
   // Loading state
   if (isLoading) {
     return (
@@ -350,15 +375,6 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
       </div>
     );
   }
-
-  // Create a map of column IDs to original column definitions for pinning info
-  const columnDefMap = React.useMemo(() => {
-    const map = new Map<string, TypeBrowserColumn<TData>>();
-    for (const col of columns) {
-      map.set(col.id, col);
-    }
-    return map;
-  }, [columns]);
 
   // Get virtual items
   const virtualRows = rowVirtualizer.getVirtualItems();

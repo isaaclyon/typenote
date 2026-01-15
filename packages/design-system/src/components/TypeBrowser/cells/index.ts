@@ -1,5 +1,7 @@
 export { TextCell } from './TextCell.js';
 export type { TextCellProps } from './TextCell.js';
+export { TitleCell } from './TitleCell.js';
+export type { TitleCellProps } from './TitleCell.js';
 export { NumberCell } from './NumberCell.js';
 export type { NumberCellProps } from './NumberCell.js';
 export { BooleanCell } from './BooleanCell.js';
