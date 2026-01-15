@@ -25,6 +25,7 @@ interface LeftSidebarProps {
   selectedObjectId: string | null;
   onSelectObject: (id: string) => void;
   typeCounts: Record<string, number>;
+  onOpenSettings: () => void;
 }
 
 // Map typeKey to icon
@@ -54,6 +55,7 @@ export function LeftSidebar({
   selectedObjectId,
   onSelectObject,
   typeCounts,
+  onOpenSettings,
 }: LeftSidebarProps): ReactElement {
   // Get sorted type keys for consistent display order
   const typeKeys = Object.keys(typeCounts).sort();
@@ -139,14 +141,7 @@ export function LeftSidebar({
       <div className="flex-1" />
 
       {/* Settings - at bottom */}
-      <SidebarActionButton
-        icon={Settings}
-        label="Settings"
-        onClick={() => {
-          // Future: open settings modal
-        }}
-        withDivider
-      />
+      <SidebarActionButton icon={Settings} label="Settings" onClick={onOpenSettings} withDivider />
     </Sidebar>
   );
 }

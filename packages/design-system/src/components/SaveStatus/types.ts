@@ -4,11 +4,11 @@ export interface SaveStatusProps {
   /** Current save state */
   state: SaveState;
   /** Custom className */
-  className?: string;
+  className?: string | undefined;
   /** Custom saving text (default: "Saving...") */
-  savingText?: string;
+  savingText?: string | undefined;
   /** Custom saved text (default: "Saved") */
-  savedText?: string;
+  savedText?: string | undefined;
   /** Custom error text (default: "Failed to save") */
-  errorText?: string;
+  errorText?: string | undefined;
 }

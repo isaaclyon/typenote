@@ -1,6 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-14 - updateObject() Service Implementation)
+## Latest Session (2026-01-15 - AppShell Full Migration)
+
+Implemented full AppShell migration using full-feature-workflow (brainstorming → feature-dev → TDD → implementation).
+
+**Key accomplishments:**
+
+1. **Design Phase** — Brainstormed scope with user:
+   - Full 3-column AppShell with collapsible sidebars
+   - Left sidebar: design-system Sidebar components (Search, Calendar, TypesList, Pinned, Settings)
+   - Right sidebar: Properties panel (notes view only, no backlinks)
+   - Type-based navigation (TypeBrowser integration deferred)
+
+2. **TDD Implementation** (12 new tests)
+   - `useTypeCounts` hook (5 tests) — Computes type counts from listObjects
+   - `useSelectedObject` hook (7 tests) — Fetches ObjectDetails for properties panel
+
+3. **New Components**
+   - `LeftSidebar.tsx` — Wraps design-system Sidebar with app-specific content
+   - `PropertiesPanel.tsx` — Right sidebar showing Created, Modified, Type, Tags
+
+4. **App.tsx Refactor**
+   - Replaced inline `<aside>` with AppShell
+   - Collapsible sidebars with localStorage persistence
+   - Conditional right sidebar (only when viewing notes)
+
+5. **Documentation**
+   - Created `docs/design-system-migration.md` — Checklist tracking component migration status
+
+**Files created:**
+- `hooks/useTypeCounts.ts` + test (5 tests)
+- `hooks/useSelectedObject.ts` + test (7 tests)
+- `components/LeftSidebar.tsx`
+- `components/PropertiesPanel.tsx`
+- `docs/design-system-migration.md`
+
+**Verification:** 368 tests pass, typecheck passes
+
+**Not committed yet** — Session ended before commit
+
+---
+
+## Previous Session (2026-01-14 - updateObject() Service Implementation)
 
 Implemented the missing CRUD "Update" operation using full-feature-workflow with TDD.
 
@@ -45,28 +86,6 @@ Implemented the missing CRUD "Update" operation using full-feature-workflow with
 
 ---
 
-## Previous Session (2026-01-14 - Design System Migration: Tier 1 Components)
-
-Migrated Tier 1 design-system components (Skeleton, Badge, KeyboardKey) to desktop app.
-
-**Commits:** `d95f1e7`
-
----
-
-## Previous Session (2026-01-15 - Settings Persistence Service Complete)
-
-Completed Settings Persistence Service with `useSettings` React hook (12 tests).
-
-**Commit:** `9a85158`
-
----
-
-## Previous Session (2026-01-15 - Duplicate Object Feature)
-
-Complete duplicate object feature (7 TDD phases, 39 tests). Commits: `7856a54`→`7cb8353`
-
----
-
 ## Completed Milestones
 
 | Phase       | Description                                     | Date       |
@@ -92,3 +111,4 @@ Complete duplicate object feature (7 TDD phases, 39 tests). Commits: `7856a54`�
 | Duplicate   | Object duplication (7 TDD phases, 39 tests)     | 2026-01-15 |
 | Settings    | Settings persistence (React hook, 12 tests)     | 2026-01-15 |
 | Update      | updateObject() service (17 tests, TDD)          | 2026-01-14 |
+| Tier 1 DS   | Design System Tier 1 migration                  | 2026-01-14 |

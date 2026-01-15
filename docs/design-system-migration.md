@@ -6,8 +6,8 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 11     | 33%        |
-| 🟡 Ready for Integration | 14     | 42%        |
+| ✅ Migrated              | 14     | 42%        |
+| 🟡 Ready for Integration | 11     | 33%        |
 | 🟠 Major Refactor        | 6      | 18%        |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
@@ -38,13 +38,13 @@ Complete implementations with Ladle stories. Need IPC wiring or minor integratio
 
 ### High Priority
 
-- [ ] **DailyNoteNav** — Replace custom `DailyNoteNavigation.tsx` (~30 min)
-- [ ] **SettingsModal** — Wire to settings IPC (~1-2 hrs, backend 95% complete)
-  - Includes: SettingsLink, SettingsRow, SettingsSection
+- [x] **DailyNoteNav** — Replaced custom `DailyNoteNavigation.tsx` with design-system component
+- [x] **SettingsModal** — Wired to useSettings hook with optimistic updates
+  - Includes: SettingsSection, SettingsRow, Select, Switch
 
 ### Medium Priority
 
-- [ ] **SaveStatus** — Connect to editor save state (~1 hr)
+- [x] **SaveStatus** — Connected to editor save state via useAutoSave hook
 - [ ] **PropertyItem** — Connect to object metadata IPC (~1-2 hrs)
 - [ ] **PropertyTags** — Connect to tag system IPC (~1-2 hrs)
 - [ ] **Modal** — Radix-based compound component

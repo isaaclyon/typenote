@@ -7,6 +7,7 @@ import { NoteEditor } from './components/NoteEditor.js';
 import { CalendarView } from './components/calendar/index.js';
 import { LeftSidebar } from './components/LeftSidebar.js';
 import { PropertiesPanel } from './components/PropertiesPanel.js';
+import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
 import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
@@ -19,6 +20,7 @@ type ViewMode = 'notes' | 'calendar';
 function App(): ReactElement {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('notes');
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Hooks
   const { isOpen, close, open } = useCommandPalette();
@@ -61,6 +63,7 @@ function App(): ReactElement {
             selectedObjectId={selectedObjectId}
             onSelectObject={setSelectedObjectId}
             typeCounts={typeCounts}
+            onOpenSettings={() => setSettingsOpen(true)}
           />
         )}
         {...rightSidebarProp}
@@ -87,6 +90,7 @@ function App(): ReactElement {
 
       <Toaster />
       <CommandPalette isOpen={isOpen} onClose={close} onNavigate={setSelectedObjectId} />
+      <SettingsModalWrapper open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
   );
 }

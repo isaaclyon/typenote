@@ -35,9 +35,9 @@ import {
 import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
-import { DailyNoteNavigation } from './DailyNoteNavigation.js';
 import { EditorBottomSections } from './EditorBottomSections.js';
-import { Skeleton } from '@typenote/design-system';
+import { Skeleton, DailyNoteNav, SaveStatus, type SaveState } from '@typenote/design-system';
+import { getPreviousDate, getNextDate, getTodayDateKey } from '@typenote/core';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -150,6 +150,14 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     onSaveSuccess: handleSaveSuccess,
   });
 
+  // Compute save state for SaveStatus component
+  const saveState: SaveState = (() => {
+    if (isSaving) return 'saving';
+    if (saveError) return 'error';
+    if (lastSaved) return 'saved';
+    return 'idle';
+  })();
+
   // Wire up image upload handlers for drag-drop and paste
   const { handleDrop, handlePaste } = useImageUpload(editor);
 
@@ -243,19 +251,33 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     <div className="h-full overflow-auto">
       <div className="max-w-3xl mx-auto p-8">
         {/* Save status indicator */}
-        <div
-          data-testid="save-status"
-          className="flex items-center justify-end text-xs text-muted-foreground mb-2 h-4"
-        >
-          {isSaving && <span>Saving...</span>}
-          {!isSaving && lastSaved && <span>Saved {lastSaved.toLocaleTimeString()}</span>}
-          {saveError && <span className="text-destructive">{saveError}</span>}
+        <div data-testid="save-status" className="flex items-center justify-end mb-2 h-4">
+          <SaveStatus state={saveState} {...(saveError !== null && { errorText: saveError })} />
         </div>
 
         {/* Daily Note Navigation Header */}
         {isDailyNote && dateKey && onNavigate && (
           <div className="mb-4 pb-4 border-b">
-            <DailyNoteNavigation dateKey={dateKey} onNavigate={onNavigate} />
+            <DailyNoteNav
+              isToday={dateKey === getTodayDateKey()}
+              onPrevious={async () => {
+                const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(
+                  getPreviousDate(dateKey)
+                );
+                if (result.success) onNavigate(result.result.dailyNote.id);
+              }}
+              onNext={async () => {
+                const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(
+                  getNextDate(dateKey)
+                );
+                if (result.success) onNavigate(result.result.dailyNote.id);
+              }}
+              onToday={async () => {
+                const result =
+                  await window.typenoteAPI.getOrCreateDailyNoteByDate(getTodayDateKey());
+                if (result.success) onNavigate(result.result.dailyNote.id);
+              }}
+            />
           </div>
         )}
         <EditorContent editor={editor} className="prose prose-sm max-w-none" />
