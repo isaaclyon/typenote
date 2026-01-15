@@ -9,7 +9,7 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { cn } from '../../utils/cn.js';
-import type { InteractiveEditorProps } from './types.js';
+import type { InteractiveEditorProps, InteractiveEditorRef } from './types.js';
 import {
   CalloutNode,
   SlashCommandExtension,
@@ -23,15 +23,21 @@ import {
   TagSuggestionExtension,
   TagSuggestionPopup,
   useTagSuggestion,
+  MathBlock,
+  MathInline,
+  Highlight,
+  LineNavigation,
+  AttachmentNode,
 } from './extensions/index.js';
 
 /**
  * InteractiveEditor - A fully functional TipTap editor for design system stories.
  *
- * Provides real editing capabilities with mocked autocomplete data for
- * wiki-links, tags, and slash commands.
+ * Provides real editing capabilities with optional IPC callbacks for
+ * wiki-links, tags, and slash commands. Falls back to mock data when
+ * callbacks are not provided (for Ladle stories).
  */
-export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEditorProps>(
+export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, InteractiveEditorProps>(
   (
     {
       initialContent,
@@ -43,12 +49,16 @@ export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEdi
       autofocus = false,
       className,
       minHeight = '200px',
+      // IPC integration callbacks (optional - falls back to mock data)
+      refSuggestionCallbacks,
+      tagSuggestionCallbacks,
+      onNavigateToRef,
     },
     ref
   ) => {
     const slashCommand = useSlashCommand();
-    const refSuggestion = useRefSuggestion();
-    const tagSuggestion = useTagSuggestion();
+    const refSuggestion = useRefSuggestion(refSuggestionCallbacks);
+    const tagSuggestion = useTagSuggestion(tagSuggestionCallbacks);
 
     // Memoize extensions to prevent useEditor from reinitializing
     const extensions = React.useMemo(
@@ -68,7 +78,9 @@ export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEdi
         SlashCommandExtension.configure({
           suggestion: slashCommand.suggestionOptions,
         }),
-        RefNode,
+        RefNode.configure({
+          onNavigate: onNavigateToRef,
+        }),
         RefSuggestionExtension.configure({
           suggestion: refSuggestion.suggestionOptions,
         }),
@@ -76,12 +88,22 @@ export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEdi
         TagSuggestionExtension.configure({
           suggestion: tagSuggestion.suggestionOptions,
         }),
+        // Math extensions for LaTeX rendering
+        MathBlock,
+        MathInline,
+        // Highlight mark for highlighted text
+        Highlight,
+        // Line navigation for Home/End keys
+        LineNavigation,
+        // Attachment node for images
+        AttachmentNode,
       ],
       [
         placeholder,
         slashCommand.suggestionOptions,
         refSuggestion.suggestionOptions,
         tagSuggestion.suggestionOptions,
+        onNavigateToRef,
       ]
     );
 
@@ -110,8 +132,14 @@ export const InteractiveEditor = React.forwardRef<HTMLDivElement, InteractiveEdi
 
     const editor = useEditor(editorOptions);
 
+    // Expose editor instance via ref for auto-save integration
+    React.useImperativeHandle(ref, () => ({ editor }), [editor]);
+
+    // Container ref for the DOM element (separate from editor ref)
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
     return (
-      <div ref={ref} className={cn('interactive-editor', className)} style={{ minHeight }}>
+      <div ref={containerRef} className={cn('interactive-editor', className)} style={{ minHeight }}>
         <style>{`
           .interactive-editor .ProseMirror {
             outline: none;

@@ -1,14 +1,14 @@
 import { Extension } from '@tiptap/core';
 import Suggestion, { type SuggestionOptions } from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
-import type { MockNote } from '../../mocks/mockNotes.js';
 import { filterNotes } from '../../mocks/mockNotes.js';
+import type { RefSuggestionItem } from './useRefSuggestion.js';
 
 // Unique plugin key for wiki-link suggestions
 const RefSuggestionPluginKey = new PluginKey('refSuggestion');
 
 export interface RefSuggestionOptions {
-  suggestion: Omit<SuggestionOptions<MockNote>, 'editor'>;
+  suggestion: Omit<SuggestionOptions<RefSuggestionItem>, 'editor'>;
 }
 
 /**

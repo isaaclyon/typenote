@@ -5,5 +5,6 @@
  */
 
 export { AttachmentNode } from './AttachmentNode.js';
+export type { AttachmentNodeOptions } from './AttachmentNode.js';
 export { ResizeHandle } from './ResizeHandle.js';
 export type { ResizeHandleProps } from './ResizeHandle.js';

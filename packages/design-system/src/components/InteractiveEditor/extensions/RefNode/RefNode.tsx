@@ -8,17 +8,26 @@ export interface RefNodeAttributes {
   type: 'note' | 'project' | 'task' | 'person' | 'resource';
 }
 
+export interface RefNodeOptions {
+  /** Called when a ref node is clicked (for navigation) */
+  onNavigate?: ((objectId: string) => void) | undefined;
+}
+
 /**
  * RefNode - TipTap Node extension for rendering wiki-link references.
  *
  * Creates inline atomic nodes that display as [[reference]] links
  * with type-specific icons and colors.
  */
-export const RefNode = Node.create({
+export const RefNode = Node.create<RefNodeOptions>({
   name: 'ref',
   group: 'inline',
   inline: true,
   atom: true, // Cannot be edited directly - must be selected and deleted as a whole
+
+  addOptions(): RefNodeOptions {
+    return {};
+  },
 
   addAttributes() {
     return {

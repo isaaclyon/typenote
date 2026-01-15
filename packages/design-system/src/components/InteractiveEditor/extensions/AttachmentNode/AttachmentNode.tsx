@@ -9,7 +9,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import { ImageIcon } from 'lucide-react';
-import { cn } from '../../lib/utils.js';
+import { cn } from '../../../../utils/cn.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types

@@ -1,12 +1,13 @@
 /**
- * NoteEditor Component Tests
+ * DocumentEditor Component Tests
  *
  * Tests for the TipTap-based document editor with auto-save functionality.
+ * This wraps the design-system's InteractiveEditor with IPC integration.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, cleanup } from '@testing-library/react';
-import { NoteEditor } from './NoteEditor.js';
+import { DocumentEditor } from './DocumentEditor.js';
 
 // Mock window.typenoteAPI
 const mockGetDocument = vi.fn();
@@ -33,7 +34,7 @@ afterEach(() => {
   cleanup();
 });
 
-describe('NoteEditor', () => {
+describe('DocumentEditor', () => {
   describe('Cycle 1: Editor is editable', () => {
     it('editor is editable when loaded', async () => {
       mockGetDocument.mockResolvedValue({
@@ -41,7 +42,7 @@ describe('NoteEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<NoteEditor objectId="obj1" />);
+      render(<DocumentEditor objectId="obj1" />);
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -49,8 +50,11 @@ describe('NoteEditor', () => {
       });
 
       // TipTap renders contenteditable div
-      const editor = document.querySelector('[contenteditable="true"]');
-      expect(editor).toBeInTheDocument();
+      // Wait for TipTap editor to initialize (it's async)
+      await waitFor(() => {
+        const editor = document.querySelector('[contenteditable="true"]');
+        expect(editor).toBeInTheDocument();
+      });
     });
   });
 
@@ -61,7 +65,7 @@ describe('NoteEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<NoteEditor objectId="obj1" />);
+      render(<DocumentEditor objectId="obj1" />);
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -84,7 +88,7 @@ describe('NoteEditor', () => {
         error: { code: 'INTERNAL', message: 'Save failed' },
       });
 
-      const { container } = render(<NoteEditor objectId="obj1" />);
+      const { container } = render(<DocumentEditor objectId="obj1" />);
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -92,8 +96,11 @@ describe('NoteEditor', () => {
       });
 
       // Simulate typing to trigger auto-save
-      const editorDiv = container.querySelector('[contenteditable="true"]');
-      expect(editorDiv).toBeInTheDocument();
+      // Wait for TipTap editor to initialize (it's async)
+      await waitFor(() => {
+        const editorDiv = container.querySelector('[contenteditable="true"]');
+        expect(editorDiv).toBeInTheDocument();
+      });
 
       // Note: Actually triggering the auto-save would require simulating
       // TipTap editor updates, which is complex. For now we verify the
@@ -120,7 +127,7 @@ describe('NoteEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: mockBlocks },
       });
 
-      render(<NoteEditor objectId="obj1" />);
+      render(<DocumentEditor objectId="obj1" />);
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -132,8 +139,11 @@ describe('NoteEditor', () => {
 
       // The blocks are stored internally for diffing - we verify the
       // document loads successfully which means blocks were processed
-      const editor = document.querySelector('[contenteditable="true"]');
-      expect(editor).toBeInTheDocument();
+      // Wait for TipTap editor to initialize (it's async)
+      await waitFor(() => {
+        const editor = document.querySelector('[contenteditable="true"]');
+        expect(editor).toBeInTheDocument();
+      });
     });
 
     it('handles empty document blocks', async () => {
@@ -142,7 +152,7 @@ describe('NoteEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<NoteEditor objectId="obj1" />);
+      render(<DocumentEditor objectId="obj1" />);
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -150,8 +160,11 @@ describe('NoteEditor', () => {
       });
 
       // Editor should render with empty content
-      const editor = document.querySelector('[contenteditable="true"]');
-      expect(editor).toBeInTheDocument();
+      // Wait for TipTap editor to initialize (it's async)
+      await waitFor(() => {
+        const editor = document.querySelector('[contenteditable="true"]');
+        expect(editor).toBeInTheDocument();
+      });
     });
   });
 });

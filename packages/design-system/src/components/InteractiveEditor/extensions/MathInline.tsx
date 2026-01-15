@@ -1,21 +1,21 @@
 /**
- * MathBlock Extension for TipTap
+ * MathInline Extension for TipTap
  *
- * Custom block node for display math (LaTeX).
- * For now, renders raw LaTeX in a styled pre element.
+ * Custom inline node for inline math (LaTeX).
+ * For now, renders raw LaTeX in a styled code element.
  * Future: integrate KaTeX or MathJax for rendering.
  */
 
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
-import { cn } from '../lib/utils.js';
+import { cn } from '../../../utils/cn.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface MathBlockAttrs {
+interface MathInlineAttrs {
   latex: string;
 }
 
@@ -23,18 +23,22 @@ interface MathBlockAttrs {
 // Node View Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function MathBlockView({ node }: NodeViewProps) {
-  const attrs = node.attrs as MathBlockAttrs;
+function MathInlineView({ node }: NodeViewProps) {
+  const attrs = node.attrs as MathInlineAttrs;
   const { latex } = attrs;
 
   return (
-    <NodeViewWrapper className="my-4">
-      <div className={cn('rounded border bg-muted/50 p-4', 'flex flex-col items-center')}>
-        <div className="text-xs text-muted-foreground mb-2 self-start">Display Math</div>
-        <pre className={cn('font-mono text-sm whitespace-pre-wrap', 'text-center w-full')}>
-          {latex || '(empty)'}
-        </pre>
-      </div>
+    <NodeViewWrapper as="span" className="inline">
+      <code
+        className={cn(
+          'rounded bg-muted px-1.5 py-0.5',
+          'font-mono text-sm',
+          'text-purple-700 dark:text-purple-300'
+        )}
+        title="Inline math (LaTeX)"
+      >
+        {latex || '?'}
+      </code>
     </NodeViewWrapper>
   );
 }
@@ -43,10 +47,11 @@ function MathBlockView({ node }: NodeViewProps) {
 // TipTap Extension
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const MathBlock = Node.create({
-  name: 'mathBlock',
-  group: 'block',
-  atom: true, // Not editable content inside (for now)
+export const MathInline = Node.create({
+  name: 'mathInline',
+  group: 'inline',
+  inline: true,
+  atom: true, // Not editable content inside
 
   addAttributes() {
     return {
@@ -61,14 +66,14 @@ export const MathBlock = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'div[data-math-block]' }];
+    return [{ tag: 'code[data-math-inline]' }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(HTMLAttributes, { 'data-math-block': '' }), 0];
+    return ['code', mergeAttributes(HTMLAttributes, { 'data-math-inline': '' }), 0];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MathBlockView);
+    return ReactNodeViewRenderer(MathInlineView);
   },
 });

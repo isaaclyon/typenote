@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { AppShell } from '@typenote/design-system';
-import { NoteEditor } from './components/NoteEditor.js';
+import { DocumentEditor } from './components/DocumentEditor.js';
 import { CalendarView } from './components/calendar/index.js';
 import { TypeBrowserView } from './components/TypeBrowserView.js';
 import { LeftSidebar } from './components/LeftSidebar.js';
@@ -131,7 +131,7 @@ function App(): ReactElement {
             onOpenObject={handleOpenObjectFromTypeBrowser}
           />
         ) : selectedObjectId ? (
-          <NoteEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
+          <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             Select an object to view

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { RefSuggestionMenu, type RefSuggestionMenuRef } from './RefSuggestionMenu.js';
-import type { MockNote } from '../../mocks/mockNotes.js';
+import type { RefSuggestionItem } from './useRefSuggestion.js';
 
 export interface RefSuggestionPopupProps {
   isOpen: boolean;
-  items: MockNote[];
+  items: RefSuggestionItem[];
   clientRect: (() => DOMRect | null) | null;
-  onSelect: (item: MockNote) => void;
+  onSelect: (item: RefSuggestionItem) => void;
 }
 
 /**

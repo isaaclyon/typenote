@@ -1,49 +1,39 @@
 /**
- * NoteEditor Component
+ * DocumentEditor Component
  *
- * Displays a NotateDoc document using TipTap editor with auto-save.
- * Fetches document via IPC and converts from NotateDoc format to TipTap JSON.
+ * Wrapper around InteractiveEditor from design-system that wires up
+ * IPC callbacks for wiki-links, tags, and auto-save.
+ *
+ * This replaces NoteEditor with the design-system's InteractiveEditor,
+ * keeping app-specific logic (IPC, auto-save, image upload) in the desktop app.
  */
 
 /// <reference path="../global.d.ts" />
 
-import { useCallback, useEffect, useState } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Placeholder } from '@tiptap/extension-placeholder';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { TableHeader } from '@tiptap/extension-table-header';
-import { TaskList } from '@tiptap/extension-task-list';
-import { TaskItem } from '@tiptap/extension-task-item';
-
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DocumentBlock } from '@typenote/api';
-import { convertDocument } from '../lib/notateToTiptap.js';
 import {
-  RefNode,
-  TagNode,
-  CalloutNode,
-  MathBlock,
-  MathInline,
-  Highlight,
-  RefSuggestion,
-  AttachmentNode,
-  SlashCommand,
-  LineNavigation,
-} from '../extensions/index.js';
+  InteractiveEditor,
+  type InteractiveEditorRef,
+  type MockNote,
+  type ObjectType,
+  Skeleton,
+  DailyNoteNav,
+  SaveStatus,
+  type SaveState,
+} from '@typenote/design-system';
+import { getPreviousDate, getNextDate, getTodayDateKey } from '@typenote/core';
+import { convertDocument } from '../lib/notateToTiptap.js';
 import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
 import { EditorBottomSections } from './EditorBottomSections.js';
-import { Skeleton, DailyNoteNav, SaveStatus, type SaveState } from '@typenote/design-system';
-import { getPreviousDate, getNextDate, getTodayDateKey } from '@typenote/core';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface NoteEditorProps {
+interface DocumentEditorProps {
   objectId: string;
   onNavigate?: (objectId: string) => void;
 }
@@ -54,80 +44,62 @@ type LoadState =
   | { status: 'loaded'; title: string };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Helper: Map typeKey to ObjectType
+// ─────────────────────────────────────────────────────────────────────────────
+
+function typeKeyToObjectType(typeKey: string): ObjectType {
+  const mapping: Record<string, ObjectType> = {
+    Page: 'note',
+    DailyNote: 'note',
+    Project: 'project',
+    Task: 'task',
+    Person: 'person',
+    Resource: 'resource',
+  };
+  return mapping[typeKey] ?? 'note';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
+export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [initialBlocks, setInitialBlocks] = useState<DocumentBlock[]>([]);
   const { isDailyNote, dateKey } = useDailyNoteInfo(objectId);
 
-  // Search handler for wiki-link suggestions
-  const handleSearch = useCallback(async (query: string) => {
+  // Ref to access the InteractiveEditor's editor instance
+  const editorRef = useRef<InteractiveEditorRef>(null);
+
+  // Search handler for wiki-link suggestions (returns MockNote format)
+  const handleRefSearch = useCallback(async (query: string): Promise<MockNote[]> => {
     if (!query.trim()) return [];
     const result = await window.typenoteAPI.listObjects();
     if (result.success) {
       return result.result
         .filter((obj) => obj.title.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 10);
+        .slice(0, 10)
+        .map((obj) => ({
+          id: obj.id,
+          title: obj.title,
+          type: typeKeyToObjectType(obj.typeKey),
+        }));
     }
     return [];
   }, []);
 
   // Create handler for "Create new" option in suggestions
-  const handleCreate = useCallback(async (title: string) => {
+  const handleRefCreate = useCallback(async (title: string): Promise<MockNote | null> => {
     const result = await window.typenoteAPI.createObject('Page', title);
     if (result.success) {
       return {
         id: result.result.id,
         title: result.result.title,
-        typeId: result.result.typeId,
-        typeKey: result.result.typeKey,
-        updatedAt: result.result.updatedAt,
+        type: typeKeyToObjectType(result.result.typeKey),
       };
     }
     return null;
   }, []);
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        // StarterKit includes most basic nodes/marks we need
-        // We add custom extensions for NotateDoc-specific features
-      }),
-      Placeholder.configure({
-        placeholder: 'This document is empty...',
-        showOnlyWhenEditable: false, // Show placeholder even in read-only mode
-      }),
-      Table.configure({ resizable: false }),
-      TableRow,
-      TableCell,
-      TableHeader,
-      TaskList,
-      TaskItem.configure({ nested: true }),
-      // Custom NotateDoc extensions
-      RefNode.configure({
-        onNavigate,
-      }),
-      TagNode,
-      CalloutNode,
-      MathBlock,
-      MathInline,
-      Highlight,
-      AttachmentNode,
-      // Wiki-link and mention suggestions
-      RefSuggestion.configure({
-        onSearch: handleSearch,
-        onCreate: handleCreate,
-      }),
-      // Slash command palette
-      SlashCommand,
-      // Line navigation (Home/End keys)
-      LineNavigation,
-    ],
-    editable: true, // Enable editing
-    immediatelyRender: false, // Important for Electron SSR concerns
-  });
 
   // Callback to update initialBlocks after save
   const handleSaveSuccess = useCallback(async (savedObjectId: string) => {
@@ -138,13 +110,13 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     }
   }, []);
 
-  // Wire up auto-save hook
+  // Wire up auto-save hook using editor from ref
   const {
     isSaving,
     lastSaved,
     error: saveError,
   } = useAutoSave({
-    editor,
+    editor: editorRef.current?.editor ?? null,
     objectId,
     initialBlocks,
     onSaveSuccess: handleSaveSuccess,
@@ -159,6 +131,7 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
   })();
 
   // Wire up image upload handlers for drag-drop and paste
+  const editor = editorRef.current?.editor ?? null;
   const { handleDrop, handlePaste } = useImageUpload(editor);
 
   useEffect(() => {
@@ -185,17 +158,24 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
     };
   }, [editor, handleDrop, handlePaste]);
 
+  // Initial content state for the editor
+  const [initialContent, setInitialContent] = useState<
+    import('@tiptap/react').JSONContent | undefined
+  >(undefined);
+
+  // Load document on mount or objectId change
   useEffect(() => {
     async function loadDocument() {
       setState({ status: 'loading' });
+      setInitialContent(undefined);
+
       try {
         const result = await window.typenoteAPI.getDocument(objectId);
         if (result.success) {
           // Store initial blocks for diffing
           setInitialBlocks(result.result.blocks);
           const tiptapContent = convertDocument(result.result);
-          editor?.commands.setContent(tiptapContent);
-          // TODO: Extract title from object metadata or first heading
+          setInitialContent(tiptapContent);
           setState({ status: 'loaded', title: 'Document' });
         } else {
           setState({ status: 'error', message: result.error.message });
@@ -208,10 +188,16 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
       }
     }
 
-    if (editor) {
-      void loadDocument();
+    void loadDocument();
+  }, [objectId]);
+
+  // Update editor content when objectId changes (after initial load)
+  useEffect(() => {
+    const currentEditor = editorRef.current?.editor;
+    if (currentEditor && initialContent) {
+      currentEditor.commands.setContent(initialContent);
     }
-  }, [objectId, editor]);
+  }, [initialContent]);
 
   // Loading state
   if (state.status === 'loading') {
@@ -280,7 +266,19 @@ export function NoteEditor({ objectId, onNavigate }: NoteEditorProps) {
             />
           </div>
         )}
-        <EditorContent editor={editor} className="prose prose-sm max-w-none" />
+
+        {/* InteractiveEditor from design-system */}
+        <InteractiveEditor
+          ref={editorRef}
+          {...(initialContent !== undefined && { initialContent })}
+          placeholder="This document is empty..."
+          className="prose prose-sm max-w-none"
+          refSuggestionCallbacks={{
+            onSearch: handleRefSearch,
+            onCreate: handleRefCreate,
+          }}
+          onNavigateToRef={onNavigate}
+        />
 
         {/* Bottom sections for backlinks and unlinked mentions */}
         <EditorBottomSections objectId={objectId} {...(onNavigate && { onNavigate })} />

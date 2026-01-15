@@ -5,7 +5,7 @@ import type {
   SuggestionKeyDownProps,
 } from '@tiptap/suggestion';
 import type { Editor } from '@tiptap/core';
-import type { MockTag } from '../../mocks/mockTags.js';
+import type { MockTag, TagSuggestionCallbacks } from '../../types.js';
 import { filterTags } from '../../mocks/mockTags.js';
 import type { TagSuggestionMenuRef } from './TagSuggestionMenu.js';
 
@@ -27,8 +27,10 @@ export interface UseTagSuggestionReturn {
  *
  * Returns both the state for rendering and the suggestion options
  * for configuring the TipTap extension.
+ *
+ * @param callbacks - Optional callbacks for IPC integration. Falls back to mock data if not provided.
  */
-export function useTagSuggestion(): UseTagSuggestionReturn {
+export function useTagSuggestion(callbacks?: TagSuggestionCallbacks): UseTagSuggestionReturn {
   const [state, setState] = React.useState<UseTagSuggestionState>({
     isOpen: false,
     items: [],
@@ -37,6 +39,9 @@ export function useTagSuggestion(): UseTagSuggestionReturn {
   });
 
   const menuRefStore = React.useRef<TagSuggestionMenuRef | null>(null);
+  // Store callbacks in ref to avoid stale closure issues
+  const callbacksRef = React.useRef(callbacks);
+  callbacksRef.current = callbacks;
 
   const setMenuRef = React.useCallback((ref: TagSuggestionMenuRef | null) => {
     menuRefStore.current = ref;
@@ -48,7 +53,11 @@ export function useTagSuggestion(): UseTagSuggestionReturn {
       char: '#',
       allowSpaces: false,
 
-      items: ({ query }: { query: string }): MockTag[] => {
+      items: async ({ query }: { query: string }): Promise<MockTag[]> => {
+        // Use callback if provided, otherwise fall back to mock data
+        if (callbacksRef.current?.onSearch) {
+          return await callbacksRef.current.onSearch(query);
+        }
         return filterTags(query);
       },
 
@@ -129,7 +138,7 @@ export function useTagSuggestion(): UseTagSuggestionReturn {
         };
       },
     }),
-    []
+    [] // Dependencies intentionally empty - callbacks accessed via ref
   );
 
   return {
