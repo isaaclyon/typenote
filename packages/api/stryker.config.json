@@ -6,8 +6,6 @@
     "configFile": "vitest.config.mjs"
   },
   "mutate": ["src/**/*.ts", "!src/**/*.test.ts"],
-  "incremental": true,
-  "incrementalFile": ".stryker-cache/incremental.json",
   "thresholds": {
     "high": 60,
     "low": 45,

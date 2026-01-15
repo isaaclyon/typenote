@@ -108,6 +108,17 @@ describe('InsertBlockOpSchema', () => {
     expectValid(InsertBlockOpSchema, op);
   });
 
+  // Additional test to kill ObjectLiteral mutation
+  it('parses insert op and preserves op discriminator value', () => {
+    const op = makeInsertOp();
+    const result = parseWith(InsertBlockOpSchema, op);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.op).toBe('block.insert');
+      expect(result.data.blockType).toBe('paragraph');
+    }
+  });
+
   const invalidInsertOps = [
     ['without blockId', { ...makeInsertOp(), blockId: undefined }],
     ['with invalid blockId length', makeInsertOp({ blockId: 'short' })],
@@ -173,6 +184,17 @@ describe('UpdateBlockOpSchema', () => {
     expectValid(UpdateBlockOpSchema, op);
   });
 
+  // Additional test to kill ObjectLiteral mutation
+  it('parses update op and preserves op discriminator value', () => {
+    const op = makeUpdateOp();
+    const result = parseWith(UpdateBlockOpSchema, op);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.op).toBe('block.update');
+      expect(result.data.patch).toBeDefined();
+    }
+  });
+
   it('rejects update without patch', () => {
     const op = { op: 'block.update', blockId: VALID_ULID };
     expectInvalid(UpdateBlockOpSchema, op);
@@ -234,6 +256,17 @@ describe('MoveBlockOpSchema', () => {
     expectValid(MoveBlockOpSchema, op);
   });
 
+  // Additional test to kill ObjectLiteral mutation
+  it('parses move op and preserves op discriminator value', () => {
+    const op = makeMoveOp();
+    const result = parseWith(MoveBlockOpSchema, op);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.op).toBe('block.move');
+      expect(result.data.newParentBlockId).toBeDefined();
+    }
+  });
+
   it('rejects empty object missing required fields', () => {
     expectInvalid(MoveBlockOpSchema, {});
   });
@@ -286,6 +319,17 @@ describe('DeleteBlockOpSchema', () => {
 
   it.each(validDeleteOps)('accepts delete %s', (_, op) => {
     expectValid(DeleteBlockOpSchema, op);
+  });
+
+  // Additional test to kill ObjectLiteral mutation
+  it('parses delete op and preserves op discriminator value', () => {
+    const op = makeDeleteOp();
+    const result = parseWith(DeleteBlockOpSchema, op);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.op).toBe('block.delete');
+      expect(result.data.blockId).toBe(VALID_ULID);
+    }
   });
 
   it('rejects empty object missing required fields', () => {

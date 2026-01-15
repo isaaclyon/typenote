@@ -346,42 +346,98 @@ describe('getContentSchemaForBlockType', () => {
 
 describe('Schema required fields (mutation testing)', () => {
   describe('Reference target schemas', () => {
-    it('ObjectRefTargetSchema rejects empty object', () => {
-      expectInvalid(ObjectRefTargetSchema, {});
+    it('ObjectRefTargetSchema has required fields', () => {
+      const validResult = ObjectRefTargetSchema.safeParse({
+        kind: 'object',
+        objectId: VALID_ULID,
+      });
+      const invalidResult = ObjectRefTargetSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('BlockRefTargetSchema rejects empty object', () => {
-      expectInvalid(BlockRefTargetSchema, {});
+    it('BlockRefTargetSchema has required fields', () => {
+      const validResult = BlockRefTargetSchema.safeParse({
+        kind: 'block',
+        objectId: VALID_ULID,
+        blockId: VALID_ULID_2,
+      });
+      const invalidResult = BlockRefTargetSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
   });
 
   describe('Inline node schemas', () => {
-    it('TextNodeSchema rejects empty object', () => {
-      expectInvalid(TextNodeSchema, {});
+    it('TextNodeSchema has required field t', () => {
+      // Force schema reference to ensure coverage
+      const schema = TextNodeSchema;
+
+      // This test explicitly checks that 't' field is required
+      const validResult = schema.safeParse({ t: 'text', text: 'hello' });
+      const invalidResult = schema.safeParse({});
+
+      // Valid object must pass
+      expect(validResult.success).toBe(true);
+
+      // Empty object must fail (proves schema is not z.object({}))
+      expect(invalidResult.success).toBe(false);
+
+      // Verify the error is about missing 't' field
+      if (!invalidResult.success) {
+        const paths = invalidResult.error.issues.map((i) => i.path.join('.'));
+        expect(paths).toContain('t');
+      }
     });
 
-    it('HardBreakNodeSchema rejects empty object', () => {
-      expectInvalid(HardBreakNodeSchema, {});
+    it('HardBreakNodeSchema has required field t', () => {
+      const validResult = HardBreakNodeSchema.safeParse({ t: 'hard_break' });
+      const invalidResult = HardBreakNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('RefNodeSchema rejects empty object', () => {
-      expectInvalid(RefNodeSchema, {});
+    it('RefNodeSchema has required fields', () => {
+      const validResult = RefNodeSchema.safeParse({
+        t: 'ref',
+        mode: 'link',
+        target: { kind: 'object', objectId: VALID_ULID },
+      });
+      const invalidResult = RefNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('TagNodeSchema rejects empty object', () => {
-      expectInvalid(TagNodeSchema, {});
+    it('TagNodeSchema has required fields', () => {
+      const validResult = TagNodeSchema.safeParse({ t: 'tag', value: 'test' });
+      const invalidResult = TagNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('MathInlineNodeSchema rejects empty object', () => {
-      expectInvalid(MathInlineNodeSchema, {});
+    it('MathInlineNodeSchema has required fields', () => {
+      const validResult = MathInlineNodeSchema.safeParse({ t: 'math_inline', latex: 'E=mc^2' });
+      const invalidResult = MathInlineNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('FootnoteRefNodeSchema rejects empty object', () => {
-      expectInvalid(FootnoteRefNodeSchema, {});
+    it('FootnoteRefNodeSchema has required fields', () => {
+      const validResult = FootnoteRefNodeSchema.safeParse({ t: 'footnote_ref', key: '1' });
+      const invalidResult = FootnoteRefNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
 
-    it('LinkNodeSchema rejects empty object', () => {
-      expectInvalid(LinkNodeSchema, {});
+    it('LinkNodeSchema has required fields', () => {
+      const validResult = LinkNodeSchema.safeParse({
+        t: 'link',
+        href: 'https://example.com',
+        children: [{ t: 'text', text: 'link' }],
+      });
+      const invalidResult = LinkNodeSchema.safeParse({});
+      expect(validResult.success).toBe(true);
+      expect(invalidResult.success).toBe(false);
     });
   });
 

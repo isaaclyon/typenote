@@ -963,6 +963,582 @@ describe('duplicateObject', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────────
+  // Additional ref remapping edge cases (mutation testing gaps)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  describe('ref remapping edge cases', () => {
+    it('remaps internal refs in heading blocks', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create heading with internal ref
+      const targetBlockId = generateId();
+      const headingBlockId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: { inline: [{ t: 'text', text: 'Target' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: headingBlockId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'heading',
+            content: {
+              level: 2,
+              inline: [
+                { t: 'text', text: 'See: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'block', objectId: source.id, blockId: targetBlockId },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Find heading block
+      const heading = doc.blocks.find((b) => b.blockType === 'heading');
+      expect(heading).toBeDefined();
+      if (!heading) throw new Error('Expected heading block');
+
+      // Find target block
+      const target = doc.blocks.find((b) => b.blockType === 'paragraph');
+      expect(target).toBeDefined();
+      if (!target) throw new Error('Expected target block');
+
+      // Verify ref is remapped
+      const content = heading.content as {
+        level: number;
+        inline: Array<{
+          t: string;
+          text?: string;
+          target?: { kind: string; objectId: string; blockId?: string };
+        }>;
+      };
+      expect(content.inline[1]?.target?.objectId).toBe(result.object.id);
+      expect(content.inline[1]?.target?.blockId).toBe(target.id);
+    });
+
+    it('remaps internal refs in list_item blocks', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create list with list_item containing internal ref
+      const targetBlockId = generateId();
+      const listId = generateId();
+      const listItemId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 1, inline: [{ t: 'text', text: 'Target Heading' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: listId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'list',
+            content: { kind: 'bullet' },
+          },
+          {
+            op: 'block.insert',
+            blockId: listItemId,
+            parentBlockId: listId,
+            place: { where: 'start' },
+            blockType: 'list_item',
+            content: {
+              inline: [
+                { t: 'text', text: 'Reference: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'block', objectId: source.id, blockId: targetBlockId },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+
+      // Find the list_item (in children of list)
+      const list = doc.blocks.find((b) => b.blockType === 'list');
+      expect(list).toBeDefined();
+      if (!list) throw new Error('Expected list block');
+
+      const listItem = list.children[0];
+      expect(listItem).toBeDefined();
+      if (!listItem) throw new Error('Expected list_item block');
+
+      // Find the duplicated target heading
+      const targetHeading = doc.blocks.find((b) => b.blockType === 'heading');
+      expect(targetHeading).toBeDefined();
+      if (!targetHeading) throw new Error('Expected heading block');
+
+      // Verify ref is remapped
+      const content = listItem.content as {
+        inline: Array<{
+          t: string;
+          text?: string;
+          target?: { kind: string; objectId: string; blockId?: string };
+        }>;
+      };
+      expect(content.inline[1]?.target?.objectId).toBe(result.object.id);
+      expect(content.inline[1]?.target?.blockId).toBe(targetHeading.id);
+    });
+
+    it('remaps internal refs in footnote_def blocks', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create footnote_def with internal ref (footnote_def has key + optional inline)
+      const targetBlockId = generateId();
+      const footnoteId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: { inline: [{ t: 'text', text: 'Target paragraph' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: footnoteId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'footnote_def',
+            content: {
+              key: 'fn1',
+              inline: [
+                { t: 'text', text: 'Footnote with ref: ' },
+                {
+                  t: 'ref',
+                  mode: 'link',
+                  target: { kind: 'block', objectId: source.id, blockId: targetBlockId },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Find footnote_def block
+      const footnote = doc.blocks.find((b) => b.blockType === 'footnote_def');
+      expect(footnote).toBeDefined();
+      if (!footnote) throw new Error('Expected footnote_def block');
+
+      // Find target block
+      const target = doc.blocks.find((b) => b.blockType === 'paragraph');
+      expect(target).toBeDefined();
+      if (!target) throw new Error('Expected target block');
+
+      // Verify ref is remapped
+      const content = footnote.content as {
+        key: string;
+        inline: Array<{
+          t: string;
+          text?: string;
+          target?: { kind: string; objectId: string; blockId?: string };
+        }>;
+      };
+      expect(content.inline[1]?.target?.objectId).toBe(result.object.id);
+      expect(content.inline[1]?.target?.blockId).toBe(target.id);
+    });
+
+    it('remaps internal refs inside link nodes with children', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create paragraph with link node containing a ref in its children
+      const targetBlockId = generateId();
+      const paragraphId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 1, inline: [{ t: 'text', text: 'Target' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: paragraphId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                {
+                  t: 'link',
+                  href: 'https://example.com',
+                  children: [
+                    { t: 'text', text: 'Link with embedded ' },
+                    {
+                      t: 'ref',
+                      mode: 'link',
+                      target: { kind: 'block', objectId: source.id, blockId: targetBlockId },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Find paragraph block
+      const paragraph = doc.blocks.find((b) => b.blockType === 'paragraph');
+      expect(paragraph).toBeDefined();
+      if (!paragraph) throw new Error('Expected paragraph block');
+
+      // Find target block
+      const target = doc.blocks.find((b) => b.blockType === 'heading');
+      expect(target).toBeDefined();
+      if (!target) throw new Error('Expected heading block');
+
+      // Verify ref inside link children is remapped
+      const content = paragraph.content as {
+        inline: Array<{
+          t: string;
+          href?: string;
+          children?: Array<{
+            t: string;
+            text?: string;
+            target?: { kind: string; objectId: string; blockId?: string };
+          }>;
+        }>;
+      };
+
+      const linkNode = content.inline[0];
+      expect(linkNode?.t).toBe('link');
+      expect(linkNode?.children).toBeDefined();
+
+      const refInLink = linkNode?.children?.[1];
+      expect(refInLink?.t).toBe('ref');
+      expect(refInLink?.target?.objectId).toBe(result.object.id);
+      expect(refInLink?.target?.blockId).toBe(target.id);
+    });
+
+    it('remaps internal refs in table cells', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create table with cell containing internal ref
+      const targetBlockId = generateId();
+      const tableId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: targetBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'heading',
+            content: { level: 1, inline: [{ t: 'text', text: 'Target Heading' }] },
+          },
+          {
+            op: 'block.insert',
+            blockId: tableId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'table',
+            content: {
+              rows: [
+                {
+                  cells: [
+                    [
+                      { t: 'text', text: 'Cell 1: ' },
+                      {
+                        t: 'ref',
+                        mode: 'link',
+                        target: { kind: 'block', objectId: source.id, blockId: targetBlockId },
+                      },
+                    ],
+                    [{ t: 'text', text: 'Cell 2' }],
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      // Find table block
+      const table = doc.blocks.find((b) => b.blockType === 'table');
+      expect(table).toBeDefined();
+      if (!table) throw new Error('Expected table block');
+
+      // Find target block
+      const target = doc.blocks.find((b) => b.blockType === 'heading');
+      expect(target).toBeDefined();
+      if (!target) throw new Error('Expected heading block');
+
+      // Verify ref in table cell is remapped
+      const content = table.content as {
+        rows: Array<{
+          cells: Array<
+            Array<{
+              t: string;
+              text?: string;
+              target?: { kind: string; objectId: string; blockId?: string };
+            }>
+          >;
+        }>;
+      };
+
+      const firstCell = content.rows[0]?.cells[0];
+      expect(firstCell).toBeDefined();
+
+      const refInCell = firstCell?.[1];
+      expect(refInCell?.t).toBe('ref');
+      expect(refInCell?.target?.objectId).toBe(result.object.id);
+      expect(refInCell?.target?.blockId).toBe(target.id);
+    });
+
+    it('handles table with empty rows gracefully', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create table with empty rows array
+      const tableId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: tableId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'table',
+            content: {
+              rows: [],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      expect(result.blockCount).toBe(1);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(1);
+
+      const table = doc.blocks[0];
+      expect(table?.blockType).toBe('table');
+      expect(table?.content).toEqual({ rows: [] });
+    });
+
+    it('handles object ref without blockId (kind: object)', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create paragraph with object-level ref (no blockId)
+      const paragraphId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: paragraphId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'Self ref: ' },
+                {
+                  t: 'ref',
+                  mode: 'embed',
+                  target: { kind: 'object', objectId: source.id },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(1);
+
+      const block = doc.blocks[0];
+      expect(block).toBeDefined();
+      if (!block) throw new Error('Expected block');
+
+      // Verify object ref is remapped (no blockId to remap)
+      const content = block.content as {
+        inline: Array<{
+          t: string;
+          target?: { kind: string; objectId: string; blockId?: string };
+        }>;
+      };
+      expect(content.inline[1]?.target?.kind).toBe('object');
+      expect(content.inline[1]?.target?.objectId).toBe(result.object.id);
+      expect(content.inline[1]?.target?.blockId).toBeUndefined();
+    });
+
+    it('preserves non-ref inline nodes unchanged', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create paragraph with various non-ref inline nodes
+      const paragraphId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: paragraphId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'paragraph',
+            content: {
+              inline: [
+                { t: 'text', text: 'Normal text' },
+                { t: 'tag', value: 'mytag' },
+                { t: 'math_inline', latex: 'E = mc^2' },
+              ],
+            },
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(1);
+
+      const block = doc.blocks[0];
+      expect(block?.content).toEqual({
+        inline: [
+          { t: 'text', text: 'Normal text' },
+          { t: 'tag', value: 'mytag' },
+          { t: 'math_inline', latex: 'E = mc^2' },
+        ],
+      });
+    });
+
+    it('handles blocks with non-inline-content types', () => {
+      seedBuiltInTypes(db);
+
+      const source = createObject(db, 'Page', 'Source');
+
+      // Create code_block and thematic_break (no inline content)
+      const codeBlockId = generateId();
+      const breakId = generateId();
+
+      applyBlockPatch(db, {
+        apiVersion: 'v1',
+        objectId: source.id,
+        ops: [
+          {
+            op: 'block.insert',
+            blockId: codeBlockId,
+            parentBlockId: null,
+            place: { where: 'start' },
+            blockType: 'code_block',
+            content: { language: 'typescript', code: 'const x = 1;' },
+          },
+          {
+            op: 'block.insert',
+            blockId: breakId,
+            parentBlockId: null,
+            place: { where: 'end' },
+            blockType: 'thematic_break',
+            content: {},
+          },
+        ],
+      });
+
+      const result = duplicateObject(db, source.id);
+
+      expect(result.blockCount).toBe(2);
+
+      const doc = getDocument(db, result.object.id);
+      expect(doc.blocks).toHaveLength(2);
+
+      const codeBlock = doc.blocks.find((b) => b.blockType === 'code_block');
+      expect(codeBlock?.content).toEqual({ language: 'typescript', code: 'const x = 1;' });
+
+      const thematicBreak = doc.blocks.find((b) => b.blockType === 'thematic_break');
+      expect(thematicBreak?.content).toEqual({});
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
   // Phase 5: Error Cases (TDD - RED → GREEN)
   // ─────────────────────────────────────────────────────────────────────────────
 
