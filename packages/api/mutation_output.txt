@@ -1,0 +1,1132 @@
+
+> @typenote/api@0.1.0 mutate /Users/isaaclyon/Developer/personal/typenote/packages/api
+> stryker run
+
+[32m08:22:51 (66144) INFO ProjectReader[39m Found 17 of 167 file(s) to be mutated using incremental report with 546 mutant(s), and 659 test(s).
+[32m08:22:51 (66144) INFO Instrumenter[39m Instrumented 17 source file(s) with 546 mutant(s)
+[32m08:22:51 (66144) INFO ConcurrencyTokenProvider[39m Creating 9 test runner process(es).
+[32m08:22:52 (66144) INFO BroadcastReporter[39m Detected that current console does not support the "progress" reporter, downgrading to "progress-append-only" reporter
+[32m08:22:53 (66144) INFO DryRunExecutor[39m Starting initial test run (vitest test runner with "perTest" coverage analysis). This may take a while.
+[32m08:22:55 (66144) INFO DryRunExecutor[39m Initial test run succeeded. Ran 659 tests in 2 seconds (net 138.19806299999345 ms, overhead 2425.8019370000065 ms).
+[32m08:22:55 (66144) INFO IncrementalDiffer[39m Incremental report:
+	Mutants:	0 files changed (+0 -0)
+	Tests:		0 files changed (+0 -0)
+	Result:		344 of 546 mutant result(s) are reused.
+
+All tests
+  attachment.test.ts
+    ✓ AttachmentSchema validates a complete valid attachment (killed 7)
+    ✘ AttachmentSchema requires id to be 26 characters (ULID) (covered 0)
+    ✘ AttachmentSchema requires sha256 to be exactly 64 characters (covered 0)
+    ✘ AttachmentSchema requires sha256 to be lowercase hex (covered 0)
+    ✘ AttachmentSchema requires filename to be non-empty (covered 0)
+    ✘ AttachmentSchema limits filename to 255 characters (covered 0)
+    ✘ AttachmentSchema requires mimeType to be non-empty (covered 0)
+    ✘ AttachmentSchema requires sizeBytes to be a positive integer (covered 0)
+    ✘ AttachmentSchema allows orphanedAt to be null (still referenced) (covered 0)
+    ✘ AttachmentSchema allows orphanedAt to be a date (orphaned) (covered 0)
+    ✓ UploadAttachmentInputSchema validates valid upload input (killed 4)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts image/png (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts image/jpeg (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts image/gif (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts image/webp (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts application/pdf (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation accepts text/plain (covered 0)
+    ✓ UploadAttachmentInputSchema mimeType validation rejects unsupported MIME type (application/exe) (killed 1)
+    ✘ UploadAttachmentInputSchema mimeType validation rejects application/javascript (covered 0)
+    ✘ UploadAttachmentInputSchema mimeType validation rejects application/x-msdownload (covered 0)
+    ✘ UploadAttachmentInputSchema sizeBytes validation accepts file at exactly 10 MB (covered 0)
+    ✘ UploadAttachmentInputSchema sizeBytes validation rejects file over 10 MB (covered 0)
+    ✘ UploadAttachmentInputSchema sizeBytes validation rejects negative file size (covered 0)
+    ✘ UploadAttachmentInputSchema sizeBytes validation rejects zero file size (covered 0)
+    ✘ UploadAttachmentInputSchema filename validation requires filename to be non-empty (covered 0)
+    ✘ UploadAttachmentInputSchema filename validation limits filename to 255 characters (covered 0)
+    ✓ UploadAttachmentResultSchema validates successful upload result (killed 1)
+    ✘ UploadAttachmentResultSchema validates deduped upload result (covered 0)
+    ✘ UploadAttachmentResultSchema requires attachmentId to be 26 characters (covered 0)
+    ✘ UploadAttachmentResultSchema requires wasDeduped boolean (covered 0)
+    ✘ AttachmentContentSchema validates minimal attachment content (covered 0)
+    ✓ AttachmentContentSchema validates attachment content with alt text (killed 1)
+    ✘ AttachmentContentSchema validates attachment content with caption (covered 0)
+    ✘ AttachmentContentSchema validates attachment content with both alt and caption (covered 0)
+    ✘ AttachmentContentSchema requires attachmentId to be 26 characters (covered 0)
+    ✘ AttachmentContentSchema requires attachmentId field (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes image/png (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes image/jpeg (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes image/gif (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes image/webp (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes application/pdf (covered 0)
+    ✘ SUPPORTED_MIME_TYPES includes text/plain (covered 0)
+    ✘ SUPPORTED_MIME_TYPES does not include application/javascript (covered 0)
+    ✘ SUPPORTED_MIME_TYPES is an array of strings (covered 0)
+    ✘ MAX_FILE_SIZE_BYTES equals 10 MB (covered 0)
+    ✘ Type inference Attachment type has correct structure (covered 0)
+    ✘ Type inference UploadAttachmentInput type has correct structure (covered 0)
+    ✘ Type inference UploadAttachmentResult type has correct structure (covered 0)
+    ✘ Type inference AttachmentContent type has correct structure (covered 0)
+    ✘ Sha256Schema regex validation rejects sha256 with prefix junk before valid 64 chars (covered 0)
+    ✘ Sha256Schema regex validation rejects sha256 with suffix junk after valid 64 chars (covered 0)
+    ✓ Sha256Schema regex validation provides descriptive error message for invalid sha256 (killed 1)
+    ✓ AttachmentErrorCodeSchema contains expected error codes (killed 1)
+    ✘ AttachmentErrorCodeSchema rejects invalid error codes (covered 0)
+  blockPatch.test.ts
+    ✓ PlaceSchema accepts start (killed 3)
+    ~ PlaceSchema accepts end (covered 5)
+    ~ PlaceSchema accepts before with siblingBlockId (covered 5)
+    ~ PlaceSchema accepts after with siblingBlockId (covered 5)
+    ✓ PlaceSchema rejects before without siblingBlockId (killed 4)
+    ~ PlaceSchema rejects after without siblingBlockId (covered 7)
+    ~ PlaceSchema rejects empty object (covered 7)
+    ✓ PlaceSchema rejects start variant missing where field (killed 1)
+    ~ PlaceSchema rejects before variant missing siblingBlockId (covered 10)
+    ~ PlaceSchema rejects after variant missing siblingBlockId (covered 10)
+    ~ BlockMetaSchema accepts valid meta with collapsed (covered 5)
+    ~ BlockMetaSchema accepts empty object (covered 5)
+    ✓ BlockMetaSchema rejects invalid collapsed type (killed 1)
+    ✓ InsertBlockOpSchema accepts insert with place (killed 1)
+    ~ InsertBlockOpSchema accepts insert with parent and orderKey (covered 5)
+    ~ InsertBlockOpSchema rejects insert without blockId (covered 7)
+    ~ InsertBlockOpSchema rejects insert with invalid blockId length (covered 7)
+    ~ InsertBlockOpSchema rejects insert empty object missing required fields (covered 7)
+    ~ InsertBlockOpSchema rejects insert missing op (covered 7)
+    ~ InsertBlockOpSchema rejects insert missing blockType (covered 7)
+    ~ InsertBlockOpSchema rejects completely empty object (covered 7)
+    ~ InsertBlockOpSchema rejects object with only op field (covered 7)
+    ~ InsertBlockOpSchema verifies all required fields are actually required (covered 10)
+    ~ UpdateBlockOpSchema accepts update with content (covered 5)
+    ~ UpdateBlockOpSchema accepts update with blockType change (covered 5)
+    ~ UpdateBlockOpSchema accepts update with meta only (covered 5)
+    ~ UpdateBlockOpSchema rejects update without patch (covered 7)
+    ~ UpdateBlockOpSchema rejects empty object missing required fields (covered 7)
+    ~ UpdateBlockOpSchema rejects update missing blockId (covered 10)
+    ~ UpdateBlockOpSchema accepts update with empty patch object (covered 5)
+    ✓ UpdateBlockOpSchema rejects patch with invalid blockType (not a string) (killed 1)
+    ~ UpdateBlockOpSchema rejects patch with invalid meta (collapsed not boolean) (covered 10)
+    ✓ MoveBlockOpSchema accepts move with place (killed 1)
+    ~ MoveBlockOpSchema accepts move to root (covered 5)
+    ~ MoveBlockOpSchema accepts move with orderKey (covered 5)
+    ✓ MoveBlockOpSchema accepts move with subtree flag (killed 1)
+    ~ MoveBlockOpSchema rejects empty object missing required fields (covered 7)
+    ~ MoveBlockOpSchema rejects move missing blockId (covered 10)
+    ~ MoveBlockOpSchema rejects move missing newParentBlockId (covered 10)
+    ~ MoveBlockOpSchema rejects move with invalid orderKey (not a string) (covered 10)
+    ~ MoveBlockOpSchema rejects move with invalid subtree value (must be literal true) (covered 10)
+    ~ DeleteBlockOpSchema accepts delete basic (covered 5)
+    ✓ DeleteBlockOpSchema accepts delete with subtree flag (killed 1)
+    ~ DeleteBlockOpSchema rejects empty object missing required fields (covered 7)
+    ~ DeleteBlockOpSchema rejects delete missing blockId (covered 10)
+    ~ DeleteBlockOpSchema rejects delete with invalid subtree value (must be literal true) (covered 10)
+    ~ DeleteBlockOpSchema rejects delete with invalid subtree type (must be boolean true) (covered 10)
+    ✓ BlockOpSchema (discriminated union) correctly discriminates insert op (killed 2)
+    ~ BlockOpSchema (discriminated union) correctly discriminates update op (covered 1)
+    ~ BlockOpSchema (discriminated union) correctly discriminates move op (covered 1)
+    ~ BlockOpSchema (discriminated union) correctly discriminates delete op (covered 1)
+    ~ BlockOpSchema (discriminated union) correctly parses insert op and allows field access (covered 5)
+    ~ BlockOpSchema (discriminated union) rejects unknown op type (covered 7)
+    ~ ApplyBlockPatchInputSchema accepts minimal input (covered 5)
+    ~ ApplyBlockPatchInputSchema accepts complete with all optional fields input (covered 5)
+    ✓ ApplyBlockPatchInputSchema rejects wrong apiVersion (killed 1)
+    ~ ApplyBlockPatchInputSchema rejects invalid objectId (covered 10)
+    ~ ApplyBlockPatchInputSchema rejects negative baseDocVersion (covered 10)
+    ~ ApplyBlockPatchResultSchema accepts basic result (covered 5)
+    ~ ApplyBlockPatchResultSchema accepts with warnings result (covered 5)
+    ✓ ApplyBlockPatchResultSchema rejects empty object missing required fields (killed 1)
+    ~ ApplyBlockPatchResultSchema rejects result missing applied (covered 10)
+    ✓ ApplyBlockPatchResultSchema rejects result with empty applied object (killed 1)
+    ~ ApplyBlockPatchResultSchema rejects result with applied missing insertedBlockIds (covered 10)
+    ~ ClientContextSchema accepts all fields (covered 5)
+    ~ ClientContextSchema accepts partial fields (covered 5)
+    ~ ClientContextSchema accepts empty object (covered 5)
+    ✓ ClientContextSchema rejects invalid timestamp format (killed 1)
+    ~ PatchWarningSchema accepts valid warning with code and message (covered 5)
+    ~ PatchWarningSchema accepts warning with optional details (covered 5)
+    ✓ PatchWarningSchema rejects empty object missing required fields (killed 1)
+    ~ PatchWarningSchema rejects warning missing code (covered 10)
+    ~ PatchWarningSchema rejects warning missing message (covered 10)
+  calendar.test.ts
+    ✓ CalendarDateInfoSchema validates all-day event with only startDate (killed 11)
+    ~ CalendarDateInfoSchema validates all-day event with startDate and endDate (covered 13)
+    ✓ CalendarDateInfoSchema validates timed event with startDate datetime (killed 2)
+    ~ CalendarDateInfoSchema validates timed event with startDate and endDate datetimes (covered 15)
+    ✘ CalendarDateInfoSchema rejects missing startDate (covered 0)
+    ~ CalendarDateInfoSchema rejects missing allDay (covered 13)
+    ✘ CalendarDateInfoSchema rejects empty object (covered 0)
+    ✓ CalendarDateInfoSchema rejects invalid startDate format (killed 3)
+    ✓ CalendarItemSchema validates complete calendar item (killed 2)
+    ~ CalendarItemSchema validates calendar item with all-day event (covered 13)
+    ~ CalendarItemSchema validates calendar item with empty properties (covered 15)
+    ~ CalendarItemSchema validates calendar item with complex properties (covered 15)
+    ~ CalendarItemSchema rejects invalid id length (covered 15)
+    ~ CalendarItemSchema rejects invalid typeId length (covered 15)
+    ~ CalendarItemSchema rejects empty typeKey (covered 15)
+    ~ CalendarItemSchema rejects missing title (covered 15)
+    ✘ CalendarItemSchema rejects missing dateInfo (covered 0)
+    ✘ CalendarItemSchema rejects invalid dateInfo structure (covered 0)
+    ~ CalendarItemSchema rejects negative docVersion (covered 15)
+    ~ CalendarItemSchema rejects non-integer docVersion (covered 15)
+    ~ CalendarItemSchema rejects missing properties (covered 15)
+    ~ CalendarItemSchema rejects missing createdAt (covered 15)
+    ~ CalendarItemSchema rejects missing updatedAt (covered 15)
+    ✓ CalendarQueryOptionsSchema validates query with date-only format (killed 1)
+    ~ CalendarQueryOptionsSchema validates query with datetime format (covered 15)
+    ~ CalendarQueryOptionsSchema validates query with typeKeys filter (covered 13)
+    ~ CalendarQueryOptionsSchema validates query with single typeKey (covered 13)
+    ~ CalendarQueryOptionsSchema validates query with empty typeKeys array (covered 13)
+    ~ CalendarQueryOptionsSchema validates query without typeKeys (covered 13)
+    ~ CalendarQueryOptionsSchema rejects missing startDate (covered 13)
+    ~ CalendarQueryOptionsSchema rejects missing endDate (covered 13)
+    ✘ CalendarQueryOptionsSchema rejects empty object (covered 0)
+    ~ CalendarQueryOptionsSchema rejects invalid startDate format (covered 17)
+    ~ CalendarQueryOptionsSchema rejects invalid endDate format (covered 17)
+    ~ CalendarQueryOptionsSchema rejects non-array typeKeys (covered 13)
+  errors.test.ts
+    ✓ ApiErrorCodeSchema accepts valid code: NOT_FOUND_OBJECT (killed 1)
+    ✘ ApiErrorCodeSchema accepts valid code: NOT_FOUND_BLOCK (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: NOT_FOUND_TAG (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: VALIDATION (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: CONFLICT_VERSION (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: CONFLICT_ORDERING (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: CONFLICT_TAG_SLUG (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INVARIANT_CYCLE (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INVARIANT_CROSS_OBJECT (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INVARIANT_PARENT_DELETED (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INVARIANT_TAG_IN_USE (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INVARIANT_DAILY_NOTE_NOT_DUPLICABLE (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: IDEMPOTENCY_CONFLICT (covered 0)
+    ✘ ApiErrorCodeSchema accepts valid code: INTERNAL (covered 0)
+    ✘ ApiErrorCodeSchema rejects invalid code (covered 0)
+    ✘ ApiErrorSchema validates a complete error object (covered 0)
+    ✘ ApiErrorSchema validates error without details (covered 0)
+    ✓ ApiErrorSchema rejects wrong apiVersion (killed 1)
+    ✓ Error factory functions notFoundObject creates NOT_FOUND_OBJECT error (killed 3)
+    ✓ Error factory functions notFoundBlock creates NOT_FOUND_BLOCK error (killed 3)
+    ✓ Error factory functions validationError creates VALIDATION error (killed 3)
+    ✓ Error factory functions versionConflict creates CONFLICT_VERSION error (killed 3)
+    ✓ Error factory functions cycleError creates INVARIANT_CYCLE error (killed 3)
+    ✓ Error factory functions crossObjectError creates INVARIANT_CROSS_OBJECT error (killed 3)
+    ✓ Error factory functions parentDeletedError creates INVARIANT_PARENT_DELETED error (killed 3)
+    ✓ Error factory functions idempotencyConflict creates IDEMPOTENCY_CONFLICT error (killed 3)
+    ✓ Error factory functions internalError creates INTERNAL error (killed 3)
+    ✓ Error factory functions orderingConflict creates CONFLICT_ORDERING error (killed 3)
+    ~ Error factory functions orderingConflict creates CONFLICT_ORDERING error with null parent (covered 3)
+    ✓ Error factory functions notFoundTag creates NOT_FOUND_TAG error (killed 3)
+    ✓ Error factory functions tagSlugConflict creates CONFLICT_TAG_SLUG error (killed 3)
+    ✓ Error factory functions tagInUse creates INVARIANT_TAG_IN_USE error (killed 3)
+    ✓ Error factory functions dailyNoteNotDuplicable creates INVARIANT_DAILY_NOTE_NOT_DUPLICABLE error (killed 3)
+  index.test.ts
+    ✘ API package exports API version (covered 0)
+  notateDoc.test.ts
+    ✓ MarkSchema accepts valid mark: em (killed 1)
+    ~ MarkSchema accepts valid mark: strong (covered 5)
+    ~ MarkSchema accepts valid mark: code (covered 5)
+    ~ MarkSchema accepts valid mark: strike (covered 5)
+    ~ MarkSchema accepts valid mark: highlight (covered 5)
+    ✓ MarkSchema rejects invalid mark (killed 1)
+    ✓ InlineNodeSchema accepts 'text': 'plain text' (killed 1)
+    ~ InlineNodeSchema accepts 'text': 'text with marks' (covered 5)
+    ~ InlineNodeSchema accepts 'text': 'text with multiple marks' (covered 5)
+    ~ InlineNodeSchema accepts 'hard_break': 'hard break' (covered 5)
+    ✓ InlineNodeSchema accepts 'link': 'link with text children' (killed 1)
+    ~ InlineNodeSchema accepts 'link': 'link with marked text' (covered 5)
+    ~ InlineNodeSchema accepts 'ref_object': 'object link ref' (covered 5)
+    ~ InlineNodeSchema accepts 'ref_object': 'object embed ref (transclusion)' (covered 5)
+    ~ InlineNodeSchema accepts 'ref_object': 'ref with alias' (covered 5)
+    ~ InlineNodeSchema accepts 'ref_block': 'block link ref' (covered 5)
+    ~ InlineNodeSchema accepts 'tag': 'tag' (covered 5)
+    ~ InlineNodeSchema accepts 'math_inline': 'inline math' (covered 5)
+    ~ InlineNodeSchema accepts 'footnote_ref': 'footnote reference' (covered 5)
+    ✓ BlockTypeSchema accepts valid block type: paragraph (killed 1)
+    ~ BlockTypeSchema accepts valid block type: heading (covered 5)
+    ~ BlockTypeSchema accepts valid block type: list (covered 5)
+    ~ BlockTypeSchema accepts valid block type: list_item (covered 5)
+    ~ BlockTypeSchema accepts valid block type: blockquote (covered 5)
+    ~ BlockTypeSchema accepts valid block type: callout (covered 5)
+    ~ BlockTypeSchema accepts valid block type: code_block (covered 5)
+    ~ BlockTypeSchema accepts valid block type: thematic_break (covered 5)
+    ~ BlockTypeSchema accepts valid block type: table (covered 5)
+    ~ BlockTypeSchema accepts valid block type: math_block (covered 5)
+    ~ BlockTypeSchema accepts valid block type: footnote_def (covered 5)
+    ~ BlockTypeSchema rejects invalid block type (covered 7)
+    ~ Block content schemas 'paragraph' accepts 'paragraph with inline content' (covered 5)
+    ~ Block content schemas 'paragraph' accepts 'empty paragraph' (covered 5)
+    ✓ Block content schemas 'heading' accepts 'heading with level and inline' (killed 1)
+    ~ Block content schemas 'heading' accepts 'heading level 1' (covered 5)
+    ~ Block content schemas 'heading' accepts 'heading level 2' (covered 5)
+    ~ Block content schemas 'heading' accepts 'heading level 3' (covered 5)
+    ~ Block content schemas 'heading' accepts 'heading level 4' (covered 5)
+    ~ Block content schemas 'heading' accepts 'heading level 5' (covered 5)
+    ~ Block content schemas 'heading' accepts 'heading level 6' (covered 5)
+    ✓ Block content schemas 'heading' rejects 'invalid heading level' (killed 1)
+    ✓ Block content schemas 'list' accepts 'bullet list' (killed 1)
+    ~ Block content schemas 'list' accepts 'ordered list with start' (covered 5)
+    ~ Block content schemas 'list' accepts 'task list' (covered 5)
+    ~ Block content schemas 'list_item' accepts 'list item with inline' (covered 5)
+    ~ Block content schemas 'list_item' accepts 'task list item with checked' (covered 5)
+    ~ Block content schemas 'blockquote' accepts 'empty blockquote content' (covered 5)
+    ~ Block content schemas 'callout' accepts 'callout with kind' (covered 5)
+    ~ Block content schemas 'callout' accepts 'callout with title and collapsed' (covered 5)
+    ~ Block content schemas 'code_block' accepts 'code block with language' (covered 5)
+    ~ Block content schemas 'code_block' accepts 'code block without language' (covered 5)
+    ~ Block content schemas 'thematic_break' accepts 'empty thematic break content' (covered 5)
+    ~ Block content schemas 'table' accepts 'table with rows' (covered 5)
+    ✓ Block content schemas 'table' accepts 'table with alignment' (killed 1)
+    ~ Block content schemas 'math_block' accepts 'math block with latex' (covered 5)
+    ~ Block content schemas 'footnote_def' accepts 'footnote with key and inline' (covered 5)
+    ~ Block content schemas 'footnote_def' accepts 'footnote with key only' (covered 5)
+    ✓ getContentSchemaForBlockType returns correct schema for 'paragraph' (killed 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'heading' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'list' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'list_item' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'blockquote' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'callout' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'code_block' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'thematic_break' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'table' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'math_block' (covered 1)
+    ~ getContentSchemaForBlockType returns correct schema for 'footnote_def' (covered 1)
+    ~ getContentSchemaForBlockType returns undefined for unknown block type (covered 1)
+    ~ Schema required fields (mutation testing) Reference target schemas ObjectRefTargetSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Reference target schemas BlockRefTargetSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas TextNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas HardBreakNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas RefNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas TagNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas MathInlineNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas FootnoteRefNodeSchema rejects empty object (covered 7)
+    ~ Schema required fields (mutation testing) Inline node schemas LinkNodeSchema rejects empty object (covered 7)
+    ✓ Schema required fields (mutation testing) Block content schemas ListItemContentSchema rejects empty object (killed 1)
+    ✓ Schema required fields (mutation testing) Block content schemas CalloutContentSchema rejects empty object (killed 1)
+    ✓ Schema required fields (mutation testing) Block content schemas TableRowSchema rejects empty object (killed 1)
+    ✓ Schema required fields (mutation testing) Block content schemas TableContentSchema rejects empty object (killed 1)
+    ✓ Schema required fields (mutation testing) Block content schemas MathBlockContentSchema rejects empty object (killed 1)
+    ✓ Schema required fields (mutation testing) Block content schemas FootnoteDefContentSchema rejects empty object (killed 1)
+    ~ Schema required fields (mutation testing) Optional field type validation TextNodeSchema rejects invalid marks type (must be array) (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation TextNodeSchema rejects invalid mark in array (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation LinkNodeSchema rejects invalid children type (must be array) (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation RefNodeSchema rejects missing mode field (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation RefNodeSchema rejects missing target field (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation TagNodeSchema rejects missing value field (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation MathInlineNodeSchema rejects missing latex field (covered 10)
+    ~ Schema required fields (mutation testing) Optional field type validation FootnoteRefNodeSchema rejects missing key field (covered 10)
+    ~ Schema required fields (mutation testing) Reference target validation ObjectRefTargetSchema rejects missing kind field (covered 10)
+    ~ Schema required fields (mutation testing) Reference target validation ObjectRefTargetSchema rejects missing objectId field (covered 10)
+    ~ Schema required fields (mutation testing) Reference target validation BlockRefTargetSchema rejects missing blockId field (covered 10)
+    ~ Schema required fields (mutation testing) Reference target validation BlockRefTargetSchema rejects missing objectId field (covered 10)
+  object.test.ts
+    ✓ DuplicateObjectRequestSchema validates valid objectId (killed 1)
+    ✘ DuplicateObjectRequestSchema rejects invalid objectId - too short (covered 0)
+    ✘ DuplicateObjectRequestSchema rejects invalid objectId - too long (covered 0)
+    ✘ DuplicateObjectRequestSchema rejects invalid objectId - empty string (covered 0)
+    ✘ DuplicateObjectRequestSchema rejects missing objectId (covered 0)
+    ✓ DuplicateObjectResponseSchema validates complete response shape (killed 2)
+    ✘ DuplicateObjectResponseSchema validates response with empty properties (covered 0)
+    ✘ DuplicateObjectResponseSchema validates response with zero blocks (covered 0)
+    ✘ DuplicateObjectResponseSchema rejects response with negative blockCount (covered 0)
+    ✘ DuplicateObjectResponseSchema rejects response with missing object field (covered 0)
+    ✘ DuplicateObjectResponseSchema rejects response with invalid object.id (covered 0)
+    ✘ DuplicateObjectResponseSchema rejects response with negative docVersion (covered 0)
+    ✘ DuplicateObjectResponseSchema rejects response with missing title (covered 0)
+  objectType.test.ts
+    ✓ ObjectTypeSchema parentTypeId should accept null parentTypeId (killed 4)
+    ✘ ObjectTypeSchema parentTypeId should accept valid ULID parentTypeId (covered 0)
+    ✓ ObjectTypeSchema parentTypeId should reject parentTypeId with wrong length (killed 1)
+    ✘ ObjectTypeSchema pluralName should accept null pluralName (covered 0)
+    ✓ ObjectTypeSchema pluralName should accept valid pluralName (killed 1)
+    ✘ ObjectTypeSchema pluralName should reject pluralName exceeding max length (covered 0)
+    ✘ ObjectTypeSchema color should accept null color (covered 0)
+    ✓ ObjectTypeSchema color should accept valid hex color (killed 2)
+    ✘ ObjectTypeSchema color should accept lowercase hex color (covered 0)
+    ✘ ObjectTypeSchema color should reject invalid color format (no hash) (covered 0)
+    ✘ ObjectTypeSchema color should reject invalid color format (wrong length) (covered 0)
+    ✘ ObjectTypeSchema color should reject invalid color format (not hex) (covered 0)
+    ✘ ObjectTypeSchema description should accept null description (covered 0)
+    ✓ ObjectTypeSchema description should accept valid description (killed 1)
+    ✘ ObjectTypeSchema description should reject description exceeding max length (covered 0)
+    ✓ ObjectTypeSchema showInCalendar should accept true showInCalendar (killed 1)
+    ✘ ObjectTypeSchema showInCalendar should accept false showInCalendar (covered 0)
+    ✘ ObjectTypeSchema showInCalendar should reject missing showInCalendar (covered 0)
+    ✘ ObjectTypeSchema calendarDateProperty should accept null calendarDateProperty (covered 0)
+    ✘ ObjectTypeSchema calendarDateProperty should accept valid calendarDateProperty (covered 0)
+    ✘ ObjectTypeSchema calendarDateProperty should reject calendarDateProperty exceeding max length (covered 0)
+    ✓ CreateObjectTypeInputSchema parentTypeId should accept input without parentTypeId (killed 7)
+    ✘ CreateObjectTypeInputSchema parentTypeId should accept valid ULID parentTypeId (covered 0)
+    ✓ CreateObjectTypeInputSchema parentTypeId should reject parentTypeId with wrong length (killed 1)
+    ✓ CreateObjectTypeInputSchema pluralName should accept pluralName (killed 1)
+    ✘ CreateObjectTypeInputSchema color should accept valid hex color (covered 0)
+    ✘ CreateObjectTypeInputSchema color should reject invalid color format (covered 0)
+    ✓ CreateObjectTypeInputSchema description should accept description (killed 1)
+    ✘ CreateObjectTypeInputSchema showInCalendar should accept showInCalendar (covered 0)
+    ✘ CreateObjectTypeInputSchema showInCalendar should accept false showInCalendar (covered 0)
+    ✘ CreateObjectTypeInputSchema showInCalendar should accept input without showInCalendar (covered 0)
+    ✓ CreateObjectTypeInputSchema calendarDateProperty should accept calendarDateProperty (killed 1)
+    ✘ CreateObjectTypeInputSchema calendarDateProperty should accept input without calendarDateProperty (covered 0)
+    ✘ CreateObjectTypeInputSchema calendarDateProperty should reject calendarDateProperty exceeding max length (covered 0)
+    ✘ UpdateObjectTypeInputSchema parentTypeId should accept parentTypeId update (covered 0)
+    ✘ UpdateObjectTypeInputSchema parentTypeId should accept null parentTypeId (remove parent) (covered 0)
+    ✓ UpdateObjectTypeInputSchema pluralName should accept pluralName update (killed 1)
+    ✘ UpdateObjectTypeInputSchema pluralName should accept null pluralName (covered 0)
+    ✘ UpdateObjectTypeInputSchema color should accept color update (covered 0)
+    ✘ UpdateObjectTypeInputSchema color should accept null color (covered 0)
+    ✓ UpdateObjectTypeInputSchema description should accept description update (killed 1)
+    ✘ UpdateObjectTypeInputSchema description should accept null description (covered 0)
+    ✘ UpdateObjectTypeInputSchema showInCalendar should accept showInCalendar update (covered 0)
+    ✘ UpdateObjectTypeInputSchema showInCalendar should accept null showInCalendar (covered 0)
+    ✘ UpdateObjectTypeInputSchema showInCalendar should accept false showInCalendar (covered 0)
+    ✓ UpdateObjectTypeInputSchema calendarDateProperty should accept calendarDateProperty update (killed 1)
+    ✘ UpdateObjectTypeInputSchema calendarDateProperty should accept null calendarDateProperty (covered 0)
+    ✓ UpdateObjectTypeInputSchema calendarDateProperty should reject calendarDateProperty exceeding max length (killed 1)
+    ✓ ObjectTypeErrorCodeSchema should include TYPE_INHERITANCE_CYCLE error code (killed 1)
+    ✘ ObjectTypeErrorCodeSchema should include TYPE_INHERITANCE_DEPTH error code (covered 0)
+    ✘ ObjectTypeErrorCodeSchema should include TYPE_HAS_CHILDREN error code (covered 0)
+    ✘ ObjectTypeErrorCodeSchema should reject unknown error codes (covered 0)
+    ✓ BuiltInTypeKeySchema should contain expected built-in type keys (killed 1)
+    ✘ BuiltInTypeKeySchema should have at least 6 built-in types (covered 0)
+    ✓ PropertyTypeSchema should contain expected property types (killed 1)
+    ✘ PropertyTypeSchema should have at least 10 property types (covered 0)
+    ✓ PropertyDefinitionSchema key regex validation should reject key starting with number (killed 3)
+    ✓ PropertyDefinitionSchema key regex validation should reject key with trailing special character (killed 1)
+    ✘ PropertyDefinitionSchema key regex validation should reject key starting with uppercase (covered 0)
+    ✓ PropertyDefinitionSchema key regex validation should accept valid lowercase key with underscores (killed 6)
+    ✘ PropertyDefinitionSchema length validation should reject key exceeding max length (64) (covered 0)
+    ✘ PropertyDefinitionSchema length validation should accept key at max length (64) (covered 0)
+    ✘ PropertyDefinitionSchema length validation should reject empty key (covered 0)
+    ✘ PropertyDefinitionSchema length validation should reject name exceeding max length (128) (covered 0)
+    ✘ PropertyDefinitionSchema length validation should accept name at max length (128) (covered 0)
+    ✘ PropertyDefinitionSchema length validation should reject empty name (covered 0)
+    ✓ PropertyDefinitionSchema required field default should default required to false when not provided (killed 1)
+    ✘ PropertyDefinitionSchema required field default should accept explicit required true (covered 0)
+    ✘ PropertyDefinitionSchema missing required fields should reject missing key (covered 0)
+    ✘ PropertyDefinitionSchema missing required fields should reject missing name (covered 0)
+    ✘ PropertyDefinitionSchema missing required fields should reject missing type (covered 0)
+    ✘ PropertyDefinitionSchema missing required fields should reject empty object (covered 0)
+    ✓ TypeSchemaSchema should reject missing properties field (killed 1)
+    ✘ TypeSchemaSchema should accept empty properties array (covered 0)
+    ✘ ObjectTypeSchema color regex should reject color with prefix junk (covered 0)
+    ✘ ObjectTypeSchema color regex should reject color with suffix junk (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject key starting with lowercase (covered 0)
+    ✓ CreateObjectTypeInputSchema key regex should reject key with underscore (killed 2)
+    ✘ CreateObjectTypeInputSchema key regex should accept valid PascalCase key (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject key exceeding max length (64) (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should accept key at max length (64) (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject empty key (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject name exceeding max length (128) (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should accept name at max length (128) (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject empty name (covered 0)
+    ✘ CreateObjectTypeInputSchema key regex should reject missing required fields (covered 0)
+    ✓ UpdateObjectTypeInputSchema length validation should reject name exceeding max length (128) (killed 1)
+    ✓ UpdateObjectTypeInputSchema length validation should accept name at max length (128) (killed 1)
+    ✘ UpdateObjectTypeInputSchema length validation should reject empty name (covered 0)
+    ✓ UpdateObjectTypeInputSchema length validation should reject icon exceeding max length (64) (killed 1)
+    ✘ UpdateObjectTypeInputSchema length validation should accept icon at max length (64) (covered 0)
+    ✘ UpdateObjectTypeInputSchema length validation should accept empty object (no updates) (covered 0)
+    ✘ ListObjectTypesOptionsSchema should reject missing required fields by accepting empty object (covered 0)
+    ✘ ListObjectTypesOptionsSchema should accept builtInOnly option (covered 0)
+    ✘ ListObjectTypesOptionsSchema should accept customOnly option (covered 0)
+  patchValidation.test.ts
+    ✓ validatePatchInput valid patches accepts empty ops array (killed 5)
+    ✓ validatePatchInput valid patches accepts single insert op with paragraph content (killed 1)
+    ✓ validatePatchInput valid patches accepts multiple ops of different types (killed 1)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'paragraph' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'heading' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'list' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'list_item' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'blockquote' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'callout' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'code_block' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'thematic_break' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'table' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'math_block' (covered 13)
+    ~ validatePatchInput valid patches accepts insert with blockType: 'footnote_def' (covered 13)
+    ✓ validatePatchInput invalid patches rejects 'wrong apiVersion' (killed 6)
+    ~ validatePatchInput invalid patches rejects 'invalid objectId' (covered 8)
+    ~ validatePatchInput invalid patches rejects 'negative baseDocVersion' (covered 8)
+    ~ validatePatchInput invalid patches rejects 'unknown op type' (covered 8)
+    ~ validatePatchInput invalid patches rejects insert with invalid blockId (covered 15)
+    ✓ validateBlockContent unknown block type rejects unknown block type with error result (killed 8)
+    ✓ validateBlockContent paragraph accepts valid paragraph content (killed 6)
+    ✓ validateBlockContent paragraph accepts paragraph with text nodes (killed 1)
+    ✓ validateBlockContent paragraph rejects paragraph without inline array (killed 4)
+    ~ validateBlockContent heading accepts heading with level 1 (covered 9)
+    ~ validateBlockContent heading accepts heading with level 2 (covered 9)
+    ~ validateBlockContent heading accepts heading with level 3 (covered 9)
+    ~ validateBlockContent heading accepts heading with level 4 (covered 9)
+    ~ validateBlockContent heading accepts heading with level 5 (covered 9)
+    ~ validateBlockContent heading accepts heading with level 6 (covered 9)
+    ~ validateBlockContent heading rejects heading with invalid level 0 (covered 11)
+    ~ validateBlockContent heading rejects heading with invalid level 7 (covered 11)
+    ~ validateBlockContent heading rejects heading with invalid level -1 (covered 11)
+    ~ validateBlockContent heading rejects heading with invalid level 100 (covered 11)
+    ~ validateBlockContent heading rejects heading without level (covered 11)
+    ~ validateBlockContent list accepts bullet list (covered 9)
+    ~ validateBlockContent list accepts ordered list (covered 9)
+    ~ validateBlockContent list accepts task list (covered 9)
+    ~ validateBlockContent list accepts ordered list with start (covered 9)
+    ✓ validateBlockContent list rejects list without kind (killed 1)
+    ~ validateBlockContent code_block accepts code block with language (covered 9)
+    ✓ validateBlockContent code_block rejects code block without code (killed 1)
+    ✓ validateBlockContent inline node validation accepts paragraph with 'ref node with object target' (killed 2)
+    ~ validateBlockContent inline node validation accepts paragraph with 'ref node with block target and alias' (covered 9)
+    ~ validateBlockContent inline node validation accepts paragraph with 'link with marked text children' (covered 9)
+    ~ validateBlockContent inline node validation rejects paragraph with 'invalid inline node type' (covered 11)
+    ~ validateBlockContent inline node validation rejects paragraph with 'invalid mark' (covered 11)
+    ~ validateBlockContent table accepts table with inline content in cells (covered 9)
+    ~ validateBlockContent table accepts empty table (covered 9)
+  pinning.test.ts
+    ✘ PinnedObjectSummarySchema validates a complete pinned object summary (covered 0)
+    ✘ PinnedObjectSummarySchema validates summary with different order values (covered 0)
+    ✘ PinnedObjectSummarySchema allows order to be zero (covered 0)
+    ✓ PinnedObjectSummarySchema rejects negative order (killed 1)
+    ✘ PinnedObjectSummarySchema rejects invalid object ULID (covered 0)
+    ✘ PinnedObjectSummarySchema rejects invalid type ULID (covered 0)
+    ✘ PinnedObjectSummarySchema rejects missing required fields (covered 0)
+    ✘ PinObjectInputSchema validates pin input with valid object ID (covered 0)
+    ✓ PinObjectInputSchema rejects invalid object ID (killed 1)
+    ✘ PinObjectInputSchema rejects missing object ID (covered 0)
+    ✘ UnpinObjectInputSchema validates unpin input with valid object ID (covered 0)
+    ✓ UnpinObjectInputSchema rejects invalid object ID (killed 1)
+    ✘ UnpinObjectInputSchema rejects missing object ID (covered 0)
+    ✘ ReorderPinnedObjectsInputSchema validates reorder input with single object (covered 0)
+    ✓ ReorderPinnedObjectsInputSchema validates reorder input with multiple objects (killed 1)
+    ✓ ReorderPinnedObjectsInputSchema rejects empty object IDs array (killed 1)
+    ✘ ReorderPinnedObjectsInputSchema rejects invalid object ID in array (covered 0)
+    ✘ ReorderPinnedObjectsInputSchema rejects missing object IDs field (covered 0)
+    ✘ PinObjectResultSchema validates result for newly pinned object (covered 0)
+    ✘ PinObjectResultSchema validates result for already pinned object (covered 0)
+    ✓ PinObjectResultSchema rejects negative order (killed 1)
+    ✘ PinObjectResultSchema rejects missing required fields (covered 0)
+    ✘ UnpinObjectResultSchema validates result for newly unpinned object (covered 0)
+    ✘ UnpinObjectResultSchema validates result for already unpinned object (covered 0)
+    ✓ UnpinObjectResultSchema rejects missing object ID (killed 1)
+    ✘ UnpinObjectResultSchema rejects missing unpinned field (covered 0)
+    ✘ ReorderPinnedObjectsResultSchema validates result with updated objects (covered 0)
+    ✘ ReorderPinnedObjectsResultSchema validates result with empty array (covered 0)
+    ✓ ReorderPinnedObjectsResultSchema rejects missing updated object IDs field (killed 1)
+    ✓ PinningErrorCodeSchema validates all defined error codes (killed 1)
+    ✘ PinningErrorCodeSchema rejects invalid error code (covered 0)
+  settings.test.ts
+    ✓ ColorModeSchema validates light mode (killed 1)
+    ✘ ColorModeSchema validates dark mode (covered 0)
+    ✘ ColorModeSchema validates system mode (covered 0)
+    ✘ ColorModeSchema rejects invalid mode (covered 0)
+    ✘ ColorModeSchema rejects uppercase (covered 0)
+    ✓ WeekStartDaySchema validates sunday (killed 1)
+    ✘ WeekStartDaySchema validates monday (covered 0)
+    ✘ WeekStartDaySchema rejects other days (covered 0)
+    ✘ WeekStartDaySchema rejects uppercase (covered 0)
+    ✓ DateFormatSchema validates iso format (killed 1)
+    ✘ DateFormatSchema validates us format (covered 0)
+    ✘ DateFormatSchema validates eu format (covered 0)
+    ✘ DateFormatSchema rejects invalid format (covered 0)
+    ✓ TimeFormatSchema validates 12h format (killed 1)
+    ✘ TimeFormatSchema validates 24h format (covered 0)
+    ✘ TimeFormatSchema rejects invalid format (covered 0)
+    ✓ UserSettingsSchema validates complete settings (killed 1)
+    ✓ UserSettingsSchema applies defaults for empty object (killed 1)
+    ✘ UserSettingsSchema applies defaults for partial settings (covered 0)
+    ✘ UserSettingsSchema rejects invalid colorMode (covered 0)
+    ✘ UserSettingsSchema rejects invalid weekStartDay (covered 0)
+    ✘ UserSettingsSchema rejects non-boolean spellcheck (covered 0)
+    ✘ UserSettingsSchema rejects invalid dateFormat (covered 0)
+    ✘ UserSettingsSchema rejects invalid timeFormat (covered 0)
+  tag.test.ts
+    ✓ TagColorSchema accepts valid hex color with uppercase (killed 2)
+    ✘ TagColorSchema accepts valid hex color with lowercase (covered 0)
+    ✓ TagColorSchema accepts CSS color name (killed 2)
+    ✘ TagColorSchema rejects short hex code (covered 0)
+    ✘ TagColorSchema rejects hex without hash (covered 0)
+    ✓ TagColorSchema rejects invalid characters in color name (killed 2)
+    ✓ TagColorSchema rejects hex with prefix before hash (killed 1)
+    ✓ TagColorSchema rejects hex with suffix after digits (killed 1)
+    ✓ TagColorSchema returns error message for invalid color (killed 1)
+    ✓ TagIconSchema accepts emoji (killed 1)
+    ✘ TagIconSchema accepts icon library reference (covered 0)
+    ✘ TagIconSchema rejects icon exceeding max length (covered 0)
+    ✓ TagSchema validates a full tag entity (killed 7)
+    ✘ TagSchema validates tag with minimal fields (covered 0)
+    ✓ TagSchema rejects invalid ULID for id (killed 1)
+    ✘ TagSchema rejects empty name (covered 0)
+    ✘ TagSchema rejects name exceeding max length (covered 0)
+    ✘ TagSchema rejects empty slug (covered 0)
+    ✓ TagSchema rejects slug with uppercase (killed 1)
+    ✓ TagSchema rejects slug with spaces (killed 1)
+    ✘ TagSchema rejects slug with underscores (covered 0)
+    ✘ TagSchema accepts slug with hyphens (covered 0)
+    ✘ TagSchema accepts slug with numbers (covered 0)
+    ✘ TagSchema rejects description exceeding max length (covered 0)
+    ✓ TagSchema returns error message for invalid slug (killed 1)
+    ✘ TagWithUsageSchema validates tag with usage count (covered 0)
+    ✘ TagWithUsageSchema allows usageCount to be zero (covered 0)
+    ✓ TagWithUsageSchema rejects negative usageCount (killed 1)
+    ✓ CreateTagInputSchema validates minimal create input (killed 2)
+    ✓ CreateTagInputSchema validates full create input (killed 1)
+    ✓ CreateTagInputSchema rejects missing name (killed 1)
+    ✘ CreateTagInputSchema rejects missing slug (covered 0)
+    ✘ CreateTagInputSchema rejects invalid slug format (covered 0)
+    ✓ UpdateTagInputSchema validates update with name only (killed 2)
+    ✘ UpdateTagInputSchema validates update with slug only (covered 0)
+    ✘ UpdateTagInputSchema validates update with color only (covered 0)
+    ✓ UpdateTagInputSchema validates update with all fields (killed 1)
+    ✘ UpdateTagInputSchema validates empty update (no fields) (covered 0)
+    ✘ UpdateTagInputSchema allows setting color to null (covered 0)
+    ✓ UpdateTagInputSchema rejects invalid slug format (killed 1)
+    ✘ ListTagsOptionsSchema validates empty options (covered 0)
+    ✘ ListTagsOptionsSchema validates options with objectId filter (covered 0)
+    ✘ ListTagsOptionsSchema validates options with includeUsageCount (covered 0)
+    ✓ ListTagsOptionsSchema validates options with sortBy (killed 2)
+    ✘ ListTagsOptionsSchema validates all sort options (covered 0)
+    ✓ ListTagsOptionsSchema rejects invalid sortBy value (killed 1)
+    ✘ AssignTagsInputSchema validates assign input with one tag (covered 0)
+    ✓ AssignTagsInputSchema validates assign input with multiple tags (killed 1)
+    ✓ AssignTagsInputSchema rejects empty tagIds array (killed 1)
+    ✘ AssignTagsInputSchema rejects invalid objectId (covered 0)
+    ✘ AssignTagsInputSchema rejects invalid tagId in array (covered 0)
+    ✘ RemoveTagsInputSchema validates remove input (covered 0)
+    ✓ RemoveTagsInputSchema rejects empty tagIds array (killed 2)
+    ✘ AssignTagsResultSchema validates result with assigned and skipped tags (covered 0)
+    ✘ AssignTagsResultSchema validates result with empty arrays (covered 0)
+    ✓ AssignTagsResultSchema rejects empty object (killed 1)
+    ✘ RemoveTagsResultSchema validates result with removed and skipped tags (covered 0)
+    ✘ RemoveTagsResultSchema validates result with empty arrays (covered 0)
+    ✓ RemoveTagsResultSchema rejects empty object (killed 1)
+    ✓ TagErrorCodeSchema validates all defined error codes (killed 1)
+    ✘ TagErrorCodeSchema rejects invalid error code (covered 0)
+  task.test.ts
+    ✓ TaskStatusSchema validates Backlog status (killed 1)
+    ✘ TaskStatusSchema validates Todo status (covered 0)
+    ✘ TaskStatusSchema validates InProgress status (covered 0)
+    ✘ TaskStatusSchema validates Done status (covered 0)
+    ✘ TaskStatusSchema rejects invalid status (covered 0)
+    ✘ TaskStatusSchema rejects lowercase status (covered 0)
+    ✘ TaskStatusSchema rejects empty string (covered 0)
+    ✓ TaskPrioritySchema validates Low priority (killed 1)
+    ✘ TaskPrioritySchema validates Medium priority (covered 0)
+    ✘ TaskPrioritySchema validates High priority (covered 0)
+    ✘ TaskPrioritySchema rejects invalid priority (covered 0)
+    ✘ TaskPrioritySchema rejects lowercase priority (covered 0)
+    ✓ TaskPropertiesSchema validates complete task properties (killed 1)
+    ✘ TaskPropertiesSchema validates task with only required status (covered 0)
+    ✘ TaskPropertiesSchema validates task with status and due_date only (covered 0)
+    ✘ TaskPropertiesSchema validates task with status and priority only (covered 0)
+    ✘ TaskPropertiesSchema rejects missing status (covered 0)
+    ✘ TaskPropertiesSchema rejects empty object (covered 0)
+    ✘ TaskPropertiesSchema rejects invalid status value (covered 0)
+    ✘ TaskPropertiesSchema rejects invalid priority value (covered 0)
+    ✘ TaskPropertiesSchema rejects invalid due_date format (covered 0)
+    ✘ TaskPropertiesSchema rejects non-ISO due_date (covered 0)
+    ✘ GetTasksOptionsSchema validates empty options (covered 0)
+    ✘ GetTasksOptionsSchema validates options with status filter (covered 0)
+    ✘ GetTasksOptionsSchema validates options with priority filter (covered 0)
+    ✘ GetTasksOptionsSchema validates options with dueDateKey (covered 0)
+    ✘ GetTasksOptionsSchema validates options with dueBefore (covered 0)
+    ✘ GetTasksOptionsSchema validates options with dueAfter (covered 0)
+    ✘ GetTasksOptionsSchema validates options with date range (covered 0)
+    ✘ GetTasksOptionsSchema validates options with includeCompleted (covered 0)
+    ✘ GetTasksOptionsSchema validates options with pagination (covered 0)
+    ✘ GetTasksOptionsSchema validates options with all fields (covered 0)
+    ✓ GetTasksOptionsSchema rejects invalid status (killed 1)
+    ✘ GetTasksOptionsSchema rejects invalid priority (covered 0)
+    ✘ GetTasksOptionsSchema rejects negative limit (covered 0)
+    ✘ GetTasksOptionsSchema rejects negative offset (covered 0)
+  template.test.ts
+    ✘ TemplateBlockSchema validates a paragraph block with text placeholder (covered 0)
+    ✘ TemplateBlockSchema validates a heading block (covered 0)
+    ✓ TemplateBlockSchema validates a block with children (killed 1)
+    ✓ TemplateBlockSchema parses children field correctly and includes it in output (killed 2)
+    ✘ TemplateBlockSchema rejects invalid block type (covered 0)
+    ✘ TemplateBlockSchema rejects missing blockType (covered 0)
+    ✘ TemplateBlockSchema rejects missing content (covered 0)
+    ✘ TemplateContentSchema validates template content with blocks array (covered 0)
+    ✘ TemplateContentSchema validates empty blocks array (covered 0)
+    ✓ TemplateContentSchema rejects missing blocks property (killed 1)
+    ✓ TemplateSchema validates a full template entity (killed 2)
+    ✓ TemplateSchema rejects invalid ULID for id (killed 1)
+    ✘ TemplateSchema rejects empty name (covered 0)
+    ✓ CreateTemplateInputSchema validates a create input with all required fields (killed 2)
+    ✘ CreateTemplateInputSchema validates a create input with isDefault false (covered 0)
+    ✓ CreateTemplateInputSchema defaults isDefault to true when not provided (killed 2)
+    ✘ CreateTemplateInputSchema rejects missing objectTypeId (covered 0)
+    ✘ CreateTemplateInputSchema rejects missing name (covered 0)
+    ✘ CreateTemplateInputSchema rejects missing content (covered 0)
+    ✘ CreateTemplateInputSchema rejects name exceeding max length (covered 0)
+    ✓ UpdateTemplateInputSchema validates update with name only (killed 2)
+    ✘ UpdateTemplateInputSchema validates update with content only (covered 0)
+    ✘ UpdateTemplateInputSchema validates update with isDefault only (covered 0)
+    ✘ UpdateTemplateInputSchema validates update with all fields (covered 0)
+    ✘ UpdateTemplateInputSchema validates empty update (no fields) (covered 0)
+    ✓ UpdateTemplateInputSchema rejects name exceeding max length (killed 1)
+  test-utils.test.ts
+    ✘ Test Constants VALID_ULID is a 26-character string (covered 0)
+    ✘ Test Constants VALID_ULID_2 is a 26-character string (covered 0)
+    ✘ Test Constants VALID_ULID_3 is a 26-character string (covered 0)
+    ✘ Test Constants all ULIDs are unique (covered 0)
+    ~ expectValid passes for valid data (covered 5)
+    ✓ expectValid throws/fails for invalid data (killed 1)
+    ✓ expectValid throws with descriptive error message for invalid data (killed 2)
+    ~ expectValid fails when required field is missing (covered 6)
+    ~ expectInvalid passes for invalid data (covered 7)
+    ✓ expectInvalid throws/fails for valid data (killed 1)
+    ~ expectInvalid validates path checking correctly (covered 10)
+    ✓ expectInvalid fails when expected path is not in error (killed 3)
+    ~ expectInvalid handles nested paths correctly (covered 10)
+    ~ expectInvalid works without expectedPath parameter (covered 7)
+    ~ parseWith returns success result for valid data (covered 1)
+    ~ parseWith returns failure result for invalid data (covered 1)
+    ✓ makeInsertOp returns correct structure with defaults (killed 2)
+    ~ makeInsertOp content.inline is an empty array by default (covered 4)
+    ~ makeInsertOp applies overrides correctly (covered 4)
+    ~ makeInsertOp preserves required properties when overriding (covered 4)
+    ✓ makeUpdateOp returns correct structure with defaults (killed 4)
+    ~ makeUpdateOp patch.content.inline is an empty array by default (covered 5)
+    ~ makeUpdateOp applies overrides correctly (covered 5)
+    ✓ makeMoveOp returns correct structure with defaults (killed 1)
+    ~ makeMoveOp applies overrides correctly (covered 2)
+    ✓ makeDeleteOp returns correct structure with defaults (killed 2)
+    ~ makeDeleteOp applies overrides correctly (covered 2)
+    ✓ makePatchInput returns correct structure with defaults (killed 3)
+    ~ makePatchInput ops is an empty array by default (covered 3)
+    ~ makePatchInput applies overrides correctly (covered 7)
+    ✓ makePatchResult returns correct structure with defaults (killed 7)
+    ~ makePatchResult applied arrays are empty by default (covered 7)
+    ~ makePatchResult applies overrides correctly (covered 7)
+
+[Survived] Regex
+src/attachment.ts:47:10
+-     .regex(/^[0-9a-f]{64}$/, {
++     .regex(/[0-9a-f]{64}$/, {
+Ran all tests for this mutant.
+
+[Survived] Regex
+src/attachment.ts:47:10
+-     .regex(/^[0-9a-f]{64}$/, {
++     .regex(/^[0-9a-f]{64}/, {
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:16:12
+-     z.object({ where: z.literal('start') }),
++     z.object({}),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:17:12
+-     z.object({ where: z.literal('end') }),
++     z.object({}),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:18:12
+-     z.object({ where: z.literal('before'), siblingBlockId: z.string() }),
++     z.object({}),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:19:12
+-     z.object({ where: z.literal('after'), siblingBlockId: z.string() }),
++     z.object({}),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:40:45
+-   export const InsertBlockOpSchema = z.object({
+-     op: z.literal('block.insert'),
+-     blockId: UlidSchema,
+-     parentBlockId: UlidSchema.nullable(),
+-     orderKey: z.string().optional(),
+-     place: PlaceSchema.optional(),
+-     blockType: z.string(),
+-     content: z.unknown(),
+-     meta: BlockMetaSchema.optional(),
+-   });
++   export const InsertBlockOpSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:56:45
+-   export const UpdateBlockOpSchema = z.object({
+-     op: z.literal('block.update'),
+-     blockId: UlidSchema,
+-     patch: z.object({
+-       blockType: z.string().optional(),
+-       content: z.unknown().optional(),
+-       meta: BlockMetaSchema.optional(),
+-     }),
+-   });
++   export const UpdateBlockOpSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:71:43
+-   export const MoveBlockOpSchema = z.object({
+-     op: z.literal('block.move'),
+-     blockId: UlidSchema,
+-     newParentBlockId: UlidSchema.nullable(),
+-     orderKey: z.string().optional(),
+-     place: PlaceSchema.optional(),
+-     subtree: z.literal(true).optional(),
+-   });
++   export const MoveBlockOpSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/blockPatch.ts:85:45
+-   export const DeleteBlockOpSchema = z.object({
+-     op: z.literal('block.delete'),
+-     blockId: UlidSchema,
+-     subtree: z.literal(true).optional(),
+-   });
++   export const DeleteBlockOpSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] Regex
+src/calendar.ts:23:27
+-       const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
++       const dateOnlyRegex = /\d{4}-\d{2}-\d{2}$/;
+Tests ran:
+    CalendarDateInfoSchema validates all-day event with only startDate
+    CalendarDateInfoSchema validates all-day event with startDate and endDate
+    CalendarDateInfoSchema validates timed event with startDate datetime
+  and 27 more tests!
+
+
+[Survived] Regex
+src/calendar.ts:23:27
+-       const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
++       const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}/;
+Tests ran:
+    CalendarDateInfoSchema validates all-day event with only startDate
+    CalendarDateInfoSchema validates all-day event with startDate and endDate
+    CalendarDateInfoSchema validates timed event with startDate datetime
+  and 27 more tests!
+
+
+[Survived] ObjectLiteral
+src/calendar.ts:32:3
+-     {
+-       message: 'Date must be in YYYY-MM-DD or ISO 8601 datetime format',
+-     }
++     {}
+Ran all tests for this mutant.
+
+[NoCoverage] BlockStatement
+src/errors.ts:161:68
+-   export function notFoundAttachment(attachmentId: string): ApiError {
+-     return {
+-       apiVersion: 'v1',
+-       code: 'NOT_FOUND_ATTACHMENT',
+-       message: `Attachment not found: ${attachmentId}`,
+-       details: { attachmentId },
+-     };
+-   }
++   export function notFoundAttachment(attachmentId: string): ApiError {}
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:162:10
+-     return {
+-       apiVersion: 'v1',
+-       code: 'NOT_FOUND_ATTACHMENT',
+-       message: `Attachment not found: ${attachmentId}`,
+-       details: { attachmentId },
+-     };
++     return {};
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:166:14
+-       details: { attachmentId },
++       details: {},
+
+[NoCoverage] BlockStatement
+src/errors.ts:170:77
+-   export function fileTooLarge(sizeBytes: number, maxBytes: number): ApiError {
+-     return {
+-       apiVersion: 'v1',
+-       code: 'FILE_TOO_LARGE',
+-       message: `File size ${sizeBytes} bytes exceeds maximum ${maxBytes} bytes`,
+-       details: { sizeBytes, maxBytes },
+-     };
+-   }
++   export function fileTooLarge(sizeBytes: number, maxBytes: number): ApiError {}
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:171:10
+-     return {
+-       apiVersion: 'v1',
+-       code: 'FILE_TOO_LARGE',
+-       message: `File size ${sizeBytes} bytes exceeds maximum ${maxBytes} bytes`,
+-       details: { sizeBytes, maxBytes },
+-     };
++     return {};
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:175:14
+-       details: { sizeBytes, maxBytes },
++       details: {},
+
+[NoCoverage] BlockStatement
+src/errors.ts:179:65
+-   export function unsupportedFileType(mimeType: string): ApiError {
+-     return {
+-       apiVersion: 'v1',
+-       code: 'UNSUPPORTED_FILE_TYPE',
+-       message: `File type '${mimeType}' is not supported`,
+-       details: { mimeType },
+-     };
+-   }
++   export function unsupportedFileType(mimeType: string): ApiError {}
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:180:10
+-     return {
+-       apiVersion: 'v1',
+-       code: 'UNSUPPORTED_FILE_TYPE',
+-       message: `File type '${mimeType}' is not supported`,
+-       details: { mimeType },
+-     };
++     return {};
+
+[NoCoverage] ObjectLiteral
+src/errors.ts:184:14
+-       details: { mimeType },
++       details: {},
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:18:47
+-   export const ObjectRefTargetSchema = z.object({
+-     kind: z.literal('object'),
+-     objectId: z.string(),
+-   });
++   export const ObjectRefTargetSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:23:46
+-   export const BlockRefTargetSchema = z.object({
+-     kind: z.literal('block'),
+-     objectId: z.string(),
+-     blockId: z.string(),
+-   });
++   export const BlockRefTargetSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:40:40
+-   export const TextNodeSchema = z.object({
+-     t: z.literal('text'),
+-     text: z.string(),
+-     marks: z.array(MarkSchema).optional(),
+-   });
++   export const TextNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:46:45
+-   export const HardBreakNodeSchema = z.object({
+-     t: z.literal('hard_break'),
+-   });
++   export const HardBreakNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:50:39
+-   export const RefNodeSchema = z.object({
+-     t: z.literal('ref'),
+-     mode: z.enum(['link', 'embed']),
+-     target: RefTargetSchema,
+-     alias: z.string().optional(),
+-   });
++   export const RefNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:57:39
+-   export const TagNodeSchema = z.object({
+-     t: z.literal('tag'),
+-     value: z.string(),
+-   });
++   export const TagNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:62:46
+-   export const MathInlineNodeSchema = z.object({
+-     t: z.literal('math_inline'),
+-     latex: z.string(),
+-   });
++   export const MathInlineNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:67:47
+-   export const FootnoteRefNodeSchema = z.object({
+-     t: z.literal('footnote_ref'),
+-     key: z.string(),
+-   });
++   export const FootnoteRefNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/notateDoc.ts:85:40
+-   export const LinkNodeSchema = z.object({
+-     t: z.literal('link'),
+-     href: z.string(),
+-     children: z.array(NonLinkInlineNodeSchema),
+-   });
++   export const LinkNodeSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/object.ts:63:51
+-   export const UpdateObjectRequestSchema = z.object({
+-     objectId: z.string().length(26), // ULID
+-     /** Optional optimistic concurrency check */
+-     baseDocVersion: z.number().int().nonnegative().optional(),
+-     /** Partial updates - only provided fields are changed */
+-     patch: z.object({
+-       title: z.string().min(1).optional(),
+-       typeKey: z.string().optional(), // Change object type
+-       properties: z.record(z.unknown()).optional(), // Partial property updates
+-     }),
+-     /**
+-      * Property mapping for type changes.
+-      * Maps old property keys to new property keys.
+-      * Example: { "email": "contact_email" }
+-      */
+-     propertyMapping: z.record(z.string()).optional(),
+-   });
++   export const UpdateObjectRequestSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/object.ts:70:19
+-     patch: z.object({
+-       title: z.string().min(1).optional(),
+-       typeKey: z.string().optional(), // Change object type
+-       properties: z.record(z.unknown()).optional(), // Partial property updates
+-     }),
++     patch: z.object({}),
+Ran all tests for this mutant.
+
+[Survived] MethodExpression
+src/object.ts:71:12
+-       title: z.string().min(1).optional(),
++       title: z.string().max(1).optional(),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/object.ts:89:38
+-   const UpdatedObjectSchema = z.object({
+-     id: z.string().length(26), // ULID
+-     typeId: z.string().length(26), // ULID
+-     typeKey: z.string(),
+-     title: z.string(),
+-     properties: z.record(z.unknown()),
+-     docVersion: z.number().int().nonnegative(),
+-     updatedAt: z.string().datetime(),
+-   });
++   const UpdatedObjectSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/object.ts:103:52
+-   export const UpdateObjectResponseSchema = z.object({
+-     object: UpdatedObjectSchema,
+-     /** Properties that were dropped during type change (informational) */
+-     droppedProperties: z.array(z.string()).optional(),
+-   });
++   export const UpdateObjectResponseSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/objectType.ts:65:33
+-       .regex(/^[a-z][a-z0-9_]*$/, {
+-         message:
+-           'Property key must be lowercase, start with a letter, and contain only letters, numbers, and underscores',
+-       }),
++       .regex(/^[a-z][a-z0-9_]*$/, {}),
+Ran all tests for this mutant.
+
+[Survived] Regex
+src/objectType.ts:98:41
+-   const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
++   const HexColorSchema = z.string().regex(/#[0-9A-Fa-f]{6}$/, {
+Ran all tests for this mutant.
+
+[Survived] Regex
+src/objectType.ts:98:41
+-   const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
++   const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}/, {
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/objectType.ts:98:62
+-   const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+-     message: 'Color must be a valid 6-digit hex color (e.g., #3B82F6)',
+-   });
++   const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, {});
+Ran all tests for this mutant.
+
+[Survived] MethodExpression
+src/objectType.ts:109:9
+-     icon: z.string().max(64).nullable(),
++     icon: z.string().min(64).nullable(),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/objectType.ts:142:35
+-       .regex(/^[A-Z][a-zA-Z0-9]*$/, {
+-         message: 'Type key must be PascalCase (start with uppercase letter)',
+-       }),
++       .regex(/^[A-Z][a-zA-Z0-9]*$/, {}),
+Ran all tests for this mutant.
+
+[Survived] MethodExpression
+src/objectType.ts:146:9
+-     icon: z.string().max(64).optional(),
++     icon: z.string().min(64).optional(),
+Ran all tests for this mutant.
+
+[Survived] ObjectLiteral
+src/objectType.ts:191:54
+-   export const ListObjectTypesOptionsSchema = z.object({
+-     /** Include only built-in types */
+-     builtInOnly: z.boolean().optional(),
+-     /** Include only custom (non-built-in) types */
+-     customOnly: z.boolean().optional(),
+-   });
++   export const ListObjectTypesOptionsSchema = z.object({});
+Ran all tests for this mutant.
+
+[Survived] ArrowFunction
+src/test-utils.ts:35:14
+-           .map((i) => `  - ${i.path.join('.')}: ${i.message}`)
++           .map(() => undefined)
+Tests ran:
+    expectValid throws/fails for invalid data
+    expectValid throws with descriptive error message for invalid data
+    expectValid fails when required field is missing
+
+
+Ran 97.97 tests per mutant on average.
+--------------------|------------------|----------|-----------|------------|----------|----------|
+                    | % Mutation score |          |           |            |          |          |
+File                |  total | covered | # killed | # timeout | # survived | # no cov | # errors |
+--------------------|--------|---------|----------|-----------|------------|----------|----------|
+All files           |  86.92 |   89.25 |      299 |         0 |         36 |        9 |        0 |
+ attachment.ts      |  88.89 |   88.89 |       16 |         0 |          2 |        0 |        0 |
+ blockPatch.ts      |  57.89 |   57.89 |       11 |         0 |          8 |        0 |        0 |
+ calendar.ts        |  86.36 |   86.36 |       19 |         0 |          3 |        0 |        0 |
+ errors.ts          |  83.02 |  100.00 |       44 |         0 |          0 |        9 |        0 |
+ index.ts           |    n/a |     n/a |        0 |         0 |          0 |        0 |        0 |
+ notateDoc.ts       |  68.97 |   68.97 |       20 |         0 |          9 |        0 |        0 |
+ object.ts          |  37.50 |   37.50 |        3 |         0 |          5 |        0 |        0 |
+ objectType.ts      |  84.91 |   84.91 |       45 |         0 |          8 |        0 |        0 |
+ patchValidation.ts | 100.00 |  100.00 |       28 |         0 |          0 |        0 |        0 |
+ pinning.ts         | 100.00 |  100.00 |        9 |         0 |          0 |        0 |        0 |
+ settings.ts        | 100.00 |  100.00 |        6 |         0 |          0 |        0 |        0 |
+ tag.ts             | 100.00 |  100.00 |       40 |         0 |          0 |        0 |        0 |
+ task.ts            | 100.00 |  100.00 |        4 |         0 |          0 |        0 |        0 |
+ template.ts        | 100.00 |  100.00 |       14 |         0 |          0 |        0 |        0 |
+ test-utils.ts      |  97.56 |   97.56 |       40 |         0 |          1 |        0 |        0 |
+--------------------|--------|---------|----------|-----------|------------|----------|----------|
+[32m08:22:55 (66144) INFO MutationTestReportHelper[39m Final mutation score of 86.92 is greater than or equal to break threshold 45
+[32m08:22:55 (66144) INFO HtmlReporter[39m Your report can be found at: file:///Users/isaaclyon/Developer/personal/typenote/packages/api/reports/mutation/index.html
+[32m08:22:55 (66144) INFO MutationTestExecutor[39m Done in 4 seconds.
