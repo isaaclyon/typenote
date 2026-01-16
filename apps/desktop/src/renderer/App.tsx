@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { AppShell, Toaster } from '@typenote/design-system';
 import { DocumentEditor } from './components/DocumentEditor.js';
+import { DailyNoteLayout } from './components/DailyNoteLayout.js';
 import { CalendarView } from './components/calendar/index.js';
 import { TypeBrowserView } from './components/TypeBrowserView.js';
 import { LeftSidebar } from './components/LeftSidebar.js';
@@ -66,8 +67,17 @@ function App(): ReactElement {
     }
   };
 
-  // Show right sidebar only when viewing a note
-  const showRightSidebar = viewMode === 'notes' && selectedObjectId !== null;
+  const handleNavigateToDailyNote = async (dateKey: string) => {
+    const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(dateKey);
+    if (result.success) {
+      setSelectedObjectId(result.result.dailyNote.id);
+      setViewMode('notes');
+    }
+  };
+
+  // Show right sidebar only when viewing a note (but not for Daily Notes)
+  const isDailyNote = selectedObject?.typeKey === 'DailyNote';
+  const showRightSidebar = viewMode === 'notes' && selectedObjectId !== null && !isDailyNote;
 
   // Conditionally build AppShell props to satisfy exactOptionalPropertyTypes
   const rightSidebarProp = showRightSidebar
@@ -120,6 +130,14 @@ function App(): ReactElement {
             typeKey={selectedTypeKey}
             onOpenObject={handleOpenObjectFromTypeBrowser}
           />
+        ) : selectedObjectId && isDailyNote ? (
+          <DailyNoteLayout
+            dateKey={(selectedObject?.properties?.['dateKey'] as string) ?? ''}
+            onNavigateToDate={(dateKey) => void handleNavigateToDailyNote(dateKey)}
+            onNavigateToObject={setSelectedObjectId}
+          >
+            <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
+          </DailyNoteLayout>
         ) : selectedObjectId ? (
           <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
         ) : (
