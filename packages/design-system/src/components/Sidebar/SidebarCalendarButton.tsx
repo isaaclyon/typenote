@@ -4,11 +4,11 @@ import { cn } from '../../utils/cn.js';
 import type { SidebarCalendarButtonProps } from './types.js';
 
 const SidebarCalendarButton = React.forwardRef<HTMLButtonElement, SidebarCalendarButtonProps>(
-  ({ onClick, isToday = false, className }, ref) => {
+  ({ isToday = false, className, ...props }, ref) => {
     return (
       <button
         ref={ref}
-        onClick={onClick}
+        {...props}
         className={cn(
           'flex items-center gap-3 h-9 px-3 rounded-md transition-colors',
           'text-sm font-medium',

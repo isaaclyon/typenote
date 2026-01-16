@@ -11,14 +11,16 @@ export interface SidebarProps {
 }
 
 // Type item (most complex component)
-export interface SidebarTypeItemProps {
+export interface SidebarTypeItemProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onClick'
+> {
   icon: LucideIcon;
   label: string;
   count: number;
   color?: string; // For icon color
   selected?: boolean;
   onClick?: () => void;
-  className?: string;
   /** Optional actions slot (e.g., dropdown menu for edit/delete) */
   actions?: React.ReactNode;
 }
@@ -31,10 +33,8 @@ export interface SidebarSearchTriggerProps {
 }
 
 // Calendar button
-export interface SidebarCalendarButtonProps {
-  onClick?: () => void;
+export interface SidebarCalendarButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isToday?: boolean;
-  className?: string;
 }
 
 // Action button (Archive, Settings)

@@ -55,6 +55,14 @@ export function TypeBrowserView({
     [onOpenObject]
   );
 
+  // Handle row click - navigate to the object
+  const handleRowClick = React.useCallback(
+    (row: TypeBrowserRowData) => {
+      onOpenObject(row.id);
+    },
+    [onOpenObject]
+  );
+
   // Handle cell edit
   const handleCellEdit = React.useCallback(
     (rowId: string, columnId: string, value: unknown) => {
@@ -100,6 +108,7 @@ export function TypeBrowserView({
         getRowId={(row) => row.id}
         isLoading={isLoading}
         emptyMessage={`No ${typeName.toLowerCase()} yet`}
+        onRowClick={handleRowClick}
         onTitleOpen={handleTitleOpen}
         {...optionalProps}
       />

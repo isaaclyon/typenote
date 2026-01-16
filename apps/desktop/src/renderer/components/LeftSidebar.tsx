@@ -98,6 +98,7 @@ export function LeftSidebar({
               .map((type) => (
                 <SidebarTypeItem
                   key={type.key}
+                  data-testid={`sidebar-type-${type.key}`}
                   icon={getIconForType(type.key)}
                   label={type.name}
                   count={type.count}

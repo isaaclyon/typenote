@@ -457,6 +457,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                 <tr
                   key={row.id}
                   data-index={virtualRow.index}
+                  data-testid={`type-browser-row-${row.id}`}
                   ref={(node) => rowVirtualizer.measureElement(node)}
                   className={cn(
                     'border-b border-gray-100 transition-colors',

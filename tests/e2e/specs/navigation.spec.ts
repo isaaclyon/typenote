@@ -23,16 +23,23 @@ test.describe('Daily Note Navigation', () => {
   });
 
   test('next button navigates forward', async ({ window: page }) => {
-    // Create a past date's note
-    await page.evaluate(async () => {
-      await window.typenoteAPI.getOrCreateDailyNoteByDate('2024-06-15');
+    // Create a past date's note and get its ID
+    const result = await page.evaluate(async () => {
+      return window.typenoteAPI.getOrCreateDailyNoteByDate('2024-06-15');
     });
+
+    // Verify creation was successful and get the ID
+    expect(result.success).toBe(true);
+    const dailyNoteId = (result as { success: true; result: { dailyNote: { id: string } } }).result
+      .dailyNote.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Select the past daily note by clicking a card
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate via TypeBrowser: click DailyNote type in sidebar, then click the row
+    await page.getByTestId('sidebar-type-DailyNote').click();
+    await page.waitForSelector(`[data-testid="type-browser-row-${dailyNoteId}"]`);
+    await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Click Next to go forward a day
@@ -45,16 +52,23 @@ test.describe('Daily Note Navigation', () => {
   });
 
   test('today button navigates to current date', async ({ window: page }) => {
-    // Create a past date's note
-    await page.evaluate(async () => {
-      await window.typenoteAPI.getOrCreateDailyNoteByDate('2024-06-15');
+    // Create a past date's note and get its ID
+    const result = await page.evaluate(async () => {
+      return window.typenoteAPI.getOrCreateDailyNoteByDate('2024-06-15');
     });
+
+    // Verify creation was successful and get the ID
+    expect(result.success).toBe(true);
+    const dailyNoteId = (result as { success: true; result: { dailyNote: { id: string } } }).result
+      .dailyNote.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Select the past daily note by clicking a card
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate via TypeBrowser: click DailyNote type in sidebar, then click the row
+    await page.getByTestId('sidebar-type-DailyNote').click();
+    await page.waitForSelector(`[data-testid="type-browser-row-${dailyNoteId}"]`);
+    await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Click Today button
@@ -71,17 +85,22 @@ test.describe('Daily Note Navigation', () => {
   });
 
   test('navigation only shows for daily notes', async ({ window: page }) => {
-    // Create a Page (not DailyNote)
-    await page.evaluate(async () => {
-      await window.typenoteAPI.createObject('Page', 'Test Page', {});
+    // Create a Page (not DailyNote) and get its ID
+    const result = await page.evaluate(async () => {
+      return window.typenoteAPI.createObject('Page', 'Test Page', {});
     });
+
+    // Verify creation was successful and get the ID
+    expect(result.success).toBe(true);
+    const pageId = (result as { success: true; result: { id: string } }).result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Find and click the Page card (contains "Page" badge text)
-    const pageCard = page.locator('[data-testid^="object-card-"]').filter({ hasText: 'Page' });
-    await pageCard.first().click();
+    // Navigate via TypeBrowser: click Page type in sidebar, then click the row
+    await page.getByTestId('sidebar-type-Page').click();
+    await page.waitForSelector(`[data-testid="type-browser-row-${pageId}"]`);
+    await page.getByTestId(`type-browser-row-${pageId}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Navigation buttons should NOT be visible for non-daily notes

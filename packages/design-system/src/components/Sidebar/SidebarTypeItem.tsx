@@ -20,12 +20,26 @@ const typeItemVariants = cva(
 
 export interface TypeItemVariantProps extends VariantProps<typeof typeItemVariants> {}
 
-const SidebarTypeItem = React.forwardRef<HTMLButtonElement, SidebarTypeItemProps>(
-  ({ icon: Icon, label, count, color, selected = false, onClick, className, actions }, ref) => {
+const SidebarTypeItem = React.forwardRef<HTMLDivElement, SidebarTypeItemProps>(
+  (
+    { icon: Icon, label, count, color, selected = false, onClick, className, actions, ...rest },
+    ref
+  ) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+        e.preventDefault();
+        onClick();
+      }
+    };
+
     return (
-      <button
+      <div
         ref={ref}
+        role="button"
+        tabIndex={0}
         onClick={onClick}
+        onKeyDown={handleKeyDown}
+        {...rest}
         className={cn(
           typeItemVariants({ selected }),
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
@@ -50,7 +64,7 @@ const SidebarTypeItem = React.forwardRef<HTMLButtonElement, SidebarTypeItemProps
         >
           {actions}
         </div>
-      </button>
+      </div>
     );
   }
 );
