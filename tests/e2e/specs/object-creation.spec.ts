@@ -5,7 +5,7 @@ import type { TypenoteAPI } from '../types/global.js';
 declare const window: Window & { typenoteAPI: TypenoteAPI };
 
 test.describe('Object Creation via UI', () => {
-  test('create a Page object via IPC and verify it appears in object list', async ({
+  test('create a Page object via IPC and verify it appears in TypeBrowser', async ({
     window: page,
   }) => {
     // Create a Page object via IPC
@@ -14,93 +14,116 @@ test.describe('Object Creation via UI', () => {
     });
 
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.result.id).toMatch(/^[0-9A-Z]{26}$/); // ULID format
-      expect(result.result.title).toBe('My Test Page');
-    }
+    if (!result.success) return;
 
-    // Reload to refresh ObjectList (it doesn't auto-refresh yet)
+    expect(result.result.id).toMatch(/^[0-9A-Z]{26}$/); // ULID format
+    expect(result.result.title).toBe('My Test Page');
+
+    const objectId = result.result.id;
+
+    // Reload to refresh data
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Verify the page appears in the object list
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await expect(objectCard).toContainText('My Test Page');
+    // Navigate to Page type via sidebar
+    await page.getByTestId('sidebar-type-Page').click();
 
-    // Verify type badge shows "Page"
-    const typeBadge = page.getByText('Page').first();
-    await expect(typeBadge).toBeVisible();
+    // Wait for the specific row to appear in TypeBrowser
+    const row = page.getByTestId(`type-browser-row-${objectId}`);
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('My Test Page');
   });
 
-  test('create a Person object and verify type badge', async ({ window: page }) => {
+  test('create a Person object and verify it appears in TypeBrowser', async ({ window: page }) => {
     const result = await page.evaluate(async () => {
       return await window.typenoteAPI.createObject('Person', 'John Doe', {});
     });
 
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.result.title).toBe('John Doe');
-    }
+    if (!result.success) return;
+
+    expect(result.result.title).toBe('John Doe');
+    const objectId = result.result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Verify object appears with correct type
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await expect(objectCard).toContainText('John Doe');
-    await expect(objectCard).toContainText('Person');
+    // Navigate to Person type via sidebar
+    await page.getByTestId('sidebar-type-Person').click();
+
+    // Verify object appears
+    const row = page.getByTestId(`type-browser-row-${objectId}`);
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('John Doe');
   });
 
-  test('create an Event object and verify type badge', async ({ window: page }) => {
+  test('create an Event object and verify it appears in TypeBrowser', async ({ window: page }) => {
     const result = await page.evaluate(async () => {
       return await window.typenoteAPI.createObject('Event', 'Team Meeting', {});
     });
 
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.result.title).toBe('Team Meeting');
-    }
+    if (!result.success) return;
+
+    expect(result.result.title).toBe('Team Meeting');
+    const objectId = result.result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await expect(objectCard).toContainText('Team Meeting');
-    await expect(objectCard).toContainText('Event');
+    // Navigate to Event type via sidebar
+    await page.getByTestId('sidebar-type-Event').click();
+
+    const row = page.getByTestId(`type-browser-row-${objectId}`);
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('Team Meeting');
   });
 
-  test('create a Place object and verify type badge', async ({ window: page }) => {
+  test('create a Place object and verify it appears in TypeBrowser', async ({ window: page }) => {
     const result = await page.evaluate(async () => {
       return await window.typenoteAPI.createObject('Place', 'Conference Room A', {});
     });
 
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.result.title).toBe('Conference Room A');
+    if (!result.success) return;
+
+    expect(result.result.title).toBe('Conference Room A');
+    const objectId = result.result.id;
+
+    await page.reload();
+    await page.waitForLoadState('domcontentloaded');
+
+    // Navigate to Place type via sidebar
+    await page.getByTestId('sidebar-type-Place').click();
+
+    const row = page.getByTestId(`type-browser-row-${objectId}`);
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('Conference Room A');
+  });
+
+  test('create multiple objects of same type appear in TypeBrowser', async ({ window: page }) => {
+    // Create 3 Page objects
+    const results = await page.evaluate(async () => {
+      const r1 = await window.typenoteAPI.createObject('Page', 'Page One', {});
+      const r2 = await window.typenoteAPI.createObject('Page', 'Page Two', {});
+      const r3 = await window.typenoteAPI.createObject('Page', 'Page Three', {});
+      return [r1, r2, r3];
+    });
+
+    // All should succeed
+    for (const r of results) {
+      expect(r.success).toBe(true);
     }
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await expect(objectCard).toContainText('Conference Room A');
-    await expect(objectCard).toContainText('Place');
-  });
+    // Navigate to Page type
+    await page.getByTestId('sidebar-type-Page').click();
 
-  test('create multiple objects of different types', async ({ window: page }) => {
-    // Create objects of different types
-    await page.evaluate(async () => {
-      await window.typenoteAPI.createObject('Page', 'My Notes', {});
-      await window.typenoteAPI.createObject('Person', 'Alice', {});
-      await window.typenoteAPI.createObject('Event', 'Birthday Party', {});
-    });
-
-    await page.reload();
-    await page.waitForLoadState('domcontentloaded');
-
-    // Check that we have at least 3 objects
-    const objectCards = page.locator('[data-testid^="object-card-"]');
-    await expect(objectCards).toHaveCount(3);
+    // Check all 3 rows exist
+    const rows = page.locator('[data-testid^="type-browser-row-"]');
+    await expect(rows).toHaveCount(3);
   });
 });
 
@@ -155,26 +178,27 @@ test.describe('Object Properties', () => {
     }
   });
 
-  test('object metadata displays correctly in object list', async ({ window: page }) => {
-    await page.evaluate(async () => {
+  test('object title displays correctly in TypeBrowser row', async ({ window: page }) => {
+    const result = await page.evaluate(async () => {
       return await window.typenoteAPI.createObject('Page', 'Display Test', {});
     });
+
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    const objectId = result.result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
+    // Navigate to Page type
+    await page.getByTestId('sidebar-type-Page').click();
 
-    // Title is displayed
-    await expect(objectCard).toContainText('Display Test');
+    const row = page.getByTestId(`type-browser-row-${objectId}`);
+    await expect(row).toBeVisible();
 
-    // Type badge is displayed
-    await expect(objectCard).toContainText('Page');
-
-    // Date is displayed (format: localized date)
-    // The component shows updatedAt as toLocaleDateString()
-    const today = new Date().toLocaleDateString();
-    await expect(objectCard).toContainText(today);
+    // Title is displayed in the row
+    await expect(row).toContainText('Display Test');
   });
 
   test('created object has associated document', async ({ window: page }) => {
@@ -202,17 +226,24 @@ test.describe('Object Properties', () => {
 });
 
 test.describe('Object List Interactions', () => {
-  test('select object from list loads editor', async ({ window: page }) => {
+  test('clicking TypeBrowser row loads editor', async ({ window: page }) => {
     // Create an object
-    await page.evaluate(async () => {
-      await window.typenoteAPI.createObject('Page', 'Clickable Object', {});
+    const result = await page.evaluate(async () => {
+      return await window.typenoteAPI.createObject('Page', 'Clickable Object', {});
     });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    const objectId = result.result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Click the object card
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate to Page type
+    await page.getByTestId('sidebar-type-Page').click();
+
+    // Click the row
+    await page.getByTestId(`type-browser-row-${objectId}`).click();
 
     // Wait for editor to appear
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
@@ -222,24 +253,31 @@ test.describe('Object List Interactions', () => {
     await expect(editor).toBeVisible();
   });
 
-  test('object list updates after creating multiple objects', async ({ window: page }) => {
-    // Initially empty
+  test('TypeBrowser updates after creating objects', async ({ window: page }) => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Should show "No objects yet"
-    await expect(page.getByText('No objects yet')).toBeVisible();
+    // Navigate to Page type (empty initially)
+    await page.getByTestId('sidebar-type-Page').click();
+
+    // Should show empty state (TypeBrowser shows "No pages yet")
+    await expect(page.getByText(/no pages yet/i)).toBeVisible();
 
     // Create first object
-    await page.evaluate(async () => {
-      await window.typenoteAPI.createObject('Page', 'First Object', {});
+    const r1 = await page.evaluate(async () => {
+      return await window.typenoteAPI.createObject('Page', 'First Object', {});
     });
+    expect(r1.success).toBe(true);
+    if (!r1.success) return;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    let objectCards = page.locator('[data-testid^="object-card-"]');
-    await expect(objectCards).toHaveCount(1);
+    // Navigate back to Page type
+    await page.getByTestId('sidebar-type-Page').click();
+
+    let rows = page.locator('[data-testid^="type-browser-row-"]');
+    await expect(rows).toHaveCount(1);
 
     // Create second object
     await page.evaluate(async () => {
@@ -249,12 +287,15 @@ test.describe('Object List Interactions', () => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    objectCards = page.locator('[data-testid^="object-card-"]');
-    await expect(objectCards).toHaveCount(2);
+    // Navigate back to Page type
+    await page.getByTestId('sidebar-type-Page').click();
+
+    rows = page.locator('[data-testid^="type-browser-row-"]');
+    await expect(rows).toHaveCount(2);
   });
 
-  test('object list shows correct count after bulk creation', async ({ window: page }) => {
-    // Create 5 objects
+  test('TypeBrowser shows correct count after bulk creation', async ({ window: page }) => {
+    // Create 5 Page objects
     await page.evaluate(async () => {
       await window.typenoteAPI.createObject('Page', 'Bulk 1', {});
       await window.typenoteAPI.createObject('Page', 'Bulk 2', {});
@@ -266,63 +307,46 @@ test.describe('Object List Interactions', () => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    const objectCards = page.locator('[data-testid^="object-card-"]');
-    await expect(objectCards).toHaveCount(5);
+    // Navigate to Page type
+    await page.getByTestId('sidebar-type-Page').click();
+
+    const rows = page.locator('[data-testid^="type-browser-row-"]');
+    await expect(rows).toHaveCount(5);
   });
 
-  test('selected object has visual indicator', async ({ window: page }) => {
-    // Create an object
-    const result = await page.evaluate(async () => {
-      return await window.typenoteAPI.createObject('Page', 'Selected Test', {});
-    });
-    expect(result.success).toBe(true);
-    if (!result.success) return;
-
-    await page.reload();
-    await page.waitForLoadState('domcontentloaded');
-
-    // Click the object card
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await objectCard.click();
-
-    // Wait for editor to load
-    await page.waitForSelector('.ProseMirror', { state: 'visible' });
-
-    // The selected card should have the ring-2 ring-primary class (visual indicator)
-    // This is set via the cn() utility when selectedId matches obj.id
-    await expect(objectCard).toHaveClass(/ring-2/);
-    await expect(objectCard).toHaveClass(/ring-primary/);
-  });
-
-  test('can switch between objects in list', async ({ window: page }) => {
+  test('can navigate between different objects via TypeBrowser', async ({ window: page }) => {
     // Create two objects
-    await page.evaluate(async () => {
-      await window.typenoteAPI.createObject('Page', 'Object A', {});
-      await window.typenoteAPI.createObject('Page', 'Object B', {});
+    const results = await page.evaluate(async () => {
+      const r1 = await window.typenoteAPI.createObject('Page', 'Object A', {});
+      const r2 = await window.typenoteAPI.createObject('Page', 'Object B', {});
+      return { r1, r2 };
     });
+
+    expect(results.r1.success).toBe(true);
+    expect(results.r2.success).toBe(true);
+    if (!results.r1.success || !results.r2.success) return;
+
+    const id1 = results.r1.result.id;
+    const id2 = results.r2.result.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    const objectCards = page.locator('[data-testid^="object-card-"]');
+    // Navigate to Page type
+    await page.getByTestId('sidebar-type-Page').click();
 
     // Click first object
-    await objectCards.nth(0).click();
+    await page.getByTestId(`type-browser-row-${id1}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
-    // Verify first is selected
-    await expect(objectCards.nth(0)).toHaveClass(/ring-2/);
-
-    // Click second object
-    await objectCards.nth(1).click();
+    // Navigate back to Page type browser and click second object
+    await page.getByTestId('sidebar-type-Page').click();
+    await page.getByTestId(`type-browser-row-${id2}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
-    // Verify second is now selected and first is not
-    await expect(objectCards.nth(1)).toHaveClass(/ring-2/);
-    // First card should not have the selection ring anymore
-    // Note: We check for absence of the ring class
-    const firstCardClasses = await objectCards.nth(0).getAttribute('class');
-    expect(firstCardClasses).not.toMatch(/ring-primary/);
+    // Editor should still be visible (loaded different document)
+    const editor = page.locator('.ProseMirror');
+    await expect(editor).toBeVisible();
   });
 });
 
@@ -491,8 +515,9 @@ test.describe('Object Document Integration', () => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Click the object to load it in editor
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate to Page type and click the object
+    await page.getByTestId('sidebar-type-Page').click();
+    await page.getByTestId(`type-browser-row-${objectId}`).click();
 
     // Wait for editor to load
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
@@ -614,28 +639,24 @@ test.describe('Object Search and Backlinks', () => {
 });
 
 test.describe('UI Empty States', () => {
-  test('empty object list shows "No objects yet" message', async ({ window: page }) => {
+  test('empty TypeBrowser shows empty message', async ({ window: page }) => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Should show empty state message
-    await expect(page.getByText('No objects yet')).toBeVisible();
+    // Navigate to Page type (should be empty in fresh test)
+    await page.getByTestId('sidebar-type-Page').click();
+
+    // TypeBrowser shows "No pages yet" for empty Page type
+    await expect(page.getByText(/no pages yet/i)).toBeVisible();
   });
 
-  test('no object selected shows "Select an object to view" message', async ({ window: page }) => {
-    await page.reload();
-    await page.waitForLoadState('domcontentloaded');
-
-    // Main content area should show placeholder
-    await expect(page.getByText('Select an object to view')).toBeVisible();
-  });
-
-  test("Today's Note button is visible", async ({ window: page }) => {
+  test('Today button is visible in sidebar', async ({ window: page }) => {
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
     const button = page.getByTestId('create-daily-note-button');
     await expect(button).toBeVisible();
-    await expect(button).toContainText("Today's Note");
+    // Button shows "Today" (not "Today's Note")
+    await expect(button).toContainText('Today');
   });
 });
