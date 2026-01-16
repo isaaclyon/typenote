@@ -16,7 +16,6 @@ import {
   InteractiveEditor,
   type InteractiveEditorRef,
   type MockNote,
-  type ObjectType,
   Skeleton,
   DailyNoteNav,
   DocumentHeader,
@@ -30,6 +29,7 @@ import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
 import { useSelectedObject } from '../hooks/useSelectedObject.js';
 import { EditorBottomSections } from './EditorBottomSections.js';
+import { getObjectTypeForKey } from '../config/typeMapping.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -44,22 +44,6 @@ type LoadState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
   | { status: 'loaded'; title: string };
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helper: Map typeKey to ObjectType
-// ─────────────────────────────────────────────────────────────────────────────
-
-function typeKeyToObjectType(typeKey: string): ObjectType {
-  const mapping: Record<string, ObjectType> = {
-    Page: 'note',
-    DailyNote: 'note',
-    Project: 'project',
-    Task: 'task',
-    Person: 'person',
-    Resource: 'resource',
-  };
-  return mapping[typeKey] ?? 'note';
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
@@ -107,7 +91,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
         .map((obj) => ({
           id: obj.id,
           title: obj.title,
-          type: typeKeyToObjectType(obj.typeKey),
+          type: getObjectTypeForKey(obj.typeKey),
         }));
     }
     return [];
@@ -120,7 +104,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
       return {
         id: result.result.id,
         title: result.result.title,
-        type: typeKeyToObjectType(result.result.typeKey),
+        type: getObjectTypeForKey(result.result.typeKey),
       };
     }
     return null;
