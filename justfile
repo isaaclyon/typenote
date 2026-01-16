@@ -118,6 +118,30 @@ audit-design-system:
     pnpm exec tsx scripts/audit-design-system.ts
 
 # ─────────────────────────────────────────────────
+# Hook Metrics
+# ─────────────────────────────────────────────────
+
+# Show hook metrics summary (runs, violations, timing)
+metrics:
+    ./.claude/scripts/show-metrics.sh summary
+
+# Show recent violations caught by hooks
+metrics-violations:
+    ./.claude/scripts/show-metrics.sh violations
+
+# Show slowest hook executions
+metrics-slowest:
+    ./.claude/scripts/show-metrics.sh slowest
+
+# Show recent hook activity
+metrics-recent:
+    ./.claude/scripts/show-metrics.sh recent
+
+# Reset hook metrics database
+metrics-reset:
+    ./.claude/scripts/show-metrics.sh reset
+
+# ─────────────────────────────────────────────────
 # Git shortcuts
 # ─────────────────────────────────────────────────
 
