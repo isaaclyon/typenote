@@ -19,7 +19,7 @@ export function UnlinkedMentionsSection({ objectId, onNavigate }: UnlinkedMentio
   // Loading state
   if (isLoading) {
     return (
-      <CollapsibleSection title="Unlinked Mentions" icon={LinkSimpleIcon}>
+      <CollapsibleSection title="Unlinked Mentions" icon={LinkSimpleIcon} defaultExpanded={false}>
         <div className="space-y-2">
           <Skeleton className="h-10 w-full rounded-md" />
           <Skeleton className="h-10 w-full rounded-md" />
@@ -32,7 +32,7 @@ export function UnlinkedMentionsSection({ objectId, onNavigate }: UnlinkedMentio
   // Error state
   if (error) {
     return (
-      <CollapsibleSection title="Unlinked Mentions" icon={LinkSimpleIcon}>
+      <CollapsibleSection title="Unlinked Mentions" icon={LinkSimpleIcon} defaultExpanded={false}>
         <div className="text-sm text-destructive">{error}</div>
       </CollapsibleSection>
     );
@@ -41,7 +41,12 @@ export function UnlinkedMentionsSection({ objectId, onNavigate }: UnlinkedMentio
   // Empty state
   if (mentions.length === 0) {
     return (
-      <CollapsibleSection title="Unlinked Mentions" icon={LinkSimpleIcon} count={0}>
+      <CollapsibleSection
+        title="Unlinked Mentions"
+        icon={LinkSimpleIcon}
+        count={0}
+        defaultExpanded={false}
+      >
         <EmptyState
           title="No unlinked mentions"
           description="Documents that mention this title without linking will appear here."
@@ -57,7 +62,7 @@ export function UnlinkedMentionsSection({ objectId, onNavigate }: UnlinkedMentio
       icon={LinkSimpleIcon}
       count={mentions.length}
       defaultExpanded={false}
-      storageKey="editor.unlinkedMentions.expanded"
+      storageKey="editor.sections.unlinkedMentions"
     >
       <div className="space-y-2">
         {mentions.map((mention) => (

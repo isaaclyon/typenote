@@ -15,6 +15,7 @@ vi.mock('../hooks/useBacklinks.js');
 describe('BacklinksSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -50,6 +51,10 @@ describe('BacklinksSection', () => {
     render(<BacklinksSection objectId="test-id" />);
 
     expect(screen.getByText('Backlinks')).toBeInTheDocument();
+
+    // Error state is collapsed by default - expand it
+    fireEvent.click(screen.getByText('Backlinks'));
+
     expect(screen.getByText('Failed to fetch backlinks')).toBeInTheDocument();
   });
 
@@ -64,6 +69,10 @@ describe('BacklinksSection', () => {
     render(<BacklinksSection objectId="test-id" />);
 
     expect(screen.getByText('Backlinks')).toBeInTheDocument();
+
+    // Empty state is collapsed by default - expand it
+    fireEvent.click(screen.getByText('Backlinks'));
+
     expect(screen.getByText('No backlinks yet')).toBeInTheDocument();
     expect(
       screen.getByText('Other documents that link to this one will appear here.')
@@ -94,6 +103,10 @@ describe('BacklinksSection', () => {
     render(<BacklinksSection objectId="test-id" />);
 
     expect(screen.getByText('Backlinks')).toBeInTheDocument();
+
+    // Expand the collapsed section to see backlinks
+    fireEvent.click(screen.getByText('Backlinks'));
+
     expect(screen.getByText('Daily Note - 2026-01-10')).toBeInTheDocument();
     expect(screen.getByText('Dev Log')).toBeInTheDocument();
   });
@@ -144,6 +157,9 @@ describe('BacklinksSection', () => {
 
     render(<BacklinksSection objectId="test-id" onNavigate={onNavigate} />);
 
+    // Expand the collapsed section first
+    fireEvent.click(screen.getByText('Backlinks'));
+
     const backlinkItem = screen.getByText('Daily Note');
     fireEvent.click(backlinkItem);
 
@@ -168,6 +184,9 @@ describe('BacklinksSection', () => {
     // Should not throw error when onNavigate is undefined
     render(<BacklinksSection objectId="test-id" />);
 
+    // Expand the collapsed section first
+    fireEvent.click(screen.getByText('Backlinks'));
+
     const backlinkItem = screen.getByText('Daily Note');
     fireEvent.click(backlinkItem);
 
@@ -184,7 +203,7 @@ describe('BacklinksSection', () => {
 
     render(<BacklinksSection objectId="test-id" />);
 
-    // Storage key should be "editor.backlinks.collapsed"
+    // Storage key should be "editor.sections.backlinks"
     // This is tested indirectly - CollapsibleSection uses it for localStorage
     // We verify the component renders correctly
     expect(screen.getByText('Backlinks')).toBeInTheDocument();

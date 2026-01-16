@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { EditorBottomSections } from './EditorBottomSections.js';
 import { useBacklinks } from '../hooks/useBacklinks.js';
 import { useUnlinkedMentions } from '../hooks/useUnlinkedMentions.js';
@@ -17,6 +17,7 @@ vi.mock('../hooks/useUnlinkedMentions.js');
 describe('EditorBottomSections', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -99,6 +100,10 @@ describe('EditorBottomSections', () => {
     });
 
     render(<EditorBottomSections objectId="test-id" onNavigate={onNavigate} />);
+
+    // Expand both collapsed sections to see their content
+    fireEvent.click(screen.getByText('Backlinks'));
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
 
     // Both sections should be rendered (we can verify by checking their content)
     expect(screen.getByText('Note 1')).toBeInTheDocument();

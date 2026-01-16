@@ -19,7 +19,7 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
   // Loading state
   if (isLoading) {
     return (
-      <CollapsibleSection title="Backlinks" icon={LinkIcon}>
+      <CollapsibleSection title="Backlinks" icon={LinkIcon} defaultExpanded={false}>
         <div className="space-y-2">
           <Skeleton className="h-10 w-full rounded-md" />
           <Skeleton className="h-10 w-full rounded-md" />
@@ -32,7 +32,7 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
   // Error state
   if (error) {
     return (
-      <CollapsibleSection title="Backlinks" icon={LinkIcon}>
+      <CollapsibleSection title="Backlinks" icon={LinkIcon} defaultExpanded={false}>
         <div className="text-sm text-destructive">{error}</div>
       </CollapsibleSection>
     );
@@ -41,7 +41,7 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
   // Empty state
   if (backlinks.length === 0) {
     return (
-      <CollapsibleSection title="Backlinks" icon={LinkIcon} count={0}>
+      <CollapsibleSection title="Backlinks" icon={LinkIcon} count={0} defaultExpanded={false}>
         <EmptyState
           title="No backlinks yet"
           description="Other documents that link to this one will appear here."
@@ -57,7 +57,7 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
       icon={LinkIcon}
       count={backlinks.length}
       defaultExpanded={false}
-      storageKey="editor.backlinks.expanded"
+      storageKey="editor.sections.backlinks"
     >
       <div className="space-y-2">
         {backlinks.map((backlink) => (

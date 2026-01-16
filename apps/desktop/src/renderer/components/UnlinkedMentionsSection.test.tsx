@@ -15,6 +15,7 @@ vi.mock('../hooks/useUnlinkedMentions.js');
 describe('UnlinkedMentionsSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -49,6 +50,10 @@ describe('UnlinkedMentionsSection', () => {
     render(<UnlinkedMentionsSection objectId="test-id" />);
 
     expect(screen.getByText('Unlinked Mentions')).toBeInTheDocument();
+
+    // Error state is collapsed by default - expand it
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
+
     expect(screen.getByText('Failed to fetch unlinked mentions')).toBeInTheDocument();
   });
 
@@ -63,6 +68,10 @@ describe('UnlinkedMentionsSection', () => {
     render(<UnlinkedMentionsSection objectId="test-id" />);
 
     expect(screen.getByText('Unlinked Mentions')).toBeInTheDocument();
+
+    // Empty state is collapsed by default - expand it
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
+
     expect(screen.getByText('No unlinked mentions')).toBeInTheDocument();
     expect(
       screen.getByText('Documents that mention this title without linking will appear here.')
@@ -91,6 +100,10 @@ describe('UnlinkedMentionsSection', () => {
     render(<UnlinkedMentionsSection objectId="test-id" />);
 
     expect(screen.getByText('Unlinked Mentions')).toBeInTheDocument();
+
+    // Expand the collapsed section to see mentions
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
+
     expect(screen.getByText('Dev Log - 2026-01-10')).toBeInTheDocument();
     expect(screen.getByText('Project Notes')).toBeInTheDocument();
   });
@@ -138,6 +151,9 @@ describe('UnlinkedMentionsSection', () => {
 
     render(<UnlinkedMentionsSection objectId="test-id" onNavigate={onNavigate} />);
 
+    // Expand the collapsed section first
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
+
     const mentionItem = screen.getByText('Dev Log');
     fireEvent.click(mentionItem);
 
@@ -161,6 +177,9 @@ describe('UnlinkedMentionsSection', () => {
     // Should not throw error when onNavigate is undefined
     render(<UnlinkedMentionsSection objectId="test-id" />);
 
+    // Expand the collapsed section first
+    fireEvent.click(screen.getByText('Unlinked Mentions'));
+
     const mentionItem = screen.getByText('Dev Log');
     fireEvent.click(mentionItem);
 
@@ -177,7 +196,7 @@ describe('UnlinkedMentionsSection', () => {
 
     render(<UnlinkedMentionsSection objectId="test-id" />);
 
-    // Storage key should be "editor.unlinkedMentions.collapsed"
+    // Storage key should be "editor.sections.unlinkedMentions"
     // This is tested indirectly - CollapsibleSection uses it for localStorage
     expect(screen.getByText('Unlinked Mentions')).toBeInTheDocument();
   });
