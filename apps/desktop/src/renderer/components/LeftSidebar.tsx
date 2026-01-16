@@ -78,7 +78,7 @@ export function LeftSidebar({
   };
 
   return (
-    <Sidebar collapsed={collapsed}>
+    <Sidebar collapsed={collapsed} hasTitleBarPadding className="app-region-drag">
       {/* Top section */}
       <SidebarSection className="p-2 space-y-2">
         <SidebarSearchTrigger onClick={onOpenCommandPalette} />

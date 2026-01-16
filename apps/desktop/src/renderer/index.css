@@ -28,3 +28,12 @@
 .tiptap code { background: var(--color-muted); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; }
 .tiptap pre { background: var(--color-muted); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
 .tiptap pre code { background: none; padding: 0; }
+
+/* Electron window drag regions */
+.app-region-drag {
+  -webkit-app-region: drag;
+}
+
+.app-region-no-drag {
+  -webkit-app-region: no-drag;
+}

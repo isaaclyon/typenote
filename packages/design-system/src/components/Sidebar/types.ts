@@ -4,6 +4,8 @@ import type { LucideIcon } from 'lucide-react';
 export interface SidebarProps {
   collapsed?: boolean;
   onCollapse?: () => void;
+  /** Add top padding for custom title bar (traffic lights on macOS) */
+  hasTitleBarPadding?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
