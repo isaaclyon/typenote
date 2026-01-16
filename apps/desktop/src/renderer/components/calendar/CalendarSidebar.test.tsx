@@ -9,7 +9,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { CalendarSidebar } from './CalendarSidebar.js';
 import type { CalendarItem } from '@typenote/storage';
-import type { LoadState } from './CalendarSidebar.js';
+import type { AsyncData } from '../../types/index.js';
 
 afterEach(() => {
   cleanup();
@@ -36,7 +36,7 @@ function createMockCalendarItem(overrides: Partial<CalendarItem> = {}): Calendar
 
 describe('CalendarSidebar', () => {
   it('shows formatted date header', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: [] };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: [] };
     render(
       <CalendarSidebar
         selectedDate="2024-01-15"
@@ -54,7 +54,7 @@ describe('CalendarSidebar', () => {
   });
 
   it('shows day of week in header', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: [] };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: [] };
     render(
       <CalendarSidebar
         selectedDate="2024-01-15"
@@ -70,7 +70,7 @@ describe('CalendarSidebar', () => {
   });
 
   it('shows loading state', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loading' };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'loading' };
     render(
       <CalendarSidebar
         selectedDate="2024-01-15"
@@ -84,9 +84,9 @@ describe('CalendarSidebar', () => {
   });
 
   it('shows error state with message', () => {
-    const loadState: LoadState<CalendarItem[]> = {
+    const loadState: AsyncData<CalendarItem[]> = {
       status: 'error',
-      message: 'Failed to load events',
+      error: 'Failed to load events',
     };
     render(
       <CalendarSidebar
@@ -105,7 +105,7 @@ describe('CalendarSidebar', () => {
       createMockCalendarItem({ id: '01HZXTEST0000000000000001', title: 'Team Meeting' }),
       createMockCalendarItem({ id: '01HZXTEST0000000000000002', title: 'Lunch' }),
     ];
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: events };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: events };
 
     render(
       <CalendarSidebar
@@ -121,7 +121,7 @@ describe('CalendarSidebar', () => {
   });
 
   it('shows empty state when no events', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: [] };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: [] };
     render(
       <CalendarSidebar
         selectedDate="2024-01-15"
@@ -139,7 +139,7 @@ describe('CalendarSidebar', () => {
     const events: CalendarItem[] = [
       createMockCalendarItem({ id: '01HZXTEST0000000000000042', title: 'Click Me' }),
     ];
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: events };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: events };
 
     render(
       <CalendarSidebar
@@ -155,7 +155,7 @@ describe('CalendarSidebar', () => {
   });
 
   it('has correct data-testid attribute', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: [] };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: [] };
     render(
       <CalendarSidebar
         selectedDate="2024-01-15"
@@ -169,7 +169,7 @@ describe('CalendarSidebar', () => {
   });
 
   it('shows placeholder when no date selected', () => {
-    const loadState: LoadState<CalendarItem[]> = { status: 'loaded', data: [] };
+    const loadState: AsyncData<CalendarItem[]> = { status: 'success', data: [] };
     render(
       <CalendarSidebar
         selectedDate={null}
