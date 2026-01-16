@@ -1,6 +1,50 @@
 # Recent Work
 
-## Latest Session (2026-01-15 night - Auto-Hide Scrollbars)
+## Latest Session (2026-01-16 night - UI Design System Alignment)
+
+Systematic audit and alignment of design system components with the TypeNote design spec.
+
+**Approach:**
+
+- Created worktree `ui/design-system-alignment` for isolated work
+- Audited components against `/docs/system/QUICK_REFERENCE.md` specs
+- Prioritized high-visibility components (sidebar, navigation, calendar, modals)
+
+**Key Changes:**
+
+1. **Typography**: Replace arbitrary `text-[11px]` with `text-xs`, `text-[13px]` with `text-sm`
+2. **Hover states**: Standardize to `gray-50` for calm aesthetic (was `gray-100`)
+3. **Selected states**: Use `bg-accent-50` without changing text color
+4. **Transition timing**: Standardize to `duration-150` per spec (150ms micro-interactions)
+5. **Focus rings**: Keep consistent `ring-offset-2` pattern for double-ring effect
+
+**Components Updated:**
+
+- SidebarTypeItem, SidebarPinnedItem, SidebarCollapseButton
+- SidebarCalendarButton, SidebarActionButton, SidebarSearchTrigger
+- DailyNoteNav (all navigation buttons)
+- MiniCalendar (month navigation, day cells)
+- SlashCommandMenu, TagSuggestionMenu (selected state colors)
+- SettingsModal, IconButton, MultiselectDropdown
+
+**Remaining Work (lower priority):**
+
+- TypeBrowser cells use `gray-100` hover (intentional for data density)
+- DocumentHeader/EditableTitle hover state
+
+**Commits:**
+
+- `971da82 style(design-system): align components with design spec`
+- `1f1c699 style(design-system): align sidebar and calendar with design spec`
+- `2818940 style(design-system): align modals and dropdowns with design spec`
+
+**Worktree:** `.worktrees/ui-alignment` (branch: `ui/design-system-alignment`)
+
+**Status:** Ready for review. Run `pnpm test` — all 361 tests passing.
+
+---
+
+## Previous Session (2026-01-15 night - Auto-Hide Scrollbars)
 
 Implemented macOS-style auto-hide scrollbars using Radix ScrollArea.
 
