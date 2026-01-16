@@ -132,7 +132,7 @@ function App(): ReactElement {
           />
         ) : selectedObjectId && isDailyNote ? (
           <DailyNoteLayout
-            dateKey={(selectedObject?.properties?.['dateKey'] as string) ?? ''}
+            dateKey={(selectedObject?.properties?.['date_key'] as string) ?? ''}
             onNavigateToDate={(dateKey) => void handleNavigateToDailyNote(dateKey)}
             onNavigateToObject={setSelectedObjectId}
           >
