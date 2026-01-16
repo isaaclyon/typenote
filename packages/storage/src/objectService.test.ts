@@ -315,6 +315,165 @@ describe('ObjectService', () => {
       expect(result[0]?.properties).toEqual({});
       expect(result[1]?.properties).toEqual({});
     });
+
+    describe('with createdOnDate filter', () => {
+      it('filters objects by creation date', () => {
+        seedBuiltInTypes(db);
+
+        const noteType = createObjectType(db, { key: 'Note', name: 'Note' });
+
+        // Create objects on different dates
+        const jan15 = new Date('2026-01-15T10:00:00Z');
+        const jan16 = new Date('2026-01-16T14:00:00Z');
+
+        const obj1Id = generateId();
+        const obj2Id = generateId();
+
+        db.insert(objects)
+          .values({
+            id: obj1Id,
+            typeId: noteType.id,
+            title: 'Note from Jan 15',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15,
+            updatedAt: jan15,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: obj2Id,
+            typeId: noteType.id,
+            title: 'Note from Jan 16',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan16,
+            updatedAt: jan16,
+          })
+          .run();
+
+        const result = listObjects(db, { createdOnDate: '2026-01-15' });
+
+        expect(result).toHaveLength(1);
+        expect(result[0]?.id).toBe(obj1Id);
+        expect(result[0]?.title).toBe('Note from Jan 15');
+      });
+
+      it('returns empty array when no objects match date', () => {
+        seedBuiltInTypes(db);
+
+        const noteType = createObjectType(db, { key: 'Note', name: 'Note' });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Some Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, { createdOnDate: '2020-01-01' });
+
+        expect(result).toHaveLength(0);
+      });
+
+      it('combines createdOnDate with typeKey filter', () => {
+        seedBuiltInTypes(db);
+
+        const articleType = createObjectType(db, { key: 'Article', name: 'Article' });
+        const reportType = createObjectType(db, { key: 'Report', name: 'Report' });
+
+        const jan15 = new Date('2026-01-15T10:00:00Z');
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: articleType.id,
+            title: 'Article on Jan 15',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15,
+            updatedAt: jan15,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: reportType.id,
+            title: 'Report on Jan 15',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15,
+            updatedAt: jan15,
+          })
+          .run();
+
+        // Filter by date AND type
+        const result = listObjects(db, { createdOnDate: '2026-01-15', typeKey: 'Article' });
+
+        expect(result).toHaveLength(1);
+        expect(result[0]?.title).toBe('Article on Jan 15');
+        expect(result[0]?.typeKey).toBe('Article');
+      });
+
+      it('handles objects created at different times on the same date', () => {
+        seedBuiltInTypes(db);
+
+        const noteType = createObjectType(db, { key: 'Note', name: 'Note' });
+
+        // Create objects at different times on Jan 15
+        const jan15Morning = new Date('2026-01-15T06:00:00Z');
+        const jan15Afternoon = new Date('2026-01-15T14:00:00Z');
+        const jan15Evening = new Date('2026-01-15T22:00:00Z');
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Morning Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15Morning,
+            updatedAt: jan15Morning,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Afternoon Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15Afternoon,
+            updatedAt: jan15Afternoon,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Evening Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: jan15Evening,
+            updatedAt: jan15Evening,
+          })
+          .run();
+
+        const result = listObjects(db, { createdOnDate: '2026-01-15' });
+
+        expect(result).toHaveLength(3);
+      });
+    });
   });
 
   describe('createObject', () => {

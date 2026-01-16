@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
 import type { ObjectSummary, Tag } from '@typenote/api';
 import { objects, objectTypes } from './schema.js';
@@ -25,6 +25,8 @@ export interface ListObjectsOptions {
   typeKey?: string;
   /** Include properties in the response (for TypeBrowser table) */
   includeProperties?: boolean;
+  /** Filter objects created on this date (YYYY-MM-DD format, uses local time) */
+  createdOnDate?: string;
 }
 
 /**
@@ -105,7 +107,7 @@ export function listObjects(
   db: TypenoteDb,
   options?: ListObjectsOptions
 ): ObjectSummary[] | ObjectSummaryWithProperties[] {
-  const { typeKey, includeProperties } = options ?? {};
+  const { typeKey, includeProperties, createdOnDate } = options ?? {};
 
   // Build select fields - always include base fields
   const selectFields: {
@@ -132,6 +134,21 @@ export function listObjects(
   const conditions = [isNull(objects.deletedAt)];
   if (typeKey !== undefined) {
     conditions.push(eq(objectTypes.key, typeKey));
+  }
+
+  // Add createdOnDate filter if provided
+  if (createdOnDate !== undefined) {
+    const parts = createdOnDate.split('-').map(Number);
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+    if (year !== undefined && month !== undefined && day !== undefined) {
+      // Create date range for the entire day in local time
+      const startOfDay = new Date(year, month - 1, day, 0, 0, 0, 0);
+      const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
+      conditions.push(gte(objects.createdAt, startOfDay));
+      conditions.push(lte(objects.createdAt, endOfDay));
+    }
   }
 
   const rows = db
