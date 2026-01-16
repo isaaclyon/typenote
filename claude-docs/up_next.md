@@ -66,8 +66,13 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
   - Desktop's DocumentEditor wraps InteractiveEditor
   - ~30 extension files deleted from desktop
 
-- [ ] **EditorPreview component** — Read-only editor for object previews (~1-2 days)
-  - Component exists, needs integration into object list views
+- [x] **EditorPreview component** — ✅ COMPLETE (2026-01-15)
+  - Uses `InteractiveEditor editable={false}` — no separate component needed
+  - Stories: `ReadOnly` (full content), `PreviewCompact` (inline cards)
+  - Future integration points:
+    - TypeBrowser row expansion (click row to see preview)
+    - Hover tooltip on object titles
+    - Split-pane detail view
 
 ---
 
@@ -105,6 +110,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| Auto-Hide Scrollbars             | 2026-01-15 | `960bca2`            |
+| Backlinks Collapse Fix           | 2026-01-15 | `c6bdb3d`, `5a50e50` |
 | Resizable Sidebars               | 2026-01-15 | `31ddc7c`            |
 | Toast Migration                  | 2026-01-15 | `0738017`            |
 | Design System Audit Script       | 2026-01-15 | `e8b0ddd`, `f642e67` |
