@@ -56,7 +56,8 @@ export function BacklinksSection({ objectId, onNavigate }: BacklinksSectionProps
       title="Backlinks"
       icon={LinkIcon}
       count={backlinks.length}
-      storageKey="editor.backlinks.collapsed"
+      defaultExpanded={false}
+      storageKey="editor.backlinks.expanded"
     >
       <div className="space-y-2">
         {backlinks.map((backlink) => (

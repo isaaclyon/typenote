@@ -56,7 +56,8 @@ export function UnlinkedMentionsSection({ objectId, onNavigate }: UnlinkedMentio
       title="Unlinked Mentions"
       icon={LinkSimpleIcon}
       count={mentions.length}
-      storageKey="editor.unlinkedMentions.collapsed"
+      defaultExpanded={false}
+      storageKey="editor.unlinkedMentions.expanded"
     >
       <div className="space-y-2">
         {mentions.map((mention) => (

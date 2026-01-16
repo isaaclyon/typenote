@@ -144,6 +144,11 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
         ref={containerRef}
         className={cn('interactive-editor', hideTitle && 'hide-title', className)}
         style={{ minHeight }}
+        onClick={() => {
+          if (editor && editable) {
+            editor.chain().focus('end').run();
+          }
+        }}
       >
         <style>{`
           .interactive-editor .tiptap,
