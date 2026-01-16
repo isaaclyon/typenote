@@ -1,0 +1,296 @@
+{
+  "generated": "2026-01-16T03:24:57.971Z",
+  "summary": {
+    "totalComponents": 33,
+    "usedDirectly": 29,
+    "usedTransitively": 3,
+    "unused": 1
+  },
+  "byComponent": {
+    "AppShell": {
+      "status": "direct",
+      "usedBy": ["App.tsx"]
+    },
+    "BacklinkItem": {
+      "status": "direct",
+      "usedBy": ["BacklinksSection.tsx", "UnlinkedMentionsSection.tsx"]
+    },
+    "Badge": {
+      "status": "direct",
+      "usedBy": ["EventCard.tsx", "ObjectList.tsx"]
+    },
+    "Button": {
+      "status": "direct",
+      "usedBy": ["CalendarHeader.tsx", "LeftSidebar.tsx", "TagPickerModal.tsx"]
+    },
+    "Card": {
+      "status": "direct",
+      "usedBy": ["EventCard.tsx", "ObjectList.tsx"]
+    },
+    "Checkbox": {
+      "status": "transitive",
+      "usedBy": [
+        "App.tsx",
+        "BacklinksSection.tsx",
+        "PropertiesPanel.tsx",
+        "TypeBrowserView.tsx",
+        "UnlinkedMentionsSection.tsx"
+      ],
+      "via": ["AppShell", "CollapsibleSection", "PropertyItem", "RightSidebar", "TypeBrowser"]
+    },
+    "CollapsibleSection": {
+      "status": "direct",
+      "usedBy": ["BacklinksSection.tsx", "UnlinkedMentionsSection.tsx"]
+    },
+    "CommandPalette": {
+      "status": "direct",
+      "usedBy": ["index.tsx"]
+    },
+    "DailyNoteNav": {
+      "status": "direct",
+      "usedBy": ["DocumentEditor.tsx"]
+    },
+    "EditorPreview": {
+      "status": "unused",
+      "usedBy": []
+    },
+    "EmptyState": {
+      "status": "direct",
+      "usedBy": ["BacklinksSection.tsx", "UnlinkedMentionsSection.tsx"]
+    },
+    "Input": {
+      "status": "direct",
+      "usedBy": ["TagPickerModal.tsx"]
+    },
+    "InteractiveEditor": {
+      "status": "direct",
+      "usedBy": ["DocumentEditor.tsx"]
+    },
+    "KeyboardKey": {
+      "status": "transitive",
+      "usedBy": ["App.tsx", "LeftSidebar.tsx"],
+      "via": ["AppShell", "Sidebar"]
+    },
+    "MiniCalendar": {
+      "status": "direct",
+      "usedBy": ["DailyNoteLayout.tsx", "LeftSidebar.tsx"]
+    },
+    "Modal": {
+      "status": "direct",
+      "usedBy": ["TagPickerModal.tsx"]
+    },
+    "MultiselectDropdown": {
+      "status": "transitive",
+      "usedBy": [
+        "App.tsx",
+        "BacklinksSection.tsx",
+        "PropertiesPanel.tsx",
+        "UnlinkedMentionsSection.tsx"
+      ],
+      "via": ["AppShell", "CollapsibleSection", "PropertyItem", "RightSidebar"]
+    },
+    "NotesCreatedList": {
+      "status": "direct",
+      "usedBy": ["DailyNoteLayout.tsx"]
+    },
+    "PropertyItem": {
+      "status": "direct",
+      "usedBy": ["PropertiesPanel.tsx"]
+    },
+    "PropertyTags": {
+      "status": "direct",
+      "usedBy": ["PropertiesPanel.tsx"]
+    },
+    "RightSidebar": {
+      "status": "direct",
+      "usedBy": ["PropertiesPanel.tsx"]
+    },
+    "SaveStatus": {
+      "status": "direct",
+      "usedBy": ["DocumentEditor.tsx"]
+    },
+    "ScrollArea": {
+      "status": "direct",
+      "usedBy": ["EventList.tsx", "ObjectList.tsx", "SuggestionPopup.tsx", "TagPickerModal.tsx"]
+    },
+    "Select": {
+      "status": "direct",
+      "usedBy": ["SettingsModalWrapper.tsx"]
+    },
+    "SettingsModal": {
+      "status": "direct",
+      "usedBy": ["SettingsModalWrapper.tsx"]
+    },
+    "Sidebar": {
+      "status": "direct",
+      "usedBy": ["LeftSidebar.tsx"]
+    },
+    "Skeleton": {
+      "status": "direct",
+      "usedBy": [
+        "BacklinksSection.tsx",
+        "CalendarSidebar.tsx",
+        "DocumentEditor.tsx",
+        "ObjectList.tsx",
+        "UnlinkedMentionsSection.tsx"
+      ]
+    },
+    "Switch": {
+      "status": "direct",
+      "usedBy": ["SettingsModalWrapper.tsx"]
+    },
+    "Tag": {
+      "status": "direct",
+      "usedBy": ["PropertiesPanel.tsx", "TagPickerModal.tsx"]
+    },
+    "TagAddButton": {
+      "status": "direct",
+      "usedBy": ["PropertiesPanel.tsx"]
+    },
+    "Text": {
+      "status": "direct",
+      "usedBy": [
+        "CalendarHeader.tsx",
+        "CalendarSidebar.tsx",
+        "PropertiesPanel.tsx",
+        "TypeBrowserView.tsx"
+      ]
+    },
+    "Toast": {
+      "status": "direct",
+      "usedBy": ["App.tsx"]
+    },
+    "TypeBrowser": {
+      "status": "direct",
+      "usedBy": ["TypeBrowserView.tsx"]
+    }
+  },
+  "byFile": {
+    "App.tsx": {
+      "direct": ["AppShell", "Toast"],
+      "transitive": [
+        "BacklinkItem",
+        "Button",
+        "Checkbox",
+        "CollapsibleSection",
+        "DailyNoteNav",
+        "EmptyState",
+        "Input",
+        "InteractiveEditor",
+        "KeyboardKey",
+        "MiniCalendar",
+        "MultiselectDropdown",
+        "NotesCreatedList",
+        "PropertyItem",
+        "PropertyTags",
+        "RightSidebar",
+        "ScrollArea",
+        "Select",
+        "Sidebar",
+        "Skeleton",
+        "Tag",
+        "TagAddButton",
+        "Text"
+      ]
+    },
+    "UnlinkedMentionsSection.tsx": {
+      "direct": ["BacklinkItem", "CollapsibleSection", "EmptyState", "Skeleton"],
+      "transitive": [
+        "BacklinkItem",
+        "Button",
+        "Checkbox",
+        "Input",
+        "MultiselectDropdown",
+        "PropertyItem",
+        "Select",
+        "Tag",
+        "TagAddButton",
+        "Text"
+      ]
+    },
+    "TypeBrowserView.tsx": {
+      "direct": ["Text", "TypeBrowser"],
+      "transitive": ["Button", "Checkbox", "EmptyState", "Skeleton", "Text"]
+    },
+    "TagPickerModal.tsx": {
+      "direct": ["Button", "Input", "Modal", "ScrollArea", "Tag"],
+      "transitive": ["Button", "Text"]
+    },
+    "SuggestionPopup.tsx": {
+      "direct": ["ScrollArea"],
+      "transitive": []
+    },
+    "SettingsModalWrapper.tsx": {
+      "direct": ["Select", "SettingsModal", "Switch"],
+      "transitive": ["Button", "Modal", "Select", "Switch"]
+    },
+    "PropertiesPanel.tsx": {
+      "direct": ["PropertyItem", "PropertyTags", "RightSidebar", "Tag", "TagAddButton", "Text"],
+      "transitive": [
+        "BacklinkItem",
+        "Button",
+        "Checkbox",
+        "CollapsibleSection",
+        "Input",
+        "MultiselectDropdown",
+        "PropertyItem",
+        "PropertyTags",
+        "Select",
+        "Tag",
+        "TagAddButton",
+        "Text"
+      ]
+    },
+    "ObjectList.tsx": {
+      "direct": ["Badge", "Card", "ScrollArea", "Skeleton"],
+      "transitive": ["Badge", "Button", "Text"]
+    },
+    "LeftSidebar.tsx": {
+      "direct": ["Button", "MiniCalendar", "Sidebar"],
+      "transitive": ["Button", "EmptyState", "KeyboardKey", "ScrollArea", "Skeleton", "Text"]
+    },
+    "DocumentEditor.tsx": {
+      "direct": ["DailyNoteNav", "InteractiveEditor", "SaveStatus", "Skeleton"],
+      "transitive": []
+    },
+    "DailyNoteLayout.tsx": {
+      "direct": ["MiniCalendar", "NotesCreatedList"],
+      "transitive": ["ScrollArea", "Skeleton"]
+    },
+    "BacklinksSection.tsx": {
+      "direct": ["BacklinkItem", "CollapsibleSection", "EmptyState", "Skeleton"],
+      "transitive": [
+        "BacklinkItem",
+        "Button",
+        "Checkbox",
+        "Input",
+        "MultiselectDropdown",
+        "PropertyItem",
+        "Select",
+        "Tag",
+        "TagAddButton",
+        "Text"
+      ]
+    },
+    "EventList.tsx": {
+      "direct": ["ScrollArea"],
+      "transitive": []
+    },
+    "EventCard.tsx": {
+      "direct": ["Badge", "Card"],
+      "transitive": ["Badge", "Button", "Text"]
+    },
+    "CalendarSidebar.tsx": {
+      "direct": ["Skeleton", "Text"],
+      "transitive": []
+    },
+    "CalendarHeader.tsx": {
+      "direct": ["Button", "Text"],
+      "transitive": []
+    },
+    "index.tsx": {
+      "direct": ["CommandPalette"],
+      "transitive": []
+    }
+  }
+}
