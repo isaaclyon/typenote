@@ -19,6 +19,7 @@ import {
   type ObjectType,
   Skeleton,
   DailyNoteNav,
+  DailyNoteHeader,
   SaveStatus,
   type SaveState,
 } from '@typenote/design-system';
@@ -241,9 +242,12 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
           <SaveStatus state={saveState} {...(saveError !== null && { errorText: saveError })} />
         </div>
 
-        {/* Daily Note Navigation Header */}
+        {/* Daily Note Header (immutable formatted date) */}
+        {isDailyNote && dateKey && <DailyNoteHeader dateKey={dateKey} className="mb-4" />}
+
+        {/* Daily Note Navigation */}
         {isDailyNote && dateKey && onNavigate && (
-          <div className="mb-4 pb-4 border-b">
+          <div className="mb-6 pb-4 border-b">
             <DailyNoteNav
               isToday={dateKey === getTodayDateKey()}
               onPrevious={async () => {
@@ -273,6 +277,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
           {...(initialContent !== undefined && { initialContent })}
           placeholder="This document is empty..."
           className="prose prose-sm max-w-none"
+          hideTitle={isDailyNote}
           refSuggestionCallbacks={{
             onSearch: handleRefSearch,
             onCreate: handleRefCreate,

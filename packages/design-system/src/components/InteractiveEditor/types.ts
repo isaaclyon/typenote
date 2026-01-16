@@ -77,6 +77,8 @@ export interface InteractiveEditorProps {
   className?: string;
   /** Minimum height (e.g., "200px", "100%") */
   minHeight?: string;
+  /** Hide the first heading block (used for Daily Notes where title is shown separately) */
+  hideTitle?: boolean;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // IPC Integration Callbacks (optional - falls back to mock data)

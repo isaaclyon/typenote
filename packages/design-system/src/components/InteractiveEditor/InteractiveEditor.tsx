@@ -49,6 +49,7 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
       autofocus = false,
       className,
       minHeight = '200px',
+      hideTitle = false,
       // IPC integration callbacks (optional - falls back to mock data)
       refSuggestionCallbacks,
       tagSuggestionCallbacks,
@@ -139,10 +140,20 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     return (
-      <div ref={containerRef} className={cn('interactive-editor', className)} style={{ minHeight }}>
+      <div
+        ref={containerRef}
+        className={cn('interactive-editor', hideTitle && 'hide-title', className)}
+        style={{ minHeight }}
+      >
         <style>{`
-          .interactive-editor .ProseMirror {
+          .interactive-editor .tiptap,
+          .interactive-editor .tiptap:focus-visible,
+          .interactive-editor .ProseMirror,
+          .interactive-editor .ProseMirror:focus-visible {
             outline: none;
+            box-shadow: none;
+          }
+          .interactive-editor .ProseMirror {
             min-height: inherit;
           }
           .interactive-editor .ProseMirror p.is-editor-empty:first-child::before {
@@ -164,6 +175,10 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
           .interactive-editor .ProseMirror code { background: #f3f4f6; padding: 0.125em 0.25em; border-radius: 0.25em; font-size: 0.875em; }
           .interactive-editor .ProseMirror pre { background: #1f2937; color: #f9fafb; padding: 0.75em 1em; border-radius: 0.375em; overflow-x: auto; }
           .interactive-editor .ProseMirror pre code { background: none; padding: 0; color: inherit; }
+          /* Hide first heading when hideTitle is enabled (for Daily Notes) */
+          .interactive-editor.hide-title .ProseMirror > h1:first-child,
+          .interactive-editor.hide-title .ProseMirror > h2:first-child,
+          .interactive-editor.hide-title .ProseMirror > h3:first-child { display: none; }
         `}</style>
         <EditorContent editor={editor} className="max-w-none focus:outline-none" />
         <SlashCommandPopup

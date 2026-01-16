@@ -1,6 +1,7 @@
 // Primitive Components
 export * from './Button/index.js';
 export * from './DailyNoteNav/index.js';
+export * from './DailyNoteHeader/index.js';
 export * from './Input/index.js';
 export * from './Badge/index.js';
 export * from './BacklinkItem/index.js';
