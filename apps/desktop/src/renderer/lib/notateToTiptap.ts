@@ -81,12 +81,22 @@ export function convertInline(nodes: InlineNode[]): JSONContent[] {
 
       case 'ref': {
         // Custom inline node for internal references
+        // Transform NotateDoc attrs to RefNode attrs format:
+        // - NotateDoc: { target: { kind, objectId }, alias, mode }
+        // - RefNode: { id, label, type }
+        const objectId =
+          node.target.kind === 'object'
+            ? node.target.objectId
+            : node.target.kind === 'block'
+              ? node.target.blockId
+              : null;
+        const label = node.alias ?? (objectId ? objectId.slice(0, 8) : 'Unknown');
         result.push({
           type: 'ref',
           attrs: {
-            mode: node.mode,
-            target: node.target,
-            alias: node.alias,
+            id: objectId,
+            label,
+            type: 'note', // Default type - we could enhance this later with actual object type
           },
         });
         break;

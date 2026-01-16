@@ -34,7 +34,7 @@ export const RefNodeView: React.FC<NodeViewProps> = ({ node, extension }) => {
   );
 
   return (
-    <NodeViewWrapper as="span" className="inline">
+    <NodeViewWrapper as="span" className="inline" data-testid="ref-node">
       <span
         role="button"
         tabIndex={0}
