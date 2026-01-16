@@ -4,11 +4,11 @@ import { cn } from '../../utils/cn.js';
 import type { SidebarTypeItemProps } from './types.js';
 
 const typeItemVariants = cva(
-  'grid grid-cols-[14px_1fr_auto_auto] items-center gap-3 h-7 px-3 rounded transition-colors cursor-pointer group',
+  'grid grid-cols-[14px_1fr_auto_auto] items-center gap-3 h-7 px-3 rounded transition-colors duration-150 cursor-pointer group',
   {
     variants: {
       selected: {
-        true: 'bg-accent-50 text-accent-700',
+        true: 'bg-accent-50',
         false: 'hover:bg-gray-50',
       },
     },
@@ -36,7 +36,7 @@ const SidebarTypeItem = React.forwardRef<HTMLButtonElement, SidebarTypeItemProps
         <span className="text-sm font-medium truncate text-left">{label}</span>
         <span
           className={cn(
-            'text-[11px] font-mono text-gray-400 transition-opacity w-6 text-right',
+            'text-xs font-mono text-gray-400 transition-opacity w-6 text-right',
             'opacity-0 group-hover:opacity-100'
           )}
         >

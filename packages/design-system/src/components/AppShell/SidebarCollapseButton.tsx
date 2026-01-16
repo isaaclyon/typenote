@@ -34,12 +34,12 @@ const SidebarCollapseButton = React.forwardRef<HTMLButtonElement, SidebarCollaps
           // Base styles
           'flex items-center justify-center',
           'w-7 h-7 rounded',
-          // Subtle appearance
-          'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+          // Subtle appearance - use gray-50 for hover per design spec
+          'text-gray-400 hover:text-gray-600 hover:bg-gray-50',
           // Hover-reveal: hidden by default, visible on sidebar hover
           // Always visible when collapsed (user needs to expand)
           collapsed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
-          'transition-opacity duration-150',
+          'transition-all duration-150',
           // Focus styles (consistent with codebase pattern)
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           // Positioning: inside sidebar at top corner, centered when collapsed

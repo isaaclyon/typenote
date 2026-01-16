@@ -75,8 +75,8 @@ export const TagSuggestionMenu = React.forwardRef<TagSuggestionMenuRef, TagSugge
               key={item.id}
               type="button"
               className={cn(
-                'w-full flex items-center gap-2 px-3 py-2 text-left transition-colors duration-100',
-                isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
+                'w-full flex items-center gap-2 px-3 py-2 text-left transition-colors duration-150',
+                isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
               )}
               onClick={() => onSelect(item)}
               onMouseEnter={() => setLocalIndex(index)}

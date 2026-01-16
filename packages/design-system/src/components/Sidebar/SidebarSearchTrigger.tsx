@@ -11,7 +11,7 @@ const SidebarSearchTrigger = React.forwardRef<HTMLButtonElement, SidebarSearchTr
         ref={ref}
         onClick={onClick}
         className={cn(
-          'flex items-center gap-2 h-9 px-3 rounded-md transition-colors',
+          'flex items-center gap-2 h-9 px-3 rounded-md transition-colors duration-150',
           'text-sm text-gray-500 bg-gray-50',
           'hover:bg-gray-100',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
