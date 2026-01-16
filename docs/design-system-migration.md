@@ -4,13 +4,11 @@ Track which design system components have been migrated from Ladle to the deskto
 
 ## Summary
 
-| Status                   | Count  | Percentage |
-| ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 32     | 97%        |
-| 🟡 Ready for Integration | 0      | 0%         |
-| 🟠 Major Refactor        | 0      | 0%         |
-| ⚪ Optional              | 1      | 3%         |
-| **Total**                | **33** | 100%       |
+| Status               | Count  | Percentage |
+| -------------------- | ------ | ---------- |
+| ✅ Migrated          | 32     | 97%        |
+| ⚪ Ladle-Only (docs) | 1      | 3%         |
+| **Total**            | **33** | 100%       |
 
 ---
 
@@ -76,21 +74,18 @@ All organism-level components have been migrated.
   - Includes: RefNode, TagNode, SlashCommand, and all TipTap extensions
   - Status: Fully migrated via commit `260c23c` (2026-01-15)
   - Desktop's DocumentEditor wraps InteractiveEditor with IPC callbacks
-
-- [x] **EditorPreview** — Read-only editor preview (uses `InteractiveEditor editable={false}`)
-  - No separate component needed — InteractiveEditor supports `editable` prop natively
-  - Stories: `ReadOnly`, `PreviewCompact` demonstrate usage patterns
-  - Integration: Use in TypeBrowser row expansion, hover previews, or detail panes
+  - **Read-only previews:** Use `editable={false}` prop (see `ReadOnly` story)
 
 ---
 
-## Tier 4: Optional ⚪
+## Tier 4: Ladle-Only (Design Documentation) ⚪
 
-Specialized components with limited use cases.
+Components intentionally kept in Ladle for design documentation, not needed in desktop app.
 
-- [ ] **EditorPreview** — Separate read-only preview component (exists but unused)
-  - Has custom renderers: MathBlock, CodeBlock, RefNode, TagNode, etc.
-  - Alternative: Use `InteractiveEditor editable={false}` (simpler, already works)
+- **EditorPreview** — Design system style guide component
+  - Pure React renderers (RefNode, TagNode, MathBlock, CodeBlock, etc.)
+  - Documents block type styling **without TipTap** for design reference
+  - **Not needed in app** — Use `InteractiveEditor editable={false}` for actual previews
 
 ### Not Applicable
 
