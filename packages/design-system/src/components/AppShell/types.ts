@@ -12,21 +12,25 @@ export interface SidebarSlotProps {
  */
 export interface AppShellProps {
   /** Render function for left sidebar, receives collapsed state */
-  leftSidebar?: (props: SidebarSlotProps) => React.ReactNode;
+  leftSidebar?: ((props: SidebarSlotProps) => React.ReactNode) | undefined;
   /** Render function for right sidebar, receives collapsed state */
-  rightSidebar?: (props: SidebarSlotProps) => React.ReactNode;
+  rightSidebar?: ((props: SidebarSlotProps) => React.ReactNode) | undefined;
   /** Main content area */
   children: React.ReactNode;
   /** localStorage key for left sidebar collapse state */
-  leftSidebarStorageKey?: string;
+  leftSidebarStorageKey?: string | undefined;
   /** localStorage key for right sidebar collapse state */
-  rightSidebarStorageKey?: string;
+  rightSidebarStorageKey?: string | undefined;
+  /** localStorage key for left sidebar width */
+  leftSidebarWidthStorageKey?: string | undefined;
+  /** localStorage key for right sidebar width */
+  rightSidebarWidthStorageKey?: string | undefined;
   /** Default collapsed state for left sidebar */
-  defaultLeftCollapsed?: boolean;
+  defaultLeftCollapsed?: boolean | undefined;
   /** Default collapsed state for right sidebar */
-  defaultRightCollapsed?: boolean;
+  defaultRightCollapsed?: boolean | undefined;
   /** Additional CSS classes */
-  className?: string;
+  className?: string | undefined;
 }
 
 /**

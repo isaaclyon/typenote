@@ -6,9 +6,9 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 29     | 88%        |
+| ✅ Migrated              | 30     | 91%        |
 | 🟡 Ready for Integration | 0      | 0%         |
-| 🟠 Major Refactor        | 2      | 6%         |
+| 🟠 Major Refactor        | 1      | 3%         |
 | ⚪ Optional              | 2      | 6%         |
 | **Total**                | **33** | 100%       |
 
@@ -69,13 +69,14 @@ Drop-in components already used in the desktop app.
 
 Remaining organism-level components requiring architectural changes.
 
-- [ ] **InteractiveEditor** (~2-3 days) — Replace `NoteEditor.tsx` + custom extensions
-  - Includes: RefNode, TagNode, SlashCommand, and other TipTap extensions
-  - Note: Full TipTap integration already built, needs desktop app integration
+- [x] **InteractiveEditor** — Desktop app now uses `DocumentEditor` wrapper
+  - Includes: RefNode, TagNode, SlashCommand, and all TipTap extensions
+  - Status: Fully migrated via commit `260c23c` (2026-01-15)
+  - Desktop's DocumentEditor wraps InteractiveEditor with IPC callbacks
 
-- [ ] **EditorPreview** (~1-2 days) — Read-only editor preview
+- [ ] **EditorPreview** — Read-only editor preview
   - Includes: AttachmentNode, CalloutNode, CodeBlock, MathBlock, MathInline, RefNode, TagNode
-  - Note: Component exists, needs integration into object list views
+  - Note: Component exists in design-system, needs integration into object list views
 
 ---
 

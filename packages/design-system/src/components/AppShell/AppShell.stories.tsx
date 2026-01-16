@@ -171,6 +171,34 @@ export const WithPersistence: Story = () => (
 );
 
 /**
+ * Resizable sidebars - drag handles to resize between 180-400px
+ * Drag below 120px to snap-collapse to rail
+ */
+export const ResizableSidebars: Story = () => (
+  <div className="space-y-4">
+    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+      <p className="text-sm text-green-800">
+        <strong>Resizable Sidebars:</strong> Hover over the inner edge of each sidebar to reveal the
+        resize handle. Drag to resize (180-400px). Drag below 120px to snap-collapse to rail. Widths
+        persist to localStorage.
+      </p>
+    </div>
+    <div className="h-[600px] border border-gray-200 rounded-lg overflow-hidden">
+      <AppShell
+        leftSidebar={({ collapsed }) => <LeftSidebarContent collapsed={collapsed} />}
+        rightSidebar={({ collapsed }) => <RightSidebarContent collapsed={collapsed} />}
+        leftSidebarStorageKey="appshell-resizable.left.collapsed"
+        rightSidebarStorageKey="appshell-resizable.right.collapsed"
+        leftSidebarWidthStorageKey="appshell-resizable.left.width"
+        rightSidebarWidthStorageKey="appshell-resizable.right.width"
+      >
+        <MainContent />
+      </AppShell>
+    </div>
+  </div>
+);
+
+/**
  * Left sidebar only layout
  */
 export const LeftSidebarOnly: Story = () => (

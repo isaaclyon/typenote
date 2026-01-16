@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { cn } from '../../utils/cn.js';
-import { useCollapsibleSidebar } from './useCollapsibleSidebar.js';
+import { useResizableSidebar } from './useResizableSidebar.js';
 import { SidebarCollapseButton } from './SidebarCollapseButton.js';
+import { ResizeHandle } from './ResizeHandle.js';
 import { ContentArea } from './ContentArea.js';
 import type { AppShellProps } from './types.js';
-
-// Width constants following 4px grid
-const RAIL_WIDTH = 'w-12'; // 48px collapsed rail
-const EXPANDED_WIDTH = 'w-60'; // 240px expanded (matches existing Sidebar)
 
 /**
  * Unified layout component that orchestrates a 3-column responsive layout
@@ -34,20 +31,26 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
       children,
       leftSidebarStorageKey,
       rightSidebarStorageKey,
+      leftSidebarWidthStorageKey,
+      rightSidebarWidthStorageKey,
       defaultLeftCollapsed = false,
       defaultRightCollapsed = false,
       className,
     },
     ref
   ) => {
-    const leftState = useCollapsibleSidebar({
+    const leftState = useResizableSidebar({
+      side: 'left',
+      collapsedStorageKey: leftSidebarStorageKey,
+      widthStorageKey: leftSidebarWidthStorageKey,
       defaultCollapsed: defaultLeftCollapsed,
-      storageKey: leftSidebarStorageKey,
     });
 
-    const rightState = useCollapsibleSidebar({
+    const rightState = useResizableSidebar({
+      side: 'right',
+      collapsedStorageKey: rightSidebarStorageKey,
+      widthStorageKey: rightSidebarWidthStorageKey,
       defaultCollapsed: defaultRightCollapsed,
-      storageKey: rightSidebarStorageKey,
     });
 
     return (
@@ -57,9 +60,10 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
           <div
             className={cn(
               'group relative flex-shrink-0', // 'group' enables hover-reveal for collapse button
-              'transition-[width] duration-200 ease-out',
-              leftState.collapsed ? RAIL_WIDTH : EXPANDED_WIDTH
+              // Disable transition during resize for responsive drag
+              !leftState.isResizing && 'transition-[width] duration-200 ease-out'
             )}
+            style={{ width: leftState.width }}
           >
             {/* Sidebar content - overflow hidden for smooth transition */}
             <div className="h-full overflow-hidden">
@@ -71,6 +75,14 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
               onClick={leftState.toggle}
               side="left"
             />
+            {/* Resize handle - only when expanded */}
+            {!leftState.collapsed && (
+              <ResizeHandle
+                side="left"
+                isResizing={leftState.isResizing}
+                onResizeStart={leftState.handleResizeStart}
+              />
+            )}
           </div>
         )}
 
@@ -82,9 +94,10 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
           <div
             className={cn(
               'group relative flex-shrink-0', // 'group' enables hover-reveal for collapse button
-              'transition-[width] duration-200 ease-out',
-              rightState.collapsed ? RAIL_WIDTH : EXPANDED_WIDTH
+              // Disable transition during resize for responsive drag
+              !rightState.isResizing && 'transition-[width] duration-200 ease-out'
             )}
+            style={{ width: rightState.width }}
           >
             {/* Collapse button on inner edge */}
             <SidebarCollapseButton
@@ -92,6 +105,14 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
               onClick={rightState.toggle}
               side="right"
             />
+            {/* Resize handle - only when expanded */}
+            {!rightState.collapsed && (
+              <ResizeHandle
+                side="right"
+                isResizing={rightState.isResizing}
+                onResizeStart={rightState.handleResizeStart}
+              />
+            )}
             {/* Sidebar content - overflow hidden for smooth transition */}
             <div className="h-full overflow-hidden">
               {rightSidebar({ collapsed: rightState.collapsed })}
