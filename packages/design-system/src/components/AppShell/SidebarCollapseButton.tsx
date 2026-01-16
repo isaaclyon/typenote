@@ -42,8 +42,12 @@ const SidebarCollapseButton = React.forwardRef<HTMLButtonElement, SidebarCollaps
           'transition-all duration-150',
           // Focus styles (consistent with codebase pattern)
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          // Positioning: inside sidebar at top corner, centered when collapsed
-          'absolute top-2 z-10',
+          // Positioning: inside sidebar at top corner
+          // When collapsed on left side, move below traffic lights (macOS)
+          'absolute z-[60]',
+          collapsed && side === 'left' ? 'top-11' : 'top-2',
+          // Exclude from window drag region so clicks work
+          'app-region-no-drag',
           collapsed
             ? 'left-1/2 -translate-x-1/2' // Centered in collapsed rail
             : side === 'left'

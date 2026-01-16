@@ -398,7 +398,7 @@ describe('useAutoSave', () => {
       expect(mockEditor.off).toHaveBeenCalledWith('update', handler);
     });
 
-    it('clears pending debounce timer on unmount', async () => {
+    it('flushes pending save immediately on unmount (bug fix for lost edits)', async () => {
       const mockEditor = createMockEditor();
       mockEditor.getJSON.mockReturnValue({
         type: 'doc',
@@ -411,23 +411,21 @@ describe('useAutoSave', () => {
           editor: mockEditor as unknown as Editor,
           objectId: 'obj1',
           initialBlocks: [],
-          debounceMs: 100,
+          debounceMs: 500, // Long debounce to simulate user navigating quickly
         })
       );
 
-      // Trigger update but don't wait for debounce
+      // Trigger update (simulates user typing)
       act(() => {
         mockEditor.emit('update');
       });
 
-      // Unmount before debounce completes
+      // User navigates before debounce completes (e.g., clicks next daily note)
       unmount();
 
-      // Advance timers past debounce
-      await vi.advanceTimersByTimeAsync(200);
-
-      // applyBlockPatch should NOT be called since we unmounted
-      expect(mockApplyBlockPatch).not.toHaveBeenCalled();
+      // CRITICAL: Save should execute immediately on unmount, not be cancelled
+      // This prevents data loss when navigating away before debounce completes
+      expect(mockApplyBlockPatch).toHaveBeenCalledTimes(1);
     });
   });
 });

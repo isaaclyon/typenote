@@ -52,11 +52,7 @@ export const AutomaticStateTransition: Story = () => {
     // Simulate save delay
     setTimeout(() => {
       setState('saved');
-
-      // Clear saved state after 2 seconds
-      setTimeout(() => {
-        setState('idle');
-      }, 2000);
+      // Component auto-dismisses after 2 seconds (default autoDismissMs)
     }, 1500);
   };
 
@@ -66,11 +62,6 @@ export const AutomaticStateTransition: Story = () => {
     // Simulate save delay then error
     setTimeout(() => {
       setState('error');
-
-      // Clear error state after 3 seconds
-      setTimeout(() => {
-        setState('idle');
-      }, 3000);
     }, 1500);
   };
 
@@ -93,8 +84,72 @@ export const AutomaticStateTransition: Story = () => {
       </div>
 
       <div className="text-xs text-gray-500">
-        Click a button to see the status transition. The saved/error states will automatically clear
-        after a few seconds.
+        Click "Simulate Save" to see the auto-dismiss behavior. The "Saved" message fades away after
+        2 seconds. Error states persist until manually cleared.
+      </div>
+    </div>
+  );
+};
+
+export const CustomAutoDismissDelay: Story = () => {
+  const [fastState, setFastState] = React.useState<SaveState>('idle');
+  const [slowState, setSlowState] = React.useState<SaveState>('idle');
+  const [persistentState, setPersistentState] = React.useState<SaveState>('idle');
+
+  return (
+    <div className="p-8 space-y-6">
+      <div>
+        <h3 className="font-semibold text-sm mb-2">Fast dismiss (1 second)</h3>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              setFastState('saving');
+              setTimeout(() => setFastState('saved'), 500);
+            }}
+            className="px-3 py-1.5 bg-accent-500 text-white rounded text-xs font-medium"
+          >
+            Save
+          </button>
+          <SaveStatus state={fastState} autoDismissMs={1000} />
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-semibold text-sm mb-2">Default dismiss (2 seconds)</h3>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              setSlowState('saving');
+              setTimeout(() => setSlowState('saved'), 500);
+            }}
+            className="px-3 py-1.5 bg-accent-500 text-white rounded text-xs font-medium"
+          >
+            Save
+          </button>
+          <SaveStatus state={slowState} />
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-semibold text-sm mb-2">Never auto-dismiss (autoDismissMs={0})</h3>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              setPersistentState('saving');
+              setTimeout(() => setPersistentState('saved'), 500);
+            }}
+            className="px-3 py-1.5 bg-accent-500 text-white rounded text-xs font-medium"
+          >
+            Save
+          </button>
+          <button
+            onClick={() => setPersistentState('idle')}
+            className="px-3 py-1.5 bg-gray-300 text-gray-700 rounded text-xs font-medium"
+          >
+            Clear
+          </button>
+          <SaveStatus state={persistentState} autoDismissMs={0} />
+        </div>
       </div>
     </div>
   );

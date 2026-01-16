@@ -11,4 +11,6 @@ export interface SaveStatusProps {
   savedText?: string | undefined;
   /** Custom error text (default: "Failed to save") */
   errorText?: string | undefined;
+  /** Auto-dismiss duration in ms for 'saved' state (default: 2000, set to 0 to disable) */
+  autoDismissMs?: number | undefined;
 }

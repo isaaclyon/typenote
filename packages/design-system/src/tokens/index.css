@@ -195,3 +195,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-gray-400);
 }
+
+/* ========== Electron Window Drag Regions ========== */
+/* Used for frameless window dragging on macOS/Windows */
+.app-region-drag {
+  -webkit-app-region: drag;
+}
+
+.app-region-no-drag {
+  -webkit-app-region: no-drag;
+}

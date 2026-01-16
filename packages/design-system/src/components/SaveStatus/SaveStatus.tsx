@@ -11,17 +11,38 @@ const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
       savingText = 'Saving...',
       savedText = 'Saved',
       errorText = 'Failed to save',
+      autoDismissMs = 2000,
     },
     ref
   ) => {
-    if (state === 'idle') {
+    const [visible, setVisible] = React.useState(true);
+
+    // Auto-dismiss 'saved' state after delay
+    React.useEffect(() => {
+      if (state === 'saved' && autoDismissMs > 0) {
+        setVisible(true); // Show immediately
+        const timer = setTimeout(() => {
+          setVisible(false);
+        }, autoDismissMs);
+        return () => clearTimeout(timer);
+      } else {
+        setVisible(true); // Always visible for other states
+      }
+    }, [state, autoDismissMs]);
+
+    if (state === 'idle' || (state === 'saved' && !visible)) {
       return null;
     }
 
     return (
       <div
         ref={ref}
-        className={cn('flex items-center gap-1.5 text-xs text-gray-500', className)}
+        className={cn(
+          'flex items-center gap-1.5 text-xs text-gray-500',
+          'transition-opacity duration-300',
+          state === 'saved' && !visible && 'opacity-0',
+          className
+        )}
         role="status"
         aria-live="polite"
       >

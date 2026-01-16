@@ -51,13 +51,20 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
   }, [initialBlocks]);
 
   const save = useCallback(async () => {
-    if (!editor) return;
+    if (!editor) {
+      console.log('[useAutoSave] save() called but no editor');
+      return;
+    }
 
     const editorJson = editor.getJSON();
     const ops = generateBlockOps(initialBlocksRef.current, editorJson, objectId);
 
-    if (ops.length === 0) return;
+    if (ops.length === 0) {
+      console.log('[useAutoSave] save() called but no changes to save');
+      return;
+    }
 
+    console.log('[useAutoSave] Saving', ops.length, 'ops');
     setIsSaving(true);
     setError(null);
 
@@ -71,15 +78,18 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
       );
 
       if (result.success) {
+        console.log('[useAutoSave] Save successful');
         setLastSaved(new Date());
         // Notify caller so they can update initialBlocks
         if (onSaveSuccess) {
           await onSaveSuccess(objectId);
         }
       } else {
+        console.error('[useAutoSave] Save failed:', result.error?.message);
         setError(result.error?.message ?? 'Save failed');
       }
-    } catch {
+    } catch (err) {
+      console.error('[useAutoSave] Save error:', err);
       // Error already toasted by ipcCall, just set local state
       setError('Save failed');
     } finally {
@@ -91,6 +101,7 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
     if (!editor) return;
 
     const handleUpdate = () => {
+      console.log('[useAutoSave] Editor update detected, debouncing save');
       // Clear existing timer
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -98,16 +109,25 @@ export function useAutoSave(options: UseAutoSaveOptions): UseAutoSaveResult {
 
       // Set new debounced timer
       timerRef.current = setTimeout(() => {
+        console.log('[useAutoSave] Debounce timer fired, calling save()');
         void save();
       }, debounceMs);
     };
 
+    console.log('[useAutoSave] Setting up editor listener');
     editor.on('update', handleUpdate);
 
     return () => {
+      console.log('[useAutoSave] Cleanup called');
       editor.off('update', handleUpdate);
+      // CRITICAL FIX: Flush pending save immediately on unmount
+      // This prevents data loss when navigating before debounce completes
       if (timerRef.current) {
+        console.log('[useAutoSave] Cleanup: flushing pending save');
         clearTimeout(timerRef.current);
+        void save(); // Execute pending save immediately
+      } else {
+        console.log('[useAutoSave] Cleanup: no pending timer');
       }
     };
   }, [editor, debounceMs, save]);
