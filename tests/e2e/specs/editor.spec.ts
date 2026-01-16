@@ -7,7 +7,7 @@ declare const window: Window & { typenoteAPI: TypenoteAPI };
 test.describe('Editor Auto-Save', () => {
   // TODO: Auto-save not working - generateBlockOps may not be detecting changes properly
   // This is a real bug that needs investigation in tiptapToNotate.ts
-  test.skip('content persists after reload (save works)', async ({ window: page }) => {
+  test('content persists after reload (save works)', async ({ window: page }) => {
     // Create a daily note via IPC and get its ID
     const result = await page.evaluate(async () => {
       return window.typenoteAPI.getOrCreateTodayDailyNote();

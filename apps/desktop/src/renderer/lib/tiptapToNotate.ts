@@ -324,10 +324,33 @@ function flattenOldBlocks(blocks: DocumentBlock[]): DocumentBlock[] {
 }
 
 /**
- * Compares content using JSON.stringify for deep equality.
+ * Recursively sorts object keys to produce canonical JSON.
+ * Arrays are preserved in order, but objects within them are sorted.
+ */
+function canonicalize(value: unknown): unknown {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(canonicalize);
+  }
+
+  // Sort object keys and recursively canonicalize values
+  const sorted: Record<string, unknown> = {};
+  const keys = Object.keys(value as Record<string, unknown>).sort();
+  for (const key of keys) {
+    sorted[key] = canonicalize((value as Record<string, unknown>)[key]);
+  }
+  return sorted;
+}
+
+/**
+ * Compares content using canonical JSON for deep equality.
+ * Key order in objects does not affect comparison.
  */
 function contentEquals(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
+  return JSON.stringify(canonicalize(a)) === JSON.stringify(canonicalize(b));
 }
 
 /**

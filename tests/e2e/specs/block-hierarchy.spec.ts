@@ -127,7 +127,7 @@ test.describe('Block Creation', () => {
 test.describe('Block Manipulation', () => {
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
   // This test waits for "Saved" status which requires auto-save to work
-  test.skip('edit existing block content', async ({ window: page }) => {
+  test('edit existing block content', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -203,7 +203,7 @@ test.describe('Block Manipulation', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('block content persists after reload', async ({ window: page }) => {
+  test('block content persists after reload', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -229,7 +229,7 @@ test.describe('Block Manipulation', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('multiple blocks persist in correct order after reload', async ({ window: page }) => {
+  test('multiple blocks persist in correct order after reload', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -270,7 +270,7 @@ test.describe('Block Manipulation', () => {
 test.describe('Block Ordering', () => {
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
   // This test waits for "Saved" status which requires auto-save to work
-  test.skip('blocks maintain order after multiple edits', async ({ window: page }) => {
+  test('blocks maintain order after multiple edits', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -331,7 +331,7 @@ test.describe('Block Ordering', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('block order persists correctly through save cycle', async ({ window: page }) => {
+  test('block order persists correctly through save cycle', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -556,7 +556,7 @@ test.describe('Rich Content', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('formatting persists after save and reload', async ({ window: page }) => {
+  test('formatting persists after save and reload', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -661,7 +661,7 @@ test.describe('Block Nesting (List Indentation)', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('list content persists after reload', async ({ window: page }) => {
+  test('list content persists after reload', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -750,7 +750,7 @@ test.describe('Task Lists', () => {
   });
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
-  test.skip('list with task-like text persists after reload', async ({ window: page }) => {
+  test('list with task-like text persists after reload', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -1221,7 +1221,7 @@ test.describe('Edge Cases', () => {
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
   // This test requires content to persist after reload, which depends on auto-save
-  test.skip('rapid typing does not lose content', async ({ window: page }) => {
+  test('rapid typing does not lose content', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
@@ -1245,7 +1245,7 @@ test.describe('Edge Cases', () => {
 
   // TODO: Skip until auto-save is fixed - see editor.spec.ts
   // This test requires content to persist after reload, which depends on auto-save
-  test.skip('special characters in content', async ({ window: page }) => {
+  test('special characters in content', async ({ window: page }) => {
     await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 

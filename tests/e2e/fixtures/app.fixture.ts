@@ -3,15 +3,38 @@ import type { ElectronApplication, Page } from '@playwright/test';
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
+import net from 'node:net';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Find an available port by attempting to bind.
+ * This prevents EADDRINUSE errors when parallel tests or stale processes
+ * are using the default port.
+ */
+async function findAvailablePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (address && typeof address === 'object') {
+        const port = address.port;
+        server.close(() => resolve(port));
+      } else {
+        reject(new Error('Could not get server address'));
+      }
+    });
+    server.on('error', reject);
+  });
+}
+
 export interface TestFixtures {
   electronApp: ElectronApplication;
   window: Page;
   testDbPath: string;
+  testPort: number;
 }
 
 export const test = base.extend<TestFixtures>({
@@ -25,7 +48,14 @@ export const test = base.extend<TestFixtures>({
     fs.rmSync(tempDir, { recursive: true, force: true });
   },
 
-  electronApp: async ({ testDbPath }, use) => {
+  // eslint-disable-next-line no-empty-pattern
+  testPort: async ({}, use) => {
+    // Get a unique available port for each test to prevent EADDRINUSE errors
+    const port = await findAvailablePort();
+    await use(port);
+  },
+
+  electronApp: async ({ testDbPath, testPort }, use) => {
     // Path to the built desktop app's main entry point
     const appPath = path.resolve(__dirname, '../../../apps/desktop/dist/main/index.js');
 
@@ -45,6 +75,7 @@ export const test = base.extend<TestFixtures>({
         ...env,
         NODE_ENV: 'test',
         TYPENOTE_DB_PATH: testDbPath,
+        TYPENOTE_HTTP_PORT: String(testPort), // Unique port per test
       },
     });
 

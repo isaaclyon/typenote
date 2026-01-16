@@ -89,6 +89,7 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
             <button
               key={item.id}
               type="button"
+              data-testid={`slash-command-${item.id}`}
               ref={(el) => {
                 itemRefs.current[index] = el;
               }}

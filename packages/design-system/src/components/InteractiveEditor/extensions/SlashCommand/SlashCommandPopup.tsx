@@ -55,6 +55,7 @@ export const SlashCommandPopup = React.forwardRef<SlashCommandMenuRef, SlashComm
     return (
       <div
         ref={containerRef}
+        data-testid="slash-command-menu"
         style={{
           position: 'fixed',
           top: position.top,
