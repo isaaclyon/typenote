@@ -1,3 +1,7 @@
+---
+paths: apps/desktop/src/renderer/**/*.ts, apps/desktop/src/renderer/**/*.tsx
+---
+
 # Renderer Patterns
 
 Rules for `apps/desktop/src/renderer/` to prevent architectural debt.
