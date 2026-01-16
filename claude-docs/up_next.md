@@ -24,6 +24,7 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 - [x] useSelectedObject hook — Object details for properties (7 TDD tests)
 - [x] TypeBrowser integration — Fully wired with useObjectType/useObjectsByType hooks
 - [x] InteractiveEditor — Replaced NoteEditor with design-system component + callback props
+- [x] Resizable sidebars — Drag handles with snap-to-collapse (43 tests)
 
 ### Tier 3.5 CommandPalette Enhancement ✅ COMPLETE (2026-01-15)
 
@@ -104,6 +105,7 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| Resizable Sidebars               | 2026-01-15 | `31ddc7c`            |
 | Toast Migration                  | 2026-01-15 | `0738017`            |
 | Design System Audit Script       | 2026-01-15 | `e8b0ddd`, `f642e67` |
 | InteractiveEditor Migration      | 2026-01-15 | `260c23c`            |
