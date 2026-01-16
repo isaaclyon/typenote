@@ -13,6 +13,17 @@ export interface BacklinkItemProps {
   typeColor?: string | null;
 }
 
+/**
+ * Convert kebab-case to PascalCase for Lucide icon lookup.
+ * e.g., "file-text" → "FileText"
+ */
+function kebabToPascal(str: string): string {
+  return str
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
 const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
   ({ title, snippet, highlightText, onClick, className, typeIcon, typeColor }, ref) => {
     // Render type icon if available
@@ -20,11 +31,13 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
       if (!typeIcon) return null;
 
       // Dynamically get icon component from Lucide
+      // Icons may be stored as kebab-case (e.g., "file-text") but Lucide exports PascalCase ("FileText")
       const iconsRecord = LucideIcons as unknown as Record<
         string,
         React.ComponentType<{ className?: string }>
       >;
-      const IconComponent = iconsRecord[typeIcon];
+      const iconName = typeIcon.includes('-') ? kebabToPascal(typeIcon) : typeIcon;
+      const IconComponent = iconsRecord[iconName];
       if (!IconComponent) return null;
 
       return (

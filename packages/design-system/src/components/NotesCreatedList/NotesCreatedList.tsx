@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as LucideIcons from 'lucide-react';
 import { cn } from '../../utils/cn.js';
-import { DEFAULT_ICON_COLOR } from '../../constants/defaults.js';
 import { ScrollArea } from '../ScrollArea/ScrollArea.js';
 import { Skeleton } from '../Skeleton/Skeleton.js';
+import { BacklinkItem } from '../BacklinkItem/BacklinkItem.js';
 
 export interface NotesCreatedItem {
   id: string;
@@ -48,25 +47,6 @@ function formatHeaderDate(dateKey: string): string {
 
 const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>(
   ({ date, items, onItemClick, showHeader = true, isLoading = false, className }, ref) => {
-    // Render type icon by name (matches BacklinkItem pattern)
-    const renderTypeIcon = (typeIcon?: string | null, typeColor?: string | null) => {
-      if (!typeIcon) return null;
-
-      // Dynamically get icon component from Lucide
-      const iconsRecord = LucideIcons as unknown as Record<
-        string,
-        React.ComponentType<{ className?: string }>
-      >;
-      const IconComponent = iconsRecord[typeIcon];
-      if (!IconComponent) return null;
-
-      return (
-        <div className="flex-shrink-0" style={{ color: typeColor ?? DEFAULT_ICON_COLOR }}>
-          <IconComponent className="w-4 h-4" />
-        </div>
-      );
-    };
-
     return (
       <div ref={ref} className={cn('w-full', className)}>
         {/* Header */}
@@ -76,11 +56,13 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
 
         {/* Loading state */}
         {isLoading && (
-          <div className="space-y-1">
+          <div className="space-y-2">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-2 px-2 py-1.5">
-                <Skeleton className="w-4 h-4 rounded" />
-                <Skeleton className="h-4 flex-1 rounded" />
+              <div key={i} className="p-2 rounded border border-gray-100">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="w-4 h-4 rounded" />
+                  <Skeleton className="h-4 flex-1 rounded" />
+                </div>
               </div>
             ))}
           </div>
@@ -94,22 +76,15 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
         {/* Items list */}
         {!isLoading && items.length > 0 && (
           <ScrollArea className="max-h-[200px]">
-            <ul role="list" className="space-y-0.5">
+            <ul role="list" className="space-y-2">
               {items.map((item) => (
                 <li key={item.id} role="listitem">
-                  <button
-                    type="button"
-                    onClick={() => onItemClick?.(item.id)}
-                    className={cn(
-                      'w-full flex items-center gap-2 px-2 py-1.5 rounded',
-                      'text-left',
-                      'hover:bg-gray-50 transition-colors',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
-                    )}
-                  >
-                    {renderTypeIcon(item.typeIcon, item.typeColor)}
-                    <span className="text-sm text-gray-700 truncate">{item.title}</span>
-                  </button>
+                  <BacklinkItem
+                    title={item.title}
+                    {...(item.typeIcon !== undefined && { typeIcon: item.typeIcon })}
+                    {...(item.typeColor !== undefined && { typeColor: item.typeColor })}
+                    {...(onItemClick && { onClick: () => onItemClick(item.id) })}
+                  />
                 </li>
               ))}
             </ul>
