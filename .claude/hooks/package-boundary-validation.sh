@@ -4,6 +4,13 @@ set -euo pipefail
 # Package Boundary Validation Hook
 # Enforces strict architectural boundaries in the TypeNote monorepo
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="package-boundary-validation"
+# Get start time in seconds (milliseconds on macOS require different approach)
+start_time=$(date +%s)
+
 # Read JSON input from stdin
 input=$(cat)
 
@@ -164,7 +171,16 @@ if [[ $violation_count -gt 0 ]]; then
   error_msg="${error_msg}${violations}"
   error_msg="${error_msg}\nSee docs/foundational/backend_contract.md for dependency rules."
   echo -e "$error_msg" >&2
+
+  # Log metrics before exit
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 2 "$duration_ms" "$file_path" "$violation_count" 2>/dev/null || true
   exit 2
 fi
 
+# Log metrics for successful run
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
 exit 0

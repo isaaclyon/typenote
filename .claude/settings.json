@@ -60,6 +60,14 @@
           {
             "command": "./.claude/hooks/source-file-size-validation.sh",
             "type": "command"
+          },
+          {
+            "command": "./.claude/hooks/renderer-ipc-validation.sh",
+            "type": "command"
+          },
+          {
+            "command": "./.claude/hooks/migration-safety-validation.sh",
+            "type": "command"
           }
         ],
         "matcher": "Edit|Write"
