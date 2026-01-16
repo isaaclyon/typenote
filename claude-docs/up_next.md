@@ -31,6 +31,18 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 - [x] Desktop CommandPalette migration — Replaced cmdk with design-system components
 - [x] Remove cmdk dependency — Deleted wrapper, removed from package.json
 
+### Tier 3.6 Toast Migration ✅ COMPLETE (2026-01-15)
+
+- [x] Wrap Sonner in design-system Toaster component
+- [x] Re-export toast function from design-system
+- [x] Update desktop imports to use @typenote/design-system
+- [x] Remove Sonner from desktop package.json
+
+### Tooling
+
+- [x] Design system audit script — `just audit-design-system` scans exports and finds usage
+- [x] Updated migration checklist to 29/33 (88%) — Corrected stale entries
+
 ---
 
 ## UI/Design System - Organism Components
@@ -92,13 +104,12 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| Toast Migration                  | 2026-01-15 | `0738017`            |
+| Design System Audit Script       | 2026-01-15 | `e8b0ddd`, `f642e67` |
 | InteractiveEditor Migration      | 2026-01-15 | `260c23c`            |
 | CommandPalette DS Migration      | 2026-01-15 | `09f280a`, `73b1a7c` |
 | Mutation Testing Parallel Agents | 2026-01-15 | `d60ac2a`            |
 | Design System Tier 2 Migration   | 2026-01-15 | `ec8748b`, `47749a3` |
 | AppShell Full Migration          | 2026-01-15 | `ae451b0`            |
-| updateObject() Service           | 2026-01-14 | `6dff951`            |
-| Design System Migration (Tier 1) | 2026-01-14 | `d95f1e7`            |
-| Settings Persistence             | 2026-01-15 | `9a85158`            |
 
 See `recent_work.md` Milestones table for full history.

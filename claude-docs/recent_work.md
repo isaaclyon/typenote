@@ -1,6 +1,39 @@
 # Recent Work
 
-## Latest Session (2026-01-15 - InteractiveEditor Migration)
+## Latest Session (2026-01-15 - Toast Migration & Audit Script)
+
+Built a deterministic design-system audit script and migrated Toast/Toaster from Sonner to design-system.
+
+**Design System Audit Script:**
+
+- `scripts/audit-design-system.ts` — Scans design-system exports, finds usage in desktop app
+- `just audit-design-system` — Justfile command to run scanner
+- Discovered migration checklist was stale (27/33 migrated, not 26/33)
+- Found orphaned components: KeyboardKey (command.tsx deleted), Toast (Sonner used directly)
+
+**Toast Migration:**
+
+- Wrapped Sonner in `packages/design-system/src/components/Toast/Toaster.tsx`
+- Re-exported `toast` function from design-system
+- Updated all desktop imports: App.tsx, useImageUpload.ts, ipc.ts
+- Deleted `apps/desktop/src/renderer/components/ui/sonner.tsx`
+- Removed Sonner from desktop package.json (now in design-system)
+
+**Migration Checklist Corrections:**
+
+- Updated `docs/design-system-migration.md` to 29/33 (88%)
+- Marked Sidebar, RightSidebar, TypeBrowser as complete (were incorrectly marked incomplete)
+
+**Commits:**
+
+- `0738017 feat(design-system): migrate Toast/Toaster from Sonner to design-system`
+- `642251f docs: add Toast migration design`
+- `e8b0ddd feat: add design system audit script`
+- `f642e67 docs: add design system audit script design`
+
+---
+
+## Previous Session (2026-01-15 - InteractiveEditor Migration)
 
 Replaced desktop's NoteEditor with design-system's InteractiveEditor. Added callback props for IPC integration while keeping mock fallbacks for Ladle stories.
 
@@ -105,26 +138,6 @@ Ran Stryker mutation testing across all packages and dispatched 5 parallel agent
 
 ---
 
-## Previous Session (2026-01-15 - TypeBrowser Hooks Bug Fix)
-
-Fixed Rules of Hooks violation in TypeBrowser.tsx — moved `columnDefMap` useMemo before early returns.
-
----
-
-## Previous Session (2026-01-15 - Tier 2 Design System Migration)
-
-Migrated DailyNoteNav, SaveStatus, SettingsModal to design-system components.
-Commits: `ec8748b`, `47749a3`
-
----
-
-## Previous Session (2026-01-15 - AppShell Full Migration)
-
-3-column AppShell with collapsible sidebars, LeftSidebar, PropertiesPanel, useTypeCounts/useSelectedObject hooks.
-Commits: `ae451b0`
-
----
-
 ## Completed Milestones
 
 | Phase       | Description                                     | Date       |
@@ -152,3 +165,8 @@ Commits: `ae451b0`
 | Update      | updateObject() service (17 tests, TDD)          | 2026-01-14 |
 | Tier 1 DS   | Design System Tier 1 migration                  | 2026-01-14 |
 | Tier 2 DS   | Design System Tier 2 migration (3 components)   | 2026-01-15 |
+| AppShell    | 3-column layout + sidebars + hooks              | 2026-01-15 |
+| CmdPalette  | CommandPalette DS migration (replaced cmdk)     | 2026-01-15 |
+| IntEditor   | InteractiveEditor migration (~30 files deleted) | 2026-01-15 |
+| Audit       | Design system audit script                      | 2026-01-15 |
+| Toast       | Toast/Toaster wrapped Sonner in DS              | 2026-01-15 |
