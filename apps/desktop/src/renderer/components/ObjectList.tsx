@@ -9,8 +9,8 @@ import {
   Badge,
   ScrollArea,
   Skeleton,
+  cn,
 } from '@typenote/design-system';
-import { cn } from '../lib/utils.js';
 import type { ObjectSummary } from '@typenote/api';
 import { useTypenoteEvents } from '../hooks/useTypenoteEvents.js';
 
