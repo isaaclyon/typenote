@@ -4,6 +4,12 @@ set -euo pipefail
 # File Protection Hook
 # Prevents destructive operations on critical files and directories
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="file-protection"
+start_time=$(date +%s)
+
 # Read JSON input from stdin
 input=$(cat)
 
@@ -11,6 +17,9 @@ input=$(cat)
 command=$(echo "$input" | jq -r '.tool_input.command // empty' 2>/dev/null || echo "")
 
 if [[ -z "$command" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -39,6 +48,9 @@ protected_files=(
 
 # Check if command is a destructive operation (rm, rm -f, rm -rf)
 if [[ ! $command =~ ^rm[[:space:]] ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$command" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -51,6 +63,9 @@ cmd_without_rm=$(echo "$command" | sed 's/^rm[[:space:]]*//' | sed 's/^-[a-zA-Z]
 target_path=$(echo "$cmd_without_rm" | awk '{print $1}' | sed 's/[[:space:]]*$//')
 
 if [[ -z "$target_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$command" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -63,6 +78,9 @@ for protected_dir in "${protected_dirs[@]}"; do
   if [[ "$normalized_target" == "$protected_dir" ]] || [[ "$normalized_target" == "$protected_dir"* ]] && [[ ${#normalized_target} -eq ${#protected_dir} ]]; then
     error_msg="Protected path: cannot delete '$target_path' (source code, git metadata, or configuration). Use 'pnpm clean' to safely remove build artifacts instead."
     echo "$error_msg" >&2
+    end_time=$(date +%s)
+    duration_ms=$(((end_time - start_time) * 1000))
+    log_hook_metric "$hook_name" 2 "$duration_ms" "$target_path" 1 2>/dev/null || true
     exit 2
   fi
 done
@@ -72,8 +90,15 @@ for protected_file in "${protected_files[@]}"; do
   if [[ "$normalized_target" == "$protected_file" ]]; then
     error_msg="Protected file: cannot delete '$target_path' (critical configuration). This would break the build environment."
     echo "$error_msg" >&2
+    end_time=$(date +%s)
+    duration_ms=$(((end_time - start_time) * 1000))
+    log_hook_metric "$hook_name" 2 "$duration_ms" "$target_path" 1 2>/dev/null || true
     exit 2
   fi
 done
 
+# Log metrics for successful run
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$command" 0 2>/dev/null || true
 exit 0
