@@ -12,50 +12,56 @@ test.describe('Daily Note Workflow', () => {
     // Wait for editor to load (not showing "Loading...")
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
-    // Reload to refresh ObjectList (it doesn't auto-refresh yet)
-    await page.reload();
-    await page.waitForLoadState('domcontentloaded');
+    // Verify we're viewing a daily note by checking navigation buttons are visible
+    // (navigation only shows for daily notes)
+    const prevButton = page.getByTestId('nav-prev-button');
+    await expect(prevButton).toBeVisible();
 
-    // Verify the daily note appears in the sidebar with today's date
+    // Verify the date appears in the navigation (the h4 button shows current date)
     const today = new Date().toISOString().slice(0, 10);
-    const objectCard = page.locator('[data-testid^="object-card-"]').first();
-    await expect(objectCard).toContainText(today);
-
-    // Verify type badge shows "DailyNote"
-    const typeBadge = page.getByText('DailyNote').first();
-    await expect(typeBadge).toBeVisible();
+    // Use the h4 in nav which displays the date (more specific than getByText)
+    const navDateButton = page.locator('h4').filter({ hasText: today });
+    await expect(navDateButton).toBeVisible();
   });
 
-  test('daily note appears in object list after creation', async ({ window: page }) => {
-    // Create a daily note via IPC
-    await page.evaluate(async () => {
-      await window.typenoteAPI.getOrCreateTodayDailyNote();
+  test('daily note appears in type browser after creation', async ({ window: page }) => {
+    // Create a daily note via IPC and get its ID
+    const result = await page.evaluate(async () => {
+      return window.typenoteAPI.getOrCreateTodayDailyNote();
     });
 
-    // Reload to refresh ObjectList
-    await page.reload();
-    await page.waitForLoadState('domcontentloaded');
-
-    // Check that object list contains at least one item
-    const objectCards = page.locator('[data-testid^="object-card-"]');
-    await expect(objectCards.first()).toBeVisible();
-
-    // Verify it's a DailyNote
-    const typeBadge = page.getByText('DailyNote');
-    await expect(typeBadge.first()).toBeVisible();
-  });
-
-  test('selecting object loads document in editor', async ({ window: page }) => {
-    // Create a daily note
-    await page.evaluate(async () => {
-      await window.typenoteAPI.getOrCreateTodayDailyNote();
-    });
+    expect(result.success).toBe(true);
+    const dailyNoteId = (result as { success: true; result: { dailyNote: { id: string } } }).result
+      .dailyNote.id;
 
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Click the first object in the list
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate to TypeBrowser: click DailyNote type in sidebar
+    await page.getByTestId('sidebar-type-DailyNote').click();
+
+    // Verify the daily note appears in the TypeBrowser
+    const row = page.getByTestId(`type-browser-row-${dailyNoteId}`);
+    await expect(row).toBeVisible();
+  });
+
+  test('selecting object from type browser loads document in editor', async ({ window: page }) => {
+    // Create a daily note via IPC and get its ID
+    const result = await page.evaluate(async () => {
+      return window.typenoteAPI.getOrCreateTodayDailyNote();
+    });
+
+    expect(result.success).toBe(true);
+    const dailyNoteId = (result as { success: true; result: { dailyNote: { id: string } } }).result
+      .dailyNote.id;
+
+    await page.reload();
+    await page.waitForLoadState('domcontentloaded');
+
+    // Navigate via TypeBrowser: click DailyNote type, then click the row
+    await page.getByTestId('sidebar-type-DailyNote').click();
+    await page.waitForSelector(`[data-testid="type-browser-row-${dailyNoteId}"]`);
+    await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
 
     // Wait for editor to appear
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
@@ -77,8 +83,9 @@ test.describe('Daily Note Workflow', () => {
 
     // The template should have created a heading with the date
     // The heading is rendered as an h1 element in ProseMirror
+    // Use toHaveCount to verify it exists, then check text content
     const heading = page.locator('.ProseMirror h1');
-    await expect(heading).toBeVisible();
-    await expect(heading).toContainText(today);
+    await expect(heading).toHaveCount(1);
+    await expect(heading).toHaveText(today);
   });
 });
