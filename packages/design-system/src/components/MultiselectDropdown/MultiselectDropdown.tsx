@@ -122,8 +122,9 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
           'flex-shrink-0',
           'opacity-0 group-hover:opacity-100',
           'p-1 rounded',
-          'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+          'text-gray-400 hover:text-gray-600 hover:bg-gray-50',
           'transition-all duration-150',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           isOpen && 'opacity-100'
         )}
         onClick={(e) => e.stopPropagation()}

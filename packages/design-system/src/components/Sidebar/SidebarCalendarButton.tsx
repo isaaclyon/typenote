@@ -10,7 +10,7 @@ const SidebarCalendarButton = React.forwardRef<HTMLButtonElement, SidebarCalenda
         ref={ref}
         {...props}
         className={cn(
-          'flex items-center gap-3 h-9 px-3 rounded-md transition-colors',
+          'flex items-center gap-3 h-9 px-3 rounded-md transition-colors duration-150',
           'text-sm font-medium',
           isToday
             ? 'bg-accent-50 text-accent-700 hover:bg-accent-100'

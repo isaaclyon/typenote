@@ -90,7 +90,7 @@ export function EditableTitle({
       className={cn(
         'text-3xl text-gray-900 font-semibold cursor-text',
         'rounded px-1 -mx-1',
-        'hover:bg-gray-100 transition-colors duration-150'
+        'hover:bg-gray-50 transition-colors duration-150'
       )}
       onClick={() => setIsEditing(true)}
     >

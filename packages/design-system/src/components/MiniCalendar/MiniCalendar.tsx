@@ -103,9 +103,9 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
             onClick={goToPreviousMonth}
             className={cn(
               'flex items-center justify-center w-7 h-7 rounded',
-              'text-gray-500 hover:text-gray-700 hover:bg-gray-100',
-              'transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+              'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              'transition-colors duration-150',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
             )}
             aria-label="Previous month"
           >
@@ -119,9 +119,9 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
             onClick={goToNextMonth}
             className={cn(
               'flex items-center justify-center w-7 h-7 rounded',
-              'text-gray-500 hover:text-gray-700 hover:bg-gray-100',
-              'transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+              'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              'transition-colors duration-150',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
             )}
             aria-label="Next month"
           >
@@ -154,7 +154,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
                 onClick={() => handleDayClick(day)}
                 className={cn(
                   'relative h-8 w-8 flex items-center justify-center text-sm rounded',
-                  'transition-colors',
+                  'transition-colors duration-150',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                   // Base styles by state
                   !day.isCurrentMonth && 'text-gray-300',
@@ -163,7 +163,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
                   // Selected state
                   isSelected && 'bg-accent-500 text-white font-medium',
                   // Hover (only when not selected)
-                  !isSelected && 'hover:bg-gray-100'
+                  !isSelected && 'hover:bg-gray-50'
                 )}
                 aria-label={`${day.dateKey}${day.isToday ? ', today' : ''}${hasNote ? ', has note' : ''}`}
                 aria-pressed={isSelected}

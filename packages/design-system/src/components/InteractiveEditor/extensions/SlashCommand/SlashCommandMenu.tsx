@@ -93,8 +93,8 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
                 itemRefs.current[index] = el;
               }}
               className={cn(
-                'w-full flex items-start gap-3 px-3 py-2 text-left transition-colors duration-100',
-                isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
+                'w-full flex items-start gap-3 px-3 py-2 text-left transition-colors duration-150',
+                isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
               )}
               onClick={() => onSelect(item)}
               onMouseEnter={() => setLocalIndex(index)}
@@ -102,10 +102,10 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
               <div
                 className={cn(
                   'flex-shrink-0 w-8 h-8 rounded flex items-center justify-center',
-                  isSelected ? 'bg-gray-200' : 'bg-gray-100'
+                  isSelected ? 'bg-accent-100' : 'bg-gray-100'
                 )}
               >
-                <Icon className="w-4 h-4 text-gray-600" />
+                <Icon className={cn('w-4 h-4', isSelected ? 'text-accent-600' : 'text-gray-600')} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900">{item.label}</div>
