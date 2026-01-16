@@ -7,7 +7,7 @@
 
 import { useCallback } from 'react';
 import type { Editor } from '@tiptap/core';
-import { toast } from 'sonner';
+import { toast } from '@typenote/design-system';
 import {
   fileToBase64,
   validateImageFile,

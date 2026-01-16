@@ -12,10 +12,10 @@ import { useImageUpload } from './useImageUpload.js';
 import { MAX_FILE_SIZE } from '../lib/imageUtils.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Mock sonner toast
+// Mock design-system toast
 // ─────────────────────────────────────────────────────────────────────────────
 
-vi.mock('sonner', () => ({
+vi.mock('@typenote/design-system', () => ({
   toast: {
     error: vi.fn(),
     success: vi.fn(),
@@ -23,7 +23,7 @@ vi.mock('sonner', () => ({
   },
 }));
 
-import { toast } from 'sonner';
+import { toast } from '@typenote/design-system';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mock Editor Helper

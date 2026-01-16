@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { AppShell } from '@typenote/design-system';
+import { AppShell, Toaster } from '@typenote/design-system';
 import { DocumentEditor } from './components/DocumentEditor.js';
 import { CalendarView } from './components/calendar/index.js';
 import { TypeBrowserView } from './components/TypeBrowserView.js';
@@ -10,7 +10,6 @@ import { LeftSidebar } from './components/LeftSidebar.js';
 import { PropertiesPanel } from './components/PropertiesPanel.js';
 import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
 import { TagPickerModal } from './components/TagPickerModal.js';
-import { Toaster } from './components/ui/sonner.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
 import { usePinnedObjects } from './hooks/usePinnedObjects.js';

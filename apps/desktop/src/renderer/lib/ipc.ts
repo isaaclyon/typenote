@@ -4,7 +4,7 @@
  * Wraps IPC calls with automatic error toasting for consistent error feedback.
  */
 
-import { toast } from 'sonner';
+import { toast } from '@typenote/design-system';
 
 /**
  * Wraps an IPC operation with automatic error toast notification.

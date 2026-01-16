@@ -140,9 +140,6 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
-      sonner:
-        specifier: ^2.0.7
-        version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
@@ -341,6 +338,9 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.2.3
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
@@ -9018,14 +9018,14 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.9(msw@2.12.7(@types/node@22.19.3)(typescript@5.9.3))(vite@5.4.21(@types/node@25.0.9)(lightningcss@1.30.2))':
+  '@vitest/mocker@2.1.9(msw@2.12.7(@types/node@22.19.3)(typescript@5.9.3))(vite@5.4.21(@types/node@22.19.3)(lightningcss@1.30.2))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.12.7(@types/node@22.19.3)(typescript@5.9.3)
-      vite: 5.4.21(@types/node@25.0.9)(lightningcss@1.30.2)
+      vite: 5.4.21(@types/node@22.19.3)(lightningcss@1.30.2)
 
   '@vitest/mocker@2.1.9(msw@2.12.7(@types/node@25.0.9)(typescript@5.9.3))(vite@5.4.21(@types/node@25.0.9)(lightningcss@1.30.2))':
     dependencies:
@@ -13792,7 +13792,7 @@ snapshots:
   vitest@2.1.9(@types/node@22.19.3)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.7(@types/node@22.19.3)(typescript@5.9.3)):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(msw@2.12.7(@types/node@22.19.3)(typescript@5.9.3))(vite@5.4.21(@types/node@25.0.9)(lightningcss@1.30.2))
+      '@vitest/mocker': 2.1.9(msw@2.12.7(@types/node@22.19.3)(typescript@5.9.3))(vite@5.4.21(@types/node@22.19.3)(lightningcss@1.30.2))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9

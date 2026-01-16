@@ -2,7 +2,7 @@
  * Styled Toaster Component
  *
  * Wraps Sonner's Toaster with TypeNote design system styling.
- * Position: bottom-right, Duration: 4s, Error accent: coral-red left border.
+ * Position: bottom-right, Duration: 4s
  */
 
 import type { ReactElement } from 'react';
@@ -16,7 +16,9 @@ export function Toaster(): ReactElement {
         duration: 4000,
         classNames: {
           toast: 'bg-background border border-border rounded shadow-md text-foreground',
-          error: 'border-l-2 border-l-[#e57373]',
+          error: 'border-l-2 border-l-error',
+          success: 'border-l-2 border-l-success',
+          warning: 'border-l-2 border-l-warning',
           description: 'text-muted-foreground',
           title: 'font-medium',
         },

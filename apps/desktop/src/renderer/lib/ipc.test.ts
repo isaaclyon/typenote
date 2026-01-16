@@ -6,11 +6,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { toast } from 'sonner';
+import { toast } from '@typenote/design-system';
 import { ipcCall } from './ipc.js';
 
-// Mock sonner's toast function
-vi.mock('sonner', () => ({
+// Mock design-system's toast function
+vi.mock('@typenote/design-system', () => ({
   toast: {
     error: vi.fn(),
   },
