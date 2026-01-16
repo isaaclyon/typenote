@@ -2,13 +2,16 @@
  * useObjectsByType Hook
  *
  * Fetches objects filtered by typeKey with properties included.
- * Used to populate TypeBrowser with data for a specific object type.
+ * Uses TanStack Query for caching and automatic refetching.
  */
 
 /// <reference path="../global.d.ts" />
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import type { ObjectSummaryWithProperties } from '@typenote/storage';
+import { queryKeys } from '../lib/queryKeys.js';
+import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
 export interface UseObjectsByTypeOptions {
   typeKey: string;
@@ -24,46 +27,31 @@ export interface UseObjectsByTypeResult {
 
 export function useObjectsByType(options: UseObjectsByTypeOptions): UseObjectsByTypeResult {
   const { typeKey, enabled = true } = options;
+  const queryClient = useQueryClient();
 
-  const [objects, setObjects] = useState<ObjectSummaryWithProperties[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: queryKeys.objectsByType(typeKey),
+    queryFn: async () => {
+      const result = await adaptIpcOutcome(
+        window.typenoteAPI.listObjects({
+          typeKey,
+          includeProperties: true,
+        })
+      );
+      // Cast since we requested includeProperties: true
+      return result as ObjectSummaryWithProperties[];
+    },
+    enabled: enabled && Boolean(typeKey),
+  });
 
-  const fetchObjects = useCallback(async () => {
-    if (!enabled || !typeKey) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await window.typenoteAPI.listObjects({
-        typeKey,
-        includeProperties: true,
-      });
-
-      if (result.success) {
-        // Cast since we requested includeProperties: true
-        setObjects(result.result as ObjectSummaryWithProperties[]);
-      } else {
-        setError(result.error.message);
-        setObjects([]);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      setObjects([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [typeKey, enabled]);
-
-  useEffect(() => {
-    void fetchObjects();
-  }, [fetchObjects]);
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.objectsByType(typeKey) });
+  }, [queryClient, typeKey]);
 
   return {
-    objects,
+    objects: data ?? [],
     isLoading,
-    error,
-    refetch: fetchObjects,
+    error: error ? String(error instanceof Error ? error.message : error) : null,
+    refetch,
   };
 }

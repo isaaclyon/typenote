@@ -14,6 +14,7 @@ export const queryKeys = {
   types: () => ['types'] as const,
   type: (id: string) => ['type', id] as const,
   typeCounts: () => ['types', 'counts'] as const,
+  typeMetadata: () => ['types', 'metadata'] as const,
 
   // Pinned objects
   pinnedObjects: () => ['pinned-objects'] as const,

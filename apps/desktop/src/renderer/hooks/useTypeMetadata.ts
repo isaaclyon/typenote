@@ -1,4 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import { queryKeys } from '../lib/queryKeys.js';
+import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
 interface TypeMetadata {
   id: string;
@@ -16,34 +19,29 @@ interface UseTypeMetadataResult {
   refetch: () => Promise<void>;
 }
 
+/**
+ * Hook that fetches type definitions with object counts.
+ * Uses TanStack Query for caching and automatic refetching.
+ */
 export function useTypeMetadata(): UseTypeMetadataResult {
-  const [types, setTypes] = useState<TypeMetadata[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchMetadata = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const [typesResult, objectsResult] = await Promise.all([
-        window.typenoteAPI.listObjectTypes(),
-        window.typenoteAPI.listObjects(),
+  const { data, isLoading, error } = useQuery({
+    queryKey: queryKeys.typeMetadata(),
+    queryFn: async () => {
+      const [types, objects] = await Promise.all([
+        adaptIpcOutcome(window.typenoteAPI.listObjectTypes()),
+        adaptIpcOutcome(window.typenoteAPI.listObjects()),
       ]);
-
-      if (!typesResult.success || !objectsResult.success) {
-        setError('Failed to load type metadata');
-        return;
-      }
 
       // Count objects per type
       const countsByKey: Record<string, number> = {};
-      for (const obj of objectsResult.result) {
+      for (const obj of objects) {
         countsByKey[obj.typeKey] = (countsByKey[obj.typeKey] ?? 0) + 1;
       }
 
       // Build metadata
-      const metadata = typesResult.result.map((type) => ({
+      return types.map((type) => ({
         id: type.id,
         key: type.key,
         name: type.name,
@@ -51,18 +49,17 @@ export function useTypeMetadata(): UseTypeMetadataResult {
         icon: type.icon,
         count: countsByKey[type.key] ?? 0,
       }));
+    },
+  });
 
-      setTypes(metadata);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.typeMetadata() });
+  }, [queryClient]);
 
-  useEffect(() => {
-    void fetchMetadata();
-  }, [fetchMetadata]);
-
-  return { types, isLoading, error, refetch: fetchMetadata };
+  return {
+    types: data ?? [],
+    isLoading,
+    error: error ? String(error instanceof Error ? error.message : error) : null,
+    refetch,
+  };
 }
