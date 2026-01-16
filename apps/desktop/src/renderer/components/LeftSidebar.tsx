@@ -1,16 +1,25 @@
 import type { ReactElement } from 'react';
-import { FileText, CheckSquare, Settings, CalendarDays, StickyNote } from 'lucide-react';
+import { Settings, Archive, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import {
   Sidebar,
   SidebarSection,
   SidebarSearchTrigger,
+  SidebarCalendarButton,
   SidebarTypesList,
   SidebarTypeItem,
+  SidebarNewTypeButton,
   SidebarPinnedSection,
   SidebarActionButton,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   Button,
 } from '@typenote/design-system';
 import type { PinnedObjectSummary } from '@typenote/storage';
+import { getIconForType } from '../../config/typeMetadata.js';
+import { BUILT_IN_TYPE_KEYS } from '@typenote/api';
 
 type ViewMode = 'notes' | 'calendar' | 'type';
 
@@ -23,24 +32,23 @@ interface LeftSidebarProps {
   onReorderPinned: (ids: string[]) => void;
   selectedObjectId: string | null;
   onSelectObject: (id: string) => void;
-  typeCounts: Record<string, number>;
+  typeMetadata: Array<{
+    id: string;
+    key: string;
+    name: string;
+    color: string | null;
+    icon: string | null;
+    count: number;
+  }>;
   onOpenSettings: () => void;
   /** Currently selected type key (for TypeBrowser view) */
   selectedTypeKey: string | null;
   /** Called when a type is clicked in the sidebar */
   onSelectType: (typeKey: string) => void;
-}
-
-// Map typeKey to icon
-const typeIcons: Record<string, typeof FileText> = {
-  Page: FileText,
-  Task: CheckSquare,
-  DailyNote: CalendarDays,
-  Note: StickyNote,
-};
-
-function getIconForType(typeKey: string): typeof FileText {
-  return typeIcons[typeKey] ?? FileText;
+  onCreateType: () => void;
+  onEditType: (typeId: string) => void;
+  onDeleteType: (typeId: string) => void;
+  onOpenArchive: () => void;
 }
 
 /**
@@ -56,47 +64,87 @@ export function LeftSidebar({
   onReorderPinned,
   selectedObjectId,
   onSelectObject,
-  typeCounts,
+  typeMetadata,
   onOpenSettings,
   selectedTypeKey,
   onSelectType,
+  onCreateType,
+  onEditType,
+  onDeleteType,
+  onOpenArchive,
 }: LeftSidebarProps): ReactElement {
-  // Get sorted type keys for consistent display order
-  const typeKeys = Object.keys(typeCounts).sort();
+  const isBuiltInType = (typeKey: string): boolean => {
+    return BUILT_IN_TYPE_KEYS.includes(typeKey as never);
+  };
 
   return (
     <Sidebar collapsed={collapsed}>
-      {/* Search trigger */}
-      <SidebarSearchTrigger onClick={onOpenCommandPalette} />
-
-      {/* Today's Note button */}
-      <div className="mt-3 px-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start"
+      {/* Top section */}
+      <SidebarSection className="p-2 space-y-2">
+        <SidebarSearchTrigger onClick={onOpenCommandPalette} />
+        <SidebarCalendarButton
           onClick={onCreateDailyNote}
+          isToday={false}
           data-testid="create-daily-note-button"
-        >
-          <CalendarDays className="w-4 h-4 mr-2" />
-          Today's Note
-        </Button>
-      </div>
+        />
+      </SidebarSection>
 
       {/* Types section */}
-      {typeKeys.length > 0 && (
+      {typeMetadata.length > 0 && (
         <SidebarSection title="Types">
           <SidebarTypesList>
-            {typeKeys.map((typeKey) => (
-              <SidebarTypeItem
-                key={typeKey}
-                icon={getIconForType(typeKey)}
-                label={typeKey}
-                count={typeCounts[typeKey] ?? 0}
-                selected={viewMode === 'type' && selectedTypeKey === typeKey}
-                onClick={() => onSelectType(typeKey)}
-              />
-            ))}
+            {typeMetadata
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((type) => (
+                <div key={type.key} className="relative group">
+                  <SidebarTypeItem
+                    icon={getIconForType(type.key)}
+                    label={type.name}
+                    count={type.count}
+                    {...(type.color ? { color: type.color } : {})}
+                    selected={viewMode === 'type' && selectedTypeKey === type.key}
+                    onClick={() => onSelectType(type.key)}
+                  />
+                  {!isBuiltInType(type.key) && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-6 w-6 p-0 hover:bg-gray-200"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onSelect={(e) => {
+                              e.preventDefault();
+                              onEditType(type.id);
+                            }}
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit Type
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            destructive
+                            onSelect={(e) => {
+                              e.preventDefault();
+                              onDeleteType(type.id);
+                            }}
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Delete Type
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  )}
+                </div>
+              ))}
+            <SidebarNewTypeButton onClick={onCreateType} />
           </SidebarTypesList>
         </SidebarSection>
       )}
@@ -120,8 +168,11 @@ export function LeftSidebar({
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Settings - at bottom */}
-      <SidebarActionButton icon={Settings} label="Settings" onClick={onOpenSettings} withDivider />
+      {/* Bottom section */}
+      <SidebarSection className="p-2 space-y-1 mt-auto">
+        <SidebarActionButton icon={Archive} label="Archive" onClick={onOpenArchive} withDivider />
+        <SidebarActionButton icon={Settings} label="Settings" onClick={onOpenSettings} />
+      </SidebarSection>
     </Sidebar>
   );
 }

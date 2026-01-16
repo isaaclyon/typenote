@@ -11,10 +11,11 @@ import { LeftSidebar } from './components/LeftSidebar.js';
 import { PropertiesPanel } from './components/PropertiesPanel.js';
 import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
 import { TagPickerModal } from './components/TagPickerModal.js';
+import { TypeSettingsModal } from './components/TypeSettingsModal.js';
 import { CommandPalette } from './components/CommandPalette/index.js';
 import { useCommandPalette } from './hooks/useCommandPalette.js';
 import { usePinnedObjects } from './hooks/usePinnedObjects.js';
-import { useTypeCounts } from './hooks/useTypeCounts.js';
+import { useTypeMetadata } from './hooks/useTypeMetadata.js';
 import { useSelectedObject } from './hooks/useSelectedObject.js';
 
 type ViewMode = 'notes' | 'calendar' | 'type';
@@ -25,11 +26,13 @@ function App(): ReactElement {
   const [viewMode, setViewMode] = useState<ViewMode>('notes');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tagPickerOpen, setTagPickerOpen] = useState(false);
+  const [typeSettingsOpen, setTypeSettingsOpen] = useState(false);
+  const [editingTypeId, setEditingTypeId] = useState<string | null>(null);
 
   // Hooks
   const { isOpen, close, open } = useCommandPalette();
   const { pinnedObjects, reorderPinnedObjects } = usePinnedObjects();
-  const { counts: typeCounts } = useTypeCounts();
+  const { types: typeMetadata, refetch: refetchTypes } = useTypeMetadata();
   const { object: selectedObject, refetch: refetchSelectedObject } =
     useSelectedObject(selectedObjectId);
 
@@ -75,6 +78,40 @@ function App(): ReactElement {
     }
   };
 
+  const handleCreateType = () => {
+    setEditingTypeId(null);
+    setTypeSettingsOpen(true);
+  };
+
+  const handleEditType = (typeId: string) => {
+    setEditingTypeId(typeId);
+    setTypeSettingsOpen(true);
+  };
+
+  const handleDeleteType = async (typeId: string) => {
+    const type = typeMetadata.find((t) => t.id === typeId);
+    if (!type) return;
+
+    const confirmed = confirm(`Delete type "${type.name}"? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    const result = await window.typenoteAPI.deleteObjectType(typeId);
+    if (result.success) {
+      refetchTypes();
+      // If viewing this type, switch to notes view
+      if (viewMode === 'type' && selectedTypeKey === type.key) {
+        setViewMode('notes');
+        setSelectedTypeKey(null);
+      }
+    } else {
+      alert(`Failed to delete type: ${result.error.message}`);
+    }
+  };
+
+  const handleOpenArchive = () => {
+    alert('Archive view not yet implemented. Will show soft-deleted objects that can be restored.');
+  };
+
   // Show right sidebar only when viewing a note (but not for Daily Notes)
   const isDailyNote = selectedObject?.typeKey === 'DailyNote';
   const showRightSidebar = viewMode === 'notes' && selectedObjectId !== null && !isDailyNote;
@@ -106,10 +143,14 @@ function App(): ReactElement {
             onReorderPinned={reorderPinnedObjects}
             selectedObjectId={selectedObjectId}
             onSelectObject={setSelectedObjectId}
-            typeCounts={typeCounts}
+            typeMetadata={typeMetadata}
             onOpenSettings={() => setSettingsOpen(true)}
             selectedTypeKey={selectedTypeKey}
             onSelectType={handleSelectType}
+            onCreateType={handleCreateType}
+            onEditType={handleEditType}
+            onDeleteType={(typeId) => void handleDeleteType(typeId)}
+            onOpenArchive={handleOpenArchive}
           />
         )}
         {...rightSidebarProp}
@@ -157,6 +198,13 @@ function App(): ReactElement {
         onClose={() => setTagPickerOpen(false)}
         existingTagIds={selectedObject?.tags.map((t) => t.id) ?? []}
         onSelectTag={(tagId) => void handleAddTag(tagId)}
+      />
+      <TypeSettingsModal
+        open={typeSettingsOpen}
+        onClose={() => setTypeSettingsOpen(false)}
+        typeId={editingTypeId}
+        mode={editingTypeId ? 'edit' : 'create'}
+        onSuccess={refetchTypes}
       />
     </>
   );

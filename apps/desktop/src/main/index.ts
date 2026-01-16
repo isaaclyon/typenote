@@ -29,6 +29,19 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    // macOS: Hide title bar, inset traffic lights into content area
+    titleBarStyle: 'hiddenInset',
+    // Position traffic lights with padding from edge (macOS only)
+    trafficLightPosition: { x: 16, y: 16 },
+    // Windows: Overlay native window controls on content
+    ...(process.platform === 'win32' && {
+      titleBarStyle: 'hidden',
+      titleBarOverlay: {
+        color: '#ffffff',
+        symbolColor: '#374151', // gray-700
+        height: 40,
+      },
+    }),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

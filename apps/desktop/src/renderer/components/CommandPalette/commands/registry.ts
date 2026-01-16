@@ -11,7 +11,7 @@ import type { NavigationCommand, CreationCommand } from './types.js';
 /** Built-in type keys for object creation */
 const BUILT_IN_TYPE_KEYS = ['Page', 'DailyNote', 'Task', 'Person', 'Event', 'Place'] as const;
 
-/** Icon mapping by object type */
+/** Icon mapping by object type (string names for command palette) */
 const TYPE_ICONS: Record<string, string> = {
   Page: 'FileText',
   DailyNote: 'Calendar',
