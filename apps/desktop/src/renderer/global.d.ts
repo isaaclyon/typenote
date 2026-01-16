@@ -73,6 +73,17 @@ interface TypenoteAPI {
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
 
+  updateObject: (request: {
+    objectId: string;
+    baseDocVersion?: number;
+    patch: {
+      title?: string;
+      typeKey?: string;
+      properties?: Record<string, unknown>;
+    };
+    propertyMapping?: Record<string, string>;
+  }) => Promise<IpcOutcome<{ docVersion: number }>>;
+
   // Attachment operations
   uploadAttachment: (input: {
     filename: string;

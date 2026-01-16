@@ -8,6 +8,9 @@ import type {
   UserSettings,
   DuplicateObjectResponse,
   ObjectType,
+  ListObjectTypesOptions,
+  CreateObjectTypeInput,
+  UpdateObjectTypeInput,
   Tag,
   AssignTagsResult,
   RemoveTagsResult,
@@ -23,6 +26,9 @@ import type {
   CalendarItem,
   RecentObjectSummary,
   PinnedObjectSummary,
+  DeletedObjectSummary,
+  RestoreObjectResult,
+  ListDeletedObjectsOptions,
 } from '@typenote/storage';
 
 interface IpcSuccess<T> {
@@ -62,6 +68,10 @@ export interface TypenoteAPI {
   >;
   getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
   getObjectTypeByKey: (typeKey: string) => Promise<IpcOutcome<ObjectType | null>>;
+  listObjectTypes: (options?: ListObjectTypesOptions) => Promise<IpcOutcome<ObjectType[]>>;
+  createObjectType: (input: CreateObjectTypeInput) => Promise<IpcOutcome<ObjectType>>;
+  updateObjectType: (id: string, input: UpdateObjectTypeInput) => Promise<IpcOutcome<ObjectType>>;
+  deleteObjectType: (id: string) => Promise<IpcOutcome<void>>;
   searchBlocks: (
     query: string,
     filters?: { objectId?: string; limit?: number }
@@ -74,6 +84,16 @@ export interface TypenoteAPI {
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
   duplicateObject: (objectId: string) => Promise<IpcOutcome<DuplicateObjectResponse>>;
+  updateObject: (request: {
+    objectId: string;
+    baseDocVersion?: number;
+    patch: {
+      title?: string;
+      typeKey?: string;
+      properties?: Record<string, unknown>;
+    };
+    propertyMapping?: Record<string, string>;
+  }) => Promise<IpcOutcome<{ docVersion: number }>>;
   // Attachment operations
   uploadAttachment: (input: {
     filename: string;
@@ -118,6 +138,12 @@ export interface TypenoteAPI {
   getSettings: () => Promise<IpcOutcome<UserSettings>>;
   updateSettings: (updates: Partial<UserSettings>) => Promise<IpcOutcome<void>>;
   resetSettings: () => Promise<IpcOutcome<void>>;
+
+  // Trash operations
+  listDeletedObjects: (
+    options?: ListDeletedObjectsOptions
+  ) => Promise<IpcOutcome<DeletedObjectSummary[]>>;
+  restoreObject: (objectId: string) => Promise<IpcOutcome<RestoreObjectResult>>;
 
   // Events
   onEvent: (callback: (event: TypenoteEvent) => void) => () => void;

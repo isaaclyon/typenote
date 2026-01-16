@@ -63,8 +63,14 @@ import {
   // Trash service
   listDeletedObjects as listDeletedObjectsStorage,
   restoreObject as restoreObjectStorage,
+  // Object type service
+  listObjectTypes as listObjectTypesStorage,
+  createObjectType as createObjectTypeStorage,
+  updateObjectType as updateObjectTypeStorage,
+  deleteObjectType as deleteObjectTypeStorage,
   AttachmentServiceError,
   TrashServiceError,
+  ObjectTypeError,
   DocumentNotFoundError,
   CreateObjectError,
   DailyNoteError,
@@ -109,6 +115,9 @@ import {
   type UserSettings,
   type DuplicateObjectResponse,
   type ObjectType,
+  type ListObjectTypesOptions,
+  type CreateObjectTypeInput,
+  type UpdateObjectTypeInput,
   UpdateObjectRequestSchema,
   type UpdateObjectRequest,
   type UpdateObjectResponse,
@@ -275,6 +284,11 @@ export interface IpcHandlers {
   // Trash operations
   listDeletedObjects: (options?: ListDeletedObjectsOptions) => IpcOutcome<DeletedObjectSummary[]>;
   restoreObject: (objectId: string) => IpcOutcome<RestoreObjectResult>;
+  // Object type operations
+  listObjectTypes: (options?: ListObjectTypesOptions) => IpcOutcome<ObjectType[]>;
+  createObjectType: (input: CreateObjectTypeInput) => IpcOutcome<ObjectType>;
+  updateObjectType: (id: string, input: UpdateObjectTypeInput) => IpcOutcome<ObjectType>;
+  deleteObjectType: (id: string) => IpcOutcome<void>;
 }
 
 export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {
@@ -630,6 +644,21 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
       }
       return outcome;
     },
+
+    // Object type operations
+    listObjectTypes: (options) => handleIpcCall(() => listObjectTypesStorage(db, options)),
+
+    createObjectType: (input) =>
+      handleIpcCall(() => createObjectTypeStorage(db, input), ObjectTypeError),
+
+    updateObjectType: (id, input) =>
+      handleIpcCall(() => updateObjectTypeStorage(db, id, input), ObjectTypeError),
+
+    deleteObjectType: (id) =>
+      handleIpcCall(() => {
+        deleteObjectTypeStorage(db, id);
+        return undefined;
+      }, ObjectTypeError),
   };
 }
 

@@ -25,6 +25,32 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getObjectTypeByKey: (typeKey: string) =>
     ipcRenderer.invoke('typenote:getObjectTypeByKey', typeKey),
 
+  listObjectTypes: (options?: { builtInOnly?: boolean; customOnly?: boolean }) =>
+    ipcRenderer.invoke('typenote:listObjectTypes', options),
+
+  createObjectType: (input: {
+    key: string;
+    name: string;
+    // Optional properties - omit entirely if not needed (don't pass undefined with exactOptionalPropertyTypes)
+    icon?: string;
+    color?: string;
+    pluralName?: string;
+    description?: string;
+  }) => ipcRenderer.invoke('typenote:createObjectType', input),
+
+  updateObjectType: (
+    id: string,
+    input: {
+      name?: string;
+      icon?: string | null;
+      color?: string | null;
+      pluralName?: string | null;
+      description?: string | null;
+    }
+  ) => ipcRenderer.invoke('typenote:updateObjectType', id, input),
+
+  deleteObjectType: (id: string) => ipcRenderer.invoke('typenote:deleteObjectType', id),
+
   searchBlocks: (query: string, filters?: { objectId?: string; limit?: number }) =>
     ipcRenderer.invoke('typenote:searchBlocks', query, filters),
 
