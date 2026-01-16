@@ -40,14 +40,6 @@ function App(): ReactElement {
     }
   };
 
-  const handleNavigateToDailyNote = async (dateKey: string) => {
-    const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(dateKey);
-    if (result.success) {
-      setSelectedObjectId(result.result.dailyNote.id);
-      setViewMode('notes');
-    }
-  };
-
   const handleSelectType = (typeKey: string) => {
     setSelectedTypeKey(typeKey);
     setViewMode('type');
@@ -108,7 +100,6 @@ function App(): ReactElement {
             onOpenSettings={() => setSettingsOpen(true)}
             selectedTypeKey={selectedTypeKey}
             onSelectType={handleSelectType}
-            onNavigateToDailyNote={(dateKey) => void handleNavigateToDailyNote(dateKey)}
           />
         )}
         {...rightSidebarProp}
