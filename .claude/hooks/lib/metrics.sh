@@ -6,12 +6,25 @@
 #   source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
 #   log_hook_metric "$hook_name" "$exit_code" "$duration_ms" "$file_path" "$violation_count"
 
-set -euo pipefail
+set -eo pipefail  # Removed -u to allow unset variables
 
 # Database location (can be overridden via environment variable)
 # Calculate project root (assuming hooks are in .claude/hooks/)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# Use BASH_SOURCE if available, otherwise try to find .git directory
+if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+else
+  # Fallback: search upwards for .git directory
+  PROJECT_ROOT="$(pwd)"
+  while [[ "$PROJECT_ROOT" != "/" && ! -d "$PROJECT_ROOT/.git" ]]; do
+    PROJECT_ROOT="$(dirname "$PROJECT_ROOT")"
+  done
+  if [[ "$PROJECT_ROOT" == "/" ]]; then
+    PROJECT_ROOT="$(pwd)"  # Give up, use current directory
+  fi
+fi
+
 METRICS_DB="${METRICS_DB:-$PROJECT_ROOT/.claude/metrics.db}"
 
 # Initialize metrics database if it doesn't exist
