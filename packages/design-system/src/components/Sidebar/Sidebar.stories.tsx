@@ -1,6 +1,17 @@
 import * as React from 'react';
 import type { Story } from '@ladle/react';
-import { FileText, CheckSquare, User, Folder, BookOpen, Archive, Settings } from 'lucide-react';
+import {
+  FileText,
+  CheckSquare,
+  User,
+  Folder,
+  BookOpen,
+  Archive,
+  Settings,
+  MoreHorizontal,
+  Pencil,
+  Trash,
+} from 'lucide-react';
 import { DEMO_TYPE_COLORS } from '../../constants/demoColors.js';
 import { Sidebar } from './Sidebar.js';
 import { SidebarSection } from './SidebarSection.js';
@@ -12,6 +23,14 @@ import { SidebarActionButton } from './SidebarActionButton.js';
 import { SidebarNewTypeButton } from './SidebarNewTypeButton.js';
 import { Skeleton } from '../Skeleton/index.js';
 import { EmptyState } from '../EmptyState/index.js';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  Button,
+} from '../index.js';
 
 export default {
   title: 'Components/Sidebar',
@@ -372,3 +391,104 @@ export const ActionButtonVariants: Story = () => (
     </section>
   </div>
 );
+
+export const TypeItemWithActions: Story = () => (
+  <div className="space-y-4 max-w-md">
+    <section>
+      <h3 className="text-sm font-semibold mb-4">Type Items with Action Menus</h3>
+      <div className="border border-gray-200 rounded p-2 bg-white space-y-1">
+        <SidebarTypeItem
+          icon={FileText}
+          label="Notes"
+          count={42}
+          color={DEMO_TYPE_COLORS.notes}
+          actions={
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-gray-200"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    alert('Edit Notes type');
+                  }}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit Type
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    alert('Delete Notes type');
+                  }}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete Type
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          }
+        />
+        <SidebarTypeItem
+          icon={CheckSquare}
+          label="Tasks"
+          count={18}
+          color={DEMO_TYPE_COLORS.tasks}
+          actions={
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-gray-200"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    alert('Edit Tasks type');
+                  }}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit Type
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    alert('Delete Tasks type');
+                  }}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete Type
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          }
+        />
+        <SidebarTypeItem
+          icon={User}
+          label="People"
+          count={7}
+          color={DEMO_TYPE_COLORS.events}
+          // No actions prop - shows item without menu
+        />
+      </div>
+    </section>
+  </div>
+);
+
+TypeItemWithActions.storyName = 'Type Items with Actions';

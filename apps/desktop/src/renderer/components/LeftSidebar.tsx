@@ -80,7 +80,7 @@ export function LeftSidebar({
   return (
     <Sidebar collapsed={collapsed} hasTitleBarPadding className="app-region-drag">
       {/* Top section */}
-      <SidebarSection className="p-2 space-y-2">
+      <SidebarSection className="p-2 space-y-2 app-region-no-drag">
         <SidebarSearchTrigger onClick={onOpenCommandPalette} />
         <SidebarCalendarButton
           onClick={onCreateDailyNote}
@@ -91,22 +91,21 @@ export function LeftSidebar({
 
       {/* Types section */}
       {typeMetadata.length > 0 && (
-        <SidebarSection title="Types">
+        <SidebarSection title="Types" className="app-region-no-drag">
           <SidebarTypesList>
             {typeMetadata
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((type) => (
-                <div key={type.key} className="relative group">
-                  <SidebarTypeItem
-                    icon={getIconForType(type.key)}
-                    label={type.name}
-                    count={type.count}
-                    {...(type.color ? { color: type.color } : {})}
-                    selected={viewMode === 'type' && selectedTypeKey === type.key}
-                    onClick={() => onSelectType(type.key)}
-                  />
-                  {!isBuiltInType(type.key) && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <SidebarTypeItem
+                  key={type.key}
+                  icon={getIconForType(type.key)}
+                  label={type.name}
+                  count={type.count}
+                  {...(type.color ? { color: type.color } : {})}
+                  selected={viewMode === 'type' && selectedTypeKey === type.key}
+                  onClick={() => onSelectType(type.key)}
+                  actions={
+                    !isBuiltInType(type.key) ? (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -129,7 +128,7 @@ export function LeftSidebar({
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
-                            destructive
+                            variant="destructive"
                             onSelect={(e) => {
                               e.preventDefault();
                               onDeleteType(type.id);
@@ -140,9 +139,9 @@ export function LeftSidebar({
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </div>
-                  )}
-                </div>
+                    ) : undefined
+                  }
+                />
               ))}
             <SidebarNewTypeButton onClick={onCreateType} />
           </SidebarTypesList>
@@ -151,7 +150,7 @@ export function LeftSidebar({
 
       {/* Pinned section */}
       {pinnedObjects.length > 0 && (
-        <SidebarSection title="Pinned">
+        <SidebarSection title="Pinned" className="app-region-no-drag">
           <SidebarPinnedSection
             items={pinnedObjects.map((p) => ({
               id: p.id,
@@ -169,7 +168,7 @@ export function LeftSidebar({
       <div className="flex-1" />
 
       {/* Bottom section */}
-      <SidebarSection className="p-2 space-y-1 mt-auto">
+      <SidebarSection className="p-2 space-y-1 mt-auto app-region-no-drag">
         <SidebarActionButton icon={Archive} label="Archive" onClick={onOpenArchive} withDivider />
         <SidebarActionButton icon={Settings} label="Settings" onClick={onOpenSettings} />
       </SidebarSection>

@@ -19,6 +19,8 @@ export interface SidebarTypeItemProps {
   selected?: boolean;
   onClick?: () => void;
   className?: string;
+  /** Optional actions slot (e.g., dropdown menu for edit/delete) */
+  actions?: React.ReactNode;
 }
 
 // Search trigger

@@ -4,7 +4,7 @@ import { cn } from '../../utils/cn.js';
 import type { SidebarTypeItemProps } from './types.js';
 
 const typeItemVariants = cva(
-  'flex items-center gap-3 h-7 px-3 rounded-md transition-colors cursor-pointer group',
+  'grid grid-cols-[14px_1fr_auto_auto] items-center gap-3 h-7 px-3 rounded transition-colors cursor-pointer group',
   {
     variants: {
       selected: {
@@ -21,7 +21,7 @@ const typeItemVariants = cva(
 export interface TypeItemVariantProps extends VariantProps<typeof typeItemVariants> {}
 
 const SidebarTypeItem = React.forwardRef<HTMLButtonElement, SidebarTypeItemProps>(
-  ({ icon: Icon, label, count, color, selected = false, onClick, className }, ref) => {
+  ({ icon: Icon, label, count, color, selected = false, onClick, className, actions }, ref) => {
     return (
       <button
         ref={ref}
@@ -33,15 +33,23 @@ const SidebarTypeItem = React.forwardRef<HTMLButtonElement, SidebarTypeItemProps
         )}
       >
         <Icon className="w-3.5 h-3.5 shrink-0" style={color ? { color } : undefined} />
-        <span className="text-sm font-medium flex-1 truncate text-left">{label}</span>
+        <span className="text-sm font-medium truncate text-left">{label}</span>
         <span
           className={cn(
-            'text-xs font-mono text-gray-400 transition-opacity',
+            'text-[11px] font-mono text-gray-400 transition-opacity w-6 text-right',
             'opacity-0 group-hover:opacity-100'
           )}
         >
           {count}
         </span>
+        <div
+          className={cn(
+            'w-6 flex items-center justify-center transition-opacity',
+            actions ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'
+          )}
+        >
+          {actions}
+        </div>
       </button>
     );
   }
