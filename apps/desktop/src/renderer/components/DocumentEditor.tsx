@@ -11,6 +11,7 @@
 /// <reference path="../global.d.ts" />
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Editor } from '@tiptap/react';
 import type { DocumentBlock } from '@typenote/api';
 import {
   InteractiveEditor,
@@ -96,6 +97,14 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
   // Ref to access the InteractiveEditor's editor instance
   const editorRef = useRef<InteractiveEditorRef>(null);
 
+  // State to track when editor becomes ready (refs don't trigger re-renders)
+  const [editor, setEditor] = useState<Editor | null>(null);
+
+  // Handler for when InteractiveEditor notifies us the editor is ready
+  const handleEditorReady = useCallback((e: Editor) => {
+    setEditor(e);
+  }, []);
+
   // Search handler for wiki-link suggestions (returns MockNote format)
   const handleRefSearch = useCallback(async (query: string): Promise<MockNote[]> => {
     if (!query.trim()) return [];
@@ -135,13 +144,13 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
     }
   }, []);
 
-  // Wire up auto-save hook using editor from ref
+  // Wire up auto-save hook using editor from state (not ref, since refs don't trigger re-renders)
   const {
     isSaving,
     lastSaved,
     error: saveError,
   } = useAutoSave({
-    editor: editorRef.current?.editor ?? null,
+    editor,
     objectId,
     initialBlocks,
     onSaveSuccess: handleSaveSuccess,
@@ -155,8 +164,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
     return 'idle';
   })();
 
-  // Wire up image upload handlers for drag-drop and paste
-  const editor = editorRef.current?.editor ?? null;
+  // Wire up image upload handlers for drag-drop and paste (uses state-based editor)
   const { handleDrop, handlePaste } = useImageUpload(editor);
 
   useEffect(() => {
@@ -321,6 +329,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
               onCreate: handleRefCreate,
             }}
             onNavigateToRef={onNavigate}
+            onEditorReady={handleEditorReady}
           />
         </div>
 

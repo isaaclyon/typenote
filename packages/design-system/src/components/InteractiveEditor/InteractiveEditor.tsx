@@ -51,6 +51,7 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
       minHeight = '200px',
       hideTitle = false,
       // IPC integration callbacks (optional - falls back to mock data)
+      onEditorReady,
       refSuggestionCallbacks,
       tagSuggestionCallbacks,
       onNavigateToRef,
@@ -135,6 +136,13 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
 
     // Expose editor instance via ref for auto-save integration
     React.useImperativeHandle(ref, () => ({ editor }), [editor]);
+
+    // Notify parent when editor becomes ready (for auto-save wiring)
+    React.useEffect(() => {
+      if (editor && onEditorReady) {
+        onEditorReady(editor);
+      }
+    }, [editor, onEditorReady]);
 
     // Container ref for the DOM element (separate from editor ref)
     const containerRef = React.useRef<HTMLDivElement>(null);

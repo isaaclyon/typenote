@@ -84,6 +84,9 @@ export interface InteractiveEditorProps {
   // IPC Integration Callbacks (optional - falls back to mock data)
   // ─────────────────────────────────────────────────────────────────────────────
 
+  /** Called when the TipTap editor instance becomes available */
+  onEditorReady?: (editor: Editor) => void;
+
   /** Callbacks for ref (wiki-link) suggestions. Falls back to mock data if not provided. */
   refSuggestionCallbacks?: RefSuggestionCallbacks;
   /** Callbacks for tag suggestions. Falls back to mock data if not provided. */

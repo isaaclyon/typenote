@@ -80,15 +80,15 @@ test.describe('Slash Commands', () => {
       // Wait for menu
       await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
 
-      // Should show only 6 heading commands
-      const headingCommands = page.locator('[data-testid^="slash-command-heading-"]');
+      // Should show only 3 heading commands (heading1, heading2, heading3)
+      const headingCommands = page.locator('[data-testid^="slash-command-heading"]');
       const count = await headingCommands.count();
-      expect(count).toBe(6);
+      expect(count).toBe(3);
 
       // Verify specific headings are visible
-      await expect(page.getByTestId('slash-command-heading-1')).toBeVisible();
-      await expect(page.getByTestId('slash-command-heading-2')).toBeVisible();
-      await expect(page.getByTestId('slash-command-heading-6')).toBeVisible();
+      await expect(page.getByTestId('slash-command-heading1')).toBeVisible();
+      await expect(page.getByTestId('slash-command-heading2')).toBeVisible();
+      await expect(page.getByTestId('slash-command-heading3')).toBeVisible();
     });
 
     test('filters by alias (h1 shows heading-1)', async ({ window: page }) => {
@@ -99,8 +99,8 @@ test.describe('Slash Commands', () => {
       // Wait for menu
       await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
 
-      // Should show heading-1 command
-      await expect(page.getByTestId('slash-command-heading-1')).toBeVisible();
+      // Should show heading1 command
+      await expect(page.getByTestId('slash-command-heading1')).toBeVisible();
 
       // Should also match other h* commands as substring
       // (h1 matches h1, but also "checklist" contains no h1, and "checkbox" contains no h1)
@@ -139,9 +139,9 @@ test.describe('Slash Commands', () => {
       // Type more to narrow down to "heading"
       await page.keyboard.type('eading');
 
-      // Now should only show 6 heading commands
-      const filteredCount = await page.locator('[data-testid^="slash-command-heading-"]').count();
-      expect(filteredCount).toBe(6);
+      // Now should only show 3 heading commands (heading1, heading2, heading3)
+      const filteredCount = await page.locator('[data-testid^="slash-command-heading"]').count();
+      expect(filteredCount).toBe(3);
     });
   });
 
@@ -381,7 +381,7 @@ test.describe('Slash Commands', () => {
       await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
 
       // Click on heading-2 command
-      await page.getByTestId('slash-command-heading-2').click();
+      await page.getByTestId('slash-command-heading2').click();
 
       // Menu should close
       await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });

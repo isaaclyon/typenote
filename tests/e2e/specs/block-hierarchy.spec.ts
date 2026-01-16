@@ -220,7 +220,7 @@ test.describe('Block Manipulation', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Re-select the daily note
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Verify content persisted
@@ -252,7 +252,7 @@ test.describe('Block Manipulation', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Re-select note
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Verify order persisted
@@ -353,7 +353,7 @@ test.describe('Block Ordering', () => {
     // Reload and verify
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Check order
@@ -577,7 +577,7 @@ test.describe('Rich Content', () => {
     // Reload
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Verify formatting persisted
@@ -679,7 +679,7 @@ test.describe('Block Nesting (List Indentation)', () => {
     // Reload
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Verify list content persisted
@@ -769,7 +769,7 @@ test.describe('Task Lists', () => {
     // Reload
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Verify content persisted
@@ -1237,7 +1237,7 @@ test.describe('Edge Cases', () => {
     // Reload and verify
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     await expect(page.locator('.ProseMirror')).toContainText('Quick typing test content here');
@@ -1261,7 +1261,7 @@ test.describe('Edge Cases', () => {
     // Reload and verify
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    await page.getByTestId('create-daily-note-button').click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     await expect(page.locator('.ProseMirror')).toContainText('Special: <>&"\'');
