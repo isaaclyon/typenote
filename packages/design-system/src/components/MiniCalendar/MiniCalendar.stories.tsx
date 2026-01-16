@@ -276,3 +276,42 @@ export const AllStates: Story = () => {
 AllStates.meta = {
   description: 'Visual reference for all calendar day states',
 };
+
+export const ResponsiveWidths: Story = () => {
+  const today = getTodayKey();
+  const datesWithNotes = generateSampleDatesWithNotes();
+
+  return (
+    <div className="space-y-8">
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">At 280px (minimum sidebar width)</h3>
+        <div style={{ width: '280px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <MiniCalendar selectedDate={today} datesWithNotes={datesWithNotes} />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">At 340px (mid-range)</h3>
+        <div style={{ width: '340px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <MiniCalendar selectedDate={today} datesWithNotes={datesWithNotes} />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">At 400px (maximum sidebar width)</h3>
+        <div style={{ width: '400px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <MiniCalendar selectedDate={today} datesWithNotes={datesWithNotes} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+ResponsiveWidths.meta = {
+  description: 'Shows how the calendar adapts to different sidebar widths',
+};

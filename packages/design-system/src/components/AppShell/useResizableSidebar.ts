@@ -99,7 +99,8 @@ export function useResizableSidebar({
   });
 
   // Use the generic resize panel hook
-  // Allow dragging below minWidth (down to 0) so snap-to-collapse can work
+  // If snap-to-collapse is enabled (snapThreshold > 0), allow dragging to 0 for detection
+  // If snap is disabled (snapThreshold = 0), enforce hard stop at minWidth
   const {
     width: resizeWidth,
     isResizing,
@@ -107,7 +108,7 @@ export function useResizableSidebar({
     setWidth,
   } = useResizablePanel({
     defaultWidth: lastExpandedWidth,
-    minWidth: 0, // Allow dragging to 0 for snap detection
+    minWidth: snapThreshold > 0 ? 0 : minWidth, // Hard stop at minWidth when snap disabled
     maxWidth,
     direction: side,
     storageKey: widthStorageKey,

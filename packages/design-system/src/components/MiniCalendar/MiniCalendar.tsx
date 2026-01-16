@@ -92,7 +92,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
     return (
       <div
         ref={ref}
-        className={cn('w-56 select-none', className)}
+        className={cn('w-full select-none', className)}
         role="application"
         aria-label="Calendar"
       >

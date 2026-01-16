@@ -256,3 +256,64 @@ export const NoIcons: Story = () => {
 NoIcons.meta = {
   description: 'Items without icons still render correctly',
 };
+
+export const ResponsiveWidths: Story = () => {
+  const items: NotesCreatedItem[] = [
+    {
+      id: '1',
+      title: 'Meeting Notes',
+      typeIcon: 'FileText',
+      typeColor: DEMO_TYPE_COLORS.notes,
+    },
+    {
+      id: '2',
+      title: 'Very Long Project Title That Should Truncate Gracefully When Space Is Limited',
+      typeIcon: 'Folder',
+      typeColor: DEMO_TYPE_COLORS.projects,
+    },
+    {
+      id: '3',
+      title: 'Task',
+      typeIcon: 'CheckSquare',
+      typeColor: DEMO_TYPE_COLORS.success,
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">At 280px (minimum sidebar width)</h3>
+        <div style={{ width: '280px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <NotesCreatedList date="2026-01-16" items={items} isLoading={false} />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">
+          At 340px (mid-range) - More title visible
+        </h3>
+        <div style={{ width: '340px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <NotesCreatedList date="2026-01-16" items={items} isLoading={false} />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">
+          At 400px (maximum sidebar width) - Full titles visible
+        </h3>
+        <div style={{ width: '400px' }} className="border border-gray-200 bg-gray-50/50">
+          <div className="px-6 py-4">
+            <NotesCreatedList date="2026-01-16" items={items} isLoading={false} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+ResponsiveWidths.meta = {
+  description: 'Shows how list items expand and more title text becomes visible at wider widths',
+};

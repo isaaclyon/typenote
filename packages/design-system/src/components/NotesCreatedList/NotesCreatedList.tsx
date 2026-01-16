@@ -68,7 +68,7 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
     };
 
     return (
-      <div ref={ref} className={cn('w-56', className)}>
+      <div ref={ref} className={cn('w-full', className)}>
         {/* Header */}
         {showHeader && (
           <h3 className="text-xs font-medium text-gray-500 mb-2">{formatHeaderDate(date)}</h3>
