@@ -6,10 +6,10 @@ Track which design system components have been migrated from Ladle to the deskto
 
 | Status                   | Count  | Percentage |
 | ------------------------ | ------ | ---------- |
-| ✅ Migrated              | 30     | 91%        |
+| ✅ Migrated              | 32     | 97%        |
 | 🟡 Ready for Integration | 0      | 0%         |
-| 🟠 Major Refactor        | 1      | 3%         |
-| ⚪ Optional              | 2      | 6%         |
+| 🟠 Major Refactor        | 0      | 0%         |
+| ⚪ Optional              | 1      | 3%         |
 | **Total**                | **33** | 100%       |
 
 ---
@@ -56,6 +56,8 @@ Drop-in components already used in the desktop app.
 - [x] **TypeBrowser** — Rich table view for object collections
   - Includes: ColumnPinMenu
   - Status: Fully integrated with sorting, virtualization, and IPC wiring (2026-01-15)
+- [x] **NotesCreatedList** — Notes created list for daily note layout
+  - Status: Used in DailyNoteLayout.tsx (discovered via audit v2)
 
 ---
 
@@ -65,18 +67,19 @@ Drop-in components already used in the desktop app.
 
 ---
 
-## Tier 3: Major Refactors 🟠
+## Tier 3: Major Refactors ✅
 
-Remaining organism-level components requiring architectural changes.
+All organism-level components have been migrated.
 
 - [x] **InteractiveEditor** — Desktop app now uses `DocumentEditor` wrapper
   - Includes: RefNode, TagNode, SlashCommand, and all TipTap extensions
   - Status: Fully migrated via commit `260c23c` (2026-01-15)
   - Desktop's DocumentEditor wraps InteractiveEditor with IPC callbacks
 
-- [ ] **EditorPreview** — Read-only editor preview
-  - Includes: AttachmentNode, CalloutNode, CodeBlock, MathBlock, MathInline, RefNode, TagNode
-  - Note: Component exists in design-system, needs integration into object list views
+- [x] **EditorPreview** — Read-only editor preview (uses `InteractiveEditor editable={false}`)
+  - No separate component needed — InteractiveEditor supports `editable` prop natively
+  - Stories: `ReadOnly`, `PreviewCompact` demonstrate usage patterns
+  - Integration: Use in TypeBrowser row expansion, hover previews, or detail panes
 
 ---
 
@@ -84,12 +87,15 @@ Remaining organism-level components requiring architectural changes.
 
 Specialized components with limited use cases.
 
-- [ ] **NotesCreatedList** — Specialized list display
-- [ ] **TagChip** — Tag display variant
+- [ ] **EditorPreview** — Separate read-only preview component (exists but unused)
+  - Has custom renderers: MathBlock, CodeBlock, RefNode, TagNode, etc.
+  - Alternative: Use `InteractiveEditor editable={false}` (simpler, already works)
 
 ### Not Applicable
 
 - ~~Checkbox~~ — TipTap handles task lists internally (no migration needed)
+- ~~TagChip~~ — Merged into `Tag` component (has `onRemove`, `onClick` props)
+- ~~NotesCreatedList~~ — Actually IS used (DailyNoteLayout.tsx) — moved to Tier 1
 
 ---
 
