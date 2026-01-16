@@ -7,11 +7,11 @@ import { cn } from '../../utils/cn.js';
 import type { SidebarPinnedItemProps } from './types.js';
 
 const pinnedItemVariants = cva(
-  'flex items-center gap-3 h-7 px-3 rounded-md transition-colors cursor-pointer group',
+  'flex items-center gap-3 h-7 px-3 rounded-md transition-colors duration-150 cursor-pointer group',
   {
     variants: {
       selected: {
-        true: 'bg-accent-50 text-accent-700',
+        true: 'bg-accent-50',
         false: 'hover:bg-gray-50',
       },
     },
