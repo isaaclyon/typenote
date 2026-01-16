@@ -1,29 +1,48 @@
-/// <reference path="./global.d.ts" />
+/**
+ * AppLayout Component
+ *
+ * Main layout component that provides the app shell with sidebars and modals.
+ * Uses React Router's Outlet to render child routes in the main content area.
+ */
+
+/// <reference path="../global.d.ts" />
 
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { AppShell, Toaster, ScrollArea } from '@typenote/design-system';
-import { DocumentEditor } from './components/DocumentEditor.js';
-import { DailyNoteLayout } from './components/DailyNoteLayout.js';
-import { CalendarView } from './components/calendar/index.js';
-import { TypeBrowserView } from './components/TypeBrowserView.js';
-import { LeftSidebar } from './components/LeftSidebar.js';
-import { PropertiesPanel } from './components/PropertiesPanel.js';
-import { SettingsModalWrapper } from './components/SettingsModalWrapper.js';
-import { TagPickerModal } from './components/TagPickerModal.js';
-import { TypeSettingsModal } from './components/TypeSettingsModal.js';
-import { CommandPalette } from './components/CommandPalette/index.js';
-import { useCommandPalette } from './hooks/useCommandPalette.js';
-import { usePinnedObjects } from './hooks/usePinnedObjects.js';
-import { useTypeMetadata } from './hooks/useTypeMetadata.js';
-import { useSelectedObject } from './hooks/useSelectedObject.js';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { AppShell, Toaster } from '@typenote/design-system';
+import { LeftSidebar } from '../components/LeftSidebar.js';
+import { PropertiesPanel } from '../components/PropertiesPanel.js';
+import { SettingsModalWrapper } from '../components/SettingsModalWrapper.js';
+import { TagPickerModal } from '../components/TagPickerModal.js';
+import { TypeSettingsModal } from '../components/TypeSettingsModal.js';
+import { CommandPalette } from '../components/CommandPalette/index.js';
+import { useCommandPalette } from '../hooks/useCommandPalette.js';
+import { usePinnedObjects } from '../hooks/usePinnedObjects.js';
+import { useTypeMetadata } from '../hooks/useTypeMetadata.js';
+import { useSelectedObject } from '../hooks/useSelectedObject.js';
 
 type ViewMode = 'notes' | 'calendar' | 'type';
 
-function App(): ReactElement {
-  const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
-  const [selectedTypeKey, setSelectedTypeKey] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('notes');
+export function AppLayout(): ReactElement {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract objectId and typeKey from URL
+  const objectIdMatch = location.pathname.match(/\/notes\/([^/]+)/);
+  const selectedObjectId = objectIdMatch?.[1] ?? null;
+
+  const typeKeyMatch = location.pathname.match(/\/types\/([^/]+)/);
+  const selectedTypeKey = typeKeyMatch?.[1] ?? null;
+
+  // Determine view mode from URL
+  const viewMode: ViewMode = location.pathname.startsWith('/calendar')
+    ? 'calendar'
+    : location.pathname.startsWith('/types')
+      ? 'type'
+      : 'notes';
+
+  // Modal state (kept in component state, not URL)
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tagPickerOpen, setTagPickerOpen] = useState(false);
   const [typeSettingsOpen, setTypeSettingsOpen] = useState(false);
@@ -36,24 +55,23 @@ function App(): ReactElement {
   const { object: selectedObject, refetch: refetchSelectedObject } =
     useSelectedObject(selectedObjectId);
 
-  const handleCreateDailyNote = async () => {
-    const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
-    if (result.success) {
-      setSelectedObjectId(result.result.dailyNote.id);
-      setViewMode('notes');
-    }
+  // Navigation handlers
+  const handleSelectObject = (objectId: string) => {
+    navigate(`/notes/${objectId}`);
   };
 
   const handleSelectType = (typeKey: string) => {
-    setSelectedTypeKey(typeKey);
-    setViewMode('type');
+    navigate(`/types/${typeKey}`);
   };
 
-  const handleOpenObjectFromTypeBrowser = (objectId: string) => {
-    setSelectedObjectId(objectId);
-    setViewMode('notes');
+  const handleCreateDailyNote = async () => {
+    const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
+    if (result.success) {
+      navigate(`/notes/${result.result.dailyNote.id}`);
+    }
   };
 
+  // Tag handlers
   const handleRemoveTag = async (tagId: string) => {
     if (!selectedObjectId) return;
     const result = await window.typenoteAPI.removeTags(selectedObjectId, [tagId]);
@@ -70,14 +88,7 @@ function App(): ReactElement {
     }
   };
 
-  const handleNavigateToDailyNote = async (dateKey: string) => {
-    const result = await window.typenoteAPI.getOrCreateDailyNoteByDate(dateKey);
-    if (result.success) {
-      setSelectedObjectId(result.result.dailyNote.id);
-      setViewMode('notes');
-    }
-  };
-
+  // Type handlers
   const handleCreateType = () => {
     setEditingTypeId(null);
     setTypeSettingsOpen(true);
@@ -100,8 +111,7 @@ function App(): ReactElement {
       refetchTypes();
       // If viewing this type, switch to notes view
       if (viewMode === 'type' && selectedTypeKey === type.key) {
-        setViewMode('notes');
-        setSelectedTypeKey(null);
+        navigate('/notes');
       }
     } else {
       alert(`Failed to delete type: ${result.error.message}`);
@@ -142,7 +152,7 @@ function App(): ReactElement {
             pinnedObjects={pinnedObjects}
             onReorderPinned={reorderPinnedObjects}
             selectedObjectId={selectedObjectId}
-            onSelectObject={setSelectedObjectId}
+            onSelectObject={handleSelectObject}
             typeMetadata={typeMetadata}
             onOpenSettings={() => setSettingsOpen(true)}
             selectedTypeKey={selectedTypeKey}
@@ -158,40 +168,12 @@ function App(): ReactElement {
         rightSidebarStorageKey="typenote.sidebar.right.collapsed"
         className="h-screen"
       >
-        {/* Main content area */}
-        {viewMode === 'calendar' ? (
-          <CalendarView
-            onNavigate={(id) => {
-              setSelectedObjectId(id);
-              setViewMode('notes');
-            }}
-          />
-        ) : viewMode === 'type' && selectedTypeKey ? (
-          <TypeBrowserView
-            typeKey={selectedTypeKey}
-            onOpenObject={handleOpenObjectFromTypeBrowser}
-          />
-        ) : selectedObjectId && isDailyNote ? (
-          <DailyNoteLayout
-            dateKey={(selectedObject?.properties?.['date_key'] as string) ?? ''}
-            onNavigateToDate={(dateKey) => void handleNavigateToDailyNote(dateKey)}
-            onNavigateToObject={setSelectedObjectId}
-          >
-            <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
-          </DailyNoteLayout>
-        ) : selectedObjectId ? (
-          <ScrollArea className="h-full">
-            <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
-          </ScrollArea>
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            Select an object to view
-          </div>
-        )}
+        {/* Main content area - renders child routes */}
+        <Outlet />
       </AppShell>
 
       <Toaster />
-      <CommandPalette isOpen={isOpen} onClose={close} onNavigate={setSelectedObjectId} />
+      <CommandPalette isOpen={isOpen} onClose={close} onNavigate={handleSelectObject} />
       <SettingsModalWrapper open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <TagPickerModal
         open={tagPickerOpen}
@@ -209,5 +191,3 @@ function App(): ReactElement {
     </>
   );
 }
-
-export default App;
