@@ -47,8 +47,8 @@ test.describe('Template Auto-Application', () => {
       const today = new Date().toISOString().slice(0, 10);
 
       // The template creates a heading with the date ({{date_key}} substituted)
+      // Note: h1 is hidden via hide-title CSS for DailyNotes, but content still exists
       const heading = page.locator('.ProseMirror h1');
-      await expect(heading).toBeVisible();
       await expect(heading).toContainText(today);
     });
 
@@ -63,14 +63,15 @@ test.describe('Template Auto-Application', () => {
       expect(result.success).toBe(true);
       if (!result.success) return;
 
-      // Reload and select the object to view in editor
+      const dailyNoteId = result.result.dailyNote.id;
+
+      // Reload and navigate via TypeBrowser
       await page.reload();
       await page.waitForLoadState('domcontentloaded');
 
-      // Click the object card to load it in editor
-      await page.locator('[data-testid^="object-card-"]').first().click();
-
-      // Wait for editor to load
+      // Navigate to DailyNote type via sidebar and click the specific note
+      await page.getByTestId('sidebar-type-DailyNote').click();
+      await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
       await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
       // The heading should contain the specific date
@@ -388,12 +389,21 @@ test.describe('Template Persistence', () => {
     const heading = page.locator('.ProseMirror h1');
     await expect(heading).toContainText(today);
 
-    // Reload and select the object again
+    // Get the daily note ID via IPC (it exists now)
+    const result = await page.evaluate(async () => {
+      return await window.typenoteAPI.getOrCreateTodayDailyNote();
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    const dailyNoteId = result.result.dailyNote.id;
+
+    // Reload and navigate via TypeBrowser
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    // Click the object card to load it in editor
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate to DailyNote type and select the note
+    await page.getByTestId('sidebar-type-DailyNote').click();
+    await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // Heading should still be visible with the date
@@ -630,8 +640,13 @@ test.describe('Editor Integration', () => {
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     // The heading should be rendered as h1
+    // Note: h1 is hidden via hide-title CSS for DailyNotes, but element exists with content
     const heading = page.locator('.ProseMirror h1');
-    await expect(heading).toBeVisible();
+    await expect(heading).toHaveCount(1);
+
+    // Verify it has today's date content
+    const today = new Date().toISOString().slice(0, 10);
+    await expect(heading).toContainText(today);
   });
 
   test('editor allows editing templated content', async ({ window: page }) => {
@@ -677,11 +692,15 @@ test.describe('Editor Integration', () => {
       });
     }, result.result.dailyNote.id);
 
-    // Reload and view in editor
+    const dailyNoteId = result.result.dailyNote.id;
+
+    // Reload and navigate via TypeBrowser
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
 
-    await page.locator('[data-testid^="object-card-"]').first().click();
+    // Navigate to DailyNote type and click the specific note
+    await page.getByTestId('sidebar-type-DailyNote').click();
+    await page.getByTestId(`type-browser-row-${dailyNoteId}`).click();
     await page.waitForSelector('.ProseMirror', { state: 'visible' });
 
     const editor = page.locator('.ProseMirror');
