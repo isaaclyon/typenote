@@ -79,8 +79,8 @@ export const RefSuggestionMenu = React.forwardRef<RefSuggestionMenuRef, RefSugge
                 key="create-new"
                 type="button"
                 className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors duration-100',
-                  isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
+                  'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors duration-150',
+                  isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
                 )}
                 onClick={() => onSelect(item)}
                 onMouseEnter={() => setLocalIndex(index)}
@@ -113,8 +113,8 @@ export const RefSuggestionMenu = React.forwardRef<RefSuggestionMenuRef, RefSugge
               key={item.id}
               type="button"
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors duration-100',
-                isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
+                'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors duration-150',
+                isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
               )}
               onClick={() => onSelect(item)}
               onMouseEnter={() => setLocalIndex(index)}
@@ -122,7 +122,7 @@ export const RefSuggestionMenu = React.forwardRef<RefSuggestionMenuRef, RefSugge
               <div
                 className={cn(
                   'flex-shrink-0 w-6 h-6 rounded flex items-center justify-center',
-                  isSelected ? 'bg-gray-200' : 'bg-gray-100'
+                  isSelected ? 'bg-accent-100' : 'bg-gray-100'
                 )}
               >
                 <Icon className={cn('w-3.5 h-3.5', config.colorClass)} />
