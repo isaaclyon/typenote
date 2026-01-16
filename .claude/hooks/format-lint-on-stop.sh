@@ -6,6 +6,12 @@ set -euo pipefail
 # Trigger: Stop event
 # Scope: Modified, staged, and untracked files in working tree
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="format-lint-on-stop"
+start_time=$(date +%s)
+
 # Configuration
 WORK_DIR="${1:-.}"
 cd "$WORK_DIR"
@@ -29,6 +35,9 @@ ts_js_files=$(echo "$all_files" | tr ' ' '\n' | grep -E '\.(ts|tsx|js|jsx)$' | t
 # If no files to process, exit gracefully
 if [[ -z "$ts_js_files" || "$ts_js_files" == " " ]]; then
   echo "✅ No TypeScript/JavaScript files to format or lint"
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -101,6 +110,11 @@ echo ""
 
 # Clean up temp files
 rm -f /tmp/format-output.log /tmp/lint-output.log
+
+# Log metrics for successful run (count files processed)
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$file_count files" 0 2>/dev/null || true
 
 # Hook succeeds regardless of lint/format issues (non-blocking)
 exit 0

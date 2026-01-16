@@ -5,6 +5,12 @@ set -euo pipefail
 # Warns when test files exceed 500 lines to encourage splitting by concern
 # Supports @maxsize-N decorator for exceptions (e.g., // @maxsize-700)
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="test-file-size-validation"
+start_time=$(date +%s)
+
 DEFAULT_MAX_LINES=500
 
 # Read JSON input from stdin
@@ -14,16 +20,25 @@ input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null || echo "")
 
 if [[ -z "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "" 0 2>/dev/null || true
   exit 0
 fi
 
 # Only validate test files
 if [[ ! $file_path =~ \.(test|spec)\.(ts|tsx|js|jsx)$ ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
 # Check if file exists
 if [[ ! -f "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -75,6 +90,9 @@ Reminder: This test file has an adjusted size limit (@maxsize-$custom_limit, cur
 
 EOF
   fi
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -100,4 +118,8 @@ Warning: Test file exceeds $max_lines lines (currently: $line_count lines)
 EOF
 fi
 
+# Log metrics for successful run
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
 exit 0

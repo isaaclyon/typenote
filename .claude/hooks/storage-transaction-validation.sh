@@ -4,6 +4,12 @@ set -euo pipefail
 # Storage Transaction Validation Hook
 # Enforces that packages/storage/src/ uses transactions for atomic database operations
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="storage-transaction-validation"
+start_time=$(date +%s)
+
 # Read JSON input from stdin
 input=$(cat)
 
@@ -11,21 +17,33 @@ input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null || echo "")
 
 if [[ -z "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "" 0 2>/dev/null || true
   exit 0
 fi
 
 # Only validate TypeScript files in packages/storage/src/
 if [[ ! $file_path =~ ^packages/storage/src/ ]] || [[ ! $file_path =~ \.ts$ ]] || [[ $file_path =~ \.(test|spec)\.ts$ ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
 # Skip migration and schema files
 if [[ $file_path =~ (migrations|schema)\.ts$ ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
 # Check if file exists and is readable
 if [[ ! -f "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -39,6 +57,9 @@ write_op_count=$(grep -cE "db\.(insert|update|delete)" "$file_path" 2>/dev/null 
 # Check if there are any write operations
 if [[ $write_op_count -lt 2 ]]; then
   # Single or no write operations - no transaction needed
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -89,7 +110,14 @@ if [[ $violation_count -gt 0 ]]; then
   error_msg="${error_msg}Atomic operations prevent partial updates if errors occur.\n"
   error_msg="${error_msg}Pattern: db.transaction(() => { await db.insert(...); await db.update(...); })"
   echo -e "$error_msg" >&2
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 2 "$duration_ms" "$file_path" "$violation_count" 2>/dev/null || true
   exit 2
 fi
 
+# Log metrics for successful run
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
 exit 0

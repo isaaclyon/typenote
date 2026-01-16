@@ -5,6 +5,12 @@ set -euo pipefail
 # Enforces that all ID fields use proper ULID format, not UUIDs or plain strings
 # Reference: docs/foundational/backend_contract.md section 1.2
 
+# Source metrics utility (fail gracefully if missing)
+source "$(dirname "$0")/lib/metrics.sh" 2>/dev/null || true
+
+hook_name="ulid-format-validation"
+start_time=$(date +%s)
+
 # Read JSON input from stdin
 input=$(cat)
 
@@ -12,16 +18,25 @@ input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null || echo "")
 
 if [[ -z "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "" 0 2>/dev/null || true
   exit 0
 fi
 
 # Only validate TypeScript files in packages/api and packages/core
 if [[ ! $file_path =~ ^packages/(api|core)/src/ ]] || [[ ! $file_path =~ \.ts$ ]] || [[ $file_path =~ \.(test|spec)\.ts$ ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
 # Check if file exists and is readable
 if [[ ! -f "$file_path" ]]; then
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
   exit 0
 fi
 
@@ -103,7 +118,14 @@ if [[ $violation_count -gt 0 ]]; then
   error_msg="${error_msg}Ensure all ID fields use proper ULID format for sortability and uniqueness.\n"
   error_msg="${error_msg}See: docs/foundational/backend_contract.md#identifiers"
   echo -e "$error_msg" >&2
+  end_time=$(date +%s)
+  duration_ms=$(((end_time - start_time) * 1000))
+  log_hook_metric "$hook_name" 2 "$duration_ms" "$file_path" "$violation_count" 2>/dev/null || true
   exit 2
 fi
 
+# Log metrics for successful run
+end_time=$(date +%s)
+duration_ms=$(((end_time - start_time) * 1000))
+log_hook_metric "$hook_name" 0 "$duration_ms" "$file_path" 0 2>/dev/null || true
 exit 0
