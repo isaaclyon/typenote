@@ -49,6 +49,16 @@ interface TypenoteAPI {
     typeKey?: string;
     includeProperties?: boolean;
   }) => Promise<IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>>;
+  getObjectsCreatedOnDate: (dateKey: string) => Promise<
+    IpcOutcome<
+      Array<{
+        id: string;
+        title: string;
+        typeIcon: string | null;
+        typeColor: string | null;
+      }>
+    >
+  >;
   getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
   getObjectTypeByKey: (typeKey: string) => Promise<IpcOutcome<ObjectType | null>>;
   searchBlocks: (

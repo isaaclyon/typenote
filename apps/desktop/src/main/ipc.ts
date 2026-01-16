@@ -208,6 +208,14 @@ export interface IpcHandlers {
   listObjects: (
     options?: ListObjectsOptions
   ) => IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>;
+  getObjectsCreatedOnDate: (dateKey: string) => IpcOutcome<
+    Array<{
+      id: string;
+      title: string;
+      typeIcon: string | null;
+      typeColor: string | null;
+    }>
+  >;
   getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
   getObjectTypeByKey: (typeKey: string) => IpcOutcome<ObjectType | null>;
   searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
@@ -302,6 +310,33 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
       handleIpcCall(() => getOrCreateDailyNoteByDateStorage(db, dateKey), DailyNoteError),
 
     listObjects: (options) => handleIpcCall(() => listObjectsStorage(db, options)),
+
+    getObjectsCreatedOnDate: (dateKey: string) =>
+      handleIpcCall(() => {
+        const summaries = listObjectsStorage(db, { createdOnDate: dateKey });
+
+        // Get object types for icon/color info
+        const objectTypesMap = new Map<string, { icon: string | null; color: string | null }>();
+
+        return summaries.map((obj) => {
+          // Get type info (cached)
+          if (!objectTypesMap.has(obj.typeKey)) {
+            const typeInfo = getObjectTypeByKeyStorage(db, obj.typeKey);
+            objectTypesMap.set(obj.typeKey, {
+              icon: typeInfo?.icon ?? null,
+              color: typeInfo?.color ?? null,
+            });
+          }
+          const typeInfo = objectTypesMap.get(obj.typeKey);
+
+          return {
+            id: obj.id,
+            title: obj.title,
+            typeIcon: typeInfo?.icon ?? null,
+            typeColor: typeInfo?.color ?? null,
+          };
+        });
+      }),
 
     getObject: (objectId) => handleIpcCall(() => getObjectStorage(db, objectId)),
 

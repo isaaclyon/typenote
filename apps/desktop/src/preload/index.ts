@@ -17,6 +17,9 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   listObjects: (options?: { typeKey?: string; includeProperties?: boolean }) =>
     ipcRenderer.invoke('typenote:listObjects', options),
 
+  getObjectsCreatedOnDate: (dateKey: string) =>
+    ipcRenderer.invoke('typenote:getObjectsCreatedOnDate', dateKey),
+
   getObject: (objectId: string) => ipcRenderer.invoke('typenote:getObject', objectId),
 
   getObjectTypeByKey: (typeKey: string) =>
