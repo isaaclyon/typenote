@@ -175,6 +175,9 @@ body {
 }
 
 /* ========== Custom Scrollbar ========== */
+
+/* Native scrollbars - styled but always visible */
+/* Use <ScrollArea> component for auto-hide behavior */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

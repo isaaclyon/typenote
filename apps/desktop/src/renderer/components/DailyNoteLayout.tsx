@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import type { ReactElement } from 'react';
-import { MiniCalendar, NotesCreatedList } from '@typenote/design-system';
+import { MiniCalendar, NotesCreatedList, ScrollArea } from '@typenote/design-system';
 import { useDatesWithNotes } from '../hooks/useDatesWithNotes.js';
 import { useObjectsCreatedOnDate } from '../hooks/useObjectsCreatedOnDate.js';
 
@@ -50,25 +50,27 @@ export function DailyNoteLayout({
   return (
     <div className="flex h-full">
       {/* Left column: Editor content */}
-      <div className="flex-1 overflow-y-auto">{children}</div>
+      <ScrollArea className="flex-1">{children}</ScrollArea>
 
       {/* Right column: Calendar panel */}
-      <div className="w-60 flex-shrink-0 border-l border-gray-200 bg-gray-50/50 p-4 overflow-y-auto">
-        <MiniCalendar
-          selectedDate={dateKey}
-          datesWithNotes={datesWithNotes}
-          onDateSelect={onNavigateToDate}
-          onMonthChange={handleMonthChange}
-          className="mb-6"
-        />
+      <ScrollArea className="w-70 flex-shrink-0 border-l border-gray-200 bg-gray-50/50">
+        <div className="px-6 py-4">
+          <MiniCalendar
+            selectedDate={dateKey}
+            datesWithNotes={datesWithNotes}
+            onDateSelect={onNavigateToDate}
+            onMonthChange={handleMonthChange}
+            className="mb-6"
+          />
 
-        <NotesCreatedList
-          date={dateKey}
-          items={createdObjects}
-          isLoading={isLoadingCreated}
-          onItemClick={onNavigateToObject}
-        />
-      </div>
+          <NotesCreatedList
+            date={dateKey}
+            items={createdObjects}
+            isLoading={isLoadingCreated}
+            onItemClick={onNavigateToObject}
+          />
+        </div>
+      </ScrollArea>
     </div>
   );
 }

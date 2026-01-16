@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { AppShell, Toaster } from '@typenote/design-system';
+import { AppShell, Toaster, ScrollArea } from '@typenote/design-system';
 import { DocumentEditor } from './components/DocumentEditor.js';
 import { DailyNoteLayout } from './components/DailyNoteLayout.js';
 import { CalendarView } from './components/calendar/index.js';
@@ -139,7 +139,9 @@ function App(): ReactElement {
             <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
           </DailyNoteLayout>
         ) : selectedObjectId ? (
-          <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
+          <ScrollArea className="h-full">
+            <DocumentEditor objectId={selectedObjectId} onNavigate={setSelectedObjectId} />
+          </ScrollArea>
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             Select an object to view

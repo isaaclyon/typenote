@@ -15,7 +15,7 @@ const ContentArea = React.forwardRef<HTMLElement, ContentAreaProps>(
         ref={ref}
         className={cn(
           'flex-1 min-w-0', // min-w-0 prevents flex overflow issues
-          'overflow-auto',
+          'overflow-hidden', // children handle their own scroll via ScrollArea
           className
         )}
       >

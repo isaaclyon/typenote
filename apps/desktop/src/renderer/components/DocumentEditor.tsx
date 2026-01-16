@@ -19,7 +19,7 @@ import {
   type ObjectType,
   Skeleton,
   DailyNoteNav,
-  DailyNoteHeader,
+  DocumentHeader,
   SaveStatus,
   type SaveState,
 } from '@typenote/design-system';
@@ -28,6 +28,7 @@ import { convertDocument } from '../lib/notateToTiptap.js';
 import { useImageUpload } from '../hooks/useImageUpload.js';
 import { useDailyNoteInfo } from '../hooks/useDailyNoteInfo.js';
 import { useAutoSave } from '../hooks/useAutoSave.js';
+import { useSelectedObject } from '../hooks/useSelectedObject.js';
 import { EditorBottomSections } from './EditorBottomSections.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,10 +65,33 @@ function typeKeyToObjectType(typeKey: string): ObjectType {
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Formats a date key into the day name (e.g., "Thursday")
+ */
+function formatDayName(dateKey: string): string {
+  const date = new Date(dateKey + 'T00:00:00');
+  return new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date);
+}
+
 export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [initialBlocks, setInitialBlocks] = useState<DocumentBlock[]>([]);
   const { isDailyNote, dateKey } = useDailyNoteInfo(objectId);
+  const { object, refetch: refetchObject } = useSelectedObject(objectId);
+
+  // Handle title change (for non-daily notes)
+  const handleTitleChange = useCallback(
+    async (newTitle: string) => {
+      const result = await window.typenoteAPI.updateObject({
+        objectId,
+        patch: { title: newTitle },
+      });
+      if (result.success) {
+        await refetchObject();
+      }
+    },
+    [objectId, refetchObject]
+  );
 
   // Ref to access the InteractiveEditor's editor instance
   const editorRef = useRef<InteractiveEditorRef>(null);
@@ -203,7 +227,7 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
   // Loading state
   if (state.status === 'loading') {
     return (
-      <div className="h-full overflow-auto" data-testid="loading-skeleton">
+      <div className="h-full" data-testid="loading-skeleton">
         <div className="max-w-3xl mx-auto p-8">
           {/* Save status placeholder */}
           <div className="flex items-center justify-end mb-2 h-4">
@@ -235,19 +259,24 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
 
   // Loaded state - render editor
   return (
-    <div className="h-full overflow-auto">
+    <div className="h-full">
       <div className="max-w-3xl mx-auto p-8">
         {/* Save status indicator */}
         <div data-testid="save-status" className="flex items-center justify-end mb-2 h-4">
           <SaveStatus state={saveState} {...(saveError !== null && { errorText: saveError })} />
         </div>
 
-        {/* Daily Note Header (immutable formatted date) */}
-        {isDailyNote && dateKey && <DailyNoteHeader dateKey={dateKey} className="mb-4" />}
+        {/* Universal Document Header (editable for pages, immutable for daily notes) */}
+        <DocumentHeader
+          title={object?.title ?? ''}
+          typeLabel={isDailyNote && dateKey ? formatDayName(dateKey) : (object?.typeKey ?? '')}
+          {...(!isDailyNote && { onTitleChange: handleTitleChange })}
+          {...(isDailyNote && dateKey !== null && { dailyNoteDateKey: dateKey })}
+        />
 
         {/* Daily Note Navigation */}
         {isDailyNote && dateKey && onNavigate && (
-          <div className="mb-6 pb-4 border-b">
+          <div className="mb-6">
             <DailyNoteNav
               isToday={dateKey === getTodayDateKey()}
               onPrevious={async () => {
@@ -271,19 +300,29 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
           </div>
         )}
 
-        {/* InteractiveEditor from design-system */}
-        <InteractiveEditor
-          ref={editorRef}
-          {...(initialContent !== undefined && { initialContent })}
-          placeholder="This document is empty..."
-          className="prose prose-sm max-w-none"
-          hideTitle={isDailyNote}
-          refSuggestionCallbacks={{
-            onSearch: handleRefSearch,
-            onCreate: handleRefCreate,
+        {/* InteractiveEditor from design-system, wrapped for click-to-focus */}
+        <div
+          className="min-h-[300px] cursor-text"
+          onClick={(e) => {
+            // Only focus if clicking the wrapper itself (not editor content)
+            if (e.target === e.currentTarget) {
+              editorRef.current?.editor?.chain().focus('end').run();
+            }
           }}
-          onNavigateToRef={onNavigate}
-        />
+        >
+          <InteractiveEditor
+            ref={editorRef}
+            {...(initialContent !== undefined && { initialContent })}
+            placeholder="This document is empty..."
+            className="prose prose-sm max-w-none"
+            hideTitle
+            refSuggestionCallbacks={{
+              onSearch: handleRefSearch,
+              onCreate: handleRefCreate,
+            }}
+            onNavigateToRef={onNavigate}
+          />
+        </div>
 
         {/* Bottom sections for backlinks and unlinked mentions */}
         <EditorBottomSections objectId={objectId} {...(onNavigate && { onNavigate })} />
