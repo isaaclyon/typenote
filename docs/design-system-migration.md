@@ -43,7 +43,7 @@ Drop-in components already used in the desktop app.
 - [x] **Text** — Adopted in TypeBrowserView, PropertiesPanel, CalendarSidebar, CalendarHeader
 - [x] **Tag** — Used in PropertiesPanel with removal support
 - [x] **TagAddButton** — Used in PropertiesPanel
-- [x] **MiniCalendar** — Integrated into LeftSidebar for daily note navigation
+- [x] **MiniCalendar** — Integrated into DailyNoteLayout for daily note navigation (2026-01-15)
 - [x] **CommandPalette** — Full implementation with keyboard navigation
   - Includes: CommandPaletteInput, CommandPaletteItem, CommandPaletteList, CommandPaletteGroup, CommandPaletteEmpty, CommandPaletteLoading, CommandPaletteSeparator
 - [x] **AppShell** — Main app layout wrapper with collapsible sidebars
@@ -57,7 +57,8 @@ Drop-in components already used in the desktop app.
   - Includes: ColumnPinMenu
   - Status: Fully integrated with sorting, virtualization, and IPC wiring (2026-01-15)
 - [x] **NotesCreatedList** — Notes created list for daily note layout
-  - Status: Used in DailyNoteLayout.tsx (discovered via audit v2)
+  - Status: Fully integrated in DailyNoteLayout.tsx with useObjectsCreatedOnDate hook (2026-01-15)
+  - Shows objects created on the selected daily note's date with navigation support
 
 ---
 
