@@ -134,17 +134,18 @@ claude-docs/          # Claude context & progress tracking
 
 See `.claude/rules/` for detailed patterns:
 
-| Rule File           | Applies To                   | Key Points                              |
-| ------------------- | ---------------------------- | --------------------------------------- |
-| `architecture.md`   | All code                     | Package boundaries, no cross-imports    |
-| `api.md`            | `packages/api/**`            | Zod schemas, complete error taxonomy    |
-| `core.md`           | `packages/core/**`           | Pure TS, no side effects                |
-| `storage.md`        | `packages/storage/**`        | Transactions, migrations, Drizzle       |
-| `electron.md`       | `apps/desktop/**`            | IPC patterns, Vite config, native mods  |
-| `e2e-testing.md`    | `tests/e2e/**`               | Playwright selectors, data-testid       |
-| `typescript.md`     | All `.ts` files              | Strict mode, no `any`, proper nulls     |
-| `patch.md`          | `packages/storage/**`        | Block patch invariants, concurrency     |
-| `content-schema.md` | `packages/core/**`, `api/**` | NotateDoc v1, inline nodes, block types |
+| Rule File              | Applies To                   | Key Points                                    |
+| ---------------------- | ---------------------------- | --------------------------------------------- |
+| `architecture.md`      | All code                     | Package boundaries, no cross-imports          |
+| `renderer-patterns.md` | `apps/desktop/src/renderer/` | TanStack Query, React Router, DRY, components |
+| `api.md`               | `packages/api/**`            | Zod schemas, complete error taxonomy          |
+| `core.md`              | `packages/core/**`           | Pure TS, no side effects                      |
+| `storage.md`           | `packages/storage/**`        | Transactions, migrations, Drizzle             |
+| `electron.md`          | `apps/desktop/**`            | IPC patterns, HashRouter, Vite config         |
+| `e2e-testing.md`       | `tests/e2e/**`               | Playwright selectors, data-testid             |
+| `typescript.md`        | All `.ts` files              | Strict mode, no `any`, proper nulls           |
+| `patch.md`             | `packages/storage/**`        | Block patch invariants, concurrency           |
+| `content-schema.md`    | `packages/core/**`, `api/**` | NotateDoc v1, inline nodes, block types       |
 
 ## Domain Concepts
 
