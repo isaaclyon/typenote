@@ -1,6 +1,89 @@
 # Recent Work
 
-## Latest Session (2026-01-16 - E2E Test Fixes)
+## Latest Session (2026-01-17 - Daily Note Navigation Bug Fix)
+
+Fixed visual noise bug where Daily Notes appeared in the "Created on" section of daily note navigation.
+
+**Summary:**
+
+- Added filtering to exclude Daily Notes from `getObjectsCreatedOnDate` IPC handler
+- Created comprehensive test suite (5 test cases) covering all scenarios
+- Verified fix working in UI after Electron rebuild
+
+**Implementation:**
+
+- Single-line filter: `summaries.filter((obj) => obj.typeKey !== 'DailyNote')`
+- Filtering happens at IPC layer (UI-specific business rule, not storage concern)
+- Storage layer remains generic and reusable
+
+**Files changed:**
+
+- `apps/desktop/src/main/ipc.ts` — Added Daily Note filter
+- `apps/desktop/src/main/ipc.getObjectsCreatedOnDate.test.ts` — New test file (276 lines)
+
+**Test coverage:**
+
+1. Excludes Daily Notes while including regular Pages ✅
+2. Returns empty array when only Daily Note exists ✅
+3. Includes all non-DailyNote types (Page, Person, Event, Task) ✅
+4. Handles dates with no objects ✅
+5. Mixed scenarios (Daily Note + multiple Pages) ✅
+
+**Commit:**
+
+- `8e5eecb fix(daily-note-nav): exclude Daily Notes from 'Created on' lists`
+
+---
+
+## Previous Session (2026-01-17 - TanStack Query + React Router Architecture Refactor)
+
+Merged major architectural refactor introducing TanStack Query for data fetching and React Router for navigation.
+
+**Summary:**
+
+- Merged `refactor/tanstack-query-router` branch (8 commits, 1,073 additions, 365 deletions)
+- All tests pass: 825 unit, 113 integration, 222 E2E (5 skipped)
+- Resolved merge conflicts with dark mode (ThemeProvider) and fixed tsconfig issue
+
+**Architectural Improvements:**
+
+1. **TanStack Query** — Data fetching, caching, invalidation for all IPC calls
+2. **React Router (HashRouter)** — URL-based navigation (`/#/notes/:id`, `/#/types/:key`, `/#/calendar`)
+3. **5 hooks migrated** — `useObjectsByType`, `useSelectedObject`, `useTypeCounts`, `useTypeMetadata`, `usePinnedObjects`
+4. **New types** — `AsyncData<T>` discriminated union for consistent async state
+5. **Query DevTools** — Development debugging for cache inspection
+
+**Breaking Changes:**
+
+- `App.tsx` → `layouts/AppLayout.tsx` (routing integration)
+- Navigation now URL-based (enables browser back/forward, deep linking)
+- Hook return signatures changed to `{ data, isLoading, error }`
+
+**New Infrastructure:**
+
+- `lib/queryClient.ts` — Global QueryClient (5min staleTime, 10min gcTime)
+- `lib/queryKeys.ts` — Centralized query key factory (readonly tuples)
+- `lib/ipcQueryAdapter.ts` — IPC outcome → Promise adapter
+- `routes/` — Route configuration with NotesRoute, TypesRoute, CalendarRoute
+- `test-utils.tsx` — Test helpers (`createQueryWrapper`, `createTestQueryClient`)
+- `types/async.ts` — AsyncData<T> type with guards
+- `config/typeMapping.ts` — TypeKey → ObjectType mapping
+- `.claude/rules/renderer-patterns.md` — Architectural patterns documentation
+
+**Dependencies Added:**
+
+- `@tanstack/react-query@^5.90.18`
+- `react-router-dom@^7.12.0`
+- `@tanstack/react-query-devtools@^5.91.2` (dev)
+
+**Commits:**
+
+- `626ea5b` Merge refactor/tanstack-query-router: Add TanStack Query and React Router
+- `912fcc6` fix(design-system): remove explicit rootDir to support .ladle files in typecheck
+
+---
+
+## Previous Session (2026-01-16 - E2E Test Fixes)
 
 Fixed broken E2E tests after TypeBrowser UI changes and documented auto-save issues.
 
@@ -163,6 +246,7 @@ Implemented resizable sidebars for the AppShell component with drag-to-resize an
 
 | Phase        | Description                                     | Date                |
 | ------------ | ----------------------------------------------- | ------------------- |
+| TanStack+RR  | TanStack Query + React Router refactor          | 2026-01-17          |
 | CustomTitle  | Frameless window with macOS traffic lights      | 2026-01-16          |
 | (Earlier)    | Phases 0-7 + Templates + Tags + CLI + E2E       | 2026-01-04 to 01-12 |
 | TypeBrowser  | Phases 1-3 (sort/virtualize/rich cells)         | 2026-01-14          |
