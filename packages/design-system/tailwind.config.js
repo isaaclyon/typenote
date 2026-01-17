@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{ts,tsx}'],
+  content: ['./src/**/*.{ts,tsx}', './.ladle/**/*.{ts,tsx}'],
+  darkMode: 'class', // Enable class-based dark mode for Ladle theme toggle
   theme: {
     extend: {
       colors: {

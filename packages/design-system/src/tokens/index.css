@@ -109,6 +109,81 @@
   --radius-lg: 8px;
 }
 
+/* ========== DARK MODE OVERRIDES ========== */
+.dark {
+  /* Background Hierarchy - Inverted from light mode */
+  --color-white: #1c1917;
+  --color-gray-50: #1a1a1a;
+  --color-gray-100: #242424;
+  --color-gray-200: #3f3f3f;
+  --color-gray-300: #525252;
+  --color-gray-400: #6b7280;
+  --color-gray-500: #9ca3af;
+  --color-gray-600: #d1d5db;
+  --color-gray-700: #e7e5e4;
+  --color-gray-800: #f5f5f4;
+  --color-gray-900: #fafaf9;
+
+  /* Accent - Slightly lighter for dark BG contrast */
+  --color-accent-50: #1e2139;
+  --color-accent-100: #2a3255;
+  --color-accent-200: #3d4876;
+  --color-accent-300: #505fa0;
+  --color-accent-400: #7aa5f0;
+  --color-accent-500: #6495ed;
+  --color-accent-600: #5284db;
+  --color-accent-700: #4773c9;
+
+  /* Semantic Colors - Lightened */
+  --color-error: #fca5a5;
+  --color-error-dark: #ef4444;
+  --color-success: #86efac;
+  --color-success-dark: #22c55e;
+  --color-warning: #fcd34d;
+  --color-warning-dark: #fbbf24;
+  --color-info: #93c5fd;
+  --color-info-dark: #60a5fa;
+
+  /* Option Pill Colors - Dark variants */
+  --color-blue-50: #0f172a;
+  --color-blue-100: #1e293b;
+  --color-blue-700: #60a5fa;
+  --color-blue-800: #93c5fd;
+  --color-green-50: #051f15;
+  --color-green-100: #0f3920;
+  --color-green-700: #86efac;
+  --color-green-800: #bbf7d0;
+  --color-red-50: #1f0f0f;
+  --color-red-100: #3f1010;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+  --color-violet-50: #1e1b4b;
+  --color-violet-100: #3730a3;
+  --color-violet-700: #c4b5fd;
+  --color-violet-800: #ddd6fe;
+}
+
+/* Focus ring adjustment for dark mode */
+.dark *:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-gray-50), 0 0 0 4px var(--color-accent-500);
+  border-radius: inherit;
+}
+
+/* Selection color for dark mode */
+.dark ::selection {
+  background-color: rgba(122, 165, 240, 0.25);
+  color: inherit;
+}
+
+/* Scrollbar styling for dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #525252;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
+
 @keyframes shimmer {
   0% {
     background-position: 200% 0;

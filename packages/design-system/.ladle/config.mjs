@@ -5,7 +5,7 @@ export default {
   defaultStory: 'badge--default', // Always start at Badge component
   addons: {
     theme: {
-      enabled: false, // Using Tailwind, not Ladle theming
+      enabled: true, // Enable theme toggle for dark mode
     },
   },
 };
