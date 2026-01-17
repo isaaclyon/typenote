@@ -16,8 +16,8 @@ export const TagNodeView: React.FC<NodeViewProps> = ({ node }) => {
       <span
         className={cn(
           'inline-flex items-center gap-1 px-1.5 py-0.5 rounded',
-          'bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer',
-          'text-sm font-medium text-gray-700'
+          'bg-secondary hover:bg-border transition-colors cursor-pointer',
+          'text-sm font-medium text-foreground'
         )}
         contentEditable={false}
       >

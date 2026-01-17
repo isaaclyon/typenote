@@ -60,17 +60,17 @@ export const TagSuggestionMenu = React.forwardRef<TagSuggestionMenuRef, TagSugge
     if (items.length === 0) {
       return (
         <div
-          className="bg-popover border border-gray-200 rounded-lg shadow-lg p-3 min-w-[200px]"
+          className="bg-popover border border-border rounded-lg shadow-lg p-3 min-w-[200px]"
           data-testid="suggestion-popup"
         >
-          <p className="text-sm text-gray-500">No tags found</p>
+          <p className="text-sm text-muted-foreground">No tags found</p>
         </div>
       );
     }
 
     return (
       <div
-        className="bg-popover border border-gray-200 rounded-lg shadow-lg py-1 min-w-[200px] max-h-[320px] overflow-y-auto"
+        className="bg-popover border border-border rounded-lg shadow-lg py-1 min-w-[200px] max-h-[320px] overflow-y-auto"
         data-testid="suggestion-popup"
       >
         {items.map((item, index) => {
@@ -82,7 +82,7 @@ export const TagSuggestionMenu = React.forwardRef<TagSuggestionMenuRef, TagSugge
               type="button"
               className={cn(
                 'w-full flex items-center gap-2 px-3 py-2 text-left transition-colors duration-150',
-                isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
+                isSelected ? 'bg-accent-50' : 'hover:bg-muted'
               )}
               onClick={() => onSelect(item)}
               onMouseEnter={() => setLocalIndex(index)}
@@ -93,9 +93,9 @@ export const TagSuggestionMenu = React.forwardRef<TagSuggestionMenuRef, TagSugge
                   style={{ backgroundColor: item.color }}
                 />
               ) : (
-                <span className="w-3 h-3 rounded-full flex-shrink-0 bg-gray-300" />
+                <span className="w-3 h-3 rounded-full flex-shrink-0 bg-muted-foreground" />
               )}
-              <span className="text-sm font-medium text-gray-900">#{item.value}</span>
+              <span className="text-sm font-medium text-foreground">#{item.value}</span>
             </button>
           );
         })}

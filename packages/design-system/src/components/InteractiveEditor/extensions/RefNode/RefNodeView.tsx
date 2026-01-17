@@ -53,7 +53,7 @@ export const RefNodeView: React.FC<NodeViewProps> = ({ node, extension }) => {
         <Icon className={cn('w-3.5 h-3.5 flex-shrink-0', config.colorClass)} />
         <span
           className={cn(
-            'underline decoration-1 underline-offset-2 text-gray-700 hover:text-gray-900',
+            'underline decoration-1 underline-offset-2 text-foreground hover:text-foreground',
             config.decorationClass
           )}
         >

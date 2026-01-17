@@ -18,7 +18,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         ref={ref}
         className={cn(
           'flex flex-col h-full',
-          'bg-white border-r border-gray-200',
+          'bg-background border-r border-border',
           'p-2',
           // Add top padding for custom title bar (traffic lights on macOS)
           hasTitleBarPadding && 'pt-10',
