@@ -1,12 +1,13 @@
 /**
  * Tests for useTypeCounts hook
  *
- * TDD: These tests are written BEFORE implementation to define expected behavior.
+ * Tests the TanStack Query based implementation.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useTypeCounts } from './useTypeCounts.js';
+import { createQueryWrapper } from '../test-utils.js';
 
 describe('useTypeCounts', () => {
   beforeEach(() => {
@@ -31,7 +32,9 @@ describe('useTypeCounts', () => {
       ],
     });
 
-    const { result } = renderHook(() => useTypeCounts());
+    const { result } = renderHook(() => useTypeCounts(), {
+      wrapper: createQueryWrapper(),
+    });
 
     // Initially loading
     expect(result.current.isLoading).toBe(true);
@@ -57,7 +60,9 @@ describe('useTypeCounts', () => {
       result: [],
     });
 
-    const { result } = renderHook(() => useTypeCounts());
+    const { result } = renderHook(() => useTypeCounts(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -73,7 +78,9 @@ describe('useTypeCounts', () => {
       error: { code: 'DATABASE_ERROR', message: 'Failed to fetch objects' },
     });
 
-    const { result } = renderHook(() => useTypeCounts());
+    const { result } = renderHook(() => useTypeCounts(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -86,7 +93,9 @@ describe('useTypeCounts', () => {
   it('should handle IPC exception', async () => {
     window.typenoteAPI.listObjects = vi.fn().mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useTypeCounts());
+    const { result } = renderHook(() => useTypeCounts(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -102,7 +111,9 @@ describe('useTypeCounts', () => {
       result: [{ id: '1', title: 'Page', typeId: 't1', typeKey: 'Page', updatedAt: new Date() }],
     });
 
-    const { result } = renderHook(() => useTypeCounts());
+    const { result } = renderHook(() => useTypeCounts(), {
+      wrapper: createQueryWrapper(),
+    });
 
     // Wait for initial fetch
     await waitFor(() => {
@@ -115,6 +126,9 @@ describe('useTypeCounts', () => {
     // Call refetch
     await result.current.refetch();
 
-    expect(window.typenoteAPI.listObjects).toHaveBeenCalledTimes(1);
+    // Wait for refetch to complete
+    await waitFor(() => {
+      expect(window.typenoteAPI.listObjects).toHaveBeenCalledTimes(1);
+    });
   });
 });

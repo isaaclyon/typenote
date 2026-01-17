@@ -12,8 +12,9 @@ import type { CalendarItem } from '@typenote/storage';
 import { getMonthDateRange, addMonths, getCalendarTodayDateKey } from '@typenote/core';
 import { CalendarHeader } from './CalendarHeader.js';
 import { CalendarGrid } from './CalendarGrid.js';
-import { CalendarSidebar, type LoadState } from './CalendarSidebar.js';
+import { CalendarSidebar } from './CalendarSidebar.js';
 import { useTypenoteEvents } from '../../hooks/useTypenoteEvents.js';
+import type { AsyncData } from '../../types/index.js';
 
 export interface CalendarViewProps {
   onNavigate: (objectId: string) => void;
@@ -23,7 +24,7 @@ export function CalendarView({ onNavigate }: CalendarViewProps) {
   // State
   const [viewingMonth, setViewingMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(getCalendarTodayDateKey());
-  const [eventsState, setEventsState] = useState<LoadState<CalendarItem[]>>({ status: 'loading' });
+  const [eventsState, setEventsState] = useState<AsyncData<CalendarItem[]>>({ status: 'loading' });
 
   // Extract fetchEvents as stable callback
   const fetchEvents = useCallback(async () => {
@@ -36,13 +37,13 @@ export function CalendarView({ onNavigate }: CalendarViewProps) {
 
       const outcome = await window.typenoteAPI.getEventsInDateRange(startDate, endDate);
       if (outcome.success) {
-        setEventsState({ status: 'loaded', data: outcome.result });
+        setEventsState({ status: 'success', data: outcome.result });
       } else {
-        setEventsState({ status: 'error', message: outcome.error.message });
+        setEventsState({ status: 'error', error: outcome.error.message });
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      setEventsState({ status: 'error', message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setEventsState({ status: 'error', error: errorMessage });
     }
   }, [viewingMonth]);
 
@@ -64,7 +65,7 @@ export function CalendarView({ onNavigate }: CalendarViewProps) {
 
   // Group events by date for the grid
   const eventsMap = useMemo(() => {
-    if (eventsState.status !== 'loaded') return new Map<string, CalendarItem[]>();
+    if (eventsState.status !== 'success') return new Map<string, CalendarItem[]>();
 
     const map = new Map<string, CalendarItem[]>();
     for (const event of eventsState.data) {

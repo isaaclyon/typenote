@@ -1,4 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import { queryKeys } from '../lib/queryKeys.js';
+import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
 interface UseTypeCountsResult {
   counts: Record<string, number>;
@@ -9,47 +12,33 @@ interface UseTypeCountsResult {
 
 /**
  * Hook that fetches all objects and computes counts grouped by typeKey.
- * Used by sidebar to show type navigation with object counts.
+ * Uses TanStack Query for caching and automatic refetching.
  */
 export function useTypeCounts(): UseTypeCountsResult {
-  const [counts, setCounts] = useState<Record<string, number>>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchCounts = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: queryKeys.typeCounts(),
+    queryFn: async () => {
+      const objects = await adaptIpcOutcome(window.typenoteAPI.listObjects());
 
-    try {
-      const result = await window.typenoteAPI.listObjects();
-
-      if (result.success) {
-        // Group by typeKey and count
-        const grouped: Record<string, number> = {};
-        for (const obj of result.result) {
-          grouped[obj.typeKey] = (grouped[obj.typeKey] ?? 0) + 1;
-        }
-        setCounts(grouped);
-      } else {
-        setError(result.error.message);
-        setCounts({});
+      // Group by typeKey and count
+      const grouped: Record<string, number> = {};
+      for (const obj of objects) {
+        grouped[obj.typeKey] = (grouped[obj.typeKey] ?? 0) + 1;
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      setCounts({});
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      return grouped;
+    },
+  });
 
-  useEffect(() => {
-    void fetchCounts();
-  }, [fetchCounts]);
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.typeCounts() });
+  }, [queryClient]);
 
   return {
-    counts,
+    counts: data ?? {},
     isLoading,
-    error,
-    refetch: fetchCounts,
+    error: error ? String(error instanceof Error ? error.message : error) : null,
+    refetch,
   };
 }
