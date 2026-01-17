@@ -7,16 +7,12 @@
 import type { CalendarItem } from '@typenote/storage';
 import { Skeleton, Text } from '@typenote/design-system';
 import { EventList } from './EventList.js';
-
-export type LoadState<T> =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'loaded'; data: T };
+import type { AsyncData } from '../../types/index.js';
 
 export interface CalendarSidebarProps {
   selectedDate: string | null; // YYYY-MM-DD
   events: CalendarItem[];
-  loadState: LoadState<CalendarItem[]>;
+  loadState: AsyncData<CalendarItem[]>;
   onEventClick: (objectId: string) => void;
 }
 
@@ -71,11 +67,13 @@ export function CalendarSidebar({
 
         {loadState.status === 'error' && (
           <div className="flex items-center justify-center h-full text-destructive p-4 text-center">
-            Error: {loadState.message}
+            Error: {loadState.error}
           </div>
         )}
 
-        {loadState.status === 'loaded' && <EventList events={events} onEventClick={onEventClick} />}
+        {loadState.status === 'success' && (
+          <EventList events={events} onEventClick={onEventClick} />
+        )}
       </div>
     </div>
   );

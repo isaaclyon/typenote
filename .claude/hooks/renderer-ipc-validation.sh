@@ -72,7 +72,8 @@ while IFS= read -r line; do
   [[ -z "$line" ]] && continue
 
   # Extract channel name from invoke() calls
-  if [[ $line =~ invoke\(['\"]([^'\"]+)['\"] ]]; then
+  pattern='invoke\(["'\'']([^"'\'']+)["'\'']'
+  if [[ $line =~ $pattern ]]; then
     channel="${BASH_REMATCH[1]}"
 
     # Check if channel follows convention

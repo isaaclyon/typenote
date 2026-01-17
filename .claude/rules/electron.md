@@ -71,16 +71,38 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
 
 ```typescript
 // apps/desktop/src/renderer/hooks/useDocument.ts
+// Use TanStack Query for data fetching (see renderer-patterns.md)
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys.js';
+import { ipcQuery } from '../lib/ipcQueryAdapter.js';
+
 export function useDocument(objectId: string) {
-  const [doc, setDoc] = useState<Document | null>(null);
-
-  useEffect(() => {
-    window.typenoteAPI.getDocument(objectId).then(setDoc);
-  }, [objectId]);
-
-  return doc;
+  return useQuery({
+    queryKey: queryKeys.document(objectId),
+    queryFn: ipcQuery(() => window.typenoteAPI.getDocument(objectId)),
+  });
 }
 ```
+
+## React Router Requirement
+
+**Electron loads via `file://` protocol, which does NOT support HTML5 history API.**
+
+Always use `createHashRouter` (not `createBrowserRouter`):
+
+```typescript
+// DO: HashRouter for Electron
+import { createHashRouter } from 'react-router-dom';
+
+export const router = createHashRouter([
+  { path: '/', element: <App /> },
+]);
+
+// DON'T: BrowserRouter won't work with file:// protocol
+import { createBrowserRouter } from 'react-router-dom'; // WRONG
+```
+
+URLs will look like: `file:///path/to/app/#/notes/123`
 
 ## Security Requirements
 

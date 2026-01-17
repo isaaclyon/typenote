@@ -1,13 +1,14 @@
 /**
  * Tests for useSelectedObject hook
  *
- * TDD: These tests are written BEFORE implementation to define expected behavior.
+ * Tests the TanStack Query based implementation.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import type { ObjectDetails } from '@typenote/storage';
 import { useSelectedObject } from './useSelectedObject.js';
+import { createQueryWrapper } from '../test-utils.js';
 
 describe('useSelectedObject', () => {
   beforeEach(() => {
@@ -23,7 +24,9 @@ describe('useSelectedObject', () => {
   it('should return null when objectId is null', async () => {
     window.typenoteAPI.getObject = vi.fn();
 
-    const { result } = renderHook(() => useSelectedObject(null));
+    const { result } = renderHook(() => useSelectedObject(null), {
+      wrapper: createQueryWrapper(),
+    });
 
     // Should not fetch and return null immediately
     expect(result.current.object).toBeNull();
@@ -50,7 +53,9 @@ describe('useSelectedObject', () => {
       result: mockObject,
     });
 
-    const { result } = renderHook(() => useSelectedObject('obj-1'));
+    const { result } = renderHook(() => useSelectedObject('obj-1'), {
+      wrapper: createQueryWrapper(),
+    });
 
     // Initially loading
     expect(result.current.isLoading).toBe(true);
@@ -72,7 +77,9 @@ describe('useSelectedObject', () => {
       result: null, // Object not found returns null
     });
 
-    const { result } = renderHook(() => useSelectedObject('nonexistent'));
+    const { result } = renderHook(() => useSelectedObject('nonexistent'), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -88,7 +95,9 @@ describe('useSelectedObject', () => {
       error: { code: 'NOT_FOUND', message: 'Object not found' },
     });
 
-    const { result } = renderHook(() => useSelectedObject('obj-1'));
+    const { result } = renderHook(() => useSelectedObject('obj-1'), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -101,7 +110,9 @@ describe('useSelectedObject', () => {
   it('should handle IPC exception', async () => {
     window.typenoteAPI.getObject = vi.fn().mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useSelectedObject('obj-1'));
+    const { result } = renderHook(() => useSelectedObject('obj-1'), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -141,8 +152,10 @@ describe('useSelectedObject', () => {
       .mockResolvedValueOnce({ success: true, result: mockObject1 })
       .mockResolvedValueOnce({ success: true, result: mockObject2 });
 
+    const wrapper = createQueryWrapper();
     const { result, rerender } = renderHook(({ id }) => useSelectedObject(id), {
       initialProps: { id: 'obj-1' as string | null },
+      wrapper,
     });
 
     // Wait for first fetch
@@ -185,8 +198,10 @@ describe('useSelectedObject', () => {
       result: mockObject,
     });
 
+    const wrapper = createQueryWrapper();
     const { result, rerender } = renderHook(({ id }) => useSelectedObject(id), {
       initialProps: { id: 'obj-1' as string | null },
+      wrapper,
     });
 
     // Wait for fetch

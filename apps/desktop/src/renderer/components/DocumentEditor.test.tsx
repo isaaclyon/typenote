@@ -8,6 +8,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import { DocumentEditor } from './DocumentEditor.js';
+import { createQueryWrapper } from '../test-utils.js';
 
 // Mock window.typenoteAPI
 const mockGetDocument = vi.fn();
@@ -23,7 +24,7 @@ beforeEach(() => {
     getObject: mockGetObject,
   };
 
-  // Default mock for getObject (used by useDailyNoteInfo)
+  // Default mock for getObject (used by useDailyNoteInfo and useSelectedObject)
   mockGetObject.mockResolvedValue({
     success: true,
     result: null, // Not a daily note by default
@@ -42,7 +43,12 @@ describe('DocumentEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<DocumentEditor objectId="obj1" />);
+      const Wrapper = createQueryWrapper();
+      render(
+        <Wrapper>
+          <DocumentEditor objectId="obj1" />
+        </Wrapper>
+      );
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -65,7 +71,12 @@ describe('DocumentEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<DocumentEditor objectId="obj1" />);
+      const Wrapper = createQueryWrapper();
+      render(
+        <Wrapper>
+          <DocumentEditor objectId="obj1" />
+        </Wrapper>
+      );
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -88,7 +99,12 @@ describe('DocumentEditor', () => {
         error: { code: 'INTERNAL', message: 'Save failed' },
       });
 
-      const { container } = render(<DocumentEditor objectId="obj1" />);
+      const Wrapper = createQueryWrapper();
+      const { container } = render(
+        <Wrapper>
+          <DocumentEditor objectId="obj1" />
+        </Wrapper>
+      );
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -127,7 +143,12 @@ describe('DocumentEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: mockBlocks },
       });
 
-      render(<DocumentEditor objectId="obj1" />);
+      const Wrapper = createQueryWrapper();
+      render(
+        <Wrapper>
+          <DocumentEditor objectId="obj1" />
+        </Wrapper>
+      );
 
       // Wait for loading to complete
       await waitFor(() => {
@@ -152,7 +173,12 @@ describe('DocumentEditor', () => {
         result: { objectId: 'obj1', docVersion: 1, blocks: [] },
       });
 
-      render(<DocumentEditor objectId="obj1" />);
+      const Wrapper = createQueryWrapper();
+      render(
+        <Wrapper>
+          <DocumentEditor objectId="obj1" />
+        </Wrapper>
+      );
 
       // Wait for loading to complete
       await waitFor(() => {

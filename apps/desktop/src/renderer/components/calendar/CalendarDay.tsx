@@ -5,7 +5,7 @@
  * Displays the day number with optional event indicator and various states.
  */
 
-import { cn } from '../../lib/utils.js';
+import { cn } from '@typenote/design-system';
 
 export interface CalendarDayProps {
   dateKey: string; // YYYY-MM-DD
