@@ -10,8 +10,8 @@ function KeyboardKey({ className, children, ...props }: KeyboardKeyProps) {
         'inline-flex items-center justify-center',
         'px-1.5 py-0.5 min-w-[1.5rem]',
         'font-mono text-xs',
-        'bg-gray-50 border border-gray-200 rounded shadow-sm',
-        'text-gray-700',
+        'bg-muted border border-border rounded shadow-sm',
+        'text-foreground',
         className
       )}
       {...props}

@@ -51,7 +51,9 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
       <div ref={ref} className={cn('w-full', className)}>
         {/* Header */}
         {showHeader && (
-          <h3 className="text-xs font-medium text-gray-500 mb-2">{formatHeaderDate(date)}</h3>
+          <h3 className="text-xs font-medium text-muted-foreground mb-2">
+            {formatHeaderDate(date)}
+          </h3>
         )}
 
         {/* Loading state */}
@@ -70,7 +72,7 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
 
         {/* Empty state */}
         {!isLoading && items.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-4">No notes created</p>
+          <p className="text-sm text-muted-foreground text-center py-4">No notes created</p>
         )}
 
         {/* Items list */}

@@ -45,14 +45,14 @@ export function DocumentHeader({
   const displayTitle = isDailyNote ? formatFullDate(dailyNoteDateKey) : title;
 
   return (
-    <header className={cn('pb-4 mb-6 border-b border-gray-200', className)}>
+    <header className={cn('pb-4 mb-6 border-b border-border', className)}>
       {/* Type label */}
-      <div className="text-sm text-gray-400 font-normal mb-1">{typeLabel}</div>
+      <div className="text-sm text-muted-foreground font-normal mb-1">{typeLabel}</div>
 
       {/* Title */}
       {isDailyNote || onTitleChange === undefined ? (
         // Immutable title (Daily Notes or no onChange provided)
-        <h1 className="text-3xl text-gray-900 font-semibold select-none">{displayTitle}</h1>
+        <h1 className="text-3xl text-foreground font-semibold select-none">{displayTitle}</h1>
       ) : (
         // Editable title
         <EditableTitle value={title} onChange={onTitleChange} placeholder="Untitled" />

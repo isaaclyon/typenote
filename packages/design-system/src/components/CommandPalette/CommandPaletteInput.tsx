@@ -37,8 +37,8 @@ const CommandPaletteInput = React.forwardRef<HTMLInputElement, CommandPaletteInp
     }, [autoFocus]);
 
     return (
-      <div className={cn('flex items-center gap-3 px-3 border-b border-gray-200', className)}>
-        <Search className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+      <div className={cn('flex items-center gap-3 px-3 border-b border-border', className)}>
+        <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         <input
           ref={setRefs}
           type="text"
@@ -47,7 +47,7 @@ const CommandPaletteInput = React.forwardRef<HTMLInputElement, CommandPaletteInp
           placeholder={placeholder}
           className={cn(
             'flex-1 h-11 bg-transparent text-sm outline-none',
-            'placeholder:text-gray-400'
+            'placeholder:text-muted-foreground'
           )}
           aria-label="Search commands"
         />

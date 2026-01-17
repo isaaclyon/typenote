@@ -8,7 +8,7 @@ const tagVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-gray-100 text-gray-700 hover:bg-accent-50',
+        default: 'bg-secondary text-foreground hover:bg-accent-50',
         primary: 'bg-accent-100 text-accent-700 hover:bg-accent-200',
       },
       clickable: {
@@ -69,10 +69,10 @@ function Tag({ className, variant, clickable, onRemove, onClick, children, ...pr
             e.stopPropagation();
             onRemove();
           }}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-gray-200/80 hover:bg-gray-300 rounded-full p-0.5 transition-all"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-border/80 hover:bg-gray-300 rounded-full p-0.5 transition-all"
           aria-label="Remove tag"
         >
-          <X className="h-3 w-3 text-gray-700" />
+          <X className="h-3 w-3 text-foreground" />
         </button>
       )}
     </span>

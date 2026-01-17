@@ -7,7 +7,9 @@ import type { SettingsSectionProps } from './types.js';
 const SettingsSection: React.FC<SettingsSectionProps> = ({ title, children }) => {
   return (
     <div className="py-4">
-      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{title}</h3>
+      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+        {title}
+      </h3>
       <div className="space-y-1">{children}</div>
     </div>
   );

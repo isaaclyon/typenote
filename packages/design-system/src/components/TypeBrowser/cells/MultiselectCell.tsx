@@ -100,12 +100,12 @@ function MultiselectCell({ value, onSave, options }: MultiselectCellProps) {
     <div
       className={cn(
         'cursor-pointer px-1 -mx-1 rounded min-h-[1.5rem] flex items-center gap-1 flex-wrap',
-        'hover:bg-gray-100'
+        'hover:bg-secondary'
       )}
       onClick={() => setIsEditing(true)}
     >
       {value.length === 0 ? (
-        <span className="text-gray-400">–</span>
+        <span className="text-muted-foreground">–</span>
       ) : (
         <>
           {displayPills.map((v) => (
@@ -119,7 +119,9 @@ function MultiselectCell({ value, onSave, options }: MultiselectCellProps) {
               {v}
             </span>
           ))}
-          {remainingCount > 0 && <span className="text-xs text-gray-500">+{remainingCount}</span>}
+          {remainingCount > 0 && (
+            <span className="text-xs text-muted-foreground">+{remainingCount}</span>
+          )}
         </>
       )}
     </div>

@@ -11,10 +11,10 @@ interface CodeBlockProps {
  */
 export function CodeBlock({ code, language, className }: CodeBlockProps) {
   return (
-    <div className={cn('rounded bg-gray-100 p-4 my-2', className)}>
-      {language && <div className="text-xs text-gray-500 mb-2 font-medium">{language}</div>}
+    <div className={cn('rounded bg-secondary p-4 my-2', className)}>
+      {language && <div className="text-xs text-muted-foreground mb-2 font-medium">{language}</div>}
       <pre className="overflow-x-auto">
-        <code className="font-mono text-sm text-gray-700">{code}</code>
+        <code className="font-mono text-sm text-foreground">{code}</code>
       </pre>
     </div>
   );

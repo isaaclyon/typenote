@@ -111,7 +111,7 @@ export function LeftSidebar({
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
-                            className="h-6 w-6 p-0 hover:bg-gray-200"
+                            className="h-6 w-6 p-0 hover:bg-secondary"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <MoreHorizontal className="h-3.5 w-3.5" />

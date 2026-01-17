@@ -10,14 +10,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose, children }
   return (
     <Modal open={open} onClose={onClose} className="max-w-md w-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
-        <h2 className="text-base font-semibold text-gray-800">Settings</h2>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+        <h2 className="text-base font-semibold text-foreground">Settings</h2>
         <button
           onClick={onClose}
-          className="p-1.5 -mr-1.5 rounded hover:bg-gray-50 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="p-1.5 -mr-1.5 rounded hover:bg-muted transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-label="Close settings"
         >
-          <X className="w-4 h-4 text-gray-500" />
+          <X className="w-4 h-4 text-muted-foreground" />
         </button>
       </div>
 

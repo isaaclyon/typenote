@@ -72,14 +72,14 @@ function NumberCell({ value, onSave }: NumberCellProps) {
     <div
       className={cn(
         'truncate cursor-text px-1 -mx-1 rounded min-h-[1.5rem] flex items-center',
-        'hover:bg-gray-100'
+        'hover:bg-secondary'
       )}
       onClick={() => setIsEditing(true)}
     >
       {value !== null && value !== undefined ? (
         String(value)
       ) : (
-        <span className="text-gray-400">-</span>
+        <span className="text-muted-foreground">-</span>
       )}
     </div>
   );

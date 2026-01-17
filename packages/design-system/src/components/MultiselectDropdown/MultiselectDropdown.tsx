@@ -122,7 +122,7 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
           'flex-shrink-0',
           'opacity-0 group-hover:opacity-100',
           'p-1 rounded',
-          'text-gray-400 hover:text-gray-600 hover:bg-gray-50',
+          'text-muted-foreground hover:text-foreground hover:bg-muted',
           'transition-all duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           isOpen && 'opacity-100'
@@ -140,7 +140,7 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
             style={floatingStyles}
             className={cn(
               'z-[60]',
-              'bg-white border border-gray-200 rounded shadow-lg',
+              'bg-background border border-border rounded shadow-lg',
               'py-1 min-w-[140px]'
             )}
             onClick={(e) => e.stopPropagation()}
@@ -153,11 +153,11 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
                   className={cn(
                     'w-full px-3 py-1.5 text-sm text-left',
                     'flex items-center gap-2',
-                    'hover:bg-gray-50 transition-colors'
+                    'hover:bg-muted transition-colors'
                   )}
                   onClick={handleEdit}
                 >
-                  <Pencil className="w-3.5 h-3.5 text-gray-400" />
+                  <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
                   <span>Edit</span>
                 </button>
 
@@ -166,15 +166,15 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
                   className={cn(
                     'w-full px-3 py-1.5 text-sm text-left',
                     'flex items-center gap-2',
-                    'hover:bg-gray-50 transition-colors'
+                    'hover:bg-muted transition-colors'
                   )}
                   onClick={() => setShowColorPicker(true)}
                 >
-                  <Palette className="w-3.5 h-3.5 text-gray-400" />
+                  <Palette className="w-3.5 h-3.5 text-muted-foreground" />
                   <span>Change color</span>
                 </button>
 
-                <div className="h-px bg-gray-100 my-1" />
+                <div className="h-px bg-secondary my-1" />
 
                 <button
                   type="button"
@@ -191,7 +191,7 @@ const OptionActionsMenu = ({ option, onEdit, onDelete, onColorChange }: OptionAc
               </>
             ) : (
               <div className="px-2 py-1">
-                <p className="text-xs text-gray-500 mb-2 px-1">Select color</p>
+                <p className="text-xs text-muted-foreground mb-2 px-1">Select color</p>
                 <div className="grid grid-cols-6 gap-1.5">
                   {colorKeys.map((color) => (
                     <React.Fragment key={color}>
@@ -292,8 +292,8 @@ const SortableItem = ({
         'group flex items-center gap-2',
         'px-2 py-2 cursor-pointer',
         'transition-colors duration-100',
-        'bg-white',
-        isActive && 'bg-gray-50',
+        'bg-background',
+        isActive && 'bg-muted',
         isDragging && 'opacity-50 shadow-lg z-10'
       )}
       {...getItemProps({
@@ -319,7 +319,7 @@ const SortableItem = ({
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <GripVertical className="w-3.5 h-3.5 text-gray-300" />
+        <GripVertical className="w-3.5 h-3.5 text-muted-foreground" />
       </div>
 
       {/* Colored pill label */}
@@ -539,13 +539,13 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
             'inline-flex items-center justify-between gap-2',
             'w-full px-3 h-7',
             'text-sm text-left',
-            'bg-white border border-gray-200 rounded',
+            'bg-background border border-border rounded',
             'transition-colors duration-150 ease-out',
-            'hover:border-gray-300',
+            'hover:border-border',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2',
-            'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200',
-            isOpen && 'border-gray-300',
-            value.length === 0 && 'text-gray-400',
+            'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border',
+            isOpen && 'border-border',
+            value.length === 0 && 'text-muted-foreground',
             className
           )}
           {...getReferenceProps()}
@@ -553,7 +553,7 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
           <span className="truncate">{displayText}</span>
           <ChevronDown
             className={cn(
-              'w-3.5 h-3.5 text-gray-400 transition-transform duration-150 flex-shrink-0',
+              'w-3.5 h-3.5 text-muted-foreground transition-transform duration-150 flex-shrink-0',
               isOpen && 'rotate-180'
             )}
           />
@@ -568,7 +568,7 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
                 style={floatingStyles}
                 className={cn(
                   'z-50',
-                  'bg-white border border-gray-200 rounded shadow-md',
+                  'bg-background border border-border rounded shadow-md',
                   'max-h-72 overflow-hidden flex flex-col'
                 )}
                 {...getFloatingProps()}
@@ -584,9 +584,9 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
                     placeholder="Search or Create"
                     className={cn(
                       'w-full px-3 py-2 text-sm',
-                      'bg-gray-50 border border-gray-200 rounded',
-                      'placeholder:text-gray-400',
-                      'focus:outline-none focus:border-gray-300 focus:bg-white',
+                      'bg-muted border border-border rounded',
+                      'placeholder:text-muted-foreground',
+                      'focus:outline-none focus:border-border focus:bg-background',
                       'transition-colors duration-150'
                     )}
                   />
@@ -595,7 +595,7 @@ const MultiselectDropdown = React.forwardRef<HTMLButtonElement, MultiselectDropd
                 {/* Options list */}
                 <div className="overflow-y-auto flex-1">
                   {filteredOptions.length === 0 ? (
-                    <div className="px-3 py-4 text-center text-sm text-gray-400">
+                    <div className="px-3 py-4 text-center text-sm text-muted-foreground">
                       No options found
                     </div>
                   ) : (

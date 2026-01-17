@@ -122,27 +122,27 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             'px-3 min-w-[120px]',
             // Size variants
             size === 'sm' ? 'h-7' : 'h-9',
-            'text-sm text-gray-700',
-            'bg-white border border-gray-200 rounded',
+            'text-sm text-foreground',
+            'bg-background border border-border rounded',
             'transition-colors duration-150 ease-out',
             // Hover
-            'hover:border-gray-300',
+            'hover:border-border',
             // Focus - use border color change instead of ring to avoid layout shift
             'focus:outline-none focus-visible:border-accent-500',
             // Disabled
-            'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200',
+            'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border',
             // Open state
-            isOpen && 'border-gray-300',
+            isOpen && 'border-border',
             className
           )}
           {...getReferenceProps()}
         >
-          <span className={cn(!selectedOption && 'text-gray-400')}>
+          <span className={cn(!selectedOption && 'text-muted-foreground')}>
             {selectedOption?.label ?? placeholder}
           </span>
           <ChevronDown
             className={cn(
-              'w-3.5 h-3.5 text-gray-400 transition-transform duration-150',
+              'w-3.5 h-3.5 text-muted-foreground transition-transform duration-150',
               isOpen && 'rotate-180'
             )}
           />
@@ -157,7 +157,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 style={floatingStyles}
                 className={cn(
                   'z-50 py-1',
-                  'bg-white border border-gray-200 rounded shadow-md',
+                  'bg-background border border-border rounded shadow-md',
                   'max-h-60 overflow-auto'
                 )}
                 {...getFloatingProps()}
@@ -179,7 +179,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                         'flex items-center justify-between gap-2',
                         'px-3 py-2 text-sm cursor-pointer',
                         'transition-colors duration-100',
-                        isActive && 'bg-gray-50',
+                        isActive && 'bg-muted',
                         isSelected && 'text-accent-600 font-medium'
                       )}
                       {...getItemProps({

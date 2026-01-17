@@ -48,7 +48,7 @@ export function SettingsModalWrapper({ open, onClose }: SettingsModalWrapperProp
   return (
     <SettingsModal open={open} onClose={onClose}>
       {isLoading ? (
-        <div className="py-8 text-center text-sm text-gray-500">Loading settings...</div>
+        <div className="py-8 text-center text-sm text-muted-foreground">Loading settings...</div>
       ) : error !== null ? (
         <div className="py-8 text-center text-sm text-red-500">Error: {error}</div>
       ) : (

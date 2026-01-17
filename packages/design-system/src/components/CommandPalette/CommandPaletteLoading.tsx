@@ -10,7 +10,10 @@ import type { CommandPaletteLoadingProps } from './types.js';
 const CommandPaletteLoading = React.forwardRef<HTMLDivElement, CommandPaletteLoadingProps>(
   ({ children = 'Searching...', className }, ref) => {
     return (
-      <div ref={ref} className={cn('px-3 py-6 text-center text-sm text-gray-400', className)}>
+      <div
+        ref={ref}
+        className={cn('px-3 py-6 text-center text-sm text-muted-foreground', className)}
+      >
         {children}
       </div>
     );

@@ -16,8 +16,8 @@ interface ShortcutHintsProps {
  */
 export function ShortcutHints({ hints, className }: ShortcutHintsProps) {
   return (
-    <div className={cn('bg-gray-50 rounded-lg p-3 text-xs', className)}>
-      <div className="font-medium mb-2 text-gray-500">Shortcuts</div>
+    <div className={cn('bg-muted rounded-lg p-3 text-xs', className)}>
+      <div className="font-medium mb-2 text-muted-foreground">Shortcuts</div>
       <div className="space-y-1.5">
         {hints.map((hint, i) => (
           <div key={i} className="flex items-center gap-2">
@@ -26,7 +26,7 @@ export function ShortcutHints({ hints, className }: ShortcutHintsProps) {
                 <KeyboardKey key={j}>{key}</KeyboardKey>
               ))}
             </div>
-            <span className="text-gray-600">{hint.action}</span>
+            <span className="text-muted-foreground">{hint.action}</span>
           </div>
         ))}
       </div>

@@ -20,7 +20,7 @@ export const IconPicker = React.forwardRef<HTMLDivElement, IconPickerProps>(
       <div ref={ref} className="flex w-full flex-col gap-3">
         {searchable && (
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search icons..."
@@ -37,7 +37,7 @@ export const IconPicker = React.forwardRef<HTMLDivElement, IconPickerProps>(
           maxHeight={maxHeight}
         />
         {filteredIcons.length > 0 && (
-          <div className="text-xs text-gray-500 text-center">
+          <div className="text-xs text-muted-foreground text-center">
             {filteredIcons.length} icon{filteredIcons.length !== 1 ? 's' : ''}
           </div>
         )}

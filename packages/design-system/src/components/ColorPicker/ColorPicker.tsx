@@ -42,7 +42,7 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
       <div ref={ref} className="flex w-full flex-col gap-4">
         {/* Preset swatches */}
         <div>
-          <div className="mb-2 text-xs font-semibold text-gray-700">Preset Colors</div>
+          <div className="mb-2 text-xs font-semibold text-foreground">Preset Colors</div>
           <div className="grid grid-cols-4 gap-2">
             {presets.map((color) => (
               <ColorSwatch
@@ -57,7 +57,7 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
 
         {/* Hex input */}
         <div>
-          <div className="mb-2 text-xs font-semibold text-gray-700">Custom Color</div>
+          <div className="mb-2 text-xs font-semibold text-foreground">Custom Color</div>
           <Input
             type="text"
             placeholder="#RRGGBB"
@@ -71,13 +71,13 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
         {/* Current color preview */}
         {value && (
           <div>
-            <div className="mb-2 text-xs font-semibold text-gray-700">Current Color</div>
+            <div className="mb-2 text-xs font-semibold text-foreground">Current Color</div>
             <div className="flex items-center gap-3">
               <div
-                className="h-12 w-12 rounded-sm border border-gray-200"
+                className="h-12 w-12 rounded-sm border border-border"
                 style={{ backgroundColor: value }}
               />
-              <code className="text-sm font-mono text-gray-700">{value}</code>
+              <code className="text-sm font-mono text-foreground">{value}</code>
             </div>
           </div>
         )}

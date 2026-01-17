@@ -45,7 +45,7 @@ export function PropertiesPanel({
     <RightSidebar collapsed={collapsed}>
       <div className="space-y-4">
         {/* Section header */}
-        <Text variant="label" className="font-semibold text-gray-900">
+        <Text variant="label" className="font-semibold text-foreground">
           Properties
         </Text>
 

@@ -41,7 +41,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           role="dialog"
           aria-modal="true"
           className={cn(
-            'relative bg-white rounded-lg shadow-2xl max-w-md w-full mx-4',
+            'relative bg-background rounded-lg shadow-2xl max-w-md w-full mx-4',
             'animate-[slide-in-from-bottom_200ms_ease-out]',
             className
           )}

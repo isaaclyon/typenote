@@ -30,7 +30,7 @@ const DailyNoteNav = React.forwardRef<HTMLDivElement, DailyNoteNavProps>(
           data-testid="nav-prev-button"
           className={cn(
             'flex items-center justify-center w-7 h-7 rounded',
-            'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+            'text-muted-foreground hover:text-foreground hover:bg-muted',
             'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
           )}
@@ -49,7 +49,7 @@ const DailyNoteNav = React.forwardRef<HTMLDivElement, DailyNoteNavProps>(
             'text-sm font-medium',
             isToday
               ? 'text-accent-600 cursor-default'
-              : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50',
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted',
             'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             'disabled:opacity-50 disabled:cursor-not-allowed'
@@ -64,7 +64,7 @@ const DailyNoteNav = React.forwardRef<HTMLDivElement, DailyNoteNavProps>(
           data-testid="nav-next-button"
           className={cn(
             'flex items-center justify-center w-7 h-7 rounded',
-            'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+            'text-muted-foreground hover:text-foreground hover:bg-muted',
             'transition-colors duration-150',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
           )}

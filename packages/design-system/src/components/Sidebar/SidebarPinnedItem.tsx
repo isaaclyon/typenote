@@ -12,7 +12,7 @@ const pinnedItemVariants = cva(
     variants: {
       selected: {
         true: 'bg-accent-50',
-        false: 'hover:bg-gray-50',
+        false: 'hover:bg-muted',
       },
     },
     defaultVariants: {
@@ -63,7 +63,7 @@ const SidebarPinnedItem = React.forwardRef<HTMLDivElement, SidebarPinnedItemProp
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <GripVertical className="w-3.5 h-3.5 text-gray-300" />
+          <GripVertical className="w-3.5 h-3.5 text-muted-foreground" />
         </div>
 
         <Icon className="w-3.5 h-3.5 shrink-0" style={color ? { color } : undefined} />

@@ -10,10 +10,10 @@ const SidebarActionButton = React.forwardRef<HTMLButtonElement, SidebarActionBut
         onClick={onClick}
         className={cn(
           'flex items-center gap-3 h-9 px-3 rounded-md transition-colors duration-150',
-          'text-sm font-medium text-gray-700',
-          'hover:bg-gray-50',
+          'text-sm font-medium text-foreground',
+          'hover:bg-muted',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          withDivider && 'border-t border-gray-200 pt-4 mt-4',
+          withDivider && 'border-t border-border pt-4 mt-4',
           className
         )}
       >

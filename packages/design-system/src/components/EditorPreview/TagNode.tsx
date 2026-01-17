@@ -16,7 +16,7 @@ export function TagNode({ value, showIcon = true, className }: TagNodeProps) {
     <span
       className={cn(
         'inline-flex items-center gap-1 rounded px-2 h-6 text-sm font-medium',
-        'bg-gray-100 text-gray-700 hover:bg-accent-50',
+        'bg-secondary text-foreground hover:bg-accent-50',
         'cursor-pointer transition-colors duration-150',
         className
       )}

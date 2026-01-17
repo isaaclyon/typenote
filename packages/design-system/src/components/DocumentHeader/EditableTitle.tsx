@@ -57,8 +57,8 @@ export function EditableTitle({
   // Disabled mode (for Daily Notes - immutable)
   if (disabled) {
     return (
-      <h1 className="text-3xl text-gray-900 font-semibold select-none">
-        {value || <span className="text-gray-400">{placeholder}</span>}
+      <h1 className="text-3xl text-foreground font-semibold select-none">
+        {value || <span className="text-muted-foreground">{placeholder}</span>}
       </h1>
     );
   }
@@ -75,9 +75,9 @@ export function EditableTitle({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={cn(
-          'w-full text-3xl font-semibold text-gray-900',
+          'w-full text-3xl font-semibold text-foreground',
           'bg-transparent border-none outline-none',
-          'placeholder:text-gray-400',
+          'placeholder:text-muted-foreground',
           'focus:ring-0'
         )}
       />
@@ -88,13 +88,13 @@ export function EditableTitle({
   return (
     <h1
       className={cn(
-        'text-3xl text-gray-900 font-semibold cursor-text',
+        'text-3xl text-foreground font-semibold cursor-text',
         'rounded px-1 -mx-1',
-        'hover:bg-gray-50 transition-colors duration-150'
+        'hover:bg-muted transition-colors duration-150'
       )}
       onClick={() => setIsEditing(true)}
     >
-      {value || <span className="text-gray-400">{placeholder}</span>}
+      {value || <span className="text-muted-foreground">{placeholder}</span>}
     </h1>
   );
 }

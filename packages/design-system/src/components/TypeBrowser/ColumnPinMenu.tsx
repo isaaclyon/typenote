@@ -51,7 +51,7 @@ export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinM
   // Don't show menu for permanently pinned columns
   if (isPermanentlyPinned) {
     return (
-      <span className="text-gray-400" title="This column is always pinned">
+      <span className="text-muted-foreground" title="This column is always pinned">
         <Pin className="w-3 h-3" />
       </span>
     );
@@ -66,8 +66,8 @@ export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinM
           'p-0.5 rounded transition-colors',
           'opacity-0 group-hover:opacity-100',
           isPinned && 'opacity-100 text-accent-600',
-          !isPinned && 'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
-          isOpen && 'opacity-100 bg-gray-100'
+          !isPinned && 'text-muted-foreground hover:text-foreground hover:bg-secondary',
+          isOpen && 'opacity-100 bg-secondary'
         )}
         {...getReferenceProps()}
         title={isPinned ? `Pinned ${isPinned}` : 'Pin column'}
@@ -81,13 +81,13 @@ export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinM
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className="z-50 bg-white border border-gray-200 rounded-md shadow-lg py-1 min-w-[120px]"
+            className="z-50 bg-background border border-border rounded-md shadow-lg py-1 min-w-[120px]"
           >
             <button
               type="button"
               className={cn(
                 'w-full px-3 py-1.5 text-left text-sm flex items-center gap-2',
-                'hover:bg-gray-50 transition-colors',
+                'hover:bg-muted transition-colors',
                 isPinned === 'left' && 'text-accent-600 bg-accent-50'
               )}
               onClick={() => handlePin('left')}
@@ -99,7 +99,7 @@ export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinM
               type="button"
               className={cn(
                 'w-full px-3 py-1.5 text-left text-sm flex items-center gap-2',
-                'hover:bg-gray-50 transition-colors',
+                'hover:bg-muted transition-colors',
                 isPinned === 'right' && 'text-accent-600 bg-accent-50'
               )}
               onClick={() => handlePin('right')}
@@ -112,7 +112,7 @@ export function ColumnPinMenu<TData>({ column, isPermanentlyPinned }: ColumnPinM
                 <div className="border-t border-gray-100 my-1" />
                 <button
                   type="button"
-                  className="w-full px-3 py-1.5 text-left text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors text-gray-600"
+                  className="w-full px-3 py-1.5 text-left text-sm flex items-center gap-2 hover:bg-muted transition-colors text-muted-foreground"
                   onClick={() => handlePin(false)}
                 >
                   <PinOff className="w-3.5 h-3.5" />

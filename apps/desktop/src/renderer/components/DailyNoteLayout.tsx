@@ -74,7 +74,7 @@ export function DailyNoteLayout({
       {/* Right column: Calendar panel */}
       <div
         className={cn(
-          'group relative flex-shrink-0 border-l border-gray-200 bg-gray-50/50',
+          'group relative flex-shrink-0 border-l border-border bg-muted/50',
           // Disable transition during drag for responsive feel
           !sidebarState.isResizing && 'transition-[width] duration-200 ease-out'
         )}

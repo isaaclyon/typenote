@@ -194,9 +194,9 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
                   }}
                   data-testid={`command-recent-${obj.id}`}
                 >
-                  <Icons.Clock className="h-4 w-4 text-gray-400" />
+                  <Icons.Clock className="h-4 w-4 text-muted-foreground" />
                   <span className="flex-1 truncate">{obj.title}</span>
-                  <span className="text-xs text-gray-400">{obj.typeKey}</span>
+                  <span className="text-xs text-muted-foreground">{obj.typeKey}</span>
                 </CommandPaletteItem>
               );
             })}
@@ -217,9 +217,9 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
                   onSelect={() => handleSelect(cmd)}
                   data-testid={`command-item-${cmd.objectId}`}
                 >
-                  <Icon className="h-4 w-4 text-gray-400" />
+                  <Icon className="h-4 w-4 text-muted-foreground" />
                   <span className="flex-1 truncate">{cmd.label}</span>
-                  <span className="text-xs text-gray-400">{cmd.objectType}</span>
+                  <span className="text-xs text-muted-foreground">{cmd.objectType}</span>
                 </CommandPaletteItem>
               );
             })}
@@ -241,7 +241,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate }: CommandPalettePr
                   data-testid={`command-create-${cmd.typeKey}`}
                 >
                   <Icons.Plus className="h-4 w-4 text-accent-500" />
-                  <Icon className="h-4 w-4 text-gray-400" />
+                  <Icon className="h-4 w-4 text-muted-foreground" />
                   <span className="flex-1">
                     {cmd.typeKey}: {cmd.description?.replace(/"/g, '') ?? 'New'}
                   </span>

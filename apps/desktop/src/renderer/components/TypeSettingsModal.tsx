@@ -170,7 +170,7 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
       <button
         type="button"
         onClick={() => setShowIconPicker(!showIconPicker)}
-        className="flex h-10 items-center gap-2 rounded-sm border border-gray-300 bg-white px-3 text-sm hover:bg-gray-50"
+        className="flex h-10 items-center gap-2 rounded-sm border border-border bg-background px-3 text-sm hover:bg-muted"
       >
         {IconComponent ? (
           <>
@@ -178,7 +178,7 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
             <span>{formData.icon}</span>
           </>
         ) : (
-          <span className="text-gray-500">Select icon...</span>
+          <span className="text-muted-foreground">Select icon...</span>
         )}
       </button>
     );
@@ -188,18 +188,18 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
     <button
       type="button"
       onClick={() => setShowColorPicker(!showColorPicker)}
-      className="flex h-10 items-center gap-2 rounded-sm border border-gray-300 bg-white px-3 text-sm hover:bg-gray-50"
+      className="flex h-10 items-center gap-2 rounded-sm border border-border bg-background px-3 text-sm hover:bg-muted"
     >
       {formData.color ? (
         <>
           <div
-            className="h-4 w-4 rounded-sm border border-gray-300"
+            className="h-4 w-4 rounded-sm border border-border"
             style={{ backgroundColor: formData.color }}
           />
           <span>{formData.color}</span>
         </>
       ) : (
-        <span className="text-gray-500">Select color...</span>
+        <span className="text-muted-foreground">Select color...</span>
       )}
     </button>
   );
@@ -218,7 +218,7 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
           <div className="space-y-4">
             {/* Name */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-foreground">
                 Name <span className="text-red-500">*</span>
               </label>
               <Input
@@ -233,8 +233,8 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
 
             {/* Plural Name */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Plural Name <span className="text-gray-400 text-xs">(optional)</span>
+              <label className="mb-1 block text-sm font-medium text-foreground">
+                Plural Name <span className="text-muted-foreground text-xs">(optional)</span>
               </label>
               <Input
                 type="text"
@@ -247,12 +247,12 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
 
             {/* Icon */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Icon <span className="text-gray-400 text-xs">(optional)</span>
+              <label className="mb-1 block text-sm font-medium text-foreground">
+                Icon <span className="text-muted-foreground text-xs">(optional)</span>
               </label>
               <SelectedIconButton />
               {showIconPicker && (
-                <div className="mt-2 rounded-sm border border-gray-200 p-3">
+                <div className="mt-2 rounded-sm border border-border p-3">
                   <IconPicker
                     value={formData.icon}
                     onChange={(iconName) => {
@@ -267,12 +267,12 @@ export const TypeSettingsModal: React.FC<TypeSettingsModalProps> = ({
 
             {/* Color */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Color <span className="text-gray-400 text-xs">(optional)</span>
+              <label className="mb-1 block text-sm font-medium text-foreground">
+                Color <span className="text-muted-foreground text-xs">(optional)</span>
               </label>
               <SelectedColorButton />
               {showColorPicker && (
-                <div className="mt-2 rounded-sm border border-gray-200 p-3">
+                <div className="mt-2 rounded-sm border border-border p-3">
                   <ColorPicker
                     value={formData.color}
                     onChange={(color) => {

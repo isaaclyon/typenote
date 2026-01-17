@@ -9,7 +9,7 @@ const itemVariants = cva(
     variants: {
       selected: {
         true: 'bg-accent-50 text-accent-700',
-        false: 'hover:bg-gray-50',
+        false: 'hover:bg-muted',
       },
       disabled: {
         true: 'opacity-50 pointer-events-none',

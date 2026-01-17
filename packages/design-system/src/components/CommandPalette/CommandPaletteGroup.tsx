@@ -11,7 +11,9 @@ const CommandPaletteGroup = React.forwardRef<HTMLDivElement, CommandPaletteGroup
   ({ heading, children, className }, ref) => {
     return (
       <div ref={ref} role="group" aria-label={heading} className={cn('p-1', className)}>
-        {heading && <div className="px-2 py-1.5 text-xs font-medium text-gray-500">{heading}</div>}
+        {heading && (
+          <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">{heading}</div>
+        )}
         {children}
       </div>
     );

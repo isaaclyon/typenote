@@ -14,7 +14,7 @@ const SidebarCalendarButton = React.forwardRef<HTMLButtonElement, SidebarCalenda
           'text-sm font-medium',
           isToday
             ? 'bg-accent-50 text-accent-700 hover:bg-accent-100'
-            : 'text-gray-700 hover:bg-gray-50',
+            : 'text-foreground hover:bg-muted',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className
         )}

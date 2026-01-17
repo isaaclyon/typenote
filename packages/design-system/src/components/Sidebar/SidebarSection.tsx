@@ -8,7 +8,7 @@ const SidebarSection = React.forwardRef<HTMLDivElement, SidebarSectionProps>(
       <div ref={ref} className={cn('flex flex-col gap-1', className)}>
         {title && (
           <div className="px-3 py-2">
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {title}
             </span>
           </div>

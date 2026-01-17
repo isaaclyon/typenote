@@ -43,8 +43,8 @@ function AttachmentNodeView({ node, selected }: NodeViewProps) {
           className={cn(
             'flex items-center justify-center',
             'h-32 w-full rounded-lg border-2 border-dashed',
-            'bg-gray-50 text-gray-400',
-            'dark:bg-gray-800 dark:text-gray-500',
+            'bg-muted text-muted-foreground',
+            'dark:bg-gray-800 dark:text-muted-foreground',
             selected && 'ring-2 ring-blue-500'
           )}
         >

@@ -23,16 +23,16 @@ const SettingsLink: React.FC<SettingsLinkProps> = ({ label, description, onClick
       onClick={onClick}
       className={cn(
         'w-full flex items-center justify-between py-3 px-1 rounded',
-        'hover:bg-gray-50 transition-colors duration-100',
+        'hover:bg-muted transition-colors duration-100',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2',
         className
       )}
     >
       <div className="flex flex-col items-start">
-        <span className="text-sm text-gray-700">{label}</span>
-        {description && <span className="text-xs text-gray-500 mt-0.5">{description}</span>}
+        <span className="text-sm text-foreground">{label}</span>
+        {description && <span className="text-xs text-muted-foreground mt-0.5">{description}</span>}
       </div>
-      <ChevronRight className="w-4 h-4 text-gray-400" />
+      <ChevronRight className="w-4 h-4 text-muted-foreground" />
     </button>
   );
 };

@@ -43,8 +43,8 @@ export function DailyNoteHeader({ dateKey, className }: DailyNoteHeaderProps): R
 
   return (
     <header className={cn('select-none', className)}>
-      <div className="text-xs text-gray-400 font-normal mb-0.5">{dayName}</div>
-      <h1 className="text-2xl text-gray-900 font-semibold">{fullDate}</h1>
+      <div className="text-xs text-muted-foreground font-normal mb-0.5">{dayName}</div>
+      <h1 className="text-2xl text-foreground font-semibold">{fullDate}</h1>
     </header>
   );
 }

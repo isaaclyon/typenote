@@ -11,7 +11,10 @@ interface MathInlineProps {
 export function MathInline({ latex, className }: MathInlineProps) {
   return (
     <code
-      className={cn('rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm text-gray-700', className)}
+      className={cn(
+        'rounded bg-secondary px-1.5 py-0.5 font-mono text-sm text-foreground',
+        className
+      )}
       title="Inline math (LaTeX)"
     >
       {latex}

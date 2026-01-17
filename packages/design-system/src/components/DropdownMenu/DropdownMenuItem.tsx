@@ -8,7 +8,8 @@ const dropdownMenuItemVariants = cva(
   {
     variants: {
       variant: {
-        default: 'focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        default:
+          'focus:bg-secondary data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         destructive:
           'text-red-600 focus:bg-red-50 focus:text-red-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       },

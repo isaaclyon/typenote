@@ -59,22 +59,24 @@ const CollapsibleSection = React.forwardRef<HTMLDivElement, CollapsibleSectionPr
           type="button"
           onClick={handleToggle}
           className={cn(
-            'flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 transition-colors',
-            collapsible && 'hover:bg-gray-50 cursor-pointer',
+            'flex items-center justify-between px-3 py-2 text-sm font-medium text-foreground transition-colors',
+            collapsible && 'hover:bg-muted cursor-pointer',
             !collapsible && 'cursor-default'
           )}
           disabled={!collapsible}
           aria-expanded={isExpanded}
         >
           <div className="flex items-center gap-2">
-            {Icon && <Icon className="w-4 h-4 text-gray-600" weight="regular" />}
+            {Icon && <Icon className="w-4 h-4 text-muted-foreground" weight="regular" />}
             <span>{title}</span>
-            {count !== undefined && <span className="text-xs text-gray-500">({count})</span>}
+            {count !== undefined && (
+              <span className="text-xs text-muted-foreground">({count})</span>
+            )}
           </div>
           {collapsible && (
             <ChevronRight
               className={cn(
-                'w-4 h-4 text-gray-500 transition-transform duration-200',
+                'w-4 h-4 text-muted-foreground transition-transform duration-200',
                 isExpanded && 'rotate-90'
               )}
             />
@@ -82,7 +84,7 @@ const CollapsibleSection = React.forwardRef<HTMLDivElement, CollapsibleSectionPr
         </button>
 
         {/* Divider */}
-        <div className="border-t border-gray-200" />
+        <div className="border-t border-border" />
 
         {/* Section Content */}
         {isExpanded && <div className="px-3 py-2">{children}</div>}

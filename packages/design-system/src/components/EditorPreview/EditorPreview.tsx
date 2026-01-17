@@ -15,7 +15,7 @@ export function EditorPreview({ children, className }: EditorPreviewProps) {
     <div
       className={cn(
         'tiptap',
-        'min-h-[200px] p-6 bg-white rounded border border-gray-200',
+        'min-h-[200px] p-6 bg-background rounded border border-border',
         className
       )}
     >

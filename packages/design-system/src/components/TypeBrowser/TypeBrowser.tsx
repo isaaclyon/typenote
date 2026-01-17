@@ -36,7 +36,7 @@ const OVERSCAN = 5;
  */
 function formatCellValue(value: unknown, type: CellType): React.ReactNode {
   if (value === null || value === undefined || value === '') {
-    return <span className="text-gray-400">–</span>;
+    return <span className="text-muted-foreground">–</span>;
   }
 
   switch (type) {
@@ -58,7 +58,7 @@ function formatCellValue(value: unknown, type: CellType): React.ReactNode {
           return date.toLocaleDateString();
         }
       }
-      return <span className="text-gray-400">–</span>;
+      return <span className="text-muted-foreground">–</span>;
 
     case 'datetime':
       if (value instanceof Date) {
@@ -71,13 +71,13 @@ function formatCellValue(value: unknown, type: CellType): React.ReactNode {
           return date.toLocaleString();
         }
       }
-      return <span className="text-gray-400">–</span>;
+      return <span className="text-muted-foreground">–</span>;
 
     case 'multiselect':
       if (Array.isArray(value) && value.length > 0) {
         return value.map(String).join(', ');
       }
-      return <span className="text-gray-400">–</span>;
+      return <span className="text-muted-foreground">–</span>;
 
     case 'select':
     case 'text':
@@ -194,7 +194,7 @@ function TableSkeleton({ columnCount }: { columnCount: number }) {
   return (
     <div className="w-full">
       {/* Header skeleton */}
-      <div className="flex gap-4 px-3 py-2 border-b border-gray-200 bg-gray-50">
+      <div className="flex gap-4 px-3 py-2 border-b border-border bg-muted">
         {Array.from({ length: columnCount }).map((_, i) => (
           <Skeleton key={i} className="h-4 flex-1" />
         ))}
@@ -387,7 +387,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
                 key={headerGroup.id}
-                className="border-b border-gray-200"
+                className="border-b border-border"
                 style={{
                   display: 'flex',
                   position: 'sticky',
@@ -406,9 +406,9 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                     <th
                       key={header.id}
                       className={cn(
-                        'group px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                        'bg-gray-50 border-b border-gray-200',
-                        canSort && 'cursor-pointer select-none hover:bg-gray-100 transition-colors'
+                        'group px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider',
+                        'bg-muted border-b border-border',
+                        canSort && 'cursor-pointer select-none hover:bg-secondary transition-colors'
                       )}
                       style={{
                         width: header.getSize() !== 150 ? header.getSize() : undefined,
@@ -423,7 +423,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                       <div className="flex items-center gap-1">
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {sortDirection && (
-                          <span className="text-gray-400">
+                          <span className="text-muted-foreground">
                             {sortDirection === 'asc' ? '↑' : '↓'}
                           </span>
                         )}
@@ -461,7 +461,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                   ref={(node) => rowVirtualizer.measureElement(node)}
                   className={cn(
                     'border-b border-gray-100 transition-colors',
-                    onRowClick && 'cursor-pointer hover:bg-gray-50'
+                    onRowClick && 'cursor-pointer hover:bg-muted'
                   )}
                   style={{
                     display: 'flex',
@@ -478,7 +478,7 @@ function TypeBrowserInner<TData extends Record<string, unknown>>(
                     return (
                       <td
                         key={cell.id}
-                        className="px-3 py-2.5 text-sm text-gray-900"
+                        className="px-3 py-2.5 text-sm text-foreground"
                         style={{
                           width: cell.column.getSize() !== 150 ? cell.column.getSize() : undefined,
                           minWidth: cell.column.getSize() !== 150 ? cell.column.getSize() : 100,

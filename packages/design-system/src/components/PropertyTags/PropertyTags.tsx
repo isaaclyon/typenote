@@ -13,7 +13,7 @@ const PropertyTags = React.forwardRef<HTMLDivElement, PropertyTagsProps>(
       <div ref={ref} className={cn('flex items-start gap-3 group', className)}>
         {/* Label column */}
         <div className="w-20 flex-shrink-0 flex items-center h-7">
-          <span className="text-sm text-gray-600">{label}</span>
+          <span className="text-sm text-muted-foreground">{label}</span>
         </div>
 
         {/* Tags column */}

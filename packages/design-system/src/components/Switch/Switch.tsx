@@ -54,7 +54,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         {/* Thumb - sibling to track, so peer-checked works */}
         <div
           className={cn(
-            'absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm',
+            'absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-background shadow-sm',
             'transition-transform duration-150 ease-out',
             'peer-checked:translate-x-4'
           )}

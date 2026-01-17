@@ -16,7 +16,7 @@ const TagAddButton = React.forwardRef<HTMLButtonElement, TagAddButtonProps>(
         size="sm"
         onClick={onClick}
         disabled={disabled}
-        className="text-gray-600 hover:text-gray-900"
+        className="text-muted-foreground hover:text-foreground"
       >
         <Plus className="w-3 h-3 mr-1" />
         Add tag

@@ -10,7 +10,7 @@ import type { CommandPaletteSeparatorProps } from './types.js';
 const CommandPaletteSeparator = React.forwardRef<HTMLDivElement, CommandPaletteSeparatorProps>(
   ({ className }, ref) => {
     return (
-      <div ref={ref} role="separator" className={cn('-mx-1 my-1 h-px bg-gray-200', className)} />
+      <div ref={ref} role="separator" className={cn('-mx-1 my-1 h-px bg-border', className)} />
     );
   }
 );

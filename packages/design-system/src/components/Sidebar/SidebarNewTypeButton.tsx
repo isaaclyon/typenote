@@ -11,8 +11,8 @@ const SidebarNewTypeButton = React.forwardRef<HTMLButtonElement, SidebarNewTypeB
         onClick={onClick}
         className={cn(
           'flex items-center gap-2 h-7 px-3 rounded-md transition-colors duration-150',
-          'text-sm font-medium text-gray-500',
-          'hover:bg-gray-50 hover:text-gray-700',
+          'text-sm font-medium text-muted-foreground',
+          'hover:bg-muted hover:text-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className
         )}

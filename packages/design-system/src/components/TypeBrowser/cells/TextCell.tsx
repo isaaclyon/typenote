@@ -60,11 +60,11 @@ function TextCell({ value, onSave }: TextCellProps) {
     <div
       className={cn(
         'truncate cursor-text px-1 -mx-1 rounded min-h-[1.5rem] flex items-center',
-        'hover:bg-gray-100'
+        'hover:bg-secondary'
       )}
       onClick={() => setIsEditing(true)}
     >
-      {value || <span className="text-gray-400">-</span>}
+      {value || <span className="text-muted-foreground">-</span>}
     </div>
   );
 }

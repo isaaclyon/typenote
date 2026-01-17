@@ -73,14 +73,14 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
 
     if (items.length === 0) {
       return (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 min-w-[280px]">
-          <p className="text-sm text-gray-500">No commands found</p>
+        <div className="bg-background border border-border rounded-lg shadow-lg p-3 min-w-[280px]">
+          <p className="text-sm text-muted-foreground">No commands found</p>
         </div>
       );
     }
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[280px] max-h-[320px] overflow-y-auto">
+      <div className="bg-background border border-border rounded-lg shadow-lg py-1 min-w-[280px] max-h-[320px] overflow-y-auto">
         {items.map((item, index) => {
           const Icon = item.icon;
           const isSelected = index === localIndex;
@@ -95,7 +95,7 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
               }}
               className={cn(
                 'w-full flex items-start gap-3 px-3 py-2 text-left transition-colors duration-150',
-                isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'
+                isSelected ? 'bg-accent-50' : 'hover:bg-muted'
               )}
               onClick={() => onSelect(item)}
               onMouseEnter={() => setLocalIndex(index)}
@@ -103,14 +103,19 @@ export const SlashCommandMenu = React.forwardRef<SlashCommandMenuRef, SlashComma
               <div
                 className={cn(
                   'flex-shrink-0 w-8 h-8 rounded flex items-center justify-center',
-                  isSelected ? 'bg-accent-100' : 'bg-gray-100'
+                  isSelected ? 'bg-accent-100' : 'bg-secondary'
                 )}
               >
-                <Icon className={cn('w-4 h-4', isSelected ? 'text-accent-600' : 'text-gray-600')} />
+                <Icon
+                  className={cn(
+                    'w-4 h-4',
+                    isSelected ? 'text-accent-600' : 'text-muted-foreground'
+                  )}
+                />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-900">{item.label}</div>
-                <div className="text-xs text-gray-500 truncate">{item.description}</div>
+                <div className="text-sm font-medium text-foreground">{item.label}</div>
+                <div className="text-xs text-muted-foreground truncate">{item.description}</div>
               </div>
             </button>
           );

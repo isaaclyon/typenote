@@ -103,7 +103,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
             onClick={goToPreviousMonth}
             className={cn(
               'flex items-center justify-center w-7 h-7 rounded',
-              'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              'text-muted-foreground hover:text-foreground hover:bg-muted',
               'transition-colors duration-150',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
             )}
@@ -112,14 +112,14 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
             <CaretLeftIcon size={16} weight="bold" />
           </button>
 
-          <span className="text-sm font-medium text-gray-900">{monthYearLabel}</span>
+          <span className="text-sm font-medium text-foreground">{monthYearLabel}</span>
 
           <button
             type="button"
             onClick={goToNextMonth}
             className={cn(
               'flex items-center justify-center w-7 h-7 rounded',
-              'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              'text-muted-foreground hover:text-foreground hover:bg-muted',
               'transition-colors duration-150',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
             )}
@@ -134,7 +134,7 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
           {weekdayLabels.map((label) => (
             <div
               key={label}
-              className="h-8 flex items-center justify-center text-xs text-gray-400 font-medium"
+              className="h-8 flex items-center justify-center text-xs text-muted-foreground font-medium"
             >
               {label}
             </div>
@@ -157,13 +157,13 @@ const MiniCalendar = React.forwardRef<HTMLDivElement, MiniCalendarProps>(
                   'transition-colors duration-150',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                   // Base styles by state
-                  !day.isCurrentMonth && 'text-gray-300',
-                  day.isCurrentMonth && !isSelected && 'text-gray-700',
+                  !day.isCurrentMonth && 'text-muted-foreground',
+                  day.isCurrentMonth && !isSelected && 'text-foreground',
                   day.isToday && !isSelected && 'text-accent-600 font-medium',
                   // Selected state
                   isSelected && 'bg-accent-500 text-white font-medium',
                   // Hover (only when not selected)
-                  !isSelected && 'hover:bg-gray-50'
+                  !isSelected && 'hover:bg-muted'
                 )}
                 aria-label={`${day.dateKey}${day.isToday ? ', today' : ''}${hasNote ? ', has note' : ''}`}
                 aria-pressed={isSelected}

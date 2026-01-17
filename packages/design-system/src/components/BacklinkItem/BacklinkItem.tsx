@@ -54,7 +54,7 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
       if (highlightText && snippet.includes(highlightText)) {
         const parts = snippet.split(highlightText);
         return (
-          <p className="text-xs text-gray-600 italic truncate">
+          <p className="text-xs text-muted-foreground italic truncate">
             {parts.map((part, index) => (
               <React.Fragment key={index}>
                 {part}
@@ -67,7 +67,7 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
         );
       }
 
-      return <p className="text-xs text-gray-600 italic truncate">{snippet}</p>;
+      return <p className="text-xs text-muted-foreground italic truncate">{snippet}</p>;
     };
 
     return (
@@ -75,7 +75,7 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
         ref={ref}
         className={cn(
           'p-2 rounded border border-gray-100 transition-colors duration-150',
-          onClick && 'cursor-pointer hover:bg-gray-50 hover:border-gray-200',
+          onClick && 'cursor-pointer hover:bg-muted hover:border-border',
           className
         )}
         onClick={onClick}
@@ -95,7 +95,7 @@ const BacklinkItem = React.forwardRef<HTMLDivElement, BacklinkItemProps>(
         <div className="flex items-start gap-2">
           {renderTypeIcon()}
           <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <h4 className="text-sm font-medium text-gray-900 truncate">{title}</h4>
+            <h4 className="text-sm font-medium text-foreground truncate">{title}</h4>
             {renderSnippet()}
           </div>
         </div>

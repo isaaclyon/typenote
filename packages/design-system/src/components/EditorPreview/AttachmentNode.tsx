@@ -23,13 +23,13 @@ export function AttachmentNode({
       <div className="my-2">
         <div
           className={cn(
-            'h-32 w-full rounded-lg border-2 border-dashed border-gray-300',
-            'bg-gray-50 flex items-center justify-center',
+            'h-32 w-full rounded-lg border-2 border-dashed border-border',
+            'bg-muted flex items-center justify-center',
             selected && 'ring-2 ring-accent-500',
             className
           )}
         >
-          <Image className="h-8 w-8 text-gray-400" />
+          <Image className="h-8 w-8 text-muted-foreground" />
         </div>
       </div>
     );

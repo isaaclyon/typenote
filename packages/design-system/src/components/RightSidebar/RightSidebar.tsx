@@ -23,9 +23,9 @@ const RightSidebar = React.forwardRef<HTMLDivElement, RightSidebarProps>(
           // Layout - full width within AppShell wrapper
           'w-full h-full',
           // Border
-          'border-l border-gray-300',
+          'border-l border-border',
           // Background
-          'bg-white',
+          'bg-background',
           // Scroll
           'overflow-y-auto',
           // Spacing

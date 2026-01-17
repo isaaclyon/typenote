@@ -9,7 +9,7 @@ const typeItemVariants = cva(
     variants: {
       selected: {
         true: 'bg-accent-50',
-        false: 'hover:bg-gray-50',
+        false: 'hover:bg-muted',
       },
     },
     defaultVariants: {
@@ -50,7 +50,7 @@ const SidebarTypeItem = React.forwardRef<HTMLDivElement, SidebarTypeItemProps>(
         <span className="text-sm font-medium truncate text-left">{label}</span>
         <span
           className={cn(
-            'text-xs font-mono text-gray-400 transition-opacity w-6 text-right',
+            'text-xs font-mono text-muted-foreground transition-opacity w-6 text-right',
             'opacity-0 group-hover/typeitem:opacity-100'
           )}
         >

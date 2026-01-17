@@ -38,7 +38,7 @@ const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
       <div
         ref={ref}
         className={cn(
-          'flex items-center gap-1.5 text-xs text-gray-500',
+          'flex items-center gap-1.5 text-xs text-muted-foreground',
           'transition-opacity duration-300',
           state === 'saved' && !visible && 'opacity-0',
           className

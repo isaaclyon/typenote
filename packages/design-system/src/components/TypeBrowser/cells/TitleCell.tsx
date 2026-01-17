@@ -81,11 +81,11 @@ function TitleCell({ value, onSave, onOpen }: TitleCellProps) {
       <div
         className={cn(
           'truncate cursor-text px-1 -mx-1 rounded flex-1 min-w-0',
-          'hover:bg-gray-100 transition-colors duration-150'
+          'hover:bg-secondary transition-colors duration-150'
         )}
         onClick={() => setIsEditing(true)}
       >
-        {value || <span className="text-gray-400">-</span>}
+        {value || <span className="text-muted-foreground">-</span>}
       </div>
 
       {/* Open button - appears on hover */}
@@ -94,7 +94,7 @@ function TitleCell({ value, onSave, onOpen }: TitleCellProps) {
         onClick={handleOpenClick}
         className={cn(
           'flex-shrink-0 ml-2 p-1 rounded',
-          'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+          'text-muted-foreground hover:text-foreground hover:bg-secondary',
           'opacity-0 group-hover:opacity-100',
           'transition-opacity duration-150 ease-out',
           'focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1'

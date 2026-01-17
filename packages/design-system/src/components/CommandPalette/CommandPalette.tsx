@@ -38,7 +38,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
           aria-modal="true"
           aria-label="Command palette"
           className={cn(
-            'relative bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4',
+            'relative bg-background rounded-lg shadow-2xl w-full max-w-lg mx-4',
             'animate-[slide-in-from-bottom_200ms_ease-out]',
             className
           )}

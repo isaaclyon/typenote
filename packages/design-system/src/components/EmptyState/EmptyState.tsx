@@ -19,18 +19,20 @@ function EmptyState({ icon, title, description, action, className }: EmptyStateP
     <div
       className={cn(
         'flex flex-col items-center justify-center text-center',
-        'p-12 rounded-md border border-dashed border-gray-300 bg-gray-50',
+        'p-12 rounded-md border border-dashed border-border bg-muted',
         className
       )}
     >
       {icon && (
-        <div className="mb-4 opacity-40 text-gray-500 [&_svg]:w-12 [&_svg]:h-12">{icon}</div>
+        <div className="mb-4 opacity-40 text-muted-foreground [&_svg]:w-12 [&_svg]:h-12">
+          {icon}
+        </div>
       )}
-      <Text variant="body" className="font-medium mb-1 text-gray-700">
+      <Text variant="body" className="font-medium mb-1 text-foreground">
         {title}
       </Text>
       {description && (
-        <Text variant="bodySmall" className="text-gray-500 mb-4 max-w-md">
+        <Text variant="bodySmall" className="text-muted-foreground mb-4 max-w-md">
           {description}
         </Text>
       )}

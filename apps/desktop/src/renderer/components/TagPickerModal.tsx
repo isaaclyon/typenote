@@ -85,7 +85,7 @@ export function TagPickerModal({
       <ModalContent>
         {/* Search input */}
         <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search tags..."
@@ -99,9 +99,9 @@ export function TagPickerModal({
         {/* Tags list */}
         <ScrollArea className="max-h-64">
           {isLoading ? (
-            <div className="py-8 text-center text-sm text-gray-400">Loading tags...</div>
+            <div className="py-8 text-center text-sm text-muted-foreground">Loading tags...</div>
           ) : filteredTags.length === 0 ? (
-            <div className="py-8 text-center text-sm text-gray-400">
+            <div className="py-8 text-center text-sm text-muted-foreground">
               {searchQuery ? 'No tags found' : 'No tags created yet'}
             </div>
           ) : (
@@ -109,7 +109,7 @@ export function TagPickerModal({
               {/* Available tags */}
               {availableTags.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mb-2">Available</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Available</p>
                   <div className="flex flex-wrap gap-2">
                     {availableTags.map((tag) => (
                       <button
@@ -117,7 +117,7 @@ export function TagPickerModal({
                         onClick={() => handleSelectTag(tag.id)}
                         className="focus:outline-none focus:ring-2 focus:ring-accent-500 rounded"
                       >
-                        <Tag className="cursor-pointer hover:bg-gray-100 transition-colors">
+                        <Tag className="cursor-pointer hover:bg-secondary transition-colors">
                           {tag.name}
                         </Tag>
                       </button>
@@ -129,7 +129,7 @@ export function TagPickerModal({
               {/* Already added tags */}
               {alreadyAddedTags.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mb-2">Already added</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Already added</p>
                   <div className="flex flex-wrap gap-2">
                     {alreadyAddedTags.map((tag) => (
                       <Tag key={tag.id} className="opacity-50">
