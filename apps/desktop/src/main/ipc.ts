@@ -329,10 +329,13 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
       handleIpcCall(() => {
         const summaries = listObjectsStorage(db, { createdOnDate: dateKey });
 
+        // Filter out Daily Notes (they shouldn't appear in "created on" lists)
+        const filteredSummaries = summaries.filter((obj) => obj.typeKey !== 'DailyNote');
+
         // Get object types for icon/color info
         const objectTypesMap = new Map<string, { icon: string | null; color: string | null }>();
 
-        return summaries.map((obj) => {
+        return filteredSummaries.map((obj) => {
           // Get type info (cached)
           if (!objectTypesMap.has(obj.typeKey)) {
             const typeInfo = getObjectTypeByKeyStorage(db, obj.typeKey);
