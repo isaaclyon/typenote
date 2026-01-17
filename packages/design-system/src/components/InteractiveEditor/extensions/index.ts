@@ -31,6 +31,11 @@ export {
   useRefSuggestion,
   isCreateNewItem,
 } from './RefNode/index.js';
+export {
+  MentionSuggestion,
+  MentionSuggestionExtension,
+  useMentionSuggestion,
+} from './RefNode/index.js';
 export type {
   RefNodeAttributes,
   RefNodeOptions,
@@ -41,6 +46,11 @@ export type {
   UseRefSuggestionState,
   UseRefSuggestionReturn,
   RefSuggestionItem,
+} from './RefNode/index.js';
+export type {
+  MentionSuggestionOptions,
+  UseMentionSuggestionState,
+  UseMentionSuggestionReturn,
 } from './RefNode/index.js';
 
 // TagNode - Tag references

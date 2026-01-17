@@ -61,14 +61,20 @@ export const RefSuggestionMenu = React.forwardRef<RefSuggestionMenuRef, RefSugge
 
     if (items.length === 0) {
       return (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 min-w-[280px]">
+        <div
+          className="bg-popover border border-gray-200 rounded-lg shadow-lg p-3 min-w-[280px]"
+          data-testid="suggestion-popup"
+        >
           <p className="text-sm text-gray-500">No notes found</p>
         </div>
       );
     }
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[280px] max-h-[320px] overflow-y-auto">
+      <div
+        className="bg-popover border border-gray-200 rounded-lg shadow-lg py-1 min-w-[280px] max-h-[320px] overflow-y-auto"
+        data-testid="suggestion-popup"
+      >
         {items.map((item, index) => {
           const isSelected = index === localIndex;
 
@@ -78,6 +84,7 @@ export const RefSuggestionMenu = React.forwardRef<RefSuggestionMenuRef, RefSugge
               <button
                 key="create-new"
                 type="button"
+                data-testid="suggestion-create-new"
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors duration-150',
                   isSelected ? 'bg-accent-50' : 'hover:bg-gray-50'

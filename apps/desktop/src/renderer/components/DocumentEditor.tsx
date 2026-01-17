@@ -328,6 +328,10 @@ export function DocumentEditor({ objectId, onNavigate }: DocumentEditorProps) {
               onSearch: handleRefSearch,
               onCreate: handleRefCreate,
             }}
+            mentionSuggestionCallbacks={{
+              onSearch: handleRefSearch,
+              onCreate: handleRefCreate,
+            }}
             onNavigateToRef={onNavigate}
             onEditorReady={handleEditorReady}
           />

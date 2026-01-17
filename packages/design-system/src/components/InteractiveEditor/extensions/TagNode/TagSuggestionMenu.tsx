@@ -59,14 +59,20 @@ export const TagSuggestionMenu = React.forwardRef<TagSuggestionMenuRef, TagSugge
 
     if (items.length === 0) {
       return (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 min-w-[200px]">
+        <div
+          className="bg-popover border border-gray-200 rounded-lg shadow-lg p-3 min-w-[200px]"
+          data-testid="suggestion-popup"
+        >
           <p className="text-sm text-gray-500">No tags found</p>
         </div>
       );
     }
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[200px] max-h-[320px] overflow-y-auto">
+      <div
+        className="bg-popover border border-gray-200 rounded-lg shadow-lg py-1 min-w-[200px] max-h-[320px] overflow-y-auto"
+        data-testid="suggestion-popup"
+      >
         {items.map((item, index) => {
           const isSelected = index === localIndex;
 

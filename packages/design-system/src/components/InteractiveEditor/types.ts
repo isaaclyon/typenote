@@ -89,6 +89,8 @@ export interface InteractiveEditorProps {
 
   /** Callbacks for ref (wiki-link) suggestions. Falls back to mock data if not provided. */
   refSuggestionCallbacks?: RefSuggestionCallbacks;
+  /** Callbacks for mention suggestions (@). Falls back to mock data if not provided. */
+  mentionSuggestionCallbacks?: RefSuggestionCallbacks;
   /** Callbacks for tag suggestions. Falls back to mock data if not provided. */
   tagSuggestionCallbacks?: TagSuggestionCallbacks;
   /** Called when a ref node is clicked (for navigation) */

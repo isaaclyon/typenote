@@ -9,7 +9,7 @@ test.describe('References and Linking', () => {
   // doesn't have proper test IDs or expected class selectors (.bg-popover doesn't exist).
   // The component uses bg-white classes. These tests need component updates to add testids.
   test.describe('Reference Creation via [[ trigger', () => {
-    test.skip('typing [[ shows autocomplete popup', async ({ window: page }) => {
+    test('typing [[ shows autocomplete popup', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component's bg-white classes
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Page', 'Target Page For Reference', {});
@@ -31,7 +31,7 @@ test.describe('References and Linking', () => {
       await expect(popup).toBeVisible();
     });
 
-    test.skip('autocomplete popup shows matching objects', async ({ window: page }) => {
+    test('autocomplete popup shows matching objects', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Page', 'Alpha Project', {});
@@ -53,7 +53,7 @@ test.describe('References and Linking', () => {
       await expect(popupContent).toContainText('Beta Project');
     });
 
-    test.skip('selecting from popup inserts reference node', async ({ window: page }) => {
+    test('selecting from popup inserts reference node', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       const createResult = await page.evaluate(async () => {
         return await window.typenoteAPI.createObject('Page', 'Selectable Reference', {});
@@ -76,7 +76,7 @@ test.describe('References and Linking', () => {
       await expect(refNode).toContainText('Selectable Reference');
     });
 
-    test.skip('arrow keys navigate autocomplete options', async ({ window: page }) => {
+    test('arrow keys navigate autocomplete options', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Page', 'First Option', {});
@@ -101,7 +101,7 @@ test.describe('References and Linking', () => {
       await expect(refNode).toBeVisible();
     });
 
-    test.skip('Escape key closes autocomplete popup', async ({ window: page }) => {
+    test('Escape key closes autocomplete popup', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Page', 'Escapable Page', {});
@@ -119,7 +119,7 @@ test.describe('References and Linking', () => {
       await page.waitForSelector('.bg-popover', { state: 'hidden', timeout: 2000 });
     });
 
-    test.skip('"Create new" option appears for non-matching query', async ({ window: page }) => {
+    test('"Create new" option appears for non-matching query', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.getByTestId('create-daily-note-button').click();
       await page.waitForSelector('.ProseMirror', { state: 'visible' });
@@ -137,7 +137,7 @@ test.describe('References and Linking', () => {
   });
 
   test.describe('Reference Creation via @ trigger', () => {
-    test.skip('typing @ shows autocomplete popup', async ({ window: page }) => {
+    test('typing @ shows autocomplete popup', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Person', 'John Smith', {});
@@ -156,7 +156,7 @@ test.describe('References and Linking', () => {
       await expect(popup).toBeVisible();
     });
 
-    test.skip('selecting from @ popup inserts reference node', async ({ window: page }) => {
+    test('selecting from @ popup inserts reference node', async ({ window: page }) => {
       // SKIPPED: Popup selector .bg-popover doesn't match component
       await page.evaluate(async () => {
         await window.typenoteAPI.createObject('Person', 'Jane Doe', {});

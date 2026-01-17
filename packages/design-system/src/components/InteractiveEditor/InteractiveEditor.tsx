@@ -19,6 +19,8 @@ import {
   RefSuggestionExtension,
   RefSuggestionPopup,
   useRefSuggestion,
+  MentionSuggestionExtension,
+  useMentionSuggestion,
   TagNode,
   TagSuggestionExtension,
   TagSuggestionPopup,
@@ -53,6 +55,7 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
       // IPC integration callbacks (optional - falls back to mock data)
       onEditorReady,
       refSuggestionCallbacks,
+      mentionSuggestionCallbacks,
       tagSuggestionCallbacks,
       onNavigateToRef,
     },
@@ -60,6 +63,7 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
   ) => {
     const slashCommand = useSlashCommand();
     const refSuggestion = useRefSuggestion(refSuggestionCallbacks);
+    const mentionSuggestion = useMentionSuggestion(mentionSuggestionCallbacks);
     const tagSuggestion = useTagSuggestion(tagSuggestionCallbacks);
 
     // Memoize extensions to prevent useEditor from reinitializing
@@ -86,6 +90,9 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
         RefSuggestionExtension.configure({
           suggestion: refSuggestion.suggestionOptions,
         }),
+        MentionSuggestionExtension.configure({
+          suggestion: mentionSuggestion.suggestionOptions,
+        }),
         TagNode,
         TagSuggestionExtension.configure({
           suggestion: tagSuggestion.suggestionOptions,
@@ -104,6 +111,7 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
         placeholder,
         slashCommand.suggestionOptions,
         refSuggestion.suggestionOptions,
+        mentionSuggestion.suggestionOptions,
         tagSuggestion.suggestionOptions,
         onNavigateToRef,
       ]
@@ -207,6 +215,14 @@ export const InteractiveEditor = React.forwardRef<InteractiveEditorRef, Interact
           items={refSuggestion.state.items}
           clientRect={refSuggestion.state.clientRect}
           onSelect={refSuggestion.state.onSelect}
+        />
+        {/* Mention suggestion popup (@ trigger) */}
+        <RefSuggestionPopup
+          ref={mentionSuggestion.setMenuRef}
+          isOpen={mentionSuggestion.state.isOpen}
+          items={mentionSuggestion.state.items}
+          clientRect={mentionSuggestion.state.clientRect}
+          onSelect={mentionSuggestion.state.onSelect}
         />
         <TagSuggestionPopup
           ref={tagSuggestion.setMenuRef}
