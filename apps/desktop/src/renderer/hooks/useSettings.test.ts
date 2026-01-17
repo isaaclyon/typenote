@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import type { UserSettings } from '@typenote/api';
 import { useSettings } from './useSettings.js';
+import { createQueryWrapper } from '../test-utils.js';
 
 describe('useSettings', () => {
   beforeEach(() => {
@@ -47,7 +48,7 @@ describe('useSettings', () => {
       result: mockCustomSettings,
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     // Initially loading with defaults
     expect(result.current.isLoading).toBe(true);
@@ -72,7 +73,7 @@ describe('useSettings', () => {
       result: mockDefaultSettings,
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -89,7 +90,7 @@ describe('useSettings', () => {
       error: { code: 'INTERNAL', message: 'Database error' },
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -104,7 +105,7 @@ describe('useSettings', () => {
     // Mock IPC throwing exception
     window.typenoteAPI.getSettings = vi.fn().mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -131,7 +132,7 @@ describe('useSettings', () => {
       result: undefined,
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     // Wait for initial load
     await waitFor(() => {
@@ -143,8 +144,10 @@ describe('useSettings', () => {
       await result.current.updateSettings({ colorMode: 'dark' });
     });
 
-    // Should have optimistically updated
-    expect(result.current.settings.colorMode).toBe('dark');
+    // Wait for optimistic update to be reflected
+    await waitFor(() => {
+      expect(result.current.settings.colorMode).toBe('dark');
+    });
     expect(window.typenoteAPI.updateSettings).toHaveBeenCalledWith({ colorMode: 'dark' });
   });
 
@@ -159,7 +162,7 @@ describe('useSettings', () => {
       result: undefined,
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -174,7 +177,10 @@ describe('useSettings', () => {
       });
     });
 
-    expect(result.current.settings.colorMode).toBe('dark');
+    // Wait for optimistic update
+    await waitFor(() => {
+      expect(result.current.settings.colorMode).toBe('dark');
+    });
     expect(result.current.settings.weekStartDay).toBe('monday');
     expect(result.current.settings.spellcheck).toBe(false);
     // Unchanged settings should remain
@@ -193,7 +199,7 @@ describe('useSettings', () => {
       error: { code: 'VALIDATION', message: 'Invalid color mode' },
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -206,9 +212,12 @@ describe('useSettings', () => {
       await result.current.updateSettings({ colorMode: 'invalid' as 'dark' });
     });
 
+    // Wait for error state to propagate
+    await waitFor(() => {
+      expect(result.current.error).toBe('Invalid color mode');
+    });
     // Should have reverted to original
     expect(result.current.settings).toEqual(originalSettings);
-    expect(result.current.error).toBe('Invalid color mode');
   });
 
   it('should revert on IPC exception during update', async () => {
@@ -220,7 +229,7 @@ describe('useSettings', () => {
     // Mock update throwing exception
     window.typenoteAPI.updateSettings = vi.fn().mockRejectedValue(new Error('Network timeout'));
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -233,9 +242,12 @@ describe('useSettings', () => {
       await result.current.updateSettings({ colorMode: 'dark' });
     });
 
+    // Wait for error state to propagate
+    await waitFor(() => {
+      expect(result.current.error).toBe('Network timeout');
+    });
     // Should have reverted
     expect(result.current.settings).toEqual(originalSettings);
-    expect(result.current.error).toBe('Network timeout');
   });
 
   // ============================================================================
@@ -255,7 +267,7 @@ describe('useSettings', () => {
       result: undefined,
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -269,8 +281,10 @@ describe('useSettings', () => {
       await result.current.resetSettings();
     });
 
-    // Should have optimistically reset to defaults
-    expect(result.current.settings).toEqual(mockDefaultSettings);
+    // Wait for optimistic update to reset
+    await waitFor(() => {
+      expect(result.current.settings).toEqual(mockDefaultSettings);
+    });
     expect(window.typenoteAPI.resetSettings).toHaveBeenCalledTimes(1);
   });
 
@@ -286,7 +300,7 @@ describe('useSettings', () => {
       error: { code: 'INTERNAL', message: 'Database locked' },
     });
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -299,9 +313,12 @@ describe('useSettings', () => {
       await result.current.resetSettings();
     });
 
+    // Wait for error state to propagate
+    await waitFor(() => {
+      expect(result.current.error).toBe('Database locked');
+    });
     // Should have reverted to original custom settings
     expect(result.current.settings).toEqual(originalSettings);
-    expect(result.current.error).toBe('Database locked');
   });
 
   it('should revert on IPC exception during reset', async () => {
@@ -313,7 +330,7 @@ describe('useSettings', () => {
     // Mock reset throwing exception
     window.typenoteAPI.resetSettings = vi.fn().mockRejectedValue(new Error('Connection lost'));
 
-    const { result } = renderHook(() => useSettings());
+    const { result } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -326,9 +343,12 @@ describe('useSettings', () => {
       await result.current.resetSettings();
     });
 
+    // Wait for error state to propagate
+    await waitFor(() => {
+      expect(result.current.error).toBe('Connection lost');
+    });
     // Should have reverted
     expect(result.current.settings).toEqual(originalSettings);
-    expect(result.current.error).toBe('Connection lost');
   });
 
   // ============================================================================
@@ -341,7 +361,7 @@ describe('useSettings', () => {
       result: mockDefaultSettings,
     });
 
-    const { unmount } = renderHook(() => useSettings());
+    const { unmount } = renderHook(() => useSettings(), { wrapper: createQueryWrapper() });
 
     // Unmount immediately (before fetch completes)
     unmount();

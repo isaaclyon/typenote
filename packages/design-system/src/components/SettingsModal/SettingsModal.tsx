@@ -8,7 +8,7 @@ import type { SettingsModalProps } from './types.js';
  */
 const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose, children }) => {
   return (
-    <Modal open={open} onClose={onClose} className="max-w-md w-full">
+    <Modal open={open} onClose={onClose} className="max-w-md w-full" data-testid="settings-modal">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <h2 className="text-base font-semibold text-foreground">Settings</h2>

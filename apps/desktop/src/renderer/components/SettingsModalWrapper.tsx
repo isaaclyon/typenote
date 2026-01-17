@@ -62,6 +62,7 @@ export function SettingsModalWrapper({ open, onClose }: SettingsModalWrapperProp
                   void updateSettings({ colorMode: value as 'light' | 'dark' | 'system' })
                 }
                 size="sm"
+                data-testid="settings-color-mode-select"
               />
             </SettingsRow>
           </SettingsSection>

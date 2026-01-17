@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn.js';
 import type { SidebarActionButtonProps } from './types.js';
 
 const SidebarActionButton = React.forwardRef<HTMLButtonElement, SidebarActionButtonProps>(
-  ({ icon: Icon, label, onClick, withDivider = false, className }, ref) => {
+  ({ icon: Icon, label, onClick, withDivider = false, className, ...props }, ref) => {
     return (
       <button
         ref={ref}
@@ -16,6 +16,7 @@ const SidebarActionButton = React.forwardRef<HTMLButtonElement, SidebarActionBut
           withDivider && 'border-t border-border pt-4 mt-4',
           className
         )}
+        {...props}
       >
         <Icon className="w-4 h-4" />
         <span>{label}</span>

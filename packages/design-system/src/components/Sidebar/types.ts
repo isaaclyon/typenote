@@ -38,12 +38,14 @@ export interface SidebarCalendarButtonProps extends React.ButtonHTMLAttributes<H
 }
 
 // Action button (Archive, Settings)
-export interface SidebarActionButtonProps {
+export interface SidebarActionButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'onClick'
+> {
   icon: LucideIcon;
   label: string;
   onClick?: () => void;
   withDivider?: boolean;
-  className?: string;
 }
 
 // New Type button

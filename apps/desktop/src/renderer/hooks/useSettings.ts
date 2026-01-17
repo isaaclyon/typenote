@@ -1,12 +1,15 @@
 /**
  * useSettings Hook
  *
- * Manages user settings with optimistic updates.
+ * Manages user settings with TanStack Query for shared state and optimistic updates.
  * Settings are persisted to the backend automatically on change.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import type { UserSettings } from '@typenote/api';
+import { queryKeys } from '../lib/queryKeys.js';
+import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
 export interface UseSettingsResult {
   settings: UserSettings;
@@ -18,7 +21,7 @@ export interface UseSettingsResult {
 
 /**
  * Default settings values (matches Zod schema defaults).
- * Used as fallback during initial load and after reset.
+ * Used as fallback during initial load.
  */
 const DEFAULT_SETTINGS: UserSettings = {
   colorMode: 'system',
@@ -29,103 +32,120 @@ const DEFAULT_SETTINGS: UserSettings = {
 };
 
 export function useSettings(): UseSettingsResult {
-  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  // Fetch settings on mount
-  useEffect(() => {
-    let isMounted = true;
+  // Query for fetching settings
+  const {
+    data: settings = DEFAULT_SETTINGS,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: queryKeys.settings(),
+    queryFn: async () => {
+      return await adaptIpcOutcome(window.typenoteAPI.getSettings());
+    },
+  });
 
-    const fetchSettings = async () => {
-      setIsLoading(true);
-      setError(null);
+  // Update settings mutation with optimistic updates
+  const updateMutation = useMutation({
+    mutationFn: async (updates: Partial<UserSettings>) => {
+      await adaptIpcOutcome(window.typenoteAPI.updateSettings(updates));
+    },
+    onMutate: async (updates: Partial<UserSettings>) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.settings() });
 
-      try {
-        const result = await window.typenoteAPI.getSettings();
+      // Snapshot the previous value
+      const previousSettings = queryClient.getQueryData<UserSettings>(queryKeys.settings());
 
-        if (!isMounted) return;
-
-        if (result.success) {
-          setSettings(result.result);
-        } else {
-          setError(result.error.message);
-        }
-      } catch (err) {
-        if (!isMounted) return;
-        setError(err instanceof Error ? err.message : 'Failed to fetch settings');
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      // Optimistically update to the new value
+      if (previousSettings) {
+        queryClient.setQueryData(queryKeys.settings(), { ...previousSettings, ...updates });
       }
-    };
 
-    void fetchSettings();
+      // Return a context object with the snapshotted value
+      return { previousSettings };
+    },
+    onError: (_err, _updates, context) => {
+      // Rollback on error
+      if (context?.previousSettings) {
+        queryClient.setQueryData(queryKeys.settings(), context.previousSettings);
+      }
+      // Invalidate to refetch from backend after error
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+    },
+    // Note: No onSettled - we trust the optimistic update on success
+    // The backend has persisted the change, and we've already updated the cache
+  });
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Reset settings mutation
+  const resetMutation = useMutation({
+    mutationFn: async () => {
+      await adaptIpcOutcome(window.typenoteAPI.resetSettings());
+    },
+    onMutate: async () => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.settings() });
 
-  /**
-   * Update one or more settings with optimistic update.
-   * Reverts to previous state if IPC call fails.
-   */
+      // Snapshot the previous value
+      const previousSettings = queryClient.getQueryData<UserSettings>(queryKeys.settings());
+
+      // Optimistically update to defaults
+      queryClient.setQueryData(queryKeys.settings(), DEFAULT_SETTINGS);
+
+      // Return a context object with the snapshotted value
+      return { previousSettings };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousSettings) {
+        queryClient.setQueryData(queryKeys.settings(), context.previousSettings);
+      }
+      // Invalidate to refetch from backend after error
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+    },
+    // Note: No onSettled - we trust the optimistic update on success
+  });
+
+  // Wrapper functions to match the original interface
   const updateSettings = useCallback(
     async (updates: Partial<UserSettings>) => {
-      // Store previous state for rollback
-      const previousSettings = settings;
-
-      // Optimistic update
-      setSettings((current) => ({ ...current, ...updates }));
-
       try {
-        const result = await window.typenoteAPI.updateSettings(updates);
-
-        if (!result.success) {
-          // Revert on failure
-          setSettings(previousSettings);
-          setError(result.error.message);
-        }
-      } catch (err) {
-        // Revert on exception
-        setSettings(previousSettings);
-        setError(err instanceof Error ? err.message : 'Failed to update settings');
+        await updateMutation.mutateAsync(updates);
+      } catch {
+        // Error is already handled by onError callback (rollback)
+        // Swallow the error to match original interface (doesn't throw)
       }
     },
-    [settings]
+    [updateMutation]
   );
 
-  /**
-   * Reset all settings to defaults.
-   */
   const resetSettings = useCallback(async () => {
-    // Store previous state for rollback
-    const previousSettings = settings;
-
-    // Optimistic update to defaults
-    setSettings(DEFAULT_SETTINGS);
-
     try {
-      const result = await window.typenoteAPI.resetSettings();
-
-      if (!result.success) {
-        // Revert on failure
-        setSettings(previousSettings);
-        setError(result.error.message);
-      }
-    } catch (err) {
-      // Revert on exception
-      setSettings(previousSettings);
-      setError(err instanceof Error ? err.message : 'Failed to reset settings');
+      await resetMutation.mutateAsync();
+    } catch {
+      // Error is already handled by onError callback (rollback)
+      // Swallow the error to match original interface (doesn't throw)
     }
-  }, [settings]);
+  }, [resetMutation]);
+
+  // Helper to extract error message
+  const getErrorMessage = (err: unknown): string | null => {
+    if (!err) return null;
+    if (err instanceof Error) return err.message;
+    return String(err);
+  };
+
+  // Merge query and mutation errors (mutations take priority if recent)
+  const combinedError =
+    getErrorMessage(updateMutation.error) ||
+    getErrorMessage(resetMutation.error) ||
+    getErrorMessage(error);
 
   return {
     settings,
     isLoading,
-    error,
+    error: combinedError,
     updateSettings,
     resetSettings,
   };

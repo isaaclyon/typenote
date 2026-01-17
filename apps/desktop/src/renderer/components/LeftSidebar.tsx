@@ -171,7 +171,12 @@ export function LeftSidebar({
       {/* Bottom section */}
       <SidebarSection className="p-2 space-y-1 mt-auto app-region-no-drag">
         <SidebarActionButton icon={Archive} label="Archive" onClick={onOpenArchive} withDivider />
-        <SidebarActionButton icon={Settings} label="Settings" onClick={onOpenSettings} />
+        <SidebarActionButton
+          icon={Settings}
+          label="Settings"
+          onClick={onOpenSettings}
+          data-testid="settings-button"
+        />
       </SidebarSection>
     </Sidebar>
   );

@@ -20,7 +20,7 @@ export interface SelectOption {
   label: string;
 }
 
-export interface SelectProps {
+export interface SelectProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onChange'> {
   /** The currently selected value */
   value?: string;
   /** Callback when selection changes */
@@ -33,8 +33,6 @@ export interface SelectProps {
   disabled?: boolean;
   /** Size variant: 'sm' (28px/h-7) or 'md' (36px/h-9, default) */
   size?: 'sm' | 'md';
-  /** Additional class name for the trigger */
-  className?: string;
 }
 
 /**
@@ -51,6 +49,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       disabled = false,
       size = 'md',
       className,
+      ...htmlProps
     },
     ref
   ) => {
@@ -135,6 +134,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             isOpen && 'border-border',
             className
           )}
+          {...htmlProps}
           {...getReferenceProps()}
         >
           <span className={cn(!selectedOption && 'text-muted-foreground')}>
