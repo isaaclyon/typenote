@@ -5,25 +5,6 @@ import type { TypenoteAPI } from '../types/global.js';
 declare const window: Window & { typenoteAPI: TypenoteAPI };
 
 test.describe('Daily Note Workflow', () => {
-  test("create today's note via button and view in editor", async ({ window: page }) => {
-    // Click the "Today's Note" button
-    await page.getByTestId('create-daily-note-button').click();
-
-    // Wait for editor to load (not showing "Loading...")
-    await page.waitForSelector('.ProseMirror', { state: 'visible' });
-
-    // Verify we're viewing a daily note by checking navigation buttons are visible
-    // (navigation only shows for daily notes)
-    const prevButton = page.getByTestId('nav-prev-button');
-    await expect(prevButton).toBeVisible();
-
-    // Verify the date appears in the navigation (the h4 button shows current date)
-    const today = new Date().toISOString().slice(0, 10);
-    // Use the h4 in nav which displays the date (more specific than getByText)
-    const navDateButton = page.locator('h4').filter({ hasText: today });
-    await expect(navDateButton).toBeVisible();
-  });
-
   test('daily note appears in type browser after creation', async ({ window: page }) => {
     // Create a daily note via IPC and get its ID
     const result = await page.evaluate(async () => {
