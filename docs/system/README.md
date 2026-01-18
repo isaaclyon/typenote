@@ -73,7 +73,7 @@ Comprehensive reference for the TypeNote design system, colors, components, and 
 - 150ms micro interactions (button hover)
 - 200ms standard transitions (fade, slide)
 - ease-out easing (no bounce)
-- Focus rings for keyboard users (Apple-style)
+- Focus indicators use subtle 1px outlines (no glow rings)
 
 ### 5. Content First
 
@@ -85,7 +85,7 @@ Comprehensive reference for the TypeNote design system, colors, components, and 
 
 - Color contrast verified (WCAG AA)
 - Minimum 36×36px touch targets
-- Focus indicators on all interactive elements
+- Focus indicators on all interactive elements (subtle 1px outline)
 - Keyboard navigation throughout
 
 ---
@@ -342,12 +342,13 @@ Info:                   #6495ED (same as primary)
 </span>
 ```
 
-### Focus Ring
+### Focus Outline
 
 ```tsx
 // Applied to interactive elements
 style={{
-  boxShadow: '0 0 0 2px white, 0 0 0 4px #6495ED',
+  outline: '1px solid #d6d3d1',
+  outlineOffset: '2px',
 }}
 ```
 
