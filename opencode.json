@@ -1,0 +1,8 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "agent-docs/current_project.md",
+    "agent-docs/up_next.md",
+    "agent-docs/recent_work.md"
+  ]
+}
