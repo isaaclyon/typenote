@@ -29,6 +29,10 @@ export interface AppShellProps {
   defaultLeftCollapsed?: boolean | undefined;
   /** Default collapsed state for right sidebar */
   defaultRightCollapsed?: boolean | undefined;
+  /** Offset left sidebar controls for macOS title bar padding */
+  leftSidebarHasTitleBarPadding?: boolean | undefined;
+  /** Offset right sidebar controls for macOS title bar padding */
+  rightSidebarHasTitleBarPadding?: boolean | undefined;
   /** Additional CSS classes */
   className?: string | undefined;
 }
@@ -43,6 +47,8 @@ export interface SidebarCollapseButtonProps {
   onClick: () => void;
   /** Which side of the layout (affects chevron direction) */
   side: 'left' | 'right';
+  /** Whether to offset for macOS title bar padding */
+  hasTitleBarPadding?: boolean;
   /** Additional CSS classes */
   className?: string;
 }

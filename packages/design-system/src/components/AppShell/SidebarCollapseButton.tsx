@@ -14,7 +14,7 @@ import type { SidebarCollapseButtonProps } from './types.js';
  * - Collapsed: PanelLeft/PanelRight (click to open)
  */
 const SidebarCollapseButton = React.forwardRef<HTMLButtonElement, SidebarCollapseButtonProps>(
-  ({ collapsed, onClick, side, className }, ref) => {
+  ({ collapsed, onClick, side, hasTitleBarPadding = false, className }, ref) => {
     // Icon shows the action: close icon when expanded, open icon when collapsed
     const Icon =
       side === 'left'
@@ -43,16 +43,12 @@ const SidebarCollapseButton = React.forwardRef<HTMLButtonElement, SidebarCollaps
           // Focus styles (consistent with codebase pattern)
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           // Positioning: inside sidebar at top corner
-          // When collapsed on left side, move below traffic lights (macOS)
+          // Keep a consistent Y to avoid jump during collapse
           'absolute z-[60]',
-          collapsed && side === 'left' ? 'top-11' : 'top-2',
+          hasTitleBarPadding ? 'top-11' : 'top-2',
           // Exclude from window drag region so clicks work
           'app-region-no-drag',
-          collapsed
-            ? 'left-1/2 -translate-x-1/2' // Centered in collapsed rail
-            : side === 'left'
-              ? 'right-2'
-              : 'left-2',
+          collapsed ? 'left-1/2 -translate-x-1/2' : side === 'left' ? 'right-2' : 'left-2',
           className
         )}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}

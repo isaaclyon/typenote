@@ -1,0 +1,738 @@
+./apps/desktop/src/preload/index.ts:81:    slug: string;
+./apps/desktop/src/preload/index.ts:93:      slug?: string;
+./apps/desktop/src/config/typeMetadata.ts:5: * Used across sidebar, command palette, and other UI components.
+./capacities_checklist.md:143:| Slash command menu (/)         |   N/A   |    ✅    | 15 commands, keyboard nav, 39 tests                         |
+./apps/desktop/vitest.config.mjs:13:    setupFiles: ['src/renderer/test-setup.ts'],
+./tests/e2e/playwright.config.ts:1:import { defineConfig } from '@playwright/test';
+./claude-docs/CLAUDE.md:25:- Quick commands
+./pnpm-lock.yaml:485:      '@playwright/test':
+./pnpm-lock.yaml:1718:  '@inquirer/prompts@6.0.1':
+./pnpm-lock.yaml:1870:  '@playwright/test@1.57.0':
+./pnpm-lock.yaml:3562:  commander@12.1.0:
+./pnpm-lock.yaml:3566:  commander@13.1.0:
+./pnpm-lock.yaml:3570:  commander@14.0.2:
+./pnpm-lock.yaml:3574:  commander@5.1.0:
+./pnpm-lock.yaml:5917:  prompts@2.4.2:
+./pnpm-lock.yaml:5933:  prosemirror-commands@1.7.1:
+./pnpm-lock.yaml:6326:  shebang-command@2.0.0:
+./pnpm-lock.yaml:6812:  unique-slug@3.0.0:
+./pnpm-lock.yaml:6816:  unique-slug@5.0.0:
+./pnpm-lock.yaml:7556:      commander: 5.1.0
+./pnpm-lock.yaml:8214:  '@inquirer/prompts@6.0.1':
+./pnpm-lock.yaml:8324:      commander: 12.1.0
+./pnpm-lock.yaml:8478:  '@playwright/test@1.57.0':
+./pnpm-lock.yaml:8931:      '@inquirer/prompts': 6.0.1
+./pnpm-lock.yaml:8937:      commander: 12.1.0
+./pnpm-lock.yaml:9335:      prosemirror-commands: 1.7.1
+./pnpm-lock.yaml:10304:  commander@12.1.0: {}
+./pnpm-lock.yaml:10306:  commander@13.1.0: {}
+./pnpm-lock.yaml:10308:  commander@14.0.2: {}
+./pnpm-lock.yaml:10310:  commander@5.1.0: {}
+./pnpm-lock.yaml:10376:      shebang-command: 2.0.0
+./pnpm-lock.yaml:10490:      commander: 14.0.2
+./pnpm-lock.yaml:10497:      prompts: 2.4.2
+./pnpm-lock.yaml:12158:      commander: 13.1.0
+./pnpm-lock.yaml:13278:  prompts@2.4.2:
+./pnpm-lock.yaml:13299:  prosemirror-commands@1.7.1:
+./pnpm-lock.yaml:13344:      prosemirror-commands: 1.7.1
+./pnpm-lock.yaml:13819:  shebang-command@2.0.0:
+./pnpm-lock.yaml:14320:      unique-slug: 3.0.0
+./pnpm-lock.yaml:14324:      unique-slug: 5.0.0
+./pnpm-lock.yaml:14326:  unique-slug@3.0.0:
+./pnpm-lock.yaml:14330:  unique-slug@5.0.0:
+./tests/e2e/fixtures/app.fixture.ts:1:import { test as base, _electron as electron } from '@playwright/test';
+./tests/e2e/fixtures/app.fixture.ts:2:import type { ElectronApplication, Page } from '@playwright/test';
+./tests/e2e/fixtures/app.fixture.ts:96:export { expect } from '@playwright/test';
+./docs/design-system-migration.md:22:- [x] **KeyboardKey** — `command.tsx` (CommandShortcut)
+./docs/system/STRUCTURE_OVERVIEW.txt:139:│   ├── Command Palette (search commands)
+./tests/e2e/package.json:13:    "@playwright/test": "^1.52.0",
+./docs/system/design_system.jsx.bak:2421:                    <span style={{ fontSize: '13px', color: '#a8a29e' }}>Search commands...</span>
+./docs/system/design_system.jsx.bak:3830:                    <span style={{ color: '#78716c' }}>Opens command palette (⌘K)</span>
+./docs/system/INDEX.md:325:- Overlays (command palette, toast, modal)
+./docs/foundational/overarching_brief.md:76:  - import/export/backup commands
+./docs/foundational/overarching_brief.md:200:- ✅ Basic unit/integration test harness (447+ storage tests)
+./docs/foundational/overarching_brief.md:244:   - **Slugs / calendar URLs:** DailyNote routes resolve via deterministic slug derived from `date_key` (e.g., `/2026-01-12`).
+./docs/foundational/overarching_brief.md:275:    - Global `tags` table with `id`, `name`, `slug`, `color`, `icon`, `description`.
+./docs/foundational/overarching_brief.md:298:4. **Slugs beyond DailyNotes:** whether and how non-DailyNote objects get slugs (manual vs generated), rename/redirect behavior.
+./justfile:1:# TypeNote development commands
+./justfile:108:# Run command in specific package (e.g., just pkg api test)
+./docs/system/DESIGN_SYSTEM_BREAKDOWN.md:748:    ├── 08_overlays.md                 # Modals, toasts, command palette
+./docs/system/README.md:147:- Overlays (command palette, toast, modal)
+./docs/system/README.md:252:- **Command Palette** — Top-center command search
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:332:            "command": "./.claude/hooks/renderer-ipc-validation.sh",
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:333:            "type": "command"
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:336:            "command": "./.claude/hooks/migration-safety-validation.sh",
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:337:            "type": "command"
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:392:- ✅ Reset command clears database
+./docs/plans/2026-01-16-hook-metrics-and-validation.md:398:echo "import { db } from '@typenote/storage'" >> packages/api/src/test.ts
+./tests/e2e/specs/slash-commands.spec.ts:4:// Tests expect `slash-command-menu` and `slash-command-{name}` test IDs that need to be added.
+./tests/e2e/specs/slash-commands.spec.ts:19:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible();
+./tests/e2e/specs/slash-commands.spec.ts:25:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:34:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:40:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:43:    test('closes menu after command execution', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:49:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:51:      // Press Enter to execute first command
+./tests/e2e/specs/slash-commands.spec.ts:55:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:60:    test('shows all commands when menu first opens', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:66:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:68:      // Should have multiple command items visible
+./tests/e2e/specs/slash-commands.spec.ts:69:      // Registry has 15 total commands (1 basic + 6 headings + 3 lists + 3 formatting + 2 advanced)
+./tests/e2e/specs/slash-commands.spec.ts:70:      const commandItems = page.locator('[data-testid^="slash-command-"]');
+./tests/e2e/specs/slash-commands.spec.ts:71:      const count = await commandItems.count();
+./tests/e2e/specs/slash-commands.spec.ts:75:    test('filters commands when typing query', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:81:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:83:      // Should show only 3 heading commands (heading1, heading2, heading3)
+./tests/e2e/specs/slash-commands.spec.ts:84:      const headingCommands = page.locator('[data-testid^="slash-command-heading"]');
+./tests/e2e/specs/slash-commands.spec.ts:89:      await expect(page.getByTestId('slash-command-heading1')).toBeVisible();
+./tests/e2e/specs/slash-commands.spec.ts:90:      await expect(page.getByTestId('slash-command-heading2')).toBeVisible();
+./tests/e2e/specs/slash-commands.spec.ts:91:      await expect(page.getByTestId('slash-command-heading3')).toBeVisible();
+./tests/e2e/specs/slash-commands.spec.ts:100:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:102:      // Should show heading1 command
+./tests/e2e/specs/slash-commands.spec.ts:103:      await expect(page.getByTestId('slash-command-heading1')).toBeVisible();
+./tests/e2e/specs/slash-commands.spec.ts:105:      // Should also match other h* commands as substring
+./tests/e2e/specs/slash-commands.spec.ts:109:        .locator('[data-testid^="slash-command-"]')
+./tests/e2e/specs/slash-commands.spec.ts:121:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:123:      // Should show "No commands found" message (the primary check)
+./tests/e2e/specs/slash-commands.spec.ts:124:      await expect(page.getByText('No commands found')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:133:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:136:      const initialCount = await page.locator('[data-testid^="slash-command-"]').count();
+./tests/e2e/specs/slash-commands.spec.ts:142:      // Now should only show 3 heading commands (heading1, heading2, heading3)
+./tests/e2e/specs/slash-commands.spec.ts:143:      const filteredCount = await page.locator('[data-testid^="slash-command-heading"]').count();
+./tests/e2e/specs/slash-commands.spec.ts:149:    test('inserts heading 1 when h1 command selected', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:155:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:161:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:180:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:204:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:224:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:244:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:260:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:277:    test('ArrowDown navigates to next command', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:283:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:285:      // First command is selected by default (paragraph at index 0)
+./tests/e2e/specs/slash-commands.spec.ts:290:      // Press Enter to execute the selected command (should be heading-2)
+./tests/e2e/specs/slash-commands.spec.ts:294:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:301:    test('ArrowUp navigates to previous command', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:307:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:319:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:332:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:334:      // Get total count of commands
+./tests/e2e/specs/slash-commands.spec.ts:335:      const commandItems = page.locator('[data-testid^="slash-command-"]');
+./tests/e2e/specs/slash-commands.spec.ts:336:      const totalCount = await commandItems.count();
+./tests/e2e/specs/slash-commands.spec.ts:347:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:349:      // First command is "paragraph" which sets paragraph node
+./tests/e2e/specs/slash-commands.spec.ts:367:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:369:      // Menu should appear and show all commands
+./tests/e2e/specs/slash-commands.spec.ts:370:      const commandItems = page.locator('[data-testid^="slash-command-"]');
+./tests/e2e/specs/slash-commands.spec.ts:371:      const count = await commandItems.count();
+./tests/e2e/specs/slash-commands.spec.ts:375:    test('clicking a command executes it', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:381:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:383:      // Click on heading-2 command
+./tests/e2e/specs/slash-commands.spec.ts:384:      await page.getByTestId('slash-command-heading2').click();
+./tests/e2e/specs/slash-commands.spec.ts:387:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:400:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:406:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./tests/e2e/specs/slash-commands.spec.ts:409:    test('selecting command in middle of text works correctly', async ({ window: page }) => {
+./tests/e2e/specs/slash-commands.spec.ts:413:      // Type "Start /h1" and trigger command in middle
+./tests/e2e/specs/slash-commands.spec.ts:418:      await expect(page.getByTestId('slash-command-menu')).toBeVisible({ timeout: 3000 });
+./tests/e2e/specs/slash-commands.spec.ts:420:      // Execute command
+./tests/e2e/specs/slash-commands.spec.ts:424:      await expect(page.getByTestId('slash-command-menu')).not.toBeVisible({ timeout: 2000 });
+./docs/foundational/bootstrap_plan.md:88:- Lint/test formatting baseline.
+./docs/foundational/bootstrap_plan.md:102:- CLI runs a hello-world command.
+./docs/foundational/bootstrap_plan.md:261:5. Implement slug mapping for DailyNotes (deterministic).
+./docs/foundational/bootstrap_plan.md:370:- Standard commands:
+./docs/foundational/bootstrap_plan.md:380:  - main responses validated before returning (at least in dev/test)
+./tests/e2e/specs/toast.spec.ts:8: * The helper is only available in development/test builds.
+./apps/desktop/src/renderer/components/DocumentEditor.tsx:215:      currentEditor.commands.setContent(initialContent);
+./docs/system/EDITOR.md:518:Individual command in the slash menu.
+./docs/system/EDITOR.md:548:When commands are grouped (8+ items), sections have headers.
+./docs/system/EDITOR.md:571:When no commands match the query.
+./docs/system/EDITOR.md:587:  <div className="text-sm text-gray-500 py-2">No commands found</div>
+./docs/plans/2026-01-10-recent-objects-design.md:9:Add a recently viewed objects tracking system that records the 100 most recently accessed objects and surfaces them in the command palette for quick navigation.
+./docs/plans/2026-01-10-recent-objects-design.md:15:- Surface in command palette (⌘K) for fast switching
+./docs/plans/2026-01-10-recent-objects-design.md:140:- Make searchable within unified command palette search
+./docs/plans/2026-01-10-recent-objects-design.md:171:- "Clear history" user command in palette
+./docs/system/design_system.jsx:2421:                    <span style={{ fontSize: '13px', color: '#a8a29e' }}>Search commands...</span>
+./docs/system/design_system.jsx:3830:                    <span style={{ color: '#78716c' }}>Opens command palette (⌘K)</span>
+./apps/desktop/src/renderer/components/DocumentEditor.test.tsx:11:import { createQueryWrapper } from '../test-utils.js';
+./apps/desktop/src/renderer/components/CommandPalette/commands/index.ts:4: * Exports types and registry for command palette commands.
+./apps/desktop/src/renderer/components/CommandPalette/commands/index.ts:8:export { commandRegistry } from './registry.js';
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.ts:4: * Converts data sources (objects, search results) into command objects
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.ts:5: * for the command palette.
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.ts:14:/** Icon mapping by object type (string names for command palette) */
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.ts:41:   * Generate creation commands for all built-in types
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.ts:66:export const commandRegistry = new CommandRegistry();
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:4: * Handles execution of command palette commands:
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:11:import type { Command } from '../components/CommandPalette/commands/types.js';
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:19:  handleCommand: (command: Command) => Promise<void>;
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:27:    async (command: Command) => {
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:28:      switch (command.type) {
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:31:          void window.typenoteAPI.recordView(command.objectId);
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:32:          onNavigate?.(command.objectId);
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:37:          const title = command.defaultTitle ?? `New ${command.typeKey}`;
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:38:          const result = await window.typenoteAPI.createObject(command.typeKey, title);
+./apps/desktop/src/renderer/hooks/useCommandActions.ts:49:          await command.handler();
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:2: * Tests for the command registry.
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:6:import { commandRegistry } from './registry.js';
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:29:      const commands = commandRegistry.fromObjectList(objects);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:31:      expect(commands).toHaveLength(2);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:32:      expect(commands[0]).toMatchObject({
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:39:      expect(commands[1]).toMatchObject({
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:58:      const commands = commandRegistry.fromObjectList(objects);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:60:      expect(commands[0]?.icon).toBe('FileText');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:61:      expect(commands[1]?.icon).toBe('CheckSquare');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:62:      expect(commands[2]?.icon).toBe('User');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:63:      expect(commands[3]?.icon).toBe('CalendarDays');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:64:      expect(commands[4]?.icon).toBe('MapPin');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:65:      expect(commands[5]?.icon).toBe('Calendar');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:69:      const commands = commandRegistry.fromObjectList([]);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:70:      expect(commands).toEqual([]);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:75:    it('returns creation commands for all built-in types', () => {
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:76:      const commands = commandRegistry.getCreationCommands();
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:78:      expect(commands).toHaveLength(6);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:80:      const typeKeys = commands.map((c) => c.typeKey);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:89:    it('all commands have type "creation"', () => {
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:90:      const commands = commandRegistry.getCreationCommands();
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:91:      expect(commands.every((c: { type: string }) => c.type === 'creation')).toBe(true);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:95:      const commands = commandRegistry.getCreationCommands('My New Page');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:97:      const pageCommand = commands.find((c: { typeKey: string }) => c.typeKey === 'Page');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:103:      const commands = commandRegistry.getCreationCommands('  trimmed  ');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:105:      const pageCommand = commands.find((c: { typeKey: string }) => c.typeKey === 'Page');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:110:      const commands = commandRegistry.getCreationCommands('');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:112:      const pageCommand = commands.find((c: { typeKey: string }) => c.typeKey === 'Page');
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:117:      const commands = commandRegistry.getCreationCommands();
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:120:        commands.map((c: { typeKey: string; icon?: string | undefined }) => [c.typeKey, c.icon])
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:134:      const commands = commandRegistry.fromObjectList(objects);
+./apps/desktop/src/renderer/components/CommandPalette/commands/registry.test.ts:135:      expect(commands[0]?.icon).toBe('File');
+./apps/desktop/src/renderer/hooks/useCommandSearch.test.ts:81:  it('returns navigation commands for matching titles', async () => {
+./apps/desktop/src/renderer/hooks/useCommandSearch.test.ts:104:      expect(result.current.commands).toHaveLength(2);
+./apps/desktop/src/renderer/hooks/useCommandSearch.test.ts:105:      expect(result.current.commands[0]?.label).toBe('Meeting Notes');
+./apps/desktop/src/renderer/hooks/useCommandSearch.test.ts:106:      expect(result.current.commands[1]?.label).toBe('Project Meeting');
+./apps/desktop/src/renderer/hooks/useCommandSearch.test.ts:132:      const objectIds = result.current.commands.map((c) => c.objectId);
+./apps/desktop/src/renderer/components/CommandPalette/commands/types.ts:2: * Command types for the command palette.
+./apps/desktop/src/renderer/components/CommandPalette/commands/types.ts:15:  /** Unique identifier for the command */
+./apps/desktop/src/renderer/components/CommandPalette/commands/types.ts:53:/** Union of all command types */
+./apps/desktop/src/renderer/components/CommandPalette/commands/types.ts:62:  commands: Command[];
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:5:**Purpose:** Implement CLI commands for 4 critical backend gaps (Tier 1 from coverage analysis)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:11:This design implements CLI support for 4 critical backend areas currently lacking command-line testing capabilities:
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:15:3. **Daily Notes** - Daily note management commands (new `daily.ts`)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:16:4. **Calendar** - Calendar/event query commands (new `calendar.ts`)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:18:**Implementation approach:** Sequential (extensions first, then new command groups)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:19:**Testing strategy:** Integration tests for all new commands using in-memory SQLite
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:30:- `apps/cli/src/commands/template.ts` - Add `template apply` subcommand
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:31:- `apps/cli/src/commands/core.ts` - Add `patch-move` command
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:39:- `apps/cli/src/commands/daily.ts` - 5 subcommands for daily note operations
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:47:- `apps/cli/src/commands/calendar.ts` - 5 subcommands for calendar/event queries
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:55:- Test files for all new commands
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:70:**File:** `apps/cli/src/commands/template.ts` (extend existing)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:122:**File:** `apps/cli/src/commands/template.test.ts`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:143:**File:** `apps/cli/src/commands/core.ts` (extend existing)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:145:**Existing patch commands:**
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:151:**New command logic:**
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:196:**File:** `apps/cli/src/commands/core.test.ts`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:213:typenote daily <subcommand>
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:218:**File:** `apps/cli/src/commands/daily.ts` (new)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:232:### Subcommands
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:245:  "slug": "daily/2026-01-10",
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:289:    { "id": "...", "title": "2026-01-10", "slug": "daily/2026-01-10", "createdAt": "..." },
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:290:    { "id": "...", "title": "2026-01-09", "slug": "daily/2026-01-09", "createdAt": "..." }
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:307:#### 4. `daily slug <date>`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:309:Generate slug for a date (utility command).
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:312:typenote daily slug 2026-01-10
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:324:import { registerDailyCommand } from './commands/daily.js';
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:331:**File:** `apps/cli/src/commands/daily.test.ts`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:339:- ✓ Generate slug utility
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:349:typenote calendar <subcommand>
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:354:**File:** `apps/cli/src/commands/calendar.ts` (new)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:368:### Subcommands
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:495:import { registerCalendarCommand } from './commands/calendar.js';
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:502:**File:** `apps/cli/src/commands/calendar.test.ts`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:519:All CLI command tests follow this pattern:
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:523:3. **Act:** Execute command logic (call service functions directly)
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:534:describe('daily commands', () => {
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:550:      slug: expect.stringMatching(/^daily\/\d{4}-\d{2}-\d{2}$/),
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:578:- Generate slug
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:594:All commands follow this structure:
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:638:2. ✓ All commands registered in `apps/cli/src/index.ts`
+./docs/plans/2026-01-10-cli-critical-gaps-design.md:653:- **Existing CLI Commands:** `apps/cli/src/commands/`
+./tests/e2e/specs/tags-workflow.spec.ts:13:          slug: 'project-alpha',
+./tests/e2e/specs/tags-workflow.spec.ts:21:        expect(result.result.slug).toBe('project-alpha');
+./tests/e2e/specs/tags-workflow.spec.ts:32:          slug: 'important',
+./tests/e2e/specs/tags-workflow.spec.ts:42:        expect(result.result.slug).toBe('important');
+./tests/e2e/specs/tags-workflow.spec.ts:49:    test('createTag fails with duplicate slug', async ({ window: page }) => {
+./tests/e2e/specs/tags-workflow.spec.ts:54:          slug: 'duplicate-test',
+./tests/e2e/specs/tags-workflow.spec.ts:58:      // Try to create another with same slug
+./tests/e2e/specs/tags-workflow.spec.ts:62:          slug: 'duplicate-test',
+./tests/e2e/specs/tags-workflow.spec.ts:77:          slug: 'retrievable-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:95:        expect(result.result?.slug).toBe('retrievable-tag');
+./tests/e2e/specs/tags-workflow.spec.ts:115:          slug: 'update-name-test',
+./tests/e2e/specs/tags-workflow.spec.ts:132:        expect(result.result.slug).toBe('update-name-test'); // Unchanged
+./tests/e2e/specs/tags-workflow.spec.ts:141:          slug: 'multi-update-test',
+./tests/e2e/specs/tags-workflow.spec.ts:181:    test('updateTag fails with duplicate slug', async ({ window: page }) => {
+./tests/e2e/specs/tags-workflow.spec.ts:186:          slug: 'first-slug',
+./tests/e2e/specs/tags-workflow.spec.ts:190:          slug: 'second-slug',
+./tests/e2e/specs/tags-workflow.spec.ts:194:      // Try to update second tag with first tag's slug
+./tests/e2e/specs/tags-workflow.spec.ts:199:        const secondTag = listResult.result.find((t) => t.slug === 'second-slug');
+./tests/e2e/specs/tags-workflow.spec.ts:203:        return await window.typenoteAPI.updateTag(secondTag.id, { slug: 'first-slug' });
+./tests/e2e/specs/tags-workflow.spec.ts:217:          slug: 'to-delete',
+./tests/e2e/specs/tags-workflow.spec.ts:271:        await window.typenoteAPI.createTag({ name: 'Alpha', slug: 'alpha' });
+./tests/e2e/specs/tags-workflow.spec.ts:272:        await window.typenoteAPI.createTag({ name: 'Beta', slug: 'beta' });
+./tests/e2e/specs/tags-workflow.spec.ts:273:        await window.typenoteAPI.createTag({ name: 'Gamma', slug: 'gamma' });
+./tests/e2e/specs/tags-workflow.spec.ts:283:        const slugs = result.result.map((t) => t.slug);
+./tests/e2e/specs/tags-workflow.spec.ts:284:        expect(slugs).toContain('alpha');
+./tests/e2e/specs/tags-workflow.spec.ts:285:        expect(slugs).toContain('beta');
+./tests/e2e/specs/tags-workflow.spec.ts:286:        expect(slugs).toContain('gamma');
+./tests/e2e/specs/tags-workflow.spec.ts:293:        await window.typenoteAPI.createTag({ name: 'Counted', slug: 'counted' });
+./tests/e2e/specs/tags-workflow.spec.ts:308:        await window.typenoteAPI.createTag({ name: 'Zebra', slug: 'zebra' });
+./tests/e2e/specs/tags-workflow.spec.ts:309:        await window.typenoteAPI.createTag({ name: 'Apple', slug: 'apple' });
+./tests/e2e/specs/tags-workflow.spec.ts:310:        await window.typenoteAPI.createTag({ name: 'Mango', slug: 'mango' });
+./tests/e2e/specs/tags-workflow.spec.ts:328:        await window.typenoteAPI.createTag({ name: 'Zebra', slug: 'zebra-desc' });
+./tests/e2e/specs/tags-workflow.spec.ts:329:        await window.typenoteAPI.createTag({ name: 'Apple', slug: 'apple-desc' });
+./tests/e2e/specs/tags-workflow.spec.ts:330:        await window.typenoteAPI.createTag({ name: 'Mango', slug: 'mango-desc' });
+./tests/e2e/specs/tags-workflow.spec.ts:358:          slug: 'assigned-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:385:        const tag1Result = await window.typenoteAPI.createTag({ name: 'Tag One', slug: 'tag-one' });
+./tests/e2e/specs/tags-workflow.spec.ts:386:        const tag2Result = await window.typenoteAPI.createTag({ name: 'Tag Two', slug: 'tag-two' });
+./tests/e2e/specs/tags-workflow.spec.ts:389:          slug: 'tag-three',
+./tests/e2e/specs/tags-workflow.spec.ts:428:          slug: 'idempotent-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:452:          slug: 'orphan-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:495:          slug: 'removable-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:521:          slug: 'never-assigned',
+./tests/e2e/specs/tags-workflow.spec.ts:541:          slug: 'remove-orphan',
+./tests/e2e/specs/tags-workflow.spec.ts:581:          slug: 'object-tag-1',
+./tests/e2e/specs/tags-workflow.spec.ts:585:          slug: 'object-tag-2',
+./tests/e2e/specs/tags-workflow.spec.ts:610:        const slugs = result.result.map((t: { slug: string }) => t.slug);
+./tests/e2e/specs/tags-workflow.spec.ts:611:        expect(slugs).toContain('object-tag-1');
+./tests/e2e/specs/tags-workflow.spec.ts:612:        expect(slugs).toContain('object-tag-2');
+./tests/e2e/specs/tags-workflow.spec.ts:640:          slug: 'persistent-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:681:          slug: 'will-remove',
+./tests/e2e/specs/tags-workflow.spec.ts:710:          slug: 'in-use-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:736:          slug: 'deletable-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:764:          slug: 'usage-count-tag',
+./tests/e2e/specs/tags-workflow.spec.ts:794:        const tag = result.result.find((t: { slug: string }) => t.slug === 'usage-count-tag');
+./apps/desktop/src/renderer/hooks/useCommandPalette.ts:4: * Manages command palette open/close state and keyboard shortcuts.
+./apps/desktop/src/renderer/hooks/useSelectedObject.test.ts:11:import { createQueryWrapper } from '../test-utils.js';
+./apps/desktop/src/renderer/hooks/useTypeCounts.test.ts:10:import { createQueryWrapper } from '../test-utils.js';
+./tests/e2e/types/global.d.ts:98:  slug: string;
+./tests/e2e/types/global.d.ts:112:  slug: string;
+./tests/e2e/types/global.d.ts:120:  slug?: string;
+./docs/plans/2026-01-10-cli-coverage-analysis.md:5:**Purpose:** Identify backend functionality lacking CLI commands for testing and development
+./docs/plans/2026-01-10-cli-coverage-analysis.md:11:Out of **22 major backend services**, TypeNote has **8 CLI command groups** providing good coverage for core workflows (tasks, tags, attachments, export/import). However, several critical backend areas have **no CLI support**, making them difficult to test without running the full Electron app.
+./docs/plans/2026-01-10-cli-coverage-analysis.md:13:**Key Gap:** Backend services added recently (daily notes, calendar, recent objects, unlinked mentions) lack any CLI commands.
+./docs/plans/2026-01-10-cli-coverage-analysis.md:23:| Tasks         | 8 commands | Complete (today, overdue, inbox, upcoming, by-status, by-priority, complete, reopen)      |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:24:| Tags          | 9 commands | Complete (create, get, list, update, delete, assign, remove, object-tags, find-or-create) |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:25:| Attachments   | 8 commands | Complete (upload, get, link, unlink, list, cleanup)                                       |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:26:| Export/Import | 6 commands | Complete (object, type, folder export/import)                                             |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:27:| Backlinks     | 1 command  | Complete (get backlinks)                                                                  |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:28:| Core Objects  | 5 commands | Good (create, list, get, search, patch-insert/update/delete)                              |
+./docs/plans/2026-01-10-cli-coverage-analysis.md:43:- `getDailyNoteBySlug(slug)` - Query by slug (daily/YYYY-MM-DD)
+./docs/plans/2026-01-10-cli-coverage-analysis.md:44:- `getDailyNoteSlug(date)` - Generate slug from date
+./docs/plans/2026-01-10-cli-coverage-analysis.md:47:Cannot test daily note workflows, date-based queries, or slug generation without UI.
+./docs/plans/2026-01-10-cli-coverage-analysis.md:357:All CLI commands follow this pattern:
+./docs/plans/2026-01-10-cli-coverage-analysis.md:360:import { Command } from 'commander';
+./docs/plans/2026-01-10-cli-coverage-analysis.md:365:  .description('Description of command')
+./docs/plans/2026-01-10-cli-coverage-analysis.md:392:2. **Create Implementation Plan** - Design CLI commands for chosen area
+./docs/plans/2026-01-10-cli-coverage-analysis.md:393:3. **Implement & Test** - Add commands + integration tests
+./docs/plans/2026-01-10-cli-coverage-analysis.md:394:4. **Update Documentation** - Add to CLI help text and CLAUDE.md commands table
+./apps/desktop/src/renderer/hooks/useSettings.test.ts:11:import { createQueryWrapper } from '../test-utils.js';
+./apps/desktop/src/renderer/hooks/useObjectsByType.test.ts:11:import { createQueryWrapper } from '../test-utils.js';
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:5: * Returns navigation commands for matching objects.
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:10:import { commandRegistry } from '../components/CommandPalette/commands/registry.js';
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:11:import type { NavigationCommand } from '../components/CommandPalette/commands/types.js';
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:17:  | { status: 'success'; commands: NavigationCommand[] }
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:57:      // Convert to navigation commands
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:58:      const titleCommands = commandRegistry.fromObjectList(titleMatches);
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:68:      const ftsCommands = commandRegistry.fromObjectList(ftsObjects);
+./apps/desktop/src/renderer/hooks/useCommandSearch.ts:73:      setState({ status: 'success', commands: merged });
+./tests/integration/dailyNote.lifecycle.test.ts:235:    it('resolves daily/YYYY-MM-DD slug to correct daily note', () => {
+./tests/integration/dailyNote.lifecycle.test.ts:247:    it('returns null for non-existent date slug', () => {
+./tests/integration/dailyNote.lifecycle.test.ts:259:    it('returns null for invalid slug format', () => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:7:**Architecture:** InteractiveEditor wraps TipTap with custom extensions adapted from the desktop app. Shared styling constants are extracted from EditorPreview components. Mock data enables wiki-link and slash command testing without IPC.
+./docs/plans/2026-01-11-interactive-editor-impl.md:333: * wiki-links, tags, and slash commands.
+./docs/plans/2026-01-11-interactive-editor-impl.md:1239:**Step 1: Create mock commands**
+./docs/plans/2026-01-11-interactive-editor-impl.md:1429:feat(design-system): add mock slash commands for InteractiveEditor
+./docs/plans/2026-01-11-interactive-editor-impl.md:1455:  command: (item: SlashCommand) => void;
+./docs/plans/2026-01-11-interactive-editor-impl.md:1465:  ({ items, command }, ref) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:1490:            command(selectedItem);
+./docs/plans/2026-01-11-interactive-editor-impl.md:1502:          <div className="text-sm text-gray-500">No commands found</div>
+./docs/plans/2026-01-11-interactive-editor-impl.md:1518:                onClick={() => command(item)}
+./docs/plans/2026-01-11-interactive-editor-impl.md:1540:      commands: items.filter((cmd) => cmd.section === section),
+./docs/plans/2026-01-11-interactive-editor-impl.md:1541:    })).filter((g) => g.commands.length > 0);
+./docs/plans/2026-01-11-interactive-editor-impl.md:1552:            {group.commands.map((cmd) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:1558:                  onClick={() => command(cmd)}
+./docs/plans/2026-01-11-interactive-editor-impl.md:1610:        command: ({ editor, range, props }) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:1625:                  command: (item: SlashCommandType) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:1626:                    props.command(item);
+./docs/plans/2026-01-11-interactive-editor-impl.md:1657:                command: (item: SlashCommandType) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:1658:                  props.command(item);
+./docs/plans/2026-01-11-interactive-editor-impl.md:1736:        placeholder="Type '/' to see the command menu..."
+./docs/plans/2026-01-11-interactive-editor-impl.md:1741:        { keys: ['/'], action: 'Open command menu' },
+./docs/plans/2026-01-11-interactive-editor-impl.md:1750:  description: "Type '/' anywhere to open the slash command menu",
+./docs/plans/2026-01-11-interactive-editor-impl.md:1785:Expected: Slash command menu appears when typing "/", filters work, commands execute
+./docs/plans/2026-01-11-interactive-editor-impl.md:1794:Type "/" to open command menu with headings, lists, formatting options.
+./docs/plans/2026-01-11-interactive-editor-impl.md:2128:    command: ({ editor, range, props }) => {
+./docs/plans/2026-01-11-interactive-editor-impl.md:2134:        editor.commands.insertContent({
+./docs/plans/2026-01-11-interactive-editor-impl.md:2144:        editor.commands.insertContent({
+./docs/plans/2026-01-11-interactive-editor-impl.md:2167:                props.command(item);
+./docs/plans/2026-01-11-interactive-editor-impl.md:2200:              props.command(item);
+./docs/plans/2026-01-11-interactive-editor-impl.md:2466:- Slash command menu
+./docs/plans/2026-01-11-interactive-editor-impl.md:2481:| 3     | 9-10  | Slash commands with mock data                                  |
+./scripts/ensure-native-build.mjs:7: * penalty on every command invocation.
+./packages/api/src/test-utils.test.ts:22:} from './test-utils.js';
+./packages/http-server/src/routes/tags.test.ts:54:      createTag(db, { name: 'Work', slug: 'work' });
+./packages/http-server/src/routes/tags.test.ts:55:      createTag(db, { name: 'Personal', slug: 'personal' });
+./packages/http-server/src/routes/tags.test.ts:62:        data: Array<{ name: string; slug: string }>;
+./packages/http-server/src/routes/tags.test.ts:69:      const tag = createTag(db, { name: 'Important', slug: 'important' });
+./packages/http-server/src/routes/tags.test.ts:86:      createTag(db, { name: 'Zebra', slug: 'zebra' });
+./packages/http-server/src/routes/tags.test.ts:87:      createTag(db, { name: 'Alpha', slug: 'alpha' });
+./packages/http-server/src/routes/tags.test.ts:100:      createTag(db, { name: 'Alpha', slug: 'alpha' });
+./packages/http-server/src/routes/tags.test.ts:101:      createTag(db, { name: 'Zebra', slug: 'zebra' });
+./packages/http-server/src/routes/tags.test.ts:121:          slug: 'new-tag',
+./packages/http-server/src/routes/tags.test.ts:129:        data: { id: string; name: string; slug: string; color: string };
+./packages/http-server/src/routes/tags.test.ts:133:      expect(body.data.slug).toBe('new-tag');
+./packages/http-server/src/routes/tags.test.ts:138:    it('returns 409 when slug already exists', async () => {
+./packages/http-server/src/routes/tags.test.ts:139:      createTag(db, { name: 'Existing', slug: 'existing-slug' });
+./packages/http-server/src/routes/tags.test.ts:146:          slug: 'existing-slug',
+./packages/http-server/src/routes/tags.test.ts:162:      const tag = createTag(db, { name: 'Test Tag', slug: 'test-tag' });
+./packages/http-server/src/routes/tags.test.ts:169:        data: { id: string; name: string; slug: string };
+./packages/http-server/src/routes/tags.test.ts:191:  describe('GET /tags/by-slug/:slug', () => {
+./packages/http-server/src/routes/tags.test.ts:192:    it('returns tag for valid slug', async () => {
+./packages/http-server/src/routes/tags.test.ts:193:      const tag = createTag(db, { name: 'Test Tag', slug: 'test-tag' });
+./packages/http-server/src/routes/tags.test.ts:195:      const res = await app.request('/tags/by-slug/test-tag');
+./packages/http-server/src/routes/tags.test.ts:200:        data: { id: string; name: string; slug: string };
+./packages/http-server/src/routes/tags.test.ts:204:      expect(body.data.slug).toBe('test-tag');
+./packages/http-server/src/routes/tags.test.ts:207:    it('returns 404 for non-existent slug', async () => {
+./packages/http-server/src/routes/tags.test.ts:208:      const res = await app.request('/tags/by-slug/non-existent');
+./packages/http-server/src/routes/tags.test.ts:222:      const tag = createTag(db, { name: 'Original', slug: 'original' });
+./packages/http-server/src/routes/tags.test.ts:236:        data: { name: string; slug: string; color: string };
+./packages/http-server/src/routes/tags.test.ts:240:      expect(body.data.slug).toBe('original'); // Unchanged
+./packages/http-server/src/routes/tags.test.ts:262:    it('returns 409 when changing to existing slug', async () => {
+./packages/http-server/src/routes/tags.test.ts:263:      createTag(db, { name: 'Tag One', slug: 'tag-one' });
+./packages/http-server/src/routes/tags.test.ts:264:      const tagTwo = createTag(db, { name: 'Tag Two', slug: 'tag-two' });
+./packages/http-server/src/routes/tags.test.ts:269:        body: JSON.stringify({ slug: 'tag-one' }),
+./packages/http-server/src/routes/tags.test.ts:284:      const tag = createTag(db, { name: 'To Delete', slug: 'to-delete' });
+./packages/http-server/src/routes/tags.test.ts:314:      const tag = createTag(db, { name: 'In Use', slug: 'in-use' });
+./packages/http-server/src/routes/tags.ts:39: * - slug: string (required)
+./packages/http-server/src/routes/tags.ts:48:    slug: string;
+./packages/http-server/src/routes/tags.ts:56:    slug: body.slug,
+./packages/http-server/src/routes/tags.ts:95: * GET /tags/by-slug/:slug - Get tag by slug
+./packages/http-server/src/routes/tags.ts:97:tags.get('/by-slug/:slug', (c) => {
+./packages/http-server/src/routes/tags.ts:99:  const slug = c.req.param('slug');
+./packages/http-server/src/routes/tags.ts:101:  const tag = getTagBySlug(db, slug);
+./packages/http-server/src/routes/tags.ts:106:      message: `Tag not found with slug: ${slug}`,
+./packages/http-server/src/routes/tags.ts:107:      details: { slug },
+./packages/http-server/src/routes/tags.ts:122: * - slug?: string
+./packages/http-server/src/routes/tags.ts:132:    slug?: string;
+./packages/http-server/src/routes/objects.test.ts:314:      const tag = createTag(db, { name: 'Important', slug: 'important' });
+./packages/http-server/src/routes/objects.test.ts:332:      const tag = createTag(db, { name: 'Work', slug: 'work' });
+./packages/http-server/src/routes/objects.test.ts:353:      const tag = createTag(db, { name: 'Work', slug: 'work' });
+./packages/http-server/src/routes/objects.test.ts:376:      const tag = createTag(db, { name: 'Work', slug: 'work' });
+./packages/http-server/src/middleware/errorHandler.test.ts:9:    app.get('/test', () => {
+./packages/http-server/src/middleware/errorHandler.test.ts:18:    const res = await app.request('/test');
+./packages/http-server/src/middleware/errorHandler.test.ts:35:    app.get('/test', () => {
+./packages/http-server/src/middleware/errorHandler.test.ts:39:    const res = await app.request('/test');
+./packages/http-server/src/middleware/errorHandler.test.ts:51:    app.get('/test', () => {
+./packages/http-server/src/middleware/errorHandler.test.ts:55:    const res = await app.request('/test');
+./packages/api/src/errors.ts:143:export function tagSlugConflict(slug: string, existingTagId: string): ApiError {
+./packages/api/src/errors.ts:147:    message: `Tag with slug '${slug}' already exists`,
+./packages/api/src/errors.ts:148:    details: { slug, existingTagId },
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:4: * Global command palette for searching objects and quick actions.
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:28:import { commandRegistry } from './commands/registry.js';
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:29:import type { Command, NavigationCommand, CreationCommand } from './commands/types.js';
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:44:  command: Command;
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:67:  // Get creation commands when there's a query
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:68:  const creationCommands = query.trim() ? commandRegistry.getCreationCommands(query) : [];
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:82:          command: {
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:95:    if (searchState.status === 'success' && searchState.commands.length > 0) {
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:96:      searchState.commands.forEach((cmd) => {
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:97:        items.push({ type: 'search', command: cmd });
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:101:    // Creation commands (when query)
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:104:        items.push({ type: 'create', command: cmd });
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:113:    (command: Command) => {
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:114:      void handleCommand(command);
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:126:        handleSelect(item.command);
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:142:      data-testid="command-palette"
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:156:          searchState.commands.length === 0 &&
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:163:          searchState.commands.length === 0 &&
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:195:                  data-testid={`command-recent-${obj.id}`}
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:207:        {searchState.status === 'success' && searchState.commands.length > 0 && (
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:209:            {searchState.commands.map((cmd: NavigationCommand) => {
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:218:                  data-testid={`command-item-${cmd.objectId}`}
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:229:        {/* Creation commands */}
+./apps/desktop/src/renderer/components/CommandPalette/index.tsx:241:                  data-testid={`command-create-${cmd.typeKey}`}
+./packages/api/mutation_output.txt:549:    ✘ TagSchema rejects empty slug (covered 0)
+./packages/api/mutation_output.txt:550:    ✓ TagSchema rejects slug with uppercase (killed 1)
+./packages/api/mutation_output.txt:551:    ✓ TagSchema rejects slug with spaces (killed 1)
+./packages/api/mutation_output.txt:552:    ✘ TagSchema rejects slug with underscores (covered 0)
+./packages/api/mutation_output.txt:553:    ✘ TagSchema accepts slug with hyphens (covered 0)
+./packages/api/mutation_output.txt:554:    ✘ TagSchema accepts slug with numbers (covered 0)
+./packages/api/mutation_output.txt:556:    ✓ TagSchema returns error message for invalid slug (killed 1)
+./packages/api/mutation_output.txt:563:    ✘ CreateTagInputSchema rejects missing slug (covered 0)
+./packages/api/mutation_output.txt:564:    ✘ CreateTagInputSchema rejects invalid slug format (covered 0)
+./packages/api/mutation_output.txt:566:    ✘ UpdateTagInputSchema validates update with slug only (covered 0)
+./packages/api/mutation_output.txt:571:    ✓ UpdateTagInputSchema rejects invalid slug format (killed 1)
+./packages/api/mutation_output.txt:1099:src/test-utils.ts:35:14
+./packages/api/src/tag.ts:60:  slug: TagSlugSchema, // URL-safe unique identifier
+./packages/api/src/tag.ts:88:  slug: TagSlugSchema,
+./packages/api/src/tag.ts:101:  slug: TagSlugSchema.optional(),
+./packages/api/src/tag.ts:185:  'TAG_SLUG_EXISTS', // Tag with this slug already exists
+./packages/api/src/tag.test.ts:123:      slug: 'typescript',
+./packages/api/src/tag.test.ts:138:      slug: 'test',
+./packages/api/src/tag.test.ts:153:      slug: 'test',
+./packages/api/src/tag.test.ts:168:      slug: 'test',
+./packages/api/src/tag.test.ts:183:      slug: 'test',
+./packages/api/src/tag.test.ts:194:  it('rejects empty slug', () => {
+./packages/api/src/tag.test.ts:198:      slug: '',
+./packages/api/src/tag.test.ts:209:  it('rejects slug with uppercase', () => {
+./packages/api/src/tag.test.ts:213:      slug: 'Test',
+./packages/api/src/tag.test.ts:224:  it('rejects slug with spaces', () => {
+./packages/api/src/tag.test.ts:228:      slug: 'my tag',
+./packages/api/src/tag.test.ts:239:  it('rejects slug with underscores', () => {
+./packages/api/src/tag.test.ts:243:      slug: 'my_tag',
+./packages/api/src/tag.test.ts:254:  it('accepts slug with hyphens', () => {
+./packages/api/src/tag.test.ts:258:      slug: 'project-alpha',
+./packages/api/src/tag.test.ts:269:  it('accepts slug with numbers', () => {
+./packages/api/src/tag.test.ts:273:      slug: 'version-2',
+./packages/api/src/tag.test.ts:288:      slug: 'test',
+./packages/api/src/tag.test.ts:299:  it('returns error message for invalid slug', () => {
+./packages/api/src/tag.test.ts:303:      slug: 'Invalid_Slug!',
+./packages/api/src/tag.test.ts:313:      const slugError = result.error.issues.find((i) => i.path.includes('slug'));
+./packages/api/src/tag.test.ts:314:      expect(slugError?.message).toBe('Slug must be lowercase alphanumeric with hyphens');
+./packages/api/src/tag.test.ts:328:      slug: 'typescript',
+./packages/api/src/tag.test.ts:344:      slug: 'unused',
+./packages/api/src/tag.test.ts:360:      slug: 'test',
+./packages/api/src/tag.test.ts:381:      slug: 'typescript',
+./packages/api/src/tag.test.ts:390:      slug: 'typescript',
+./packages/api/src/tag.test.ts:401:      slug: 'typescript',
+./packages/api/src/tag.test.ts:407:  it('rejects missing slug', () => {
+./packages/api/src/tag.test.ts:415:  it('rejects invalid slug format', () => {
+./packages/api/src/tag.test.ts:418:      slug: 'TypeScript', // uppercase not allowed
+./packages/api/src/tag.test.ts:438:  it('validates update with slug only', () => {
+./packages/api/src/tag.test.ts:440:      slug: 'new-slug',
+./packages/api/src/tag.test.ts:457:      slug: 'updated-tag',
+./packages/api/src/tag.test.ts:480:  it('rejects invalid slug format', () => {
+./packages/api/src/tag.test.ts:482:      slug: 'Invalid_Slug',
+./packages/api/src/errors.test.ts:210:        slug: 'typescript',
+./packages/api/src/patchValidation.test.ts:11:} from './test-utils.js';
+./packages/api/src/blockPatch.test.ts:28:} from './test-utils.js';
+./packages/api/src/notateDoc.test.ts:30:import { expectValid, expectInvalid, VALID_ULID, VALID_ULID_2 } from './test-utils.js';
+./packages/design-system/src/components/KeyboardKey/KeyboardKey.stories.tsx:33:          <span className="ml-2 text-gray-600">Open command palette</span>
+./packages/design-system/src/components/TagAddButton/TagAddButton.stories.tsx:21:    const newTag = prompt('Enter tag name:');
+./docs/plans/2026-01-15-command-palette-enhancement-design.md:137:      ...searchState.commands.map((c) => ({ type: 'search', data: c })),
+./docs/plans/2026-01-15-command-palette-enhancement-design.md:139:    [recentObjects, searchState.commands]
+./docs/plans/2026-01-15-command-palette-enhancement-design.md:199:3. Delete `apps/desktop/src/renderer/components/ui/command.tsx`
+./docs/plans/2026-01-15-command-palette-enhancement-design.md:223:| `apps/desktop/src/renderer/components/ui/command.tsx`           | Delete      |
+./docs/plans/2026-01-11-interactive-editor-design.md:9:Build an `InteractiveEditor` component in `packages/design-system/` that provides real TipTap editing capabilities with mocked data for wiki-links, tags, and slash commands. This enables isolated testing and documentation of all editor features without running the full Electron app.
+./docs/plans/2026-01-11-interactive-editor-design.md:34:│   ├── SlashCommand/             # Command menu with static commands
+./docs/plans/2026-01-11-interactive-editor-design.md:39:│   └── mockCommands.ts           # Slash command definitions
+./docs/plans/2026-01-11-interactive-editor-design.md:146:| /                  | Open slash command menu |
+./docs/plans/2026-01-11-interactive-editor-design.md:180:1. Copy & adapt SlashCommand extension with mock commands
+./docs/plans/2026-01-07-custom-object-types-design.md:525:- [ ] Add CLI commands for testing inheritance
+./packages/design-system/src/components/CommandPalette/CommandPaletteEmpty.tsx:8: * Shown when there are no results or no commands available.
+./packages/design-system/src/components/CommandPalette/CommandPaletteList.tsx:6: * CommandPaletteList - Scrollable container for command palette content.
+./packages/design-system/src/components/InteractiveEditor/stories/WikiLinks.stories.tsx:42: * Type "[[" to link to notes, "#" for tags, "/" for commands.
+./packages/design-system/src/components/InteractiveEditor/stories/WikiLinks.stories.tsx:53:        placeholder: 'Type "[["for wiki-links, "#" for tags, "/" for commands...',
+./packages/design-system/src/components/InteractiveEditor/stories/WikiLinks.stories.tsx:92:            slash commands
+./packages/storage/drizzle/meta/0010_snapshot.json:797:        "slug": {
+./packages/storage/drizzle/meta/0010_snapshot.json:798:          "name": "slug",
+./packages/storage/drizzle/meta/0010_snapshot.json:841:        "tags_slug_unique": {
+./packages/storage/drizzle/meta/0010_snapshot.json:842:          "name": "tags_slug_unique",
+./packages/storage/drizzle/meta/0010_snapshot.json:843:          "columns": ["slug"],
+./packages/storage/drizzle/meta/0010_snapshot.json:846:        "tags_slug_idx": {
+./packages/storage/drizzle/meta/0010_snapshot.json:847:          "name": "tags_slug_idx",
+./packages/storage/drizzle/meta/0010_snapshot.json:848:          "columns": ["slug"],
+./packages/storage/drizzle/0003_add_tags.sql:8:	`slug` text NOT NULL,
+./packages/storage/drizzle/0003_add_tags.sql:16:CREATE UNIQUE INDEX `tags_slug_unique` ON `tags` (`slug`);
+./packages/storage/drizzle/0003_add_tags.sql:18:CREATE INDEX `tags_slug_idx` ON `tags` (`slug`);
+./packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx:61: * Default - Interactive command palette with keyboard navigation.
+./packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx:71:      // Show search results + create commands when searching
+./packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx:114:        to open the command palette
+./packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx:177:          {/* With query: show create commands */}
+./packages/design-system/src/components/CommandPalette/CommandPalette.stories.tsx:235:          placeholder="Search commands..."
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:26: * Interactive editor with slash command support.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:27: * Type "/" to open the command menu.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:36:        placeholder: 'Type "/" to see commands...',
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:57:        slash command menu. Use arrow keys to navigate and Enter to select.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:75: * Shows the slash command menu in isolation.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:85:          Click on any command to select it. The selected command will be shown below.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:103: * Demonstrates command filtering behavior.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:113:        <label className="block text-sm font-medium text-gray-700 mb-1">Filter commands:</label>
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:123:        Showing {filteredCommands.length} of {mockCommands.length} commands
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:140: * Empty state when no commands match the filter.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:147:          This shows what happens when no commands match the search query.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:156: * All available commands in the menu.
+./packages/design-system/src/components/InteractiveEditor/stories/SlashCommand.stories.tsx:164:          These are all {mockCommands.length} commands available in the slash menu.
+./packages/design-system/src/components/InteractiveEditor/InteractiveEditor.tsx:39: * wiki-links, tags, and slash commands. Falls back to mock data when
+./packages/design-system/src/components/CommandPalette/CommandPaletteItem.tsx:29: * CommandPaletteItem - Individual selectable command.
+./packages/design-system/src/components/InteractiveEditor/extensions/TagNode/TagSuggestion.tsx:31:        command: () => {
+./packages/design-system/src/components/InteractiveEditor/extensions/TagNode/TagSuggestion.tsx:32:          // Default no-op; actual command should be provided via options
+./packages/storage/src/tagService.test.ts:43:      const tag = createTag(db, { name: 'TypeScript', slug: 'typescript' });
+./packages/storage/src/tagService.test.ts:47:      expect(tag.slug).toBe('typescript');
+./packages/storage/src/tagService.test.ts:58:        slug: 'project-alpha',
+./packages/storage/src/tagService.test.ts:65:      expect(tag.slug).toBe('project-alpha');
+./packages/storage/src/tagService.test.ts:71:    it('throws TAG_SLUG_EXISTS for duplicate slug', () => {
+./packages/storage/src/tagService.test.ts:72:      createTag(db, { name: 'First', slug: 'typescript' });
+./packages/storage/src/tagService.test.ts:74:      expect(() => createTag(db, { name: 'Second', slug: 'typescript' })).toThrow(TagServiceError);
+./packages/storage/src/tagService.test.ts:76:        createTag(db, { name: 'Second', slug: 'typescript' });
+./packages/storage/src/tagService.test.ts:91:      const created = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:107:    it('returns tag by slug', () => {
+./packages/storage/src/tagService.test.ts:108:      createTag(db, { name: 'TypeScript', slug: 'typescript' });
+./packages/storage/src/tagService.test.ts:112:      expect(found?.slug).toBe('typescript');
+./packages/storage/src/tagService.test.ts:116:    it('returns null for non-existent slug', () => {
+./packages/storage/src/tagService.test.ts:129:      const created = createTag(db, { name: 'Old Name', slug: 'test' });
+./packages/storage/src/tagService.test.ts:133:      expect(updated.slug).toBe('test'); // unchanged
+./packages/storage/src/tagService.test.ts:136:    it('updates tag slug', () => {
+./packages/storage/src/tagService.test.ts:137:      const created = createTag(db, { name: 'Test', slug: 'old-slug' });
+./packages/storage/src/tagService.test.ts:138:      const updated = updateTag(db, created.id, { slug: 'new-slug' });
+./packages/storage/src/tagService.test.ts:140:      expect(updated.slug).toBe('new-slug');
+./packages/storage/src/tagService.test.ts:142:      // Old slug should no longer work
+./packages/storage/src/tagService.test.ts:143:      expect(getTagBySlug(db, 'old-slug')).toBeNull();
+./packages/storage/src/tagService.test.ts:144:      expect(getTagBySlug(db, 'new-slug')).not.toBeNull();
+./packages/storage/src/tagService.test.ts:148:      const created = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:157:        slug: 'test',
+./packages/storage/src/tagService.test.ts:186:    it('throws TAG_SLUG_EXISTS when changing to existing slug', () => {
+./packages/storage/src/tagService.test.ts:187:      createTag(db, { name: 'First', slug: 'first' });
+./packages/storage/src/tagService.test.ts:188:      const second = createTag(db, { name: 'Second', slug: 'second' });
+./packages/storage/src/tagService.test.ts:190:      expect(() => updateTag(db, second.id, { slug: 'first' })).toThrow(TagServiceError);
+./packages/storage/src/tagService.test.ts:192:        updateTag(db, second.id, { slug: 'first' });
+./packages/storage/src/tagService.test.ts:201:      const created = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:218:      const created = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:237:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:265:      createTag(db, { name: 'Tag A', slug: 'tag-a' });
+./packages/storage/src/tagService.test.ts:266:      createTag(db, { name: 'Tag B', slug: 'tag-b' });
+./packages/storage/src/tagService.test.ts:274:      const tag1 = createTag(db, { name: 'Popular', slug: 'popular' });
+./packages/storage/src/tagService.test.ts:275:      createTag(db, { name: 'Unused', slug: 'unused' }); // Unused tag for count testing
+./packages/storage/src/tagService.test.ts:286:      const popular = tags.find((t) => t.slug === 'popular');
+./packages/storage/src/tagService.test.ts:287:      const unused = tags.find((t) => t.slug === 'unused');
+./packages/storage/src/tagService.test.ts:294:      createTag(db, { name: 'Zebra', slug: 'zebra' });
+./packages/storage/src/tagService.test.ts:295:      createTag(db, { name: 'Alpha', slug: 'alpha' });
+./packages/storage/src/tagService.test.ts:296:      createTag(db, { name: 'Beta', slug: 'beta' });
+./packages/storage/src/tagService.test.ts:306:      const tag1 = createTag(db, { name: 'Rare', slug: 'rare' });
+./packages/storage/src/tagService.test.ts:307:      const tag2 = createTag(db, { name: 'Popular', slug: 'popular' });
+./packages/storage/src/tagService.test.ts:308:      createTag(db, { name: 'Unused', slug: 'unused' }); // Unused tag for sorting test
+./packages/storage/src/tagService.test.ts:340:      const tag1 = createTag(db, { name: 'Tag 1', slug: 'tag-1' });
+./packages/storage/src/tagService.test.ts:341:      const tag2 = createTag(db, { name: 'Tag 2', slug: 'tag-2' });
+./packages/storage/src/tagService.test.ts:353:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:367:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:399:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:411:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:422:      const tag = createTag(db, { name: 'Test', slug: 'test' });
+./packages/storage/src/tagService.test.ts:444:      const tag1 = createTag(db, { name: 'Tag 1', slug: 'tag-1' });
+./packages/storage/src/tagService.test.ts:445:      const tag2 = createTag(db, { name: 'Tag 2', slug: 'tag-2' });
+./packages/storage/src/tagService.test.ts:453:      expect(tags.map((t) => t.slug).sort()).toEqual(['tag-1', 'tag-2']);
+./packages/storage/src/tagService.test.ts:459:        slug: 'test',
+./packages/storage/src/tagService.test.ts:488:    it('returns existing tag if slug exists', () => {
+./packages/storage/src/tagService.test.ts:489:      const existing = createTag(db, { name: 'TypeScript', slug: 'typescript' });
+./packages/storage/src/tagService.test.ts:497:    it('creates new tag if slug does not exist', () => {
+./packages/storage/src/tagService.test.ts:501:      expect(created.slug).toBe('new-tag');
+./packages/storage/src/tagService.test.ts:505:    it('uses slug as name if name not provided', () => {
+./packages/design-system/src/components/CommandPalette/CommandPaletteInput.tsx:52:          aria-label="Search commands"
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useRefSuggestion.tsx:97:      command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useRefSuggestion.tsx:114:                editor.commands.insertContent({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useRefSuggestion.tsx:127:          editor.commands.insertContent({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useRefSuggestion.tsx:142:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useRefSuggestion.tsx:156:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/TagNode/useTagSuggestion.tsx:64:      command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/TagNode/useTagSuggestion.tsx:93:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/TagNode/useTagSuggestion.tsx:106:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/mocks/index.ts:2:// This module provides mock data for slash commands, wiki-links, and tags
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:21: * Represents a slash command available in the editor.
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:24:  /** Unique identifier for the command */
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:28:  /** Brief description of what the command does */
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:32:  /** Search keywords that trigger this command */
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:34:  /** Action identifier for executing the command */
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:39: * Mock slash commands for the InteractiveEditor.
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:40: * These power the slash command menu that appears when typing "/".
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:175: * Filter commands by search query.
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:185:  return mockCommands.filter((command) => {
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:187:    if (command.label.toLowerCase().includes(lowerQuery)) {
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:192:    if (command.description.toLowerCase().includes(lowerQuery)) {
+./packages/design-system/src/components/InteractiveEditor/mocks/mockCommands.ts:197:    return command.keywords.some((keyword) => keyword.toLowerCase().includes(lowerQuery));
+./packages/design-system/src/components/CommandPalette/CommandPalette.tsx:6: * CommandPalette - Root container for the command palette.
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/RefSuggestion.tsx:31:        command: () => {
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/RefSuggestion.tsx:32:          // Default no-op; actual command should be provided via options
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useMentionSuggestion.tsx:87:      command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useMentionSuggestion.tsx:104:                editor.commands.insertContent({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useMentionSuggestion.tsx:117:          editor.commands.insertContent({
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useMentionSuggestion.tsx:132:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/useMentionSuggestion.tsx:146:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/MentionSuggestion.tsx:31:        command: () => {
+./packages/design-system/src/components/InteractiveEditor/extensions/RefNode/MentionSuggestion.tsx:32:          // Default no-op; actual command should be provided via options
+./packages/storage/src/dailyNoteService.ts:216: * Resolve a DailyNote slug to a DailyNote.
+./packages/storage/src/dailyNoteService.ts:219: * @param slug - Slug in format "daily/YYYY-MM-DD"
+./packages/storage/src/dailyNoteService.ts:220: * @returns DailyNote or null if not found or invalid slug
+./packages/storage/src/dailyNoteService.ts:222:export function getDailyNoteBySlug(db: TypenoteDb, slug: string): DailyNote | null {
+./packages/storage/src/dailyNoteService.ts:223:  // Parse slug format: daily/YYYY-MM-DD
+./packages/storage/src/dailyNoteService.ts:224:  const match = slug.match(/^daily\/(\d{4}-\d{2}-\d{2})$/);
+./packages/storage/src/dailyNoteService.ts:252: * Generate a slug for a DailyNote.
+./packages/storage/src/dailyNoteService.ts:254: * @param dailyNote - The DailyNote to generate slug for
+./packages/storage/src/dailyNoteService.test.ts:149:    it('resolves daily/YYYY-MM-DD slug to DailyNote', () => {
+./packages/storage/src/dailyNoteService.test.ts:167:    it('returns null for invalid slug format', () => {
+./packages/storage/src/dailyNoteService.test.ts:177:    it('generates slug from DailyNote', () => {
+./packages/storage/src/dailyNoteService.test.ts:181:      const slug = getDailyNoteSlug(dailyNote);
+./packages/storage/src/dailyNoteService.test.ts:183:      expect(slug).toBe('daily/2024-01-15');
+./packages/storage/src/objectService.test.ts:847:      const tag1 = createTag(db, { name: 'TypeScript', slug: 'typescript' });
+./packages/storage/src/objectService.test.ts:848:      const tag2 = createTag(db, { name: 'React', slug: 'react' });
+./packages/storage/src/objectService.test.ts:856:      expect(result?.tags.map((t) => t.slug).sort()).toEqual(['react', 'typescript']);
+./packages/storage/src/objectService.test.ts:865:        slug: 'important',
+./packages/storage/src/schema.ts:176:    slug: text('slug').notNull().unique(), // URL-safe identifier (e.g., "project-alpha")
+./packages/storage/src/schema.ts:183:  (table) => [index('tags_slug_idx').on(table.slug)]
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:6:// Unique plugin key for slash command suggestions
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:11: * Execute a slash command action in the editor.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:12: * Maps action strings to TipTap commands.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:78:      console.warn(`Unknown slash command action: ${action}`);
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:93: * Triggers a command menu when the user types "/" in the editor.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:107:        command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommand.tsx:118:          // Execute the selected command
+./packages/storage/src/tagService.ts:46: * @throws TagServiceError with code TAG_SLUG_EXISTS if slug already taken
+./packages/storage/src/tagService.ts:49:  // Check if slug already exists
+./packages/storage/src/tagService.ts:50:  const existing = getTagBySlug(db, input.slug);
+./packages/storage/src/tagService.ts:52:    throw new TagServiceError('TAG_SLUG_EXISTS', `Tag with slug '${input.slug}' already exists`, {
+./packages/storage/src/tagService.ts:53:      slug: input.slug,
+./packages/storage/src/tagService.ts:65:      slug: input.slug,
+./packages/storage/src/tagService.ts:97:    slug: row.slug,
+./packages/storage/src/tagService.ts:107: * Get a tag by its slug.
+./packages/storage/src/tagService.ts:111:export function getTagBySlug(db: TypenoteDb, slug: string): Tag | null {
+./packages/storage/src/tagService.ts:112:  const row = db.select().from(tags).where(eq(tags.slug, slug)).get();
+./packages/storage/src/tagService.ts:121:    slug: row.slug,
+./packages/storage/src/tagService.ts:134: * @throws TagServiceError with code TAG_SLUG_EXISTS if new slug already taken
+./packages/storage/src/tagService.ts:143:  // If changing slug, check uniqueness
+./packages/storage/src/tagService.ts:144:  if (input.slug !== undefined && input.slug !== existing.slug) {
+./packages/storage/src/tagService.ts:145:    const conflicting = getTagBySlug(db, input.slug);
+./packages/storage/src/tagService.ts:147:      throw new TagServiceError('TAG_SLUG_EXISTS', `Tag with slug '${input.slug}' already exists`, {
+./packages/storage/src/tagService.ts:148:        slug: input.slug,
+./packages/storage/src/tagService.ts:160:  if (input.slug !== undefined) updates['slug'] = input.slug;
+./packages/storage/src/tagService.ts:228:        slug: tags.slug,
+./packages/storage/src/tagService.ts:257:      slug: row.slug,
+./packages/storage/src/tagService.ts:285:    slug: row.slug,
+./packages/storage/src/tagService.ts:419:      slug: tags.slug,
+./packages/storage/src/tagService.ts:439: * Find a tag by slug, or create it if it doesn't exist.
+./packages/storage/src/tagService.ts:442: * @param slug - The tag slug to find or create
+./packages/storage/src/tagService.ts:447:  slug: string,
+./packages/storage/src/tagService.ts:448:  options?: Omit<CreateTagInput, 'slug'>
+./packages/storage/src/tagService.ts:450:  const existing = getTagBySlug(db, slug);
+./packages/storage/src/tagService.ts:456:    name: options?.['name'] ?? slug,
+./packages/storage/src/tagService.ts:457:    slug,
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandMenu.tsx:16: * SlashCommandMenu - Dropdown menu component for slash command selection.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandMenu.tsx:18: * Displays filtered commands with icons, labels, and descriptions.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandMenu.tsx:77:          <p className="text-sm text-muted-foreground">No commands found</p>
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandMenu.tsx:92:              data-testid={`slash-command-${item.id}`}
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommand.tsx:27: * Hook to manage slash command state for React components.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommand.tsx:56:      command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommand.tsx:67:        // Execute the selected command
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommand.tsx:75:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommand.tsx:88:              props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandPopup.tsx:14: * SlashCommandPopup - Positioned popup for the slash command menu.
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/SlashCommandPopup.tsx:58:        data-testid="slash-command-menu"
+./packages/design-system/src/components/PropertyTags/PropertyTags.stories.tsx:92:    const tag = prompt('Enter tag name:');
+./packages/design-system/src/components/PropertyTags/PropertyTags.stories.tsx:124:    const genre = prompt('Add genre:');
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:16:  command: ((item: SlashCommand) => void) | null;
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:38:    command: ({
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:49:      // Execute the selected command
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:56:          const command = (item: SlashCommand) => {
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:57:            props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:64:            command,
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:69:          const command = (item: SlashCommand) => {
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:70:            props.command(item);
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:77:            command,
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:87:              command: null,
+./packages/design-system/src/components/InteractiveEditor/extensions/SlashCommand/useSlashCommandSuggestion.tsx:104:            command: null,

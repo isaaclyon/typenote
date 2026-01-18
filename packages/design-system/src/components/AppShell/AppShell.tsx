@@ -35,6 +35,8 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
       rightSidebarWidthStorageKey,
       defaultLeftCollapsed = false,
       defaultRightCollapsed = false,
+      leftSidebarHasTitleBarPadding = false,
+      rightSidebarHasTitleBarPadding = false,
       className,
     },
     ref
@@ -74,6 +76,7 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
               collapsed={leftState.collapsed}
               onClick={leftState.toggle}
               side="left"
+              hasTitleBarPadding={leftSidebarHasTitleBarPadding}
             />
             {/* Resize handle - only when expanded */}
             {!leftState.collapsed && (
@@ -104,6 +107,7 @@ const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
               collapsed={rightState.collapsed}
               onClick={rightState.toggle}
               side="right"
+              hasTitleBarPadding={rightSidebarHasTitleBarPadding}
             />
             {/* Resize handle - only when expanded */}
             {!rightState.collapsed && (

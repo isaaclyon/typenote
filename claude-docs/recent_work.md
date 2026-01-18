@@ -58,6 +58,40 @@ packages/design-system/src/
 
 ---
 
+## Latest Session (2026-01-18 - Sidebar Consolidation + Semantic Tokens)
+
+Consolidated legacy Sidebar/RightSidebar into TypeNoteSidebar + shadcn frames while keeping AppShell as contextual demo.
+
+**What was accomplished:**
+
+- **TypeNote Sidebar Frames**
+  - Added `TypeNoteSidebarFrame` and `TypeNoteRightSidebarFrame`.
+  - Added tests for the new frames and AppShell frame wrapping.
+- **AppShell Integration**
+  - AppShell now wraps left/right slots in the new frames.
+  - Added props to pass title‑bar padding and className to left sidebar frame.
+- **Desktop Integration**
+  - Updated `LeftSidebar` to render content only (header/content/footer).
+  - Updated `PropertiesPanel` + `DailyNoteLayout` to use new right sidebar frame.
+  - Added TypeNoteSidebar pinned section (drag + drop) and wired into LeftSidebar.
+- **Cleanup**
+  - Removed legacy `Sidebar/*` and `RightSidebar/*` components + exports.
+  - Updated AppShell stories to use new TypeNoteSidebar primitives.
+- **Semantic Colors**
+  - Replaced `gray-*`/`bg-white` with semantic tokens in touched stories.
+
+**Outstanding (explicit):**
+
+- Verify collapse button alignment and header spacing in Ladle + desktop app.
+- Decide whether to delete unused `DailyNoteHeader` and `EditorPreview` components.
+
+**Notes:**
+
+- Audit rerun: 39/41 used, unused = `DailyNoteHeader`, `EditorPreview`.
+- Auto-review warnings about `hasTitleBarPadding` prop were already resolved in worktree.
+
+---
+
 ## Previous Session (2026-01-17 evening - Dark Mode Toggle Bug Fix)
 
 Fixed critical bug where dark mode toggle in settings didn't apply theme changes to the UI.
