@@ -48,13 +48,20 @@ function createTask(
 }
 
 function getTodayDateKey(): string {
-  return new Date().toISOString().split('T')[0] ?? '';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function getDateKey(daysFromToday: number): string {
   const date = new Date();
   date.setDate(date.getDate() + daysFromToday);
-  return date.toISOString().split('T')[0] ?? '';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 function toDatetime(dateKey: string, time = '12:00:00.000Z'): string {

@@ -150,8 +150,11 @@ export function getOrCreateDailyNoteByDate(db: TypenoteDb, dateKey: string): Get
  * @returns Object with created flag and the DailyNote
  */
 export function getOrCreateTodayDailyNote(db: TypenoteDb): GetOrCreateResult {
-  const isoString = new Date().toISOString();
-  const today = isoString.slice(0, 10); // YYYY-MM-DD (first 10 chars)
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const today = `${year}-${month}-${day}`;
   return getOrCreateDailyNoteByDate(db, today);
 }
 

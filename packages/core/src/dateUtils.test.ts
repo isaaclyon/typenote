@@ -89,7 +89,11 @@ describe('dateUtils', () => {
 
     it('matches current date', () => {
       const today = getTodayDateKey();
-      const expected = new Date().toISOString().slice(0, 10);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const expected = `${year}-${month}-${day}`;
       expect(today).toBe(expected);
     });
   });
