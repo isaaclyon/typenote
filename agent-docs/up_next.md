@@ -10,23 +10,24 @@
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
 - ✅ Documentation preserved: agent-docs/to-extract/skills/design-principles/, /docs/system/
 - ✅ Ladle configured and ready
-- ❌ No component implementations (all deleted)
-- ❌ No stories (all deleted)
+- ✅ Button/Input/Label atoms implemented with stories
+- ✅ Checkbox atom + CheckboxField molecule implemented with stories
+- ✅ Focus styling updated to subtle outlines
 - ❌ Renderer is placeholder only (no sidebar, no editor, no navigation)
 
 ### Build Sequence
 
 Follow bottom-up approach as documented in `agent-docs/rules/design-system.md`:
 
-1. **Atoms** — Button, Input, Label, Badge, Skeleton
-2. **Molecules** — IconButton, SearchInput, Card
+1. **Atoms** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge, Skeleton
+2. **Molecules** — CheckboxField ✅, IconButton, SearchInput, Card
 3. **Organisms** — Sidebar, AppShell, InteractiveEditor
 
 ### Immediate Next Steps
 
-1. Run `pnpm --filter @typenote/design-system sandbox` to start Ladle
-2. Create first atom component (Button) with stories
-3. Test in Ladle before any desktop app integration
+1. Continue atoms: Badge, Skeleton
+2. Start molecules: IconButton, SearchInput
+3. Keep iterating in Ladle before desktop integration
 
 ### Reference
 
@@ -61,11 +62,12 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 ## Recently Completed
 
-| Feature                     | Date       | Commits   |
-| --------------------------- | ---------- | --------- |
-| Design System Full Reset    | 2026-01-18 | `3fdbd5d` |
-| InteractiveEditor wiki-link | 2026-01-18 | `f9f6602` |
-| shadcn Foundation Reset     | 2026-01-18 | `93b738d` |
+| Feature                              | Date       | Commits   |
+| ------------------------------------ | ---------- | --------- |
+| Design System Atoms + Focus Outlines | 2026-01-18 | `af21b05` |
+| Design System Full Reset             | 2026-01-18 | `3fdbd5d` |
+| InteractiveEditor wiki-link          | 2026-01-18 | `f9f6602` |
+| shadcn Foundation Reset              | 2026-01-18 | `93b738d` |
 
 Note: All features completed before 2026-01-18 were deleted in the full reset.
 See `recent_work.md` for historical milestones.

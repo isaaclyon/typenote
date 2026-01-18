@@ -1,6 +1,35 @@
 # Recent Work
 
-## Latest Session (2026-01-18 late night - Design System Full Reset)
+## Latest Session (2026-01-18 - Design System Atoms + Focus Outlines)
+
+### What was accomplished
+
+- Built Button/Input/Label atoms with Ladle stories
+- Added Checkbox atom + CheckboxField molecule for label/help alignment
+- Switched focus styling from glow rings to subtle outlines in tokens and docs
+- Fixed Ladle story glob to pick up design-system stories
+- Archived legacy planning docs into `docs/plans/archive/`
+
+### Key files changed
+
+- `packages/design-system/src/components/Button/*`
+- `packages/design-system/src/components/Input/*`
+- `packages/design-system/src/components/Label/*`
+- `packages/design-system/src/components/Checkbox/*`
+- `packages/design-system/src/components/CheckboxField/*`
+- `packages/design-system/src/lib/tokens.css`
+- `docs/system/README.md`
+- `packages/design-system/.ladle/config.mjs`
+
+### Commits
+
+- `af21b05` feat(design-system): add checkbox field components
+- `f8291a4` feat(design-system): add button and form atoms
+- `72b6a99` chore(docs): archive planning docs
+
+---
+
+## Previous Session (2026-01-18 late night - Design System Full Reset)
 
 **Full reset:** Deleted all design system component implementations while preserving documentation, tokens, and configuration.
 
