@@ -12,3 +12,9 @@ export type { CheckboxProps, CheckboxSize, CheckedState } from './Checkbox/index
 
 export { CheckboxField } from './CheckboxField/index.js';
 export type { CheckboxFieldProps } from './CheckboxField/index.js';
+
+export { Badge, badgeVariants } from './Badge/index.js';
+export type { BadgeProps, BadgeVariant, BadgeIntent, BadgeSize } from './Badge/index.js';
+
+export { Skeleton } from './Skeleton/index.js';
+export type { SkeletonProps } from './Skeleton/index.js';
