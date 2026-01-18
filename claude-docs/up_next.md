@@ -1,35 +1,41 @@
 # Up Next
 
-## shadcn Sidebar Integration
+## Design System Reset (shadcn Foundation)
 
 **Status:** Active (In Progress)
-**Plan:** `docs/plans/2026-01-18-sidebar-consolidation.md`
+**Plan:** `.claude/plans/iterative-wondering-kahn.md`
 
 ### Phase Progress (Updated 2026-01-18)
 
-- [x] Phase 1: Add Radix dependencies & CSS variables
-- [x] Phase 2: Add shadcn Sidebar primitives (17 components)
-- [x] Phase 2: Create Ladle stories matching existing Sidebar
-- [x] Phase 3: Create TypeNote Sidebar wrapper components (includes new frames + pinned section)
-- [x] Phase 4: Update AppShell to use TypeNoteSidebarFrame + TypeNoteRightSidebarFrame
-- [x] Phase 5: Update desktop app LeftSidebar + PropertiesPanel + DailyNoteLayout
-- [x] Phase 6: Cleanup (delete legacy Sidebar/RightSidebar, update exports)
-- [ ] Phase 7: Verify UI in Ladle + desktop app (collapse button alignment + header spacing)
-- [ ] Phase 8: Decide what to do with unused components (DailyNoteHeader, EditorPreview)
+- [x] Phase 1: Foundation — Create pre-reset tag, delete old code, initialize fresh shadcn structure
+- [x] Phase 2: Core Primitives — Button, Input, Dialog, Command, etc. with design tokens
+- [x] Phase 3: Layout Shell — AppShell, Sidebar, Router, IPC hooks
+- [ ] Phase 4: Core Views — Document Editor (TipTap), Type Browser (TanStack Table), Properties Panel
+- [ ] Phase 5: Features — Calendar, Command Palette, Settings, Daily Notes, Backlinks
 
-### Notes
+### Current State
 
-- Legacy Sidebar + RightSidebar components removed; new pinned section moved to TypeNoteSidebar.
-- AppShell now owns collapse/resize; TypeNoteSidebarFrame provides SidebarProvider + shell.
-- Sidebar collapse button now top-aligned with reserved header spacing.
-- Compare in Ladle: `Components/AppShell`, `Components/TypeNoteSidebar`, `Components/TypeNoteSidebar/PinnedSection`.
+- Electron app launches with working navigation shell
+- Sidebar shows types from IPC (useTypeCounts hook)
+- Routes: /notes, /notes/:objectId, /types/:typeKey, /calendar
+- Design tokens preserved (cornflower accent, warm grayscale, IBM Plex fonts)
+
+### Next Steps (Phase 4)
+
+1. Port TipTap integration from old InteractiveEditor
+2. Port TanStack Table for TypeBrowser
+3. Replace SuggestionPopup with shadcn Popover + Command
+
+### Reference
+
+Old code available via `pre-reset` git tag at commit `88eefdd`.
 
 ---
 
-## Design System Migration
+## Design System Migration (SUPERSEDED BY RESET)
 
-**Status:** Active
-**Tracking:** `docs/design-system-migration.md` — Full checklist with 33 components
+**Status:** ⚠️ Superseded — The design system reset deleted all old components and is rebuilding from scratch.
+**Note:** Previous tracking in `docs/design-system-migration.md` is no longer applicable.
 
 ### Tier 1 Complete ✅
 
@@ -72,10 +78,10 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 ---
 
-## UI/Design System - Organism Components
+## UI/Design System - Organism Components (SUPERSEDED BY RESET)
 
-**Status:** Active
-**Plan:** `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md`
+**Status:** ⚠️ Superseded — Replaced by Design System Reset above.
+**Note:** Old plan at `/Users/isaaclyon/.claude/plans/clever-snuggling-karp.md` no longer applicable.
 
 ### Completed
 

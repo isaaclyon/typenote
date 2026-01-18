@@ -1,15 +1,13 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RouterProvider } from 'react-router-dom';
-
-import { router } from './routes/index.js';
 import { queryClient } from './lib/queryClient.js';
-import { ThemeProvider } from './providers/ThemeProvider.js';
-import './index.css';
+import { router } from './lib/router.js';
+import './styles.css';
 
 const rootElement = document.getElementById('root');
+
 if (!rootElement) {
   throw new Error('Root element not found');
 }
@@ -17,11 +15,7 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-        {/* DevTools only in development */}
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-      </ThemeProvider>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   </StrictMode>
 );

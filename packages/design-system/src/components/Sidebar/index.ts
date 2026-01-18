@@ -1,11 +1,8 @@
-export { Sidebar } from './Sidebar.js';
-export { SidebarSection } from './SidebarSection.js';
-export { SidebarSearchTrigger } from './SidebarSearchTrigger.js';
-export { SidebarCalendarButton } from './SidebarCalendarButton.js';
-export { SidebarTypesList } from './SidebarTypesList.js';
-export { SidebarTypeItem } from './SidebarTypeItem.js';
-export { SidebarActionButton } from './SidebarActionButton.js';
-export { SidebarNewTypeButton } from './SidebarNewTypeButton.js';
-export { SidebarPinnedItem } from './SidebarPinnedItem.js';
-export { SidebarPinnedSection } from './SidebarPinnedSection.js';
-export type * from './types.js';
+export {
+  Sidebar,
+  SidebarSection,
+  SidebarItem,
+  type SidebarProps,
+  type SidebarSectionProps,
+  type SidebarItemProps,
+} from './Sidebar.js';

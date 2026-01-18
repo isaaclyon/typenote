@@ -1,133 +1,75 @@
 import * as React from 'react';
-import { cn } from '../../utils/cn.js';
-import { useResizableSidebar } from './useResizableSidebar.js';
-import { SidebarCollapseButton } from './SidebarCollapseButton.js';
-import { ResizeHandle } from './ResizeHandle.js';
-import { ContentArea } from './ContentArea.js';
-import type { AppShellProps } from './types.js';
+import { cn } from '../../lib/utils.js';
+
+export interface AppShellProps {
+  /** Left sidebar content */
+  sidebar?: React.ReactNode;
+  /** Right panel content (e.g., properties panel) */
+  rightPanel?: React.ReactNode;
+  /** Main content area */
+  children: React.ReactNode;
+  /** Whether left sidebar is collapsed */
+  sidebarCollapsed?: boolean;
+  /** Whether right panel is collapsed */
+  rightPanelCollapsed?: boolean;
+  /** Additional className */
+  className?: string;
+}
 
 /**
- * Unified layout component that orchestrates a 3-column responsive layout
- * with collapsible sidebars.
+ * Three-column layout shell for the application.
  *
- * Uses render props pattern for sidebars, passing collapsed state so
- * sidebar content can respond appropriately.
+ * Provides:
+ * - Fixed-width left sidebar (256px, collapses to 0)
+ * - Flexible main content area
+ * - Fixed-width right panel (320px, collapses to 0)
  *
  * @example
  * <AppShell
- *   leftSidebar={({ collapsed }) => <Sidebar collapsed={collapsed}>...</Sidebar>}
- *   rightSidebar={({ collapsed }) => <RightSidebar collapsed={collapsed}>...</RightSidebar>}
- *   leftSidebarStorageKey="app.left.collapsed"
- *   rightSidebarStorageKey="app.right.collapsed"
+ *   sidebar={<Sidebar />}
+ *   rightPanel={<PropertiesPanel />}
+ *   sidebarCollapsed={false}
+ *   rightPanelCollapsed={true}
  * >
- *   <ContentArea>Your content here</ContentArea>
+ *   <MainContent />
  * </AppShell>
  */
-const AppShell = React.forwardRef<HTMLDivElement, AppShellProps>(
-  (
-    {
-      leftSidebar,
-      rightSidebar,
-      children,
-      leftSidebarStorageKey,
-      rightSidebarStorageKey,
-      leftSidebarWidthStorageKey,
-      rightSidebarWidthStorageKey,
-      defaultLeftCollapsed = false,
-      defaultRightCollapsed = false,
-      leftSidebarHasTitleBarPadding = false,
-      rightSidebarHasTitleBarPadding = false,
-      className,
-    },
-    ref
-  ) => {
-    const leftState = useResizableSidebar({
-      side: 'left',
-      collapsedStorageKey: leftSidebarStorageKey,
-      widthStorageKey: leftSidebarWidthStorageKey,
-      defaultCollapsed: defaultLeftCollapsed,
-    });
+export function AppShell({
+  sidebar,
+  rightPanel,
+  children,
+  sidebarCollapsed = false,
+  rightPanelCollapsed = true,
+  className,
+}: AppShellProps) {
+  return (
+    <div className={cn('flex h-screen w-full overflow-hidden bg-background', className)}>
+      {/* Left Sidebar */}
+      {sidebar && (
+        <aside
+          className={cn(
+            'h-full flex-shrink-0 border-r border-border bg-sidebar transition-[width] duration-200 ease-out overflow-hidden',
+            sidebarCollapsed ? 'w-0' : 'w-64'
+          )}
+        >
+          <div className="h-full w-64">{sidebar}</div>
+        </aside>
+      )}
 
-    const rightState = useResizableSidebar({
-      side: 'right',
-      collapsedStorageKey: rightSidebarStorageKey,
-      widthStorageKey: rightSidebarWidthStorageKey,
-      defaultCollapsed: defaultRightCollapsed,
-    });
+      {/* Main Content */}
+      <main className="flex-1 overflow-hidden">{children}</main>
 
-    return (
-      <div ref={ref} className={cn('flex h-full', className)}>
-        {/* Left Sidebar Wrapper */}
-        {leftSidebar && (
-          <div
-            className={cn(
-              'group relative flex-shrink-0', // 'group' enables hover-reveal for collapse button
-              // Disable transition during resize for responsive drag
-              !leftState.isResizing && 'transition-[width] duration-200 ease-out'
-            )}
-            style={{ width: leftState.width }}
-          >
-            {/* Sidebar content - overflow hidden for smooth transition */}
-            <div className="h-full overflow-hidden">
-              {leftSidebar({ collapsed: leftState.collapsed })}
-            </div>
-            {/* Collapse button on inner edge */}
-            <SidebarCollapseButton
-              collapsed={leftState.collapsed}
-              onClick={leftState.toggle}
-              side="left"
-              hasTitleBarPadding={leftSidebarHasTitleBarPadding}
-            />
-            {/* Resize handle - only when expanded */}
-            {!leftState.collapsed && (
-              <ResizeHandle
-                side="left"
-                isResizing={leftState.isResizing}
-                onResizeStart={leftState.handleResizeStart}
-              />
-            )}
-          </div>
-        )}
-
-        {/* Main Content */}
-        <ContentArea>{children}</ContentArea>
-
-        {/* Right Sidebar Wrapper */}
-        {rightSidebar && (
-          <div
-            className={cn(
-              'group relative flex-shrink-0', // 'group' enables hover-reveal for collapse button
-              // Disable transition during resize for responsive drag
-              !rightState.isResizing && 'transition-[width] duration-200 ease-out'
-            )}
-            style={{ width: rightState.width }}
-          >
-            {/* Collapse button on inner edge */}
-            <SidebarCollapseButton
-              collapsed={rightState.collapsed}
-              onClick={rightState.toggle}
-              side="right"
-              hasTitleBarPadding={rightSidebarHasTitleBarPadding}
-            />
-            {/* Resize handle - only when expanded */}
-            {!rightState.collapsed && (
-              <ResizeHandle
-                side="right"
-                isResizing={rightState.isResizing}
-                onResizeStart={rightState.handleResizeStart}
-              />
-            )}
-            {/* Sidebar content - overflow hidden for smooth transition */}
-            <div className="h-full overflow-hidden">
-              {rightSidebar({ collapsed: rightState.collapsed })}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-);
-
-AppShell.displayName = 'AppShell';
-
-export { AppShell };
+      {/* Right Panel */}
+      {rightPanel && (
+        <aside
+          className={cn(
+            'h-full flex-shrink-0 border-l border-border bg-background transition-[width] duration-200 ease-out overflow-hidden',
+            rightPanelCollapsed ? 'w-0' : 'w-80'
+          )}
+        >
+          <div className="h-full w-80">{rightPanel}</div>
+        </aside>
+      )}
+    </div>
+  );
+}

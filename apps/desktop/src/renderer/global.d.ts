@@ -41,10 +41,17 @@ type IpcOutcome<T> = IpcSuccess<T> | IpcError;
 
 interface TypenoteAPI {
   version: string;
+
+  // Document operations
   getDocument: (objectId: string) => Promise<IpcOutcome<GetDocumentResult>>;
   applyBlockPatch: (request: unknown) => Promise<IpcOutcome<ApplyBlockPatchResult>>;
+
+  // Daily note operations
   getOrCreateTodayDailyNote: () => Promise<IpcOutcome<GetOrCreateResult>>;
   getOrCreateDailyNoteByDate: (dateKey: string) => Promise<IpcOutcome<GetOrCreateResult>>;
+  getDatesWithDailyNotes: (startDate: string, endDate: string) => Promise<IpcOutcome<string[]>>;
+
+  // Object operations
   listObjects: (options?: {
     typeKey?: string;
     includeProperties?: boolean;
@@ -60,19 +67,12 @@ interface TypenoteAPI {
     >
   >;
   getObject: (objectId: string) => Promise<IpcOutcome<ObjectDetails | null>>;
-  getObjectTypeByKey: (typeKey: string) => Promise<IpcOutcome<ObjectType | null>>;
-  searchBlocks: (
-    query: string,
-    filters?: { objectId?: string; limit?: number }
-  ) => Promise<IpcOutcome<SearchResult[]>>;
-  getBacklinks: (objectId: string) => Promise<IpcOutcome<BacklinkResult[]>>;
-  getUnlinkedMentions: (objectId: string) => Promise<IpcOutcome<UnlinkedMentionResult[]>>;
   createObject: (
     typeKey: string,
     title: string,
     properties?: Record<string, unknown>
   ) => Promise<IpcOutcome<CreatedObject>>;
-
+  duplicateObject: (objectId: string) => Promise<IpcOutcome<CreatedObject>>;
   updateObject: (request: {
     objectId: string;
     baseDocVersion?: number;
@@ -83,6 +83,69 @@ interface TypenoteAPI {
     };
     propertyMapping?: Record<string, string>;
   }) => Promise<IpcOutcome<{ docVersion: number }>>;
+
+  // Object type operations
+  getObjectTypeByKey: (typeKey: string) => Promise<IpcOutcome<ObjectType | null>>;
+  listObjectTypes: (options?: {
+    builtInOnly?: boolean;
+    customOnly?: boolean;
+  }) => Promise<IpcOutcome<ObjectType[]>>;
+  createObjectType: (input: {
+    key: string;
+    name: string;
+    icon?: string;
+    color?: string;
+    pluralName?: string;
+    description?: string;
+  }) => Promise<IpcOutcome<ObjectType>>;
+  updateObjectType: (
+    id: string,
+    input: {
+      name?: string;
+      icon?: string | null;
+      color?: string | null;
+      pluralName?: string | null;
+      description?: string | null;
+    }
+  ) => Promise<IpcOutcome<ObjectType>>;
+  deleteObjectType: (id: string) => Promise<IpcOutcome<void>>;
+
+  // Search operations
+  searchBlocks: (
+    query: string,
+    filters?: { objectId?: string; limit?: number }
+  ) => Promise<IpcOutcome<SearchResult[]>>;
+  getBacklinks: (objectId: string) => Promise<IpcOutcome<BacklinkResult[]>>;
+  getUnlinkedMentions: (objectId: string) => Promise<IpcOutcome<UnlinkedMentionResult[]>>;
+
+  // Tag operations
+  createTag: (input: {
+    name: string;
+    slug: string;
+    color?: string | null;
+    icon?: string | null;
+    description?: string;
+  }) => Promise<IpcOutcome<Tag>>;
+  getTag: (tagId: string) => Promise<IpcOutcome<Tag | null>>;
+  updateTag: (
+    tagId: string,
+    input: {
+      name?: string;
+      slug?: string;
+      color?: string | null;
+      icon?: string | null;
+      description?: string | null;
+    }
+  ) => Promise<IpcOutcome<Tag>>;
+  deleteTag: (tagId: string) => Promise<IpcOutcome<void>>;
+  listTags: (options?: {
+    includeUsageCount?: boolean;
+    sortBy?: string;
+    sortOrder?: string;
+  }) => Promise<IpcOutcome<Tag[]>>;
+  assignTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<AssignTagsResult>>;
+  removeTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<RemoveTagsResult>>;
+  getObjectTags: (objectId: string) => Promise<IpcOutcome<Tag[]>>;
 
   // Attachment operations
   uploadAttachment: (input: {
@@ -100,9 +163,6 @@ interface TypenoteAPI {
   // Calendar operations
   getEventsInDateRange: (startDate: string, endDate: string) => Promise<IpcOutcome<CalendarItem[]>>;
 
-  // Daily note operations
-  getDatesWithDailyNotes: (startDate: string, endDate: string) => Promise<IpcOutcome<string[]>>;
-
   // Recent objects operations
   recordView: (objectId: string) => Promise<IpcOutcome<void>>;
   getRecentObjects: (limit?: number) => Promise<IpcOutcome<RecentObjectSummary[]>>;
@@ -114,20 +174,17 @@ interface TypenoteAPI {
   getPinnedObjects: () => Promise<IpcOutcome<PinnedObjectSummary[]>>;
   reorderPinnedObjects: (orderedIds: string[]) => Promise<IpcOutcome<void>>;
 
-  // Tag operations
-  listTags: (options?: {
-    includeUsageCount?: boolean;
-    sortBy?: string;
-    sortOrder?: string;
-  }) => Promise<IpcOutcome<Tag[]>>;
-  assignTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<AssignTagsResult>>;
-  removeTags: (objectId: string, tagIds: string[]) => Promise<IpcOutcome<RemoveTagsResult>>;
-  getObjectTags: (objectId: string) => Promise<IpcOutcome<Tag[]>>;
-
   // Settings operations
   getSettings: () => Promise<IpcOutcome<UserSettings>>;
   updateSettings: (updates: Partial<UserSettings>) => Promise<IpcOutcome<void>>;
   resetSettings: () => Promise<IpcOutcome<void>>;
+
+  // Trash operations
+  listDeletedObjects: (options?: {
+    limit?: number;
+    typeKey?: string;
+  }) => Promise<IpcOutcome<ObjectSummary[]>>;
+  restoreObject: (objectId: string) => Promise<IpcOutcome<void>>;
 
   // Events
   onEvent: (callback: (event: TypenoteEvent) => void) => () => void;

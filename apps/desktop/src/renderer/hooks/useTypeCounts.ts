@@ -1,44 +1,44 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
-interface UseTypeCountsResult {
-  counts: Record<string, number>;
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
+interface TypeCount {
+  typeKey: string;
+  typeName: string;
+  typeIcon: string | null;
+  typeColor: string | null;
+  count: number;
 }
 
 /**
- * Hook that fetches all objects and computes counts grouped by typeKey.
- * Uses TanStack Query for caching and automatic refetching.
+ * Hook to fetch type counts for sidebar navigation.
+ * Returns list of types with their object counts.
  */
-export function useTypeCounts(): UseTypeCountsResult {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading, error } = useQuery({
+export function useTypeCounts() {
+  return useQuery({
     queryKey: queryKeys.typeCounts(),
-    queryFn: async () => {
-      const objects = await adaptIpcOutcome(window.typenoteAPI.listObjects());
+    queryFn: async (): Promise<TypeCount[]> => {
+      // Get all object types
+      const types = await adaptIpcOutcome(window.typenoteAPI.listObjectTypes());
 
-      // Group by typeKey and count
-      const grouped: Record<string, number> = {};
-      for (const obj of objects) {
-        grouped[obj.typeKey] = (grouped[obj.typeKey] ?? 0) + 1;
-      }
-      return grouped;
+      // Get counts per type by listing objects
+      const counts = await Promise.all(
+        types.map(async (type) => {
+          const objects = await adaptIpcOutcome(
+            window.typenoteAPI.listObjects({ typeKey: type.key })
+          );
+          return {
+            typeKey: type.key,
+            typeName: type.name,
+            typeIcon: type.icon,
+            typeColor: type.color,
+            count: Array.isArray(objects) ? objects.length : 0,
+          };
+        })
+      );
+
+      return counts;
     },
+    staleTime: 30 * 1000, // 30 seconds
   });
-
-  const refetch = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.typeCounts() });
-  }, [queryClient]);
-
-  return {
-    counts: data ?? {},
-    isLoading,
-    error: error ? String(error instanceof Error ? error.message : error) : null,
-    refetch,
-  };
 }

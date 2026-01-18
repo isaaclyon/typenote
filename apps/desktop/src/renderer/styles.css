@@ -1,0 +1,8 @@
+/**
+ * TypeNote Renderer Styles
+ *
+ * Imports design system tokens and adds any app-specific styles.
+ */
+@import '@typenote/design-system/tokens.css';
+
+/* App-specific styles can be added here */

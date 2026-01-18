@@ -1,64 +1,59 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - shadcn Sidebar Integration Phase 1-2)
+## Latest Session (2026-01-18 evening - Design System Reset Phase 1-3)
 
-Started integration of shadcn's Sidebar component into TypeNote's design system, following sidebar-15 pattern (left + right sidebars, non-inset).
+**Major pivot:** Deleted `packages/design-system/` and `apps/desktop/src/renderer/` entirely and rebuilt from scratch using shadcn/ui as the primitive layer. Previous incremental approach (shadcn Sidebar Integration) was abandoned — clean break needed due to 4 parallel sidebar implementations and ~20% of commits being fixes.
 
 **What was accomplished:**
 
-- **Phase 1: Dependencies & CSS Variables**
-  - Added Radix dependencies: `@radix-ui/react-{collapsible,dialog,separator,tooltip}`
-  - Added sidebar CSS variables to `tokens/index.css` (width, colors, light/dark mode)
+### Phase 1: Foundation
 
-- **Phase 2: shadcn Sidebar Primitives**
-  - Created `useIsMobile` hook for responsive behavior
-  - Created supporting components: `Sheet`, `Tooltip`, `Separator`
-  - Created complete shadcn Sidebar folder with 17 components:
-    - Context: `SidebarProvider`, `useSidebar`
-    - Layout: `Sidebar`, `SidebarContent`, `SidebarHeader`, `SidebarFooter`, `SidebarInset`
-    - Groups: `SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarGroupContent`
-    - Menu: `SidebarMenu`, `SidebarMenuItem`, `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuBadge`
-    - Submenu: `SidebarMenuSub`, `SidebarMenuSubItem`, `SidebarMenuSubButton`
-    - Controls: `SidebarRail`, `SidebarTrigger`, `SidebarSeparator`
+- Created `pre-reset` git tag at `88eefdd` for safety reference
+- Deleted both directories completely (42+ components, 48 stories)
+- Initialized fresh `packages/design-system/` with shadcn structure
+- Ported CSS tokens from old `tokens/index.css` to `src/lib/tokens.css`
+- Set up Ladle with proper theming
+- Created minimal renderer with empty App.tsx
 
-- **Stories created matching existing Sidebar 1:1:**
-  - Same mock data (`MOCK_TYPES`, `MOCK_MANY_TYPES`)
-  - TypeNote-style wrapper components inline (search trigger, calendar button, type item, etc.)
-  - Stories: Default, AllVariants, Interactive, WithManyItems, Empty, Loading, TypeItemWithActions, WithCollapsibleTrigger, StateDisplay
+### Phase 2: Core Primitives
 
-**Key adaptations from shadcn reference:**
+Created shadcn-style UI components:
 
-- localStorage instead of cookies (Electron app)
-- TypeNote design tokens (`--color-sidebar-*`)
-- Export naming: `ShadcnSidebar` alias to avoid conflict with legacy `Sidebar`
+- Button, Input, ScrollArea, Tooltip, Dialog
+- DropdownMenu, Separator, Checkbox, Switch
+- Card, Badge, Skeleton, Label, Command
 
-**Files created:**
+Fixed TypeScript error by adding `lib: ["ES2022", "DOM", "DOM.Iterable"]` to design-system tsconfig.
 
-```
-packages/design-system/src/
-├── hooks/useIsMobile.ts
-├── components/
-│   ├── Sheet/Sheet.tsx, index.ts
-│   ├── Tooltip/Tooltip.tsx, index.ts
-│   ├── Separator/Separator.tsx, index.ts
-│   └── ShadcnSidebar/
-│       ├── SidebarContext.tsx
-│       ├── Sidebar.tsx
-│       ├── SidebarContent.tsx, SidebarHeader.tsx, SidebarFooter.tsx
-│       ├── SidebarGroup.tsx
-│       ├── SidebarMenu.tsx, SidebarMenuSub.tsx
-│       ├── SidebarRail.tsx, SidebarSeparator.tsx
-│       ├── SidebarTrigger.tsx, SidebarInset.tsx
-│       ├── ShadcnSidebar.stories.tsx
-│       └── index.ts
-└── tokens/index.css (modified)
-```
+### Phase 3: Layout Shell
 
-**Status:** Uncommitted — Phases 3-5 pending (TypeNote wrappers, AppShell update, desktop app integration)
+- Created AppShell (3-column layout: sidebar, content, right panel)
+- Created Sidebar with SidebarSection and SidebarItem
+- Created HashRouter with routes (NotesView, TypesView, CalendarView)
+- Created IPC hooks (useTypeCounts, useSettings) using TanStack Query
+- Created RootLayout wiring AppShell + Sidebar + Outlet
+- Updated main.tsx with QueryClientProvider + RouterProvider
+
+**Key technical decisions:**
+
+- CVA (class-variance-authority) for variant management
+- Radix UI primitives for accessibility
+- TanStack Query for IPC data fetching
+- HashRouter for Electron file:// compatibility
+
+**Preserved from old system:**
+
+- Typography: IBM Plex Sans/Mono
+- Colors: Warm stone grayscale, cornflower accent (#6495ED)
+- Spacing: 4px grid
+
+**Status:** Uncommitted — Phase 4 (Core Views) pending. Electron launches with working shell.
+
+**Plan file:** `.claude/plans/iterative-wondering-kahn.md`
 
 ---
 
-## Latest Session (2026-01-18 - Sidebar Consolidation + Semantic Tokens)
+## Previous Session (2026-01-18 - Sidebar Consolidation + Semantic Tokens)
 
 Consolidated legacy Sidebar/RightSidebar into TypeNoteSidebar + shadcn frames while keeping AppShell as contextual demo.
 
