@@ -1,0 +1,35 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.ts"],
+      "ignore": ["docs/**"]
+    },
+    "apps/desktop": {
+      "vite": {
+        "config": ["vite.config.{js,ts,mjs,mts}"]
+      },
+      "entry": ["src/renderer/main.tsx"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignore": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+    },
+    "packages/storage": {
+      "ignore": ["src/**/*.test-helpers.ts"]
+    },
+    "packages/design-system": {
+      "entry": ["src/index.ts", "src/**/*.stories.tsx"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignore": ["src/**/mocks/**"]
+    },
+    "tests/e2e": {
+      "entry": ["**/*.spec.ts", "fixtures/**/*.ts"],
+      "project": ["**/*.ts"]
+    },
+    "tests/integration": {
+      "entry": ["**/*.test.ts", "helpers/**/*.ts"],
+      "project": ["**/*.ts"]
+    }
+  },
+  "ignoreDependencies": ["@fontsource/ibm-plex-mono", "@fontsource/ibm-plex-sans"],
+  "ignoreExportsUsedInFile": true
+}
