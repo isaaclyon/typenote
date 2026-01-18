@@ -1,5 +1,29 @@
 # Up Next
 
+## shadcn Sidebar Integration
+
+**Status:** Active (In Progress)
+**Plan:** Plan embedded in session transcript (2026-01-18)
+
+### Phase Progress
+
+- [x] Phase 1: Add Radix dependencies & CSS variables
+- [x] Phase 2: Add shadcn Sidebar primitives (17 components)
+- [x] Phase 2: Create Ladle stories matching existing Sidebar
+- [ ] Phase 3: Create TypeNote Sidebar wrapper components
+- [ ] Phase 4: Update AppShell to use SidebarProvider (remove drag-resize)
+- [ ] Phase 5: Update desktop app LeftSidebar
+- [ ] Phase 6: Cleanup (deprecate old Sidebar, update exports)
+
+### Notes
+
+- shadcn primitives exported as `ShadcnSidebar` (aliased) to avoid conflict with existing `Sidebar`
+- Uses localStorage instead of cookies for state persistence
+- Keyboard shortcut ⌘B works for toggling
+- Compare in Ladle: `Components/Sidebar/*` vs `Components/ShadcnSidebar/*`
+
+---
+
 ## Design System Migration
 
 **Status:** Active

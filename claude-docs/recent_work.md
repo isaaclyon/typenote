@@ -1,6 +1,106 @@
 # Recent Work
 
-## Latest Session (2026-01-17 - Daily Note Navigation Bug Fix)
+## Latest Session (2026-01-18 - shadcn Sidebar Integration Phase 1-2)
+
+Started integration of shadcn's Sidebar component into TypeNote's design system, following sidebar-15 pattern (left + right sidebars, non-inset).
+
+**What was accomplished:**
+
+- **Phase 1: Dependencies & CSS Variables**
+  - Added Radix dependencies: `@radix-ui/react-{collapsible,dialog,separator,tooltip}`
+  - Added sidebar CSS variables to `tokens/index.css` (width, colors, light/dark mode)
+
+- **Phase 2: shadcn Sidebar Primitives**
+  - Created `useIsMobile` hook for responsive behavior
+  - Created supporting components: `Sheet`, `Tooltip`, `Separator`
+  - Created complete shadcn Sidebar folder with 17 components:
+    - Context: `SidebarProvider`, `useSidebar`
+    - Layout: `Sidebar`, `SidebarContent`, `SidebarHeader`, `SidebarFooter`, `SidebarInset`
+    - Groups: `SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarGroupContent`
+    - Menu: `SidebarMenu`, `SidebarMenuItem`, `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuBadge`
+    - Submenu: `SidebarMenuSub`, `SidebarMenuSubItem`, `SidebarMenuSubButton`
+    - Controls: `SidebarRail`, `SidebarTrigger`, `SidebarSeparator`
+
+- **Stories created matching existing Sidebar 1:1:**
+  - Same mock data (`MOCK_TYPES`, `MOCK_MANY_TYPES`)
+  - TypeNote-style wrapper components inline (search trigger, calendar button, type item, etc.)
+  - Stories: Default, AllVariants, Interactive, WithManyItems, Empty, Loading, TypeItemWithActions, WithCollapsibleTrigger, StateDisplay
+
+**Key adaptations from shadcn reference:**
+
+- localStorage instead of cookies (Electron app)
+- TypeNote design tokens (`--color-sidebar-*`)
+- Export naming: `ShadcnSidebar` alias to avoid conflict with legacy `Sidebar`
+
+**Files created:**
+
+```
+packages/design-system/src/
+├── hooks/useIsMobile.ts
+├── components/
+│   ├── Sheet/Sheet.tsx, index.ts
+│   ├── Tooltip/Tooltip.tsx, index.ts
+│   ├── Separator/Separator.tsx, index.ts
+│   └── ShadcnSidebar/
+│       ├── SidebarContext.tsx
+│       ├── Sidebar.tsx
+│       ├── SidebarContent.tsx, SidebarHeader.tsx, SidebarFooter.tsx
+│       ├── SidebarGroup.tsx
+│       ├── SidebarMenu.tsx, SidebarMenuSub.tsx
+│       ├── SidebarRail.tsx, SidebarSeparator.tsx
+│       ├── SidebarTrigger.tsx, SidebarInset.tsx
+│       ├── ShadcnSidebar.stories.tsx
+│       └── index.ts
+└── tokens/index.css (modified)
+```
+
+**Status:** Uncommitted — Phases 3-5 pending (TypeNote wrappers, AppShell update, desktop app integration)
+
+---
+
+## Previous Session (2026-01-17 evening - Dark Mode Toggle Bug Fix)
+
+Fixed critical bug where dark mode toggle in settings didn't apply theme changes to the UI.
+
+**Root Cause:**
+
+- `useSettings` hook used isolated React state (`useState`)
+- Each component (ThemeProvider, SettingsModalWrapper) had its own instance
+- Settings updates in SettingsModalWrapper never propagated to ThemeProvider
+- QueryClientProvider was wrapped _inside_ ThemeProvider, preventing useSettings from working
+
+**Solution:**
+
+- Migrated `useSettings` hook to TanStack Query for shared state across components
+- Implemented optimistic updates with automatic rollback on error
+- Fixed provider order: QueryClientProvider must wrap ThemeProvider (not vice versa)
+- Added test IDs for E2E testing
+
+**Files changed:**
+
+- `apps/desktop/src/renderer/hooks/useSettings.ts` — Complete rewrite using TanStack Query
+- `apps/desktop/src/renderer/hooks/useSettings.test.ts` — Updated all 12 tests to use QueryClientProvider wrapper
+- `apps/desktop/src/renderer/main.tsx` — Fixed provider order (QueryClient wraps Theme)
+- `apps/desktop/src/renderer/components/LeftSidebar.tsx` — Added data-testid="settings-button"
+- `apps/desktop/src/renderer/components/SettingsModalWrapper.tsx` — Added data-testid="settings-color-mode-select"
+- `packages/design-system/.../SettingsModal.tsx` — Added data-testid="settings-modal"
+- `packages/design-system/.../Select.tsx` — Extended props to accept HTML attributes
+- `packages/design-system/.../SidebarActionButton.tsx` — Pass through HTML props
+- `packages/design-system/.../types.ts` — Extended SidebarActionButtonProps to accept ButtonHTMLAttributes
+- `tests/e2e/specs/theme.spec.ts` — New E2E test for dark mode toggle
+
+**Test Results:**
+
+- All 366 unit tests passing
+- Dark mode toggle verified working in manual testing
+
+**Commit:**
+
+- `7ba057c fix(settings): migrate useSettings to TanStack Query for shared state`
+
+---
+
+## Previous Session (2026-01-17 morning - Daily Note Navigation Bug Fix)
 
 Fixed visual noise bug where Daily Notes appeared in the "Created on" section of daily note navigation.
 

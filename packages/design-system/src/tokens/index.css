@@ -107,6 +107,18 @@
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
+
+  /* ========== Sidebar (shadcn pattern) ========== */
+  --sidebar-width: 16rem;
+  --sidebar-width-icon: 3rem;
+  --color-sidebar: var(--color-gray-50);
+  --color-sidebar-foreground: var(--color-gray-700);
+  --color-sidebar-primary: var(--color-accent-500);
+  --color-sidebar-primary-foreground: white;
+  --color-sidebar-accent: var(--color-accent-50);
+  --color-sidebar-accent-foreground: var(--color-accent-700);
+  --color-sidebar-border: var(--color-gray-200);
+  --color-sidebar-ring: var(--color-accent-500);
 }
 
 /* ========== DARK MODE OVERRIDES ========== */
@@ -161,6 +173,16 @@
   --color-violet-100: #3730a3;
   --color-violet-700: #c4b5fd;
   --color-violet-800: #ddd6fe;
+
+  /* Sidebar - Dark Mode */
+  --color-sidebar: var(--color-gray-50);
+  --color-sidebar-foreground: var(--color-gray-700);
+  --color-sidebar-primary: var(--color-accent-400);
+  --color-sidebar-primary-foreground: var(--color-gray-900);
+  --color-sidebar-accent: var(--color-accent-50);
+  --color-sidebar-accent-foreground: var(--color-accent-400);
+  --color-sidebar-border: var(--color-gray-200);
+  --color-sidebar-ring: var(--color-accent-400);
 }
 
 /* Focus ring adjustment for dark mode */
