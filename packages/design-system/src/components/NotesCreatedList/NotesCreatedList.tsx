@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { cn } from '../../utils/cn.js';
-import { ScrollArea } from '../ScrollArea/ScrollArea.js';
 import { Skeleton } from '../Skeleton/Skeleton.js';
 import { BacklinkItem } from '../BacklinkItem/BacklinkItem.js';
 
@@ -77,20 +76,18 @@ const NotesCreatedList = React.forwardRef<HTMLDivElement, NotesCreatedListProps>
 
         {/* Items list */}
         {!isLoading && items.length > 0 && (
-          <ScrollArea className="max-h-[200px]">
-            <ul role="list" className="space-y-2">
-              {items.map((item) => (
-                <li key={item.id} role="listitem">
-                  <BacklinkItem
-                    title={item.title}
-                    {...(item.typeIcon !== undefined && { typeIcon: item.typeIcon })}
-                    {...(item.typeColor !== undefined && { typeColor: item.typeColor })}
-                    {...(onItemClick && { onClick: () => onItemClick(item.id) })}
-                  />
-                </li>
-              ))}
-            </ul>
-          </ScrollArea>
+          <ul role="list" className="space-y-2">
+            {items.map((item) => (
+              <li key={item.id} role="listitem">
+                <BacklinkItem
+                  title={item.title}
+                  {...(item.typeIcon !== undefined && { typeIcon: item.typeIcon })}
+                  {...(item.typeColor !== undefined && { typeColor: item.typeColor })}
+                  {...(onItemClick && { onClick: () => onItemClick(item.id) })}
+                />
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     );

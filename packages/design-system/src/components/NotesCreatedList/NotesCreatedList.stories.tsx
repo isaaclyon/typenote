@@ -317,3 +317,30 @@ export const ResponsiveWidths: Story = () => {
 ResponsiveWidths.meta = {
   description: 'Shows how list items expand and more title text becomes visible at wider widths',
 };
+
+export const InFixedHeightContainer: Story = () => {
+  const manyItems = Array.from({ length: 20 }, (_, i) => ({
+    id: `item-${i}`,
+    title: `Page ${i + 1}`,
+    typeIcon: 'FileText',
+    typeColor: DEMO_TYPE_COLORS.notes,
+  }));
+
+  return (
+    <div
+      style={{ height: '400px', display: 'flex', flexDirection: 'column' }}
+      className="border border-gray-200"
+    >
+      <div className="p-4 border-b">
+        <MiniCalendar selectedDate={getTodayKey()} datesWithNotes={new Set()} />
+      </div>
+      <div className="flex-1 overflow-auto p-4">
+        <NotesCreatedList date={getTodayKey()} items={manyItems} />
+      </div>
+    </div>
+  );
+};
+InFixedHeightContainer.meta = {
+  description:
+    'Demonstrates component works correctly when parent container handles scrolling (realistic usage)',
+};

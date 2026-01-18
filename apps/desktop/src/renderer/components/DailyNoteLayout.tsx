@@ -74,30 +74,30 @@ export function DailyNoteLayout({
       {/* Right column: Calendar panel */}
       <div
         className={cn(
-          'group relative flex-shrink-0 border-l border-border bg-muted/50',
-          // Disable transition during drag for responsive feel
+          'group relative flex flex-col flex-shrink-0 h-full border-l border-border bg-muted/50',
           !sidebarState.isResizing && 'transition-[width] duration-200 ease-out'
         )}
         style={{ width: sidebarState.width }}
       >
-        <ScrollArea className="h-full">
-          <div className="px-6 py-4">
-            <MiniCalendar
-              selectedDate={dateKey}
-              datesWithNotes={datesWithNotes}
-              onDateSelect={onNavigateToDate}
-              onMonthChange={handleMonthChange}
-              className="mb-6"
-            />
+        {/* Calendar - fixed at top */}
+        <div className="px-6 pt-4 pb-4">
+          <MiniCalendar
+            selectedDate={dateKey}
+            datesWithNotes={datesWithNotes}
+            onDateSelect={onNavigateToDate}
+            onMonthChange={handleMonthChange}
+          />
+        </div>
 
-            <NotesCreatedList
-              date={dateKey}
-              items={createdObjects}
-              isLoading={isLoadingCreated}
-              onItemClick={onNavigateToObject}
-            />
-          </div>
-        </ScrollArea>
+        {/* Notes list - takes remaining space with flex-1 */}
+        <div className="flex-1 overflow-auto px-6 pb-6">
+          <NotesCreatedList
+            date={dateKey}
+            items={createdObjects}
+            isLoading={isLoadingCreated}
+            onItemClick={onNavigateToObject}
+          />
+        </div>
 
         {/* Resize handle - only when not collapsed */}
         {!sidebarState.collapsed && (
