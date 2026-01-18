@@ -1,34 +1,37 @@
 # Up Next
 
-## Design System Reset (shadcn Foundation)
+## Design System Rebuild (Fresh Start)
 
-**Status:** Active (In Progress)
-**Plan:** `.claude/plans/iterative-wondering-kahn.md`
-
-### Phase Progress (Updated 2026-01-18)
-
-- [x] Phase 1: Foundation — Create pre-reset tag, delete old code, initialize fresh shadcn structure
-- [x] Phase 2: Core Primitives — Button, Input, Dialog, Command, etc. with design tokens
-- [x] Phase 3: Layout Shell — AppShell, Sidebar, Router, IPC hooks
-- [ ] Phase 4: Core Views — Document Editor (TipTap), Type Browser (TanStack Table), Properties Panel
-- [ ] Phase 5: Features — Calendar, Command Palette, Settings, Daily Notes, Backlinks
+**Status:** Active — Ready for component development
+**Approach:** Ladle-first development (components built in sandbox before desktop app)
 
 ### Current State
 
-- Electron app launches with working navigation shell
-- Sidebar shows types from IPC (useTypeCounts hook)
-- Routes: /notes, /notes/:objectId, /types/:typeKey, /calendar
-- Design tokens preserved (cornflower accent, warm grayscale, IBM Plex fonts)
+- ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
+- ✅ Documentation preserved: design-principles skill, /docs/system/
+- ✅ Ladle configured and ready
+- ❌ No component implementations (all deleted)
+- ❌ No stories (all deleted)
 
-### Next Steps (Phase 4)
+### Build Sequence
 
-1. Port TipTap integration from old InteractiveEditor
-2. Port TanStack Table for TypeBrowser
-3. Replace SuggestionPopup with shadcn Popover + Command
+Follow bottom-up approach as documented in `.claude/rules/design-system.md`:
+
+1. **Atoms** — Button, Input, Label, Badge, Skeleton
+2. **Molecules** — IconButton, SearchInput, Card
+3. **Organisms** — Sidebar, AppShell, InteractiveEditor
+
+### Immediate Next Steps
+
+1. Run `pnpm --filter @typenote/design-system sandbox` to start Ladle
+2. Create first atom component (Button) with stories
+3. Test in Ladle before any desktop app integration
 
 ### Reference
 
-Old code available via `pre-reset` git tag at commit `88eefdd`.
+- Previous implementation available via `pre-reset` git tag (`88eefdd`)
+- Design principles: `.claude/skills/design-principles/`
+- Token reference: `/docs/system/QUICK_REFERENCE.md`
 
 ---
 
@@ -153,6 +156,8 @@ All drop-in replacements done (Skeleton, Badge, KeyboardKey, Card, ScrollArea, e
 
 | Feature                          | Date       | Commits              |
 | -------------------------------- | ---------- | -------------------- |
+| InteractiveEditor (wiki-links)   | 2026-01-18 | `f9f6602`            |
+| Design System Reset (Phase 1-3)  | 2026-01-18 | `93b738d`            |
 | E2E Test Fixes (block-hierarchy) | 2026-01-16 | `4645530`            |
 | Custom Title Bar (Frameless)     | 2026-01-16 | uncommitted          |
 | Auto-Hide Scrollbars             | 2026-01-15 | `960bca2`            |
