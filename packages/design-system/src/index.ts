@@ -26,3 +26,7 @@ export * from './components/ui/separator.js';
 export * from './components/ui/skeleton.js';
 export * from './components/ui/switch.js';
 export * from './components/ui/tooltip.js';
+export * from './components/ui/popover.js';
+
+// Interactive Editor
+export * from './components/InteractiveEditor/index.js';
