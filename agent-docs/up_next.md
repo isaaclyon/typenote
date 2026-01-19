@@ -11,55 +11,48 @@
 - ✅ **19 primitives** implemented with co-located stories (added Link)
 - ✅ **12 patterns** implemented with co-located stories (added Breadcrumbs, SearchTrigger, ThemeToggle)
 - ✅ **All interactive primitives now use shadcn/Radix** for accessibility
-- ✅ **3 features complete** — Sidebar, TitleBar, HeaderBar
-- ❌ Renderer is placeholder only (no editor, no navigation wired)
+- ✅ **5 features complete** — Sidebar, TitleBar, HeaderBar, AppShell, Editor (Phase 1)
+- ❌ Renderer is placeholder only (no editor wired, no navigation)
 
 ### Build Sequence
 
 Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
 
-1. **Primitives** — 19 complete (added Link)
-2. **Patterns** — 12 complete (added Breadcrumbs, SearchTrigger, ThemeToggle)
-3. **Features** — Sidebar ✅, TitleBar ✅, HeaderBar ✅, AppShell (next)
+1. **Primitives** — 19 complete
+2. **Patterns** — 12 complete
+3. **Features** — 5 complete (Sidebar, TitleBar, HeaderBar, AppShell, Editor Phase 1)
 
 ### Feature Inventory
 
-**Complete (3):**
+**Complete (5):**
 
 - Sidebar ✅ — Compound component with Header, Section, Footer, Item
-  - Collapsible (240px → 56px icon-only mode)
-  - Type-colored hover/active states (tinted backgrounds from iconColor)
+- TitleBar ✅ — Custom Electron window chrome (28px, draggable)
+- HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
+- AppShell ✅ — Composition layer for full app layout
+- Editor ✅ (Phase 1) — TipTap/ProseMirror foundation
+  - Paragraphs, headings (h1-h6), basic marks
+  - Full-width clickable area with centered content (650px)
+  - 10 Ladle stories
 
-- TitleBar ✅ — Custom Electron window chrome
-  - Height: 28px compact, full width, draggable region
-  - macOS traffic lights + Windows overlay controls
+**Next — Editor Phase 2:**
 
-- HeaderBar ✅ — App-level toolbar (above content, not sidebar)
-  - Left: SearchTrigger (200px, command palette with ⌘K hint)
-  - Center: Breadcrumbs (absolutely centered, type icons, clickable ancestors)
-  - Right: Settings button + ThemeToggle
-  - Height: 40px compact, no bottom border
-
-**Next:**
-
-1. **AppShell** — Composition layer
-   - Combines TitleBar + HeaderBar + Sidebar + main content
-   - Controlled state pattern (parent owns sidebar collapsed state)
-   - Overall layout grid
-
-2. **InteractiveEditor** — TipTap/ProseMirror integration (future)
+1. **NotateDoc converters** — Bidirectional TipTap ↔ NotateDoc conversion
+2. **Wiki-links** — `[[` syntax with RefNode extension + autocomplete
+3. **Tags** — `#` syntax with TagNode extension
+4. **SlashCommand menu** — Block type insertion
 
 ### Immediate Next Steps
 
-1. **Build AppShell feature** — Compose TitleBar + Sidebar + HeaderBar + content
-2. Wire up to desktop renderer
-3. Begin editor integration
+1. Continue editor refinement (Phase 2 extensions)
+2. Wire AppShell + Editor to desktop renderer
+3. Enable basic navigation
 
 ### Folder Structure
 
 - `src/primitives/` — 19 atoms with stories
 - `src/patterns/` — 12 molecules with stories
-- `src/features/` — 3 features (Sidebar, TitleBar, HeaderBar) with stories
+- `src/features/` — 5 features (Sidebar, TitleBar, HeaderBar, AppShell, Editor) with stories
 - `src/components/` — backward-compat re-exports only
 
 ### Reference
@@ -99,6 +92,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |
 | HeaderBar feature + Link, Breadcrumbs, SearchTrigger, ThemeToggle | 2026-01-19 | `f4c4d73` |
 | TitleBar feature                                                  | 2026-01-19 | `5aaaa86` |
 | Type-colored hover/active states                                  | 2026-01-19 | `4888b68` |

@@ -1,6 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - HeaderBar Feature)
+## Latest Session (2026-01-19 - Editor Feature Phase 1)
+
+### What was accomplished
+
+- Built **Editor** feature — TipTap/ProseMirror integration as design-system component
+- Phase 1 scope: paragraphs, headings (h1-h6), basic marks (bold, italic, code, strike)
+- **Full-width clickable area** with centered content (650px max-width)
+  - Click anywhere in editor area (including margins) to focus
+  - Click below content focuses at end of document
+  - `cursor-text` across entire area for clear affordance
+- Custom **editor.css** for typography (no @tailwindcss/typography dependency)
+- **10 Ladle stories**: Default, WithContent, AllMarks, Controlled, ReadOnly, Focused, CustomPlaceholder, LongDocument, MultipleEditors, InAppContext
+
+### Key files changed
+
+- `packages/design-system/src/features/Editor/` (new feature)
+  - `Editor.tsx` — TipTap wrapper with click-to-focus behavior
+  - `editor.css` — Typography styles for headings, marks, code, etc.
+  - `types.ts` — EditorProps, EditorRef interfaces
+  - `Editor.stories.tsx` — 10 comprehensive stories
+- `packages/design-system/package.json` — Added TipTap dependencies
+
+### Commits
+
+- `437af80` feat(design-system): add Editor feature with TipTap integration
+
+### Status
+
+- Design system: 19 primitives, 12 patterns, **5 features** (added Editor)
+- Editor Phase 1 complete; ready for Phase 2 (extensions, converters)
+- Next session: Continue editor refinement (wiki-links, tags, slash commands)
+
+---
+
+## Previous Session (2026-01-19 - HeaderBar Feature)
 
 ### What was accomplished
 
@@ -77,41 +111,16 @@
 
 ---
 
-## Previous Session (2026-01-19 - PlaceholderAction + Sidebar Refinements)
+## Earlier Sessions (2026-01-19) — Collapsed
 
-### What was accomplished
+- **TitleBar feature** — Custom Electron window chrome (28px, draggable)
+- **Sidebar refinements** — Type-colored hover/active states, PlaceholderAction pattern
+- **AppShell feature** — Composition layer for TitleBar + HeaderBar + Sidebar + content
 
-- Added **PlaceholderAction** pattern — dashed border placeholder for "add new" actions
-- Refined Sidebar layout based on design feedback:
-  - Removed search from header (will be relocated elsewhere)
-  - Swapped header order: `[New note] [collapse toggle]` (toggle closer to content)
-  - Changed New note button from `primary` to `secondary` variant (less loud)
-  - Added slight indent (`ml-1`) to section content items
-- Updated Sidebar stories with new layout: Types + "Add new type" + Favorites
-- Footer still has Settings/Theme toggle (noted as temporary until relocated)
-- Total: 74 Ladle stories (up from 70)
+## Earlier Sessions (2026-01-18) — Collapsed
 
-### Key files changed
-
-- `packages/design-system/src/patterns/PlaceholderAction/` (new)
-- `packages/design-system/src/features/Sidebar/SidebarHeader.tsx` (simplified)
-- `packages/design-system/src/features/Sidebar/SidebarSection.tsx` (added indent)
-- `packages/design-system/src/features/Sidebar/Sidebar.stories.tsx` (new layout)
-
-### Commits
-
-- `86d8cc7` feat(design-system): add Sidebar feature
-- `e8b73c4` feat(design-system): add PlaceholderAction pattern and refine Sidebar layout
-
----
-
-## Earlier Sessions (2026-01-18 to 2026-01-19) — Collapsed
-
-Multiple sessions on 2026-01-18 completed the design system foundation:
-
-- **Primitives Complete + Radix Migration** — 18 primitives, 5 migrated to Radix
-- **Migration Complete** — Moved to primitives/patterns folder structure
-- **Design System Atoms** — Button, Input, Label, Checkbox with subtle focus outlines
+- **Primitives Complete + Radix Migration** — 19 primitives, 5 migrated to Radix
+- **All patterns complete** — 12 patterns including field patterns, NavItem, EmptyState
 - **Design System Full Reset** — Deleted pre-reset code, preserved tokens and docs
 
 Reference: `pre-reset` git tag at `88eefdd` contains all deleted code.
