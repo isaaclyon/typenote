@@ -33,3 +33,26 @@ export type { SwitchProps, SwitchSize } from './Switch/index.js';
 
 export { RadioGroup, RadioItem, radioVariants } from './Radio/index.js';
 export type { RadioGroupProps, RadioItemProps, RadioSize } from './Radio/index.js';
+
+export { Keycap, keycapVariants } from './Keycap/index.js';
+export type { KeycapProps, KeycapSize } from './Keycap/index.js';
+
+export { Textarea, textareaVariants } from './Textarea/index.js';
+export type { TextareaProps, TextareaVariant, TextareaSize } from './Textarea/index.js';
+
+export {
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectLabel,
+  selectTriggerVariants,
+} from './Select/index.js';
+export type {
+  SelectTriggerProps,
+  SelectContentProps,
+  SelectItemProps,
+  SelectSeparatorProps,
+  SelectLabelProps,
+  SelectSize,
+} from './Select/index.js';

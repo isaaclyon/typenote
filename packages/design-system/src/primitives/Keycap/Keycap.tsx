@@ -1,0 +1,46 @@
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+import { cn } from '../../lib/utils.js';
+
+type KeycapSize = 'sm' | 'md';
+
+const keycapVariants = cva(
+  [
+    'inline-flex items-center justify-center font-mono font-medium',
+    'rounded border border-gray-200 bg-gray-50 text-gray-600',
+    'select-none',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'min-w-5 h-5 px-1 text-xs',
+        md: 'min-w-6 h-6 px-1.5 text-xs',
+      },
+    },
+    defaultVariants: {
+      size: 'sm',
+    },
+  }
+);
+
+export interface KeycapProps
+  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof keycapVariants> {
+  /** The key or key combination to display */
+  children: React.ReactNode;
+}
+
+const Keycap = React.forwardRef<HTMLElement, KeycapProps>(
+  ({ className, size, children, ...props }, ref) => {
+    return (
+      <kbd ref={ref} className={cn(keycapVariants({ size }), className)} {...props}>
+        {children}
+      </kbd>
+    );
+  }
+);
+
+Keycap.displayName = 'Keycap';
+
+export { Keycap, keycapVariants };
+export type { KeycapSize };
