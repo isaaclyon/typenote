@@ -27,3 +27,6 @@ export type { SearchInputProps, SearchInputSize, SearchInputVariant } from './Se
 
 export { Card } from './Card/index.js';
 export type { CardProps } from './Card/index.js';
+
+export { Divider } from './Divider/index.js';
+export type { DividerProps, DividerOrientation, DividerTone } from './Divider/index.js';
