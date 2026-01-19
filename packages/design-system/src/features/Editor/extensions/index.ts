@@ -14,3 +14,8 @@ export { RefSuggestionList } from './RefSuggestionList.js';
 export type { RefSuggestionListProps } from './RefSuggestionList.js';
 export { useRefSuggestion } from './useRefSuggestion.js';
 export type { UseRefSuggestionReturn } from './useRefSuggestion.js';
+
+export { getSlashCommandItems, filterSlashCommands } from './SlashCommand.js';
+export type { SlashCommandItem } from './SlashCommand.js';
+export { SlashCommandList } from './SlashCommandList.js';
+export type { SlashCommandListProps } from './SlashCommandList.js';

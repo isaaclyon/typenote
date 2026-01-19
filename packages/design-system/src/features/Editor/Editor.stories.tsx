@@ -522,3 +522,80 @@ export const RefTypeColors: Story = () => (
     </p>
   </div>
 );
+
+// ============================================================================
+// Phase 2b: Slash Command Stories
+// ============================================================================
+
+export const WithSlashCommands: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type / at the start of a line to insert blocks..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>
+        Type <code className="bg-muted px-1 rounded">/</code> at the start of a line to open the
+        block menu.
+      </p>
+      <p>Try: /heading, /bullet, /quote, /code, /divider</p>
+    </div>
+  </div>
+);
+
+export const SlashCommandFiltering: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type /h to filter to headings..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>The slash menu filters as you type:</p>
+      <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <li>
+          <code className="bg-muted px-1 rounded">/h</code> — shows headings
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/list</code> — shows lists
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/code</code> — shows code block
+        </li>
+      </ul>
+    </div>
+  </div>
+);
+
+export const SlashCommandDisabled: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Slash commands are disabled..." enableSlashCommands={false} />
+    <p className="text-xs text-muted-foreground">
+      Editor with <code className="bg-muted px-1 rounded">enableSlashCommands=false</code>. Typing /
+      will not open the menu.
+    </p>
+  </div>
+);
+
+export const FullFeaturedEditor: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Full-featured editor: / for blocks, @ or [[ for refs..."
+        enableSlashCommands
+        enableRefs
+        onRefSearch={mockSearch}
+        onRefClick={(attrs) => setLastAction(`Navigate to: ${attrs.displayTitle}`)}
+        onRefCreate={mockCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>This editor has all Phase 2 features enabled:</p>
+        <ul className="list-disc list-inside space-y-0.5 ml-2">
+          <li>
+            <code className="bg-muted px-1 rounded">/</code> — Slash commands for block types
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">@</code> or{' '}
+            <code className="bg-muted px-1 rounded">[[</code> — Reference suggestions
+          </li>
+        </ul>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};

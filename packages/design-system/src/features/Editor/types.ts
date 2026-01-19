@@ -23,6 +23,17 @@ export interface EditorProps {
   className?: string;
 
   // ============================================================================
+  // Slash Commands (Phase 2)
+  // ============================================================================
+
+  /**
+   * Enable slash command menu via `/` trigger at start of line.
+   * Allows inserting block types like headings, lists, quotes, etc.
+   * @default true (when not readOnly)
+   */
+  enableSlashCommands?: boolean;
+
+  // ============================================================================
   // Reference Support (Phase 2)
   // ============================================================================
 

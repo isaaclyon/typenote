@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
-import type { AnyExtension } from '@tiptap/core';
+import type { AnyExtension, Range } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Extension } from '@tiptap/core';
@@ -8,14 +8,41 @@ import Suggestion from '@tiptap/suggestion';
 import type { SuggestionProps } from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 
+// Phosphor icons for slash commands
+import { TextT } from '@phosphor-icons/react/dist/ssr/TextT';
+import { TextHOne } from '@phosphor-icons/react/dist/ssr/TextHOne';
+import { TextHTwo } from '@phosphor-icons/react/dist/ssr/TextHTwo';
+import { TextHThree } from '@phosphor-icons/react/dist/ssr/TextHThree';
+import { ListBullets } from '@phosphor-icons/react/dist/ssr/ListBullets';
+import { ListNumbers } from '@phosphor-icons/react/dist/ssr/ListNumbers';
+import { Quotes } from '@phosphor-icons/react/dist/ssr/Quotes';
+import { Code } from '@phosphor-icons/react/dist/ssr/Code';
+import { Minus } from '@phosphor-icons/react/dist/ssr/Minus';
+
 import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
 import { RefNode } from './extensions/RefNode.js';
 import { RefSuggestionList } from './extensions/RefSuggestionList.js';
 import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
+import { getSlashCommandItems, filterSlashCommands } from './extensions/SlashCommand.js';
+import type { SlashCommandItem } from './extensions/SlashCommand.js';
+import { SlashCommandList } from './extensions/SlashCommandList.js';
 
 // Editor typography styles
 import './editor.css';
+
+// Slash command icons bundle
+const slashCommandIcons = {
+  TextT,
+  TextHOne,
+  TextHTwo,
+  TextHThree,
+  ListBullets,
+  ListNumbers,
+  Quotes,
+  Code,
+  Minus,
+};
 
 // ============================================================================
 // Editor
@@ -46,6 +73,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       readOnly = false,
       autoFocus = false,
       className,
+      // Phase 2: Slash Commands
+      enableSlashCommands = true,
       // Phase 2: Refs
       enableRefs = false,
       onRefSearch,
@@ -54,8 +83,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     },
     ref
   ) => {
-    // Suggestion state
-    const [suggestionState, setSuggestionState] = React.useState<{
+    // Ref suggestion state
+    const [refSuggestionState, setRefSuggestionState] = React.useState<{
       isOpen: boolean;
       items: RefSuggestionItem[];
       query: string;
@@ -71,6 +100,25 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       command: null,
     });
 
+    // Slash command state
+    const [slashCommandState, setSlashCommandState] = React.useState<{
+      isOpen: boolean;
+      items: SlashCommandItem[];
+      filteredItems: SlashCommandItem[];
+      query: string;
+      selectedIndex: number;
+      position: { top: number; left: number } | null;
+      range: Range | null;
+    }>({
+      isOpen: false,
+      items: [],
+      filteredItems: [],
+      query: '',
+      selectedIndex: 0,
+      position: null,
+      range: null,
+    });
+
     // Store refs in refs so they're available in extension callbacks
     const onRefSearchRef = React.useRef(onRefSearch);
     const onRefCreateRef = React.useRef(onRefCreate);
@@ -79,12 +127,12 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onRefCreateRef.current = onRefCreate;
     }, [onRefSearch, onRefCreate]);
 
-    // Create suggestion render callbacks
-    const createSuggestionRender = React.useCallback(
+    // Create ref suggestion render callbacks
+    const createRefSuggestionRender = React.useCallback(
       () => ({
         onStart: (props: SuggestionProps<RefSuggestionItem>) => {
           const rect = props.clientRect?.();
-          setSuggestionState({
+          setRefSuggestionState({
             isOpen: true,
             items: props.items,
             query: props.query,
@@ -95,7 +143,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         },
         onUpdate: (props: SuggestionProps<RefSuggestionItem>) => {
           const rect = props.clientRect?.();
-          setSuggestionState((prev) => ({
+          setRefSuggestionState((prev) => ({
             ...prev,
             items: props.items,
             query: props.query,
@@ -106,7 +154,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         },
         onKeyDown: ({ event }: { event: KeyboardEvent }) => {
           if (event.key === 'ArrowUp') {
-            setSuggestionState((prev) => ({
+            setRefSuggestionState((prev) => ({
               ...prev,
               selectedIndex:
                 prev.selectedIndex <= 0 ? prev.items.length - 1 : prev.selectedIndex - 1,
@@ -114,7 +162,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             return true;
           }
           if (event.key === 'ArrowDown') {
-            setSuggestionState((prev) => ({
+            setRefSuggestionState((prev) => ({
               ...prev,
               selectedIndex:
                 prev.selectedIndex >= prev.items.length - 1 ? 0 : prev.selectedIndex + 1,
@@ -122,7 +170,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             return true;
           }
           if (event.key === 'Enter') {
-            setSuggestionState((prev) => {
+            setRefSuggestionState((prev) => {
               const item = prev.items[prev.selectedIndex];
               if (item && prev.command) {
                 prev.command(item);
@@ -132,13 +180,13 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             return true;
           }
           if (event.key === 'Escape') {
-            setSuggestionState((prev) => ({ ...prev, isOpen: false }));
+            setRefSuggestionState((prev) => ({ ...prev, isOpen: false }));
             return true;
           }
           return false;
         },
         onExit: () => {
-          setSuggestionState({
+          setRefSuggestionState({
             isOpen: false,
             items: [],
             query: '',
@@ -149,6 +197,78 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         },
       }),
       []
+    );
+
+    // Create slash command render callbacks
+    const allSlashCommands = React.useMemo(() => getSlashCommandItems(slashCommandIcons), []);
+
+    const createSlashCommandRender = React.useCallback(
+      () => ({
+        onStart: (props: SuggestionProps<SlashCommandItem>) => {
+          const rect = props.clientRect?.();
+          const filtered = filterSlashCommands(allSlashCommands, props.query);
+          setSlashCommandState({
+            isOpen: true,
+            items: allSlashCommands,
+            filteredItems: filtered,
+            query: props.query,
+            selectedIndex: 0,
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : null,
+            range: props.range,
+          });
+        },
+        onUpdate: (props: SuggestionProps<SlashCommandItem>) => {
+          const rect = props.clientRect?.();
+          const filtered = filterSlashCommands(allSlashCommands, props.query);
+          setSlashCommandState((prev) => ({
+            ...prev,
+            filteredItems: filtered,
+            query: props.query,
+            selectedIndex: Math.min(prev.selectedIndex, Math.max(0, filtered.length - 1)),
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : prev.position,
+            range: props.range,
+          }));
+        },
+        onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+          if (event.key === 'ArrowUp') {
+            setSlashCommandState((prev) => ({
+              ...prev,
+              selectedIndex:
+                prev.selectedIndex <= 0 ? prev.filteredItems.length - 1 : prev.selectedIndex - 1,
+            }));
+            return true;
+          }
+          if (event.key === 'ArrowDown') {
+            setSlashCommandState((prev) => ({
+              ...prev,
+              selectedIndex:
+                prev.selectedIndex >= prev.filteredItems.length - 1 ? 0 : prev.selectedIndex + 1,
+            }));
+            return true;
+          }
+          if (event.key === 'Enter') {
+            // Execute command is handled by handleSlashCommandSelect
+            return true;
+          }
+          if (event.key === 'Escape') {
+            setSlashCommandState((prev) => ({ ...prev, isOpen: false }));
+            return true;
+          }
+          return false;
+        },
+        onExit: () => {
+          setSlashCommandState({
+            isOpen: false,
+            items: [],
+            filteredItems: [],
+            query: '',
+            selectedIndex: 0,
+            position: null,
+            range: null,
+          });
+        },
+      }),
+      [allSlashCommands]
     );
 
     // Build extensions array - stable across renders
@@ -205,7 +325,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                     ])
                     .run();
                 },
-                render: createSuggestionRender,
+                render: createRefSuggestionRender,
               }),
             ];
           },
@@ -257,7 +377,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                     ])
                     .run();
                 },
-                render: createSuggestionRender,
+                render: createRefSuggestionRender,
               }),
             ];
           },
@@ -266,8 +386,46 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         baseExtensions.push(AtSuggestion, BracketSuggestion);
       }
 
+      // Slash commands (when enabled and not readOnly)
+      if (enableSlashCommands && !readOnly) {
+        const SlashCommandExtension = Extension.create({
+          name: 'slashCommand',
+          addProseMirrorPlugins() {
+            return [
+              Suggestion({
+                editor: this.editor,
+                pluginKey: new PluginKey('slashCommand'),
+                char: '/',
+                allowSpaces: false,
+                startOfLine: true,
+                items: ({ query }) => {
+                  // Return filtered items for the suggestion plugin
+                  return filterSlashCommands(allSlashCommands, query);
+                },
+                command: ({ editor: ed, range, props: item }) => {
+                  const typedItem = item as SlashCommandItem;
+                  typedItem.command(ed, range);
+                },
+                render: createSlashCommandRender,
+              }),
+            ];
+          },
+        });
+
+        baseExtensions.push(SlashCommandExtension);
+      }
+
       return baseExtensions;
-    }, [placeholder, enableRefs, onRefClick, createSuggestionRender]);
+    }, [
+      placeholder,
+      enableRefs,
+      onRefClick,
+      createRefSuggestionRender,
+      enableSlashCommands,
+      readOnly,
+      allSlashCommands,
+      createSlashCommandRender,
+    ]);
 
     const editor = useEditor({
       extensions,
@@ -320,17 +478,17 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       }
     };
 
-    // Handle suggestion item selection
+    // Handle ref suggestion item selection
     const handleRefSelect = React.useCallback(
       (item: RefSuggestionItem) => {
-        if (suggestionState.command) {
-          suggestionState.command(item);
+        if (refSuggestionState.command) {
+          refSuggestionState.command(item);
         }
       },
-      [suggestionState.command]
+      [refSuggestionState.command]
     );
 
-    // Handle create new from suggestion
+    // Handle create new from ref suggestion
     const handleRefCreate = React.useCallback(
       async (title: string) => {
         if (!onRefCreate || !editor) return;
@@ -351,10 +509,42 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             { type: 'text', text: ' ' },
           ])
           .run();
-        setSuggestionState((prev) => ({ ...prev, isOpen: false }));
+        setRefSuggestionState((prev) => ({ ...prev, isOpen: false }));
       },
       [onRefCreate, editor]
     );
+
+    // Handle slash command selection
+    const handleSlashCommandSelect = React.useCallback(
+      (item: SlashCommandItem) => {
+        if (editor && slashCommandState.range) {
+          item.command(editor, slashCommandState.range);
+          setSlashCommandState((prev) => ({ ...prev, isOpen: false }));
+        }
+      },
+      [editor, slashCommandState.range]
+    );
+
+    // Handle Enter key for slash commands (since TipTap suggestion handles navigation but not selection)
+    React.useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (slashCommandState.isOpen && e.key === 'Enter') {
+          e.preventDefault();
+          const item = slashCommandState.filteredItems[slashCommandState.selectedIndex];
+          if (item) {
+            handleSlashCommandSelect(item);
+          }
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown, true);
+      return () => document.removeEventListener('keydown', handleKeyDown, true);
+    }, [
+      slashCommandState.isOpen,
+      slashCommandState.filteredItems,
+      slashCommandState.selectedIndex,
+      handleSlashCommandSelect,
+    ]);
 
     return (
       <div
@@ -369,21 +559,38 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       >
         <EditorContent editor={editor} className="h-full w-full" />
 
-        {/* Suggestion popup */}
-        {suggestionState.isOpen && suggestionState.position && (
+        {/* Ref suggestion popup */}
+        {refSuggestionState.isOpen && refSuggestionState.position && (
           <div
             className="fixed z-50"
             style={{
-              top: suggestionState.position.top,
-              left: suggestionState.position.left,
+              top: refSuggestionState.position.top,
+              left: refSuggestionState.position.left,
             }}
           >
             <RefSuggestionList
-              items={suggestionState.items}
-              query={suggestionState.query}
-              selectedIndex={suggestionState.selectedIndex}
+              items={refSuggestionState.items}
+              query={refSuggestionState.query}
+              selectedIndex={refSuggestionState.selectedIndex}
               onSelect={handleRefSelect}
               onCreate={onRefCreate ? handleRefCreate : undefined}
+            />
+          </div>
+        )}
+
+        {/* Slash command popup */}
+        {slashCommandState.isOpen && slashCommandState.position && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: slashCommandState.position.top,
+              left: slashCommandState.position.left,
+            }}
+          >
+            <SlashCommandList
+              items={slashCommandState.filteredItems}
+              selectedIndex={slashCommandState.selectedIndex}
+              onSelect={handleSlashCommandSelect}
             />
           </div>
         )}
