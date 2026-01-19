@@ -6,6 +6,14 @@
  */
 
 import * as React from 'react';
+import { File } from '@phosphor-icons/react/dist/ssr/File';
+import { User } from '@phosphor-icons/react/dist/ssr/User';
+import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
+import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
+import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
+import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
+
 import { cn } from '../../../lib/utils.js';
 import type { RefSuggestionItem } from './RefSuggestion.js';
 
@@ -17,6 +25,16 @@ const TYPE_COLORS: Record<string, string> = {
   Event: '#8B5CF6',
   Place: '#10B981',
   Task: '#EF4444',
+};
+
+// Icons for built-in types
+const TYPE_ICONS: Record<string, PhosphorIcon> = {
+  Page: File,
+  DailyNote: CalendarBlank,
+  Person: User,
+  Event: Calendar,
+  Place: MapPin,
+  Task: CheckSquare,
 };
 
 export interface RefSuggestionListProps {
@@ -57,6 +75,7 @@ export const RefSuggestionList = React.forwardRef<HTMLDivElement, RefSuggestionL
       >
         {items.map((item, index) => {
           const color = item.color ?? TYPE_COLORS[item.objectType] ?? '#71717A';
+          const Icon = TYPE_ICONS[item.objectType] ?? File;
           const isSelected = index === selectedIndex;
 
           return (
@@ -70,8 +89,8 @@ export const RefSuggestionList = React.forwardRef<HTMLDivElement, RefSuggestionL
                 isSelected ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
               )}
             >
-              {/* Color dot indicator */}
-              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+              {/* Type icon */}
+              <Icon className="h-4 w-4 shrink-0" weight="regular" style={{ color }} />
               {/* Title */}
               <span className="truncate">{item.title || 'Untitled'}</span>
               {/* Type label */}

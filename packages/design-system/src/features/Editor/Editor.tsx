@@ -6,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import type { SuggestionProps } from '@tiptap/suggestion';
+import { PluginKey } from '@tiptap/pm/state';
 
 import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
@@ -177,6 +178,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             return [
               Suggestion({
                 editor: this.editor,
+                pluginKey: new PluginKey('atSuggestion'),
                 char: '@',
                 allowSpaces: true,
                 startOfLine: false,
@@ -216,6 +218,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             return [
               Suggestion({
                 editor: this.editor,
+                pluginKey: new PluginKey('bracketSuggestion'),
                 char: '[',
                 allowSpaces: true,
                 startOfLine: false,

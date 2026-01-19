@@ -1,9 +1,29 @@
 import * as React from 'react';
 import type { Story } from '@ladle/react';
 import type { JSONContent } from '@tiptap/core';
+import { File } from '@phosphor-icons/react/dist/ssr/File';
+import { User } from '@phosphor-icons/react/dist/ssr/User';
+import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
+import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
+import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
+import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 
 import { Editor } from './Editor.js';
 import type { RefSuggestionItem, RefNodeAttributes } from './types.js';
+
+// Import editor.css for ref-node styles in RefTypeColors story
+import './editor.css';
+
+// Icons for built-in types
+const TYPE_ICONS: Record<string, PhosphorIcon> = {
+  Page: File,
+  DailyNote: CalendarBlank,
+  Person: User,
+  Event: Calendar,
+  Place: MapPin,
+  Task: CheckSquare,
+};
 
 export default {
   title: 'Features / Editor',
@@ -475,24 +495,30 @@ export const WithExistingRefs: Story = () => {
 
 export const RefTypeColors: Story = () => (
   <div className="space-y-4 p-6">
-    <div className="grid gap-4">
-      {mockObjects.map((obj) => (
-        <div key={obj.objectId} className="flex items-center gap-3">
-          <span
-            className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium"
-            style={{
-              backgroundColor: `${obj.color}15`,
-              color: obj.color ?? '#71717A',
-            }}
-          >
-            {obj.title}
-          </span>
-          <span className="text-xs text-muted-foreground">{obj.objectType}</span>
-        </div>
-      ))}
+    <p className="text-sm text-foreground leading-relaxed">
+      Reference nodes use type-colored icons and underlines. Hover to see the enhanced underline:
+    </p>
+    <div className="space-y-3 mt-4">
+      {mockObjects.map((obj) => {
+        const Icon = TYPE_ICONS[obj.objectType] ?? File;
+        const refColor = obj.color ?? '#71717A';
+        return (
+          <div key={obj.objectId} className="flex items-center gap-4">
+            <span
+              className="ref-node inline-flex items-center gap-1 cursor-pointer"
+              style={{ '--ref-color': refColor } as React.CSSProperties}
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" weight="regular" style={{ color: refColor }} />
+              <span className="ref-node-text">{obj.title}</span>
+            </span>
+            <span className="text-xs text-muted-foreground">{obj.objectType}</span>
+          </div>
+        );
+      })}
     </div>
-    <p className="text-xs text-muted-foreground">
-      Reference nodes are colored by object type. Each type has a distinct color.
+    <p className="text-xs text-muted-foreground mt-4">
+      Each object type has a distinct icon and color. Underline is subtle by default, thicker on
+      hover.
     </p>
   </div>
 );
