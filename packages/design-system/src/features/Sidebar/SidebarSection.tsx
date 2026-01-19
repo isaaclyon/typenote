@@ -22,8 +22,8 @@ function SidebarSectionComponent({ label, children, className }: SidebarSectionP
         </div>
       )}
 
-      {/* Section content */}
-      <div className={cn('flex flex-col gap-0.5', collapsed ? 'px-2' : 'px-2')}>{children}</div>
+      {/* Section content - slightly indented from label */}
+      <div className={cn('flex flex-col gap-0.5 px-2', !collapsed && 'ml-1')}>{children}</div>
     </div>
   );
 }

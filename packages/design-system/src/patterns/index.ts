@@ -21,3 +21,6 @@ export type { SelectFieldProps } from './SelectField/index.js';
 
 export { SwitchField } from './SwitchField/index.js';
 export type { SwitchFieldProps } from './SwitchField/index.js';
+
+export { PlaceholderAction } from './PlaceholderAction/index.js';
+export type { PlaceholderActionProps } from './PlaceholderAction/index.js';

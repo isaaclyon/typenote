@@ -21,13 +21,9 @@ export interface SidebarProps {
 // ============================================================================
 
 export interface SidebarHeaderProps {
-  /** Callback when search trigger is clicked */
-  onSearchClick?: () => void;
-  /** Keyboard shortcut to display (e.g., "⌘K") */
-  searchShortcut?: string;
-  /** Callback when new action is clicked */
+  /** Callback when new note action is clicked */
   onNewClick?: () => void;
-  /** Label for new action button */
+  /** Label for new note button */
   newLabel?: string;
   /** Additional CSS classes */
   className?: string;

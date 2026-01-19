@@ -11,12 +11,14 @@ import { Moon } from '@phosphor-icons/react/dist/ssr/Moon';
 import { Trash } from '@phosphor-icons/react/dist/ssr/Trash';
 import { Copy } from '@phosphor-icons/react/dist/ssr/Copy';
 import { PushPin } from '@phosphor-icons/react/dist/ssr/PushPin';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
 import { Sidebar } from './Sidebar.js';
 import { SidebarHeader } from './SidebarHeader.js';
 import { SidebarSection } from './SidebarSection.js';
 import { SidebarFooter } from './SidebarFooter.js';
 import { SidebarItem } from './SidebarItem.js';
+import { PlaceholderAction } from '../../patterns/PlaceholderAction/PlaceholderAction.js';
 import type { SidebarFooterAction } from './types.js';
 
 export default {
@@ -40,6 +42,8 @@ const favoriteItems = [
   { icon: Star, label: 'Project Ideas', iconColor: '#ffb74d' },
 ];
 
+// Note: Settings and theme toggle will be relocated to a different location
+// (e.g., title bar or command palette). Keeping here temporarily for reference.
 const footerActions: SidebarFooterAction[] = [
   { icon: Gear, label: 'Settings', onClick: () => console.log('Settings') },
   { icon: Moon, label: 'Toggle theme', onClick: () => console.log('Theme') },
@@ -62,10 +66,7 @@ export const Default: Story = () => {
   return (
     <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection label="Types">
           {typeItems.map((item) => (
             <SidebarItem
@@ -79,6 +80,23 @@ export const Default: Story = () => {
               actions={itemActions}
             />
           ))}
+          <PlaceholderAction
+            icon={Plus}
+            label="Add new type"
+            onClick={() => console.log('Add type')}
+          />
+        </SidebarSection>
+        <SidebarSection label="Favorites">
+          {favoriteItems.map((item) => (
+            <SidebarItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              iconColor={item.iconColor}
+              active={activeItem === item.label}
+              onClick={() => setActiveItem(item.label)}
+            />
+          ))}
         </SidebarSection>
         <SidebarFooter actions={footerActions} />
       </Sidebar>
@@ -88,6 +106,9 @@ export const Default: Story = () => {
         </p>
         <p className="text-sm text-muted-foreground mt-2">
           Collapsed: <strong>{collapsed ? 'Yes' : 'No'}</strong>
+        </p>
+        <p className="text-xs text-muted-foreground mt-4 italic">
+          Note: Settings/theme in footer will be relocated elsewhere
         </p>
       </div>
     </div>
@@ -101,10 +122,7 @@ export const Collapsed: Story = () => {
   return (
     <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection>
           {typeItems.map((item) => (
             <SidebarItem
@@ -129,17 +147,14 @@ export const Collapsed: Story = () => {
   );
 };
 
-export const WithSecondarySections: Story = () => {
+export const WithTypesAndFavorites: Story = () => {
   const [collapsed, setCollapsed] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState('Daily Notes');
 
   return (
     <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection label="Types">
           {typeItems.map((item) => (
             <SidebarItem
@@ -152,6 +167,11 @@ export const WithSecondarySections: Story = () => {
               onClick={() => setActiveItem(item.label)}
             />
           ))}
+          <PlaceholderAction
+            icon={Plus}
+            label="Add new type"
+            onClick={() => console.log('Add type')}
+          />
         </SidebarSection>
         <SidebarSection label="Favorites">
           {favoriteItems.map((item) => (
@@ -168,7 +188,12 @@ export const WithSecondarySections: Story = () => {
         <SidebarFooter actions={footerActions} />
       </Sidebar>
       <div className="flex-1 p-4 bg-muted/30">
-        <p className="text-sm text-muted-foreground">Two sections: Types and Favorites</p>
+        <p className="text-sm text-muted-foreground">
+          Layout: Header (collapse + new note) → Types → Add type → Favorites → Footer
+        </p>
+        <p className="text-xs text-muted-foreground mt-4 italic">
+          Note: Settings/theme in footer will be relocated elsewhere
+        </p>
       </div>
     </div>
   );
@@ -187,10 +212,7 @@ export const WithManyItems: Story = () => {
   return (
     <div className="flex h-[500px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection label="All Items">
           {manyItems.map((item) => (
             <SidebarItem
@@ -202,6 +224,11 @@ export const WithManyItems: Story = () => {
               onClick={() => setActiveItem(item.label)}
             />
           ))}
+          <PlaceholderAction
+            icon={Plus}
+            label="Add new type"
+            onClick={() => console.log('Add type')}
+          />
         </SidebarSection>
         <SidebarFooter actions={footerActions} />
       </Sidebar>
@@ -221,10 +248,7 @@ export const WithActionsAndCounts: Story = () => {
   return (
     <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection label="Types">
           {typeItems.map((item) => (
             <SidebarItem
@@ -238,6 +262,11 @@ export const WithActionsAndCounts: Story = () => {
               actions={itemActions}
             />
           ))}
+          <PlaceholderAction
+            icon={Plus}
+            label="Add new type"
+            onClick={() => console.log('Add type')}
+          />
         </SidebarSection>
         <SidebarFooter actions={footerActions} />
       </Sidebar>
@@ -250,17 +279,14 @@ export const WithActionsAndCounts: Story = () => {
   );
 };
 
-export const NoLabels: Story = () => {
+export const MinimalLayout: Story = () => {
   const [collapsed, setCollapsed] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState('Daily Notes');
 
   return (
     <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
       <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
-        <SidebarHeader
-          onSearchClick={() => console.log('Search clicked')}
-          onNewClick={() => console.log('New clicked')}
-        />
+        <SidebarHeader onNewClick={() => console.log('New note clicked')} />
         <SidebarSection>
           {typeItems.map((item) => (
             <SidebarItem
@@ -277,7 +303,9 @@ export const NoLabels: Story = () => {
         <SidebarFooter actions={footerActions} />
       </Sidebar>
       <div className="flex-1 p-4 bg-muted/30">
-        <p className="text-sm text-muted-foreground">Section without a label header.</p>
+        <p className="text-sm text-muted-foreground">
+          Minimal layout: no section labels, no "Add new type" placeholder
+        </p>
       </div>
     </div>
   );
