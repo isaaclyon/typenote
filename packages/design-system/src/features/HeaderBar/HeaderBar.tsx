@@ -37,7 +37,7 @@ export interface HeaderBarProps {
  * App-level toolbar that sits above the content area (not spanning the sidebar).
  *
  * Layout:
- * - Left: Breadcrumbs (navigation path)
+ * - Center: Breadcrumbs (absolutely centered)
  * - Right: Search trigger, Theme toggle, Settings button
  *
  * Specs:
@@ -64,10 +64,12 @@ export function HeaderBar({
         className
       )}
     >
-      {/* Left: Breadcrumbs */}
-      <div className="flex items-center">
-        {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
-      </div>
+      {/* Center: Breadcrumbs (absolutely centered) */}
+      {breadcrumbs.length > 0 && (
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <Breadcrumbs items={breadcrumbs} />
+        </div>
+      )}
 
       {/* Right: Search + Actions */}
       <div className="ml-auto flex items-center gap-2">

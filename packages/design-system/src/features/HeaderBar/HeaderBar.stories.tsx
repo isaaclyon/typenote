@@ -60,7 +60,7 @@ export const Default: Story = () => {
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        Full HeaderBar: breadcrumbs (left), search + theme toggle + settings (right).
+        Full HeaderBar: breadcrumbs (center), search + theme toggle + settings (right).
       </p>
     </div>
   );

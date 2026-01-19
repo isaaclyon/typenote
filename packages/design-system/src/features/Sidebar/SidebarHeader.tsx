@@ -60,17 +60,15 @@ function SidebarHeaderComponent({
         {newLabel}
       </Button>
 
-      {/* Collapse toggle */}
-      <Tooltip content="Collapse sidebar" side="right">
-        <IconButton
-          variant="ghost"
-          size="sm"
-          aria-label="Collapse sidebar"
-          onClick={onCollapseToggle}
-        >
-          <SidebarIcon className="h-4 w-4" weight="regular" />
-        </IconButton>
-      </Tooltip>
+      {/* Collapse toggle - no tooltip needed when expanded */}
+      <IconButton
+        variant="ghost"
+        size="sm"
+        aria-label="Collapse sidebar"
+        onClick={onCollapseToggle}
+      >
+        <SidebarIcon className="h-4 w-4" weight="regular" />
+      </IconButton>
     </div>
   );
 }

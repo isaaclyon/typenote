@@ -77,6 +77,18 @@ export const States: Story = () => (
         <PlaceholderAction icon={Plus} label="Add new type" disabled onClick={() => {}} />
       </div>
     </section>
+
+    <section>
+      <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-400">
+        Collapsed (icon-only)
+      </h2>
+      <p className="mb-2 text-sm text-muted-foreground">
+        For use in collapsed sidebars. Hover to see tooltip.
+      </p>
+      <div className="w-14">
+        <PlaceholderAction icon={Plus} label="Add new type" collapsed onClick={() => {}} />
+      </div>
+    </section>
   </div>
 );
 
