@@ -1,98 +1,64 @@
 import * as React from 'react';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Check } from '@phosphor-icons/react/dist/ssr/Check';
+import { Minus } from '@phosphor-icons/react/dist/ssr/Minus';
 
 import { cn } from '../../lib/utils.js';
 
 type CheckboxSize = 'sm' | 'md';
 
-type CheckedState = boolean | 'indeterminate';
-
 const checkboxVariants = cva(
   [
-    'relative inline-flex items-center justify-center border p-[2px] transition-colors duration-150 ease-out',
+    'peer shrink-0 border rounded-md transition-colors duration-150 ease-out',
     'focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray-300',
     'focus-visible:outline-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
+    'disabled:cursor-not-allowed disabled:opacity-50',
+    'data-[state=checked]:border-accent-500 data-[state=checked]:bg-accent-500 data-[state=checked]:text-white',
+    'data-[state=indeterminate]:border-accent-500 data-[state=indeterminate]:bg-accent-500 data-[state=indeterminate]:text-white',
+    'data-[state=unchecked]:border-gray-300 data-[state=unchecked]:bg-white',
   ],
   {
     variants: {
       size: {
-        sm: 'h-4 w-4 rounded-md',
-        md: 'h-5 w-5 rounded-md',
-      },
-      checked: {
-        true: 'border-accent-500 bg-accent-500 text-white',
-        false: 'border-gray-300 bg-white text-transparent',
+        sm: 'h-4 w-4',
+        md: 'h-5 w-5',
       },
     },
     defaultVariants: {
       size: 'md',
-      checked: false,
     },
   }
 );
 
-type CheckboxVariantProps = Omit<VariantProps<typeof checkboxVariants>, 'checked'>;
+export interface CheckboxProps
+  extends
+    React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
+    VariantProps<typeof checkboxVariants> {}
 
-type CheckboxButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'>;
-
-export interface CheckboxProps extends CheckboxButtonProps, CheckboxVariantProps {
-  checked?: CheckedState;
-  onCheckedChange?: ((checked: CheckedState) => void) | undefined;
-}
-
-const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
-  ({ className, size, checked = false, onCheckedChange, disabled, ...props }, ref) => {
-    const isIndeterminate = checked === 'indeterminate';
+const Checkbox = React.forwardRef<React.ComponentRef<typeof CheckboxPrimitive.Root>, CheckboxProps>(
+  ({ className, size, ...props }, ref) => {
     const iconSize = size === 'sm' ? 'h-3 w-3' : 'h-3.5 w-3.5';
-    const dashSize = size === 'sm' ? 'h-0.5 w-2' : 'h-0.5 w-2.5';
 
     return (
-      <button
+      <CheckboxPrimitive.Root
         ref={ref}
-        type="button"
-        role="checkbox"
-        aria-checked={isIndeterminate ? 'mixed' : checked}
-        disabled={disabled}
-        className={cn(
-          checkboxVariants({ size, checked: checked === true || isIndeterminate }),
-          className
-        )}
-        onClick={() => {
-          if (disabled) {
-            return;
-          }
-          if (onCheckedChange) {
-            const nextChecked = isIndeterminate ? true : !checked;
-            onCheckedChange(nextChecked);
-          }
-        }}
+        className={cn(checkboxVariants({ size }), className)}
         {...props}
       >
-        {isIndeterminate ? (
-          <span className={cn('rounded-full bg-current', dashSize)} aria-hidden="true" />
-        ) : (
-          <svg
-            aria-hidden="true"
-            className={cn('text-current', iconSize, checked ? 'opacity-100' : 'opacity-0')}
-            viewBox="0 0 12 10"
-            fill="none"
-          >
-            <path
-              d="M1 5L4.5 8.5L11 1"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-      </button>
+        <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
+          {props.checked === 'indeterminate' ? (
+            <Minus className={iconSize} weight="bold" />
+          ) : (
+            <Check className={iconSize} weight="bold" />
+          )}
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
     );
   }
 );
 
-Checkbox.displayName = 'Checkbox';
+Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox, checkboxVariants };
-export type { CheckboxSize, CheckedState };
+export type { CheckboxSize };

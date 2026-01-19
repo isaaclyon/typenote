@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../lib/utils.js';
@@ -9,91 +10,34 @@ type RadioSize = 'sm' | 'md';
 // RadioGroup
 // ============================================================================
 
-interface RadioGroupContextValue {
-  name: string;
-  value: string | undefined;
-  onValueChange: (value: string) => void;
-  disabled: boolean | undefined;
-  size: RadioSize | undefined;
-}
+const radioGroupVariants = cva('flex flex-col gap-2');
 
-const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null);
-
-function useRadioGroup() {
-  const context = React.useContext(RadioGroupContext);
-  if (!context) {
-    throw new Error('RadioItem must be used within a RadioGroup');
-  }
-  return context;
-}
-
-export interface RadioGroupProps {
-  name: string;
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  disabled?: boolean;
+export interface RadioGroupProps extends React.ComponentPropsWithoutRef<
+  typeof RadioGroupPrimitive.Root
+> {
   size?: RadioSize;
-  children: React.ReactNode;
-  className?: string;
 }
 
-const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
-  (
-    {
-      name,
-      value: controlledValue,
-      defaultValue,
-      onValueChange,
-      disabled,
-      size = 'md',
-      children,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
-    const isControlled = controlledValue !== undefined;
-    const value = isControlled ? controlledValue : uncontrolledValue;
+const RadioGroupContext = React.createContext<{ size?: RadioSize }>({});
 
-    const handleValueChange = React.useCallback(
-      (newValue: string) => {
-        if (!isControlled) {
-          setUncontrolledValue(newValue);
-        }
-        onValueChange?.(newValue);
-      },
-      [isControlled, onValueChange]
-    );
+const RadioGroup = React.forwardRef<
+  React.ComponentRef<typeof RadioGroupPrimitive.Root>,
+  RadioGroupProps
+>(({ className, size = 'md', children, ...props }, ref) => {
+  return (
+    <RadioGroupContext.Provider value={{ size }}>
+      <RadioGroupPrimitive.Root
+        ref={ref}
+        className={cn(radioGroupVariants(), className)}
+        {...props}
+      >
+        {children}
+      </RadioGroupPrimitive.Root>
+    </RadioGroupContext.Provider>
+  );
+});
 
-    const contextValue = React.useMemo(
-      () => ({
-        name,
-        value,
-        onValueChange: handleValueChange,
-        disabled,
-        size,
-      }),
-      [name, value, handleValueChange, disabled, size]
-    );
-
-    return (
-      <RadioGroupContext.Provider value={contextValue}>
-        <div
-          ref={ref}
-          role="radiogroup"
-          className={cn('flex flex-col gap-2', className)}
-          {...props}
-        >
-          {children}
-        </div>
-      </RadioGroupContext.Provider>
-    );
-  }
-);
-
-RadioGroup.displayName = 'RadioGroup';
+RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
 // ============================================================================
 // RadioItem
@@ -101,11 +45,13 @@ RadioGroup.displayName = 'RadioGroup';
 
 const radioVariants = cva(
   [
-    'relative inline-flex items-center justify-center rounded-full border',
+    'aspect-square rounded-full border',
     'transition-colors duration-150 ease-out',
     'focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray-300',
     'focus-visible:outline-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
+    'disabled:cursor-not-allowed disabled:opacity-50',
+    'data-[state=checked]:border-accent-500 data-[state=checked]:bg-accent-500',
+    'data-[state=unchecked]:border-gray-300 data-[state=unchecked]:bg-white',
   ],
   {
     variants: {
@@ -113,19 +59,26 @@ const radioVariants = cva(
         sm: 'h-4 w-4',
         md: 'h-5 w-5',
       },
-      checked: {
-        true: 'border-accent-500 bg-accent-500',
-        false: 'border-gray-300 bg-white',
-      },
     },
     defaultVariants: {
       size: 'md',
-      checked: false,
     },
   }
 );
 
-const indicatorVariants = cva('rounded-full bg-white', {
+const indicatorVariants = cva('flex items-center justify-center', {
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
+
+const dotVariants = cva('rounded-full bg-white', {
   variants: {
     size: {
       sm: 'h-1.5 w-1.5',
@@ -137,44 +90,32 @@ const indicatorVariants = cva('rounded-full bg-white', {
   },
 });
 
-type RadioVariantProps = Omit<VariantProps<typeof radioVariants>, 'checked'>;
+export interface RadioItemProps
+  extends
+    React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>,
+    VariantProps<typeof radioVariants> {}
 
-type RadioButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange' | 'value'>;
+const RadioItem = React.forwardRef<
+  React.ComponentRef<typeof RadioGroupPrimitive.Item>,
+  RadioItemProps
+>(({ className, size: sizeProp, ...props }, ref) => {
+  const { size: contextSize } = React.useContext(RadioGroupContext);
+  const size = sizeProp ?? contextSize ?? 'md';
 
-export interface RadioItemProps extends RadioButtonProps, RadioVariantProps {
-  value: string;
-}
+  return (
+    <RadioGroupPrimitive.Item
+      ref={ref}
+      className={cn(radioVariants({ size }), className)}
+      {...props}
+    >
+      <RadioGroupPrimitive.Indicator className={cn(indicatorVariants({ size }))}>
+        <span className={cn(dotVariants({ size }))} />
+      </RadioGroupPrimitive.Indicator>
+    </RadioGroupPrimitive.Item>
+  );
+});
 
-const RadioItem = React.forwardRef<HTMLButtonElement, RadioItemProps>(
-  ({ className, size: sizeProp, value, disabled: disabledProp, ...props }, ref) => {
-    const group = useRadioGroup();
-    const checked = group.value === value;
-    const disabled = disabledProp ?? group.disabled;
-    const size = sizeProp ?? group.size ?? 'md';
-
-    return (
-      <button
-        ref={ref}
-        type="button"
-        role="radio"
-        aria-checked={checked}
-        disabled={disabled}
-        className={cn(radioVariants({ size, checked }), className)}
-        onClick={() => {
-          if (disabled) {
-            return;
-          }
-          group.onValueChange(value);
-        }}
-        {...props}
-      >
-        {checked && <span aria-hidden="true" className={cn(indicatorVariants({ size }))} />}
-      </button>
-    );
-  }
-);
-
-RadioItem.displayName = 'RadioItem';
+RadioItem.displayName = RadioGroupPrimitive.Item.displayName;
 
 export { RadioGroup, RadioItem, radioVariants };
 export type { RadioSize };

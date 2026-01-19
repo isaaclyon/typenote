@@ -8,7 +8,7 @@ export { Label, labelVariants } from './Label/index.js';
 export type { LabelProps, LabelSize, LabelTone } from './Label/index.js';
 
 export { Checkbox, checkboxVariants } from './Checkbox/index.js';
-export type { CheckboxProps, CheckboxSize, CheckedState } from './Checkbox/index.js';
+export type { CheckboxProps, CheckboxSize } from './Checkbox/index.js';
 
 export { Badge, badgeVariants } from './Badge/index.js';
 export type { BadgeProps, BadgeVariant, BadgeIntent, BadgeSize } from './Badge/index.js';
@@ -41,18 +41,23 @@ export { Textarea, textareaVariants } from './Textarea/index.js';
 export type { TextareaProps, TextareaVariant, TextareaSize } from './Textarea/index.js';
 
 export {
+  Select,
+  SelectGroup,
+  SelectValue,
   SelectTrigger,
   SelectContent,
+  SelectLabel,
   SelectItem,
   SelectSeparator,
-  SelectLabel,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
   selectTriggerVariants,
 } from './Select/index.js';
 export type {
   SelectTriggerProps,
   SelectContentProps,
   SelectItemProps,
-  SelectSeparatorProps,
   SelectLabelProps,
+  SelectSeparatorProps,
   SelectSize,
 } from './Select/index.js';

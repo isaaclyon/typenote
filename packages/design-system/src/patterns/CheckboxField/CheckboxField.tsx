@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
 import { cn } from '../../lib/utils.js';
 import { Checkbox } from '../../primitives/Checkbox/Checkbox.js';
@@ -8,9 +9,9 @@ export interface CheckboxFieldProps {
   id?: string;
   label: string;
   description?: string;
-  checked?: boolean | 'indeterminate';
+  checked?: CheckedState;
   disabled?: boolean;
-  onCheckedChange?: (checked: boolean | 'indeterminate') => void;
+  onCheckedChange?: (checked: CheckedState) => void;
   className?: string;
 }
 
@@ -31,7 +32,7 @@ export function CheckboxField({
         id={labelId}
         checked={checked ?? false}
         disabled={disabled}
-        onCheckedChange={onCheckedChange}
+        {...(onCheckedChange && { onCheckedChange })}
         className="mt-1"
       />
       <div className="space-y-1">

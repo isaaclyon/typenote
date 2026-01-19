@@ -1,11 +1,14 @@
 import * as React from 'react';
 import type { Story } from '@ladle/react';
 import {
+  Select,
   SelectTrigger,
+  SelectValue,
   SelectContent,
   SelectItem,
-  SelectSeparator,
+  SelectGroup,
   SelectLabel,
+  SelectSeparator,
 } from './Select.js';
 import { Label } from '../Label/Label.js';
 
@@ -14,178 +17,197 @@ export default {
 };
 
 export const Overview: Story = () => {
-  const [fruit, setFruit] = React.useState<string | null>(null);
-  const [status, setStatus] = React.useState<string | null>('active');
-  const [showFruitDropdown, setShowFruitDropdown] = React.useState(false);
-  const [showStatusDropdown, setShowStatusDropdown] = React.useState(false);
-
-  const fruits = ['Apple', 'Banana', 'Cherry', 'Dragon Fruit', 'Elderberry'];
-  const statuses = [
-    { value: 'active', label: 'Active' },
-    { value: 'inactive', label: 'Inactive' },
-    { value: 'pending', label: 'Pending' },
-  ];
+  const [fruit, setFruit] = React.useState<string>('');
+  const [status, setStatus] = React.useState<string>('active');
 
   return (
     <div className="space-y-10 p-6">
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-gray-600">Trigger Only</h2>
-        <p className="text-xs text-gray-500">
-          SelectTrigger is a primitive that renders the button. Pair with a popover library for the
-          dropdown.
-        </p>
-        <div className="flex gap-4">
-          <SelectTrigger placeholder="Select a fruit" className="w-48">
-            {fruit}
+        <h2 className="text-sm font-semibold text-gray-600">Basic</h2>
+        <Select value={fruit} onValueChange={setFruit}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select a fruit" />
           </SelectTrigger>
-          <SelectTrigger placeholder="Choose..." className="w-32" size="sm" />
-          <SelectTrigger placeholder="Large" className="w-32" size="lg" />
-        </div>
+          <SelectContent>
+            <SelectItem value="apple">Apple</SelectItem>
+            <SelectItem value="banana">Banana</SelectItem>
+            <SelectItem value="cherry">Cherry</SelectItem>
+            <SelectItem value="dragon-fruit">Dragon Fruit</SelectItem>
+            <SelectItem value="elderberry">Elderberry</SelectItem>
+          </SelectContent>
+        </Select>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">Sizes</h2>
         <div className="flex items-center gap-4">
-          <SelectTrigger size="sm" className="w-32">
-            Small
-          </SelectTrigger>
-          <SelectTrigger size="md" className="w-32">
-            Medium
-          </SelectTrigger>
-          <SelectTrigger size="lg" className="w-32">
-            Large
-          </SelectTrigger>
+          <Select defaultValue="sm">
+            <SelectTrigger size="sm" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="md">Medium</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select defaultValue="md">
+            <SelectTrigger size="md" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="md">Medium</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select defaultValue="lg">
+            <SelectTrigger size="lg" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="lg">Large</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">Variants</h2>
         <div className="flex items-center gap-4">
-          <SelectTrigger variant="default" className="w-32">
-            Default
-          </SelectTrigger>
-          <SelectTrigger variant="error" className="w-32">
-            Error
-          </SelectTrigger>
+          <Select defaultValue="default">
+            <SelectTrigger variant="default" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select defaultValue="error">
+            <SelectTrigger variant="error" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="error">Error</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">States</h2>
         <div className="flex items-center gap-4">
-          <SelectTrigger placeholder="Placeholder" className="w-40" />
-          <SelectTrigger className="w-40">With Value</SelectTrigger>
-          <SelectTrigger disabled className="w-40">
-            Disabled
-          </SelectTrigger>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-gray-600">Interactive Demo</h2>
-        <p className="text-xs text-gray-500">Click trigger to show dropdown simulation</p>
-
-        <div className="relative">
-          <SelectTrigger
-            placeholder="Select a fruit"
-            className="w-48"
-            onClick={() => setShowFruitDropdown(!showFruitDropdown)}
-          >
-            {fruit}
-          </SelectTrigger>
-
-          {showFruitDropdown && (
-            <SelectContent className="absolute top-full mt-1 w-48">
-              {fruits.map((f) => (
-                <SelectItem
-                  key={f}
-                  value={f}
-                  selected={fruit === f}
-                  onClick={() => {
-                    setFruit(f);
-                    setShowFruitDropdown(false);
-                  }}
-                >
-                  {f}
-                </SelectItem>
-              ))}
+          <Select>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Placeholder" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="a">Option A</SelectItem>
             </SelectContent>
-          )}
+          </Select>
+
+          <Select defaultValue="selected">
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="selected">With Value</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select disabled>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Disabled" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="a">Option A</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">With Groups</h2>
-
-        <div className="relative">
-          <SelectTrigger
-            placeholder="Select status"
-            className="w-48"
-            onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-          >
-            {status && statuses.find((s) => s.value === status)?.label}
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select status" />
           </SelectTrigger>
-
-          {showStatusDropdown && (
-            <SelectContent className="absolute top-full mt-1 w-48">
+          <SelectContent>
+            <SelectGroup>
               <SelectLabel>Status</SelectLabel>
-              {statuses.map((s) => (
-                <SelectItem
-                  key={s.value}
-                  value={s.value}
-                  selected={status === s.value}
-                  onClick={() => {
-                    setStatus(s.value);
-                    setShowStatusDropdown(false);
-                  }}
-                >
-                  {s.label}
-                </SelectItem>
-              ))}
-              <SelectSeparator />
-              <SelectItem
-                value="clear"
-                onClick={() => {
-                  setStatus(null);
-                  setShowStatusDropdown(false);
-                }}
-              >
-                Clear selection
-              </SelectItem>
-            </SelectContent>
-          )}
-        </div>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectItem value="archived">Archived</SelectItem>
+          </SelectContent>
+        </Select>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-gray-600">Content Parts</h2>
-        <p className="text-xs text-gray-500">
-          All dropdown parts rendered statically for reference
-        </p>
-
-        <SelectContent className="w-56">
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple" selected>
-            Apple
-          </SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="cherry">Cherry</SelectItem>
-          <SelectSeparator />
-          <SelectLabel>Vegetables</SelectLabel>
-          <SelectItem value="carrot">Carrot</SelectItem>
-          <SelectItem value="broccoli" disabled>
-            Broccoli (sold out)
-          </SelectItem>
-          <SelectItem value="spinach">Spinach</SelectItem>
-        </SelectContent>
+        <h2 className="text-sm font-semibold text-gray-600">Scrollable (Many Options)</h2>
+        <Select>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select a timezone" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>North America</SelectLabel>
+              <SelectItem value="est">Eastern (EST)</SelectItem>
+              <SelectItem value="cst">Central (CST)</SelectItem>
+              <SelectItem value="mst">Mountain (MST)</SelectItem>
+              <SelectItem value="pst">Pacific (PST)</SelectItem>
+            </SelectGroup>
+            <SelectGroup>
+              <SelectLabel>Europe</SelectLabel>
+              <SelectItem value="gmt">GMT</SelectItem>
+              <SelectItem value="cet">Central European (CET)</SelectItem>
+              <SelectItem value="eet">Eastern European (EET)</SelectItem>
+            </SelectGroup>
+            <SelectGroup>
+              <SelectLabel>Asia</SelectLabel>
+              <SelectItem value="ist">India (IST)</SelectItem>
+              <SelectItem value="cst-china">China (CST)</SelectItem>
+              <SelectItem value="jst">Japan (JST)</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">With Label</h2>
         <div className="space-y-2">
-          <Label>Category</Label>
-          <SelectTrigger placeholder="Select category" className="w-48" />
+          <Label htmlFor="category">Category</Label>
+          <Select>
+            <SelectTrigger id="category" className="w-48">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="work">Work</SelectItem>
+              <SelectItem value="personal">Personal</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold text-gray-600">Disabled Items</h2>
+        <Select>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select option" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="available">Available</SelectItem>
+            <SelectItem value="limited" disabled>
+              Limited (sold out)
+            </SelectItem>
+            <SelectItem value="premium">Premium</SelectItem>
+          </SelectContent>
+        </Select>
       </section>
     </div>
   );
