@@ -1,7 +1,7 @@
 # TypeNote Design System - Component Gaps Analysis
 
-**Last Updated:** 2026-01-12
-**Design System Status:** 92/100 (Excellent foundation)
+**Last Updated:** 2026-01-18
+**Design System Status:** Rebuilding after foundation reset
 
 This document identifies missing UI components needed to complete TypeNote's feature set, prioritized by impact and blocking dependencies.
 
@@ -11,10 +11,14 @@ This document identifies missing UI components needed to complete TypeNote's fea
 
 **Current State:**
 
-- ✅ 33 components implemented (7 atoms, 16 molecules, 9 organisms)
-- ✅ 94% Ladle story coverage (31/33 components)
+- ⚠️ Design system reset (foundation preserved; components rebuilding)
+- ✅ Core atoms/molecules being rebuilt in Ladle (Button, Input, Checkbox, Badge, Skeleton, IconButton, Divider, Tooltip, Card, SearchInput)
 - ✅ Strong architectural patterns (CVA, cn utility, TypeScript strict mode)
-- ✅ Production-ready complex components (AppShell, Sidebar, CommandPalette, InteractiveEditor, SettingsModal)
+- ⏳ Complex components (Sidebar, AppShell, editor, overlays) are pending rebuild
+
+**Notes:**
+
+- This document still references pre-reset components; update as rebuild progresses.
 
 **The Gap:**
 The design system has excellent **primitives** (atoms/molecules) but is missing **domain-specific molecules** for:
@@ -69,10 +73,11 @@ A unified property input system that handles all property types defined in the b
 **Design Primitives Available:**
 
 - ✅ Input (basic text)
-- ✅ Checkbox, Switch
-- ✅ Select (HTML select)
+- ✅ Checkbox
+- ❌ Switch (not rebuilt yet)
+- ❌ SelectTrigger (not rebuilt yet)
 - ✅ MiniCalendar (date grid)
-- ✅ CommandPalette (search/select pattern for refs)
+- ⏳ CommandPalette (reset; needs rebuild)
 
 **What to Build:**
 
@@ -196,7 +201,8 @@ A unified property input system that handles all property types defined in the b
 - ✅ `@radix-ui/react-dropdown-menu` installed
 - ✅ `@radix-ui/react-context-menu` installed
 - ✅ Button (for triggers)
-- ✅ Icon components (Lucide React)
+- ✅ Icon components (Phosphor)
+- ✅ Tooltip (Radix)
 
 **What to Build:**
 
@@ -262,10 +268,10 @@ const columns: ColumnDef<ObjectType>[] = [
 **Design Primitives Available:**
 
 - ✅ `@tanstack/react-table` v8.21.3 installed
-- ✅ ScrollArea (for table body)
+- ⏳ ScrollArea (not rebuilt yet)
 - ✅ Badge (for status/tags)
 - ✅ Button (for column headers, actions)
-- ✅ EmptyState (for no results)
+- ⏳ EmptyState (not rebuilt yet)
 
 **What to Build:**
 
@@ -311,11 +317,11 @@ const columns: ColumnDef<ObjectType>[] = [
 
 **Design Primitives Available:**
 
-- ✅ Lucide React (installed, ~1,500 icons)
-- ✅ Phosphor Icons (installed, ~6,000 icons)
+- ⚠️ Lucide React (not in current design-system rebuild)
+- ✅ Phosphor Icons (design-system dependency)
 - ✅ Input (for search)
-- ✅ ScrollArea (for icon grid)
-- ✅ Modal (for picker overlay)
+- ⏳ ScrollArea (for icon grid)
+- ⏳ Modal (for picker overlay)
 - ✅ Button (for trigger + icon buttons)
 
 **What to Build:**
@@ -369,7 +375,7 @@ const columns: ColumnDef<ObjectType>[] = [
 
 - ✅ Button (for color swatches)
 - ✅ Input (for hex input)
-- ✅ Modal (for picker overlay)
+- ⏳ Modal (for picker overlay)
 
 **What to Build:**
 
@@ -425,10 +431,10 @@ const columns: ColumnDef<ObjectType>[] = [
 
 **Design Primitives Available:**
 
-- ✅ CommandPalette (search + keyboard nav pattern)
+- ⏳ CommandPalette (reset; needs rebuild)
 - ✅ Badge/Tag (for selected items)
 - ✅ Input (for search)
-- ✅ ScrollArea (for results)
+- ⏳ ScrollArea (for results)
 - ✅ Checkbox (for multi-select)
 
 **What to Build:**

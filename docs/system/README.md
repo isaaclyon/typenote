@@ -435,7 +435,7 @@ style={{
 
 **In the repo:**
 
-- `.claude/rules/` — Architecture & component rules
+- `agent-docs/rules/` — Architecture & component rules
 - `docs/foundational/` — Bootstrap plan, backend contract
 - `docs/system/` — System documentation (this directory)
 
@@ -452,7 +452,7 @@ style={{
 
 ### Icon Library
 
-- **Phosphor Icons** — All UI icons (@phosphor-icons/react)
+- **Phosphor Icons** — Primary UI icons (@phosphor-icons/react)
 
 ### Fonts
 
@@ -466,12 +466,13 @@ style={{
 
 When proposing changes:
 
-1. **Document thoroughly** — Add to DESIGN_SYSTEM_BREAKDOWN.md
-2. **Include variants** — Show default, hover, active states
-3. **Specify tokens** — Reference colors, spacing, typography
-4. **Test accessibility** — Verify contrast, focus indicators
-5. **Consider responsiveness** — How does it scale?
-6. **Update references** — Keep QUICK_REFERENCE.md current
+1. **Build in Ladle first** — Stories before app integration
+2. **Document thoroughly** — Add to DESIGN_SYSTEM_BREAKDOWN.md
+3. **Include variants** — Show default, hover, active states
+4. **Specify tokens** — Reference colors, spacing, typography
+5. **Test accessibility** — Verify contrast, focus indicators
+6. **Consider responsiveness** — How does it scale?
+7. **Update references** — Keep QUICK_REFERENCE.md current
 
 ---
 
@@ -502,6 +503,12 @@ A: Use 150ms for hover/micro, 200ms for transitions. Always ease-out. No spring/
 
 ## Changelog
 
+### Version 1.1 (2026-01-18)
+
+- Design system reset documented (foundation preserved)
+- Rebuild in progress with Ladle-first workflow
+- Core atoms/molecules now tracked in inventory
+
 ### Version 1.0 (2026-01-10)
 
 - Initial design system documentation
@@ -530,6 +537,6 @@ Refer to:
 
 ---
 
-**Last Updated:** 2026-01-10
+**Last Updated:** 2026-01-18
 **Source:** `/docs/system/design_system.jsx` (3,553 lines)
 **Documentation:** Complete ✓

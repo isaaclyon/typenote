@@ -2,6 +2,8 @@
 
 Quick reference guide for all components and systems defined in the design system.
 
+**Last Updated:** 2026-01-18
+
 ---
 
 ## Design Systems (Foundation)
@@ -75,45 +77,39 @@ Quick reference guide for all components and systems defined in the design syste
 
 ## UI Components
 
-### Simple/Atomic Components
+### Current Implementation (Post-Reset)
 
-#### 1. Button
+Design system rebuild is in progress. The following components are currently implemented in `packages/design-system` with Ladle stories.
 
-**Variants:** Primary, Secondary, Tertiary, Danger
-**States:** Default, Hover, Focus, Active, Disabled, Loading
-**Sizes:** 36px, 40px heights
-**Props:** Text, Icon, Size, Variant, Disabled, Loading, onClick
+**Atoms:**
 
-#### 2. Text Input
+- Button (primary/secondary/outline/ghost/destructive/neutral/success)
+- Input (default/subtle/error/success)
+- Label
+- Checkbox
+- Badge (intent + solid/outline)
+- Skeleton
+- IconButton
+- Divider
+- Tooltip
 
-**States:** Default, Focused, Filled, Error, Disabled
-**Props:** Label, Placeholder, Value, Error message, Disabled, Type
-**Sizes:** Single line, multiline
-**Min height:** 40px
+**Molecules:**
 
-#### 3. Tag / Badge
+- CheckboxField
+- SearchInput
+- Card
 
-**Types:** Plain tag, Status badge
-**Props:** Label, Color, Size, Removable
-**Sizing:** Small (11px), 2px 6px padding
+---
 
-#### 4. Status Badge
+### Planned Atoms (Not Implemented Yet)
 
-**Types:** Success, Warning, Error, Info, In Progress, Completed, Overdue
-**Style:** 20% opacity background + darker text
-**Props:** Status type, Label, Size
-
-#### 5. Keyboard Key (<kbd>)
-
-**Props:** Key label, Size
-**Style:** Monospace, bordered, light background
-**Used for:** Shortcut documentation
-
-#### 6. Checkbox
-
-**States:** Unchecked, Checked, Indeterminate, Disabled
-**Accent color:** #6495ED (cornflower)
-**Size:** 14px
+- Switch
+- Radio
+- SelectTrigger
+- Textarea
+- Keycap
+- Spinner
+- Avatar (deprioritized for single-player)
 
 ---
 
@@ -403,6 +399,7 @@ This cannot be undone.
 ## Icon System
 
 **Library:** Phosphor Icons (@phosphor-icons/react)
+**Status:** In use (design-system dependency)
 
 **Common Icons Used:**
 
@@ -507,7 +504,7 @@ Overlays
 
 - **Sidebar type items:** Lazy render long lists
 - **Type browser rows:** Virtualize long tables
-- **Tooltips/popovers:** Lazy load on hover
+- **Tooltips/popovers:** Lazy load on hover (Radix Tooltip now in use)
 - **Mini calendar:** Generate days dynamically
 - **Animations:** Use CSS transforms for smooth 60fps
 
