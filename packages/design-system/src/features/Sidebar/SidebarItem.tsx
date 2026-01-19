@@ -27,12 +27,12 @@ export function SidebarItem({
 
   // Build tooltip content for collapsed mode
   const tooltipContent = (
-    <>
-      {label}
+    <span className="inline-flex items-center gap-2">
+      <span>{label}</span>
       {count !== undefined && count > 0 && (
-        <span className="ml-1.5 text-muted-foreground">({count})</span>
+        <span className="text-muted-foreground opacity-60">{count}</span>
       )}
-    </>
+    </span>
   );
 
   // Compute background style from iconColor
