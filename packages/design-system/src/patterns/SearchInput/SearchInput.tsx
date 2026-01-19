@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { MagnifyingGlass, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, X } from '@phosphor-icons/react/ssr';
 
 import { cn } from '../../lib/utils.js';
-import { IconButton } from '../IconButton/IconButton.js';
-import { Input } from '../Input/Input.js';
-import type { InputSize, InputVariant } from '../Input/Input.js';
+import { IconButton } from '../../primitives/IconButton/IconButton.js';
+import { Input } from '../../primitives/Input/Input.js';
+import type { InputSize, InputVariant } from '../../primitives/Input/Input.js';
 
 type SearchInputSize = Extract<InputSize, 'sm' | 'md'>;
 

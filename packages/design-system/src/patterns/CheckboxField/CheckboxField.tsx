@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { cn } from '../../lib/utils.js';
-import { Checkbox } from '../Checkbox/Checkbox.js';
-import { Label } from '../Label/Label.js';
+import { Checkbox } from '../../primitives/Checkbox/Checkbox.js';
+import { Label } from '../../primitives/Label/Label.js';
 
 export interface CheckboxFieldProps {
   id?: string;

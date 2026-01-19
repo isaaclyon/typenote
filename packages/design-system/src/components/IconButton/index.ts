@@ -1,2 +1,6 @@
-export { IconButton, iconButtonVariants } from './IconButton.js';
-export type { IconButtonProps, IconButtonVariant, IconButtonSize } from './IconButton.js';
+export { IconButton, iconButtonVariants } from '../../primitives/IconButton/index.js';
+export type {
+  IconButtonProps,
+  IconButtonVariant,
+  IconButtonSize,
+} from '../../primitives/IconButton/index.js';

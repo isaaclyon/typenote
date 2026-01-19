@@ -1,2 +1,2 @@
-export { Tooltip } from './Tooltip.js';
-export type { TooltipProps, TooltipSide, TooltipAlign } from './Tooltip.js';
+export { Tooltip } from '../../primitives/Tooltip/index.js';
+export type { TooltipProps, TooltipSide, TooltipAlign } from '../../primitives/Tooltip/index.js';

@@ -2,7 +2,7 @@
 
 ## Design System Rebuild (Fresh Start)
 
-**Status:** Active — Ready for component development
+**Status:** Active — Migration in progress
 **Approach:** Ladle-first development (components built in sandbox before desktop app)
 
 ### Current State
@@ -10,22 +10,24 @@
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
 - ✅ Documentation preserved: agent-docs/to-extract/skills/design-principles/, /docs/system/
 - ✅ Ladle configured and ready
-- ✅ Button/Input/Label atoms implemented with stories
-- ✅ Checkbox atom + CheckboxField molecule implemented with stories
+- ✅ Button/Input/Label primitives implemented with stories
+- ✅ Checkbox primitive + CheckboxField pattern implemented with stories
+- ✅ IconButton/SearchInput/Card/Divider/Tooltip added with stories
 - ✅ Focus styling updated to subtle outlines
+- ⚠️ Primitives/patterns migration in progress (compat re-exports in components/)
 - ❌ Renderer is placeholder only (no sidebar, no editor, no navigation)
 
 ### Build Sequence
 
-Follow bottom-up approach as documented in `agent-docs/rules/design-system.md`:
+Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
 
-1. **Atoms** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge ✅, Skeleton ✅, Divider ✅
-2. **Molecules** — CheckboxField ✅, IconButton ✅, SearchInput ✅, Card ✅
-3. **Organisms** — Sidebar, AppShell, InteractiveEditor
+1. **Primitives** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge ✅, Skeleton ✅, IconButton ✅, Divider ✅, Tooltip ✅, Card ✅
+2. **Patterns** — CheckboxField ✅, SearchInput ✅
+3. **Features** — Sidebar, AppShell, InteractiveEditor
 
-### Atom Inventory (Draft)
+### Primitive Inventory (Draft)
 
-Core atoms for a note-taking app:
+Core primitives for a note-taking app:
 
 - Button ✅
 - Input ✅
@@ -35,8 +37,9 @@ Core atoms for a note-taking app:
 - Skeleton ✅
 - IconButton ✅
 - Divider ✅
+- Tooltip ✅
+- Card ✅
 - Avatar (deprioritized for single-player)
-- Tooltip
 - Switch
 - Radio
 - SelectTrigger
@@ -46,9 +49,10 @@ Core atoms for a note-taking app:
 
 ### Immediate Next Steps
 
-1. Continue atoms: Tooltip, Switch, Radio
-2. Backfill atoms: SelectTrigger, Textarea, Keycap, Spinner
-3. Keep iterating in Ladle before desktop integration
+1. Finish primitives: Switch, Radio
+2. Backfill primitives: SelectTrigger, Textarea, Keycap, Spinner
+3. Finish migration: update imports in renderer + remove components/ when safe
+4. Keep iterating in Ladle before desktop integration
 
 ### Reference
 

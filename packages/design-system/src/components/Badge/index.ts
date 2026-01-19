@@ -1,2 +1,7 @@
-export { Badge, badgeVariants } from './Badge.js';
-export type { BadgeProps, BadgeVariant, BadgeIntent, BadgeSize } from './Badge.js';
+export { Badge, badgeVariants } from '../../primitives/Badge/index.js';
+export type {
+  BadgeProps,
+  BadgeVariant,
+  BadgeIntent,
+  BadgeSize,
+} from '../../primitives/Badge/index.js';

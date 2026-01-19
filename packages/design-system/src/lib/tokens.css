@@ -6,6 +6,8 @@
 
 /* Tell Tailwind v4 where to find source files for utility generation */
 @source '../components';
+@source '../primitives';
+@source '../patterns';
 @source '../stories';
 @source '../../.ladle';
 

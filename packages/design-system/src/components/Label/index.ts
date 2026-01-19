@@ -1,2 +1,2 @@
-export { Label, labelVariants } from './Label.js';
-export type { LabelProps, LabelSize, LabelTone } from './Label.js';
+export { Label, labelVariants } from '../../primitives/Label/index.js';
+export type { LabelProps, LabelSize, LabelTone } from '../../primitives/Label/index.js';

@@ -1,2 +1,6 @@
-export { Divider } from './Divider.js';
-export type { DividerProps, DividerOrientation, DividerTone } from './Divider.js';
+export { Divider } from '../../primitives/Divider/index.js';
+export type {
+  DividerProps,
+  DividerOrientation,
+  DividerTone,
+} from '../../primitives/Divider/index.js';

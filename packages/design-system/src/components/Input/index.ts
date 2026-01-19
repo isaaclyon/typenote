@@ -1,2 +1,2 @@
-export { Input, inputVariants } from './Input.js';
-export type { InputProps, InputSize, InputVariant } from './Input.js';
+export { Input, inputVariants } from '../../primitives/Input/index.js';
+export type { InputProps, InputSize, InputVariant } from '../../primitives/Input/index.js';

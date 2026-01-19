@@ -1,2 +1,2 @@
-export { Card } from './Card.js';
-export type { CardProps } from './Card.js';
+export { Card } from '../../primitives/Card/index.js';
+export type { CardProps } from '../../primitives/Card/index.js';

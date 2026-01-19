@@ -1,5 +1,5 @@
 import type { Story } from '@ladle/react';
-import { Star } from '@phosphor-icons/react';
+import { Star } from '@phosphor-icons/react/ssr';
 import { Button } from '../Button/Button.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import { Tooltip } from './Tooltip.js';

@@ -1,5 +1,5 @@
 import type { Story } from '@ladle/react';
-import { Plus, Star, X } from '@phosphor-icons/react';
+import { Plus, Star, X } from '@phosphor-icons/react/ssr';
 import { IconButton } from './IconButton.js';
 
 const sizeIconMap = {

@@ -1,2 +1,2 @@
-export { CheckboxField } from './CheckboxField.js';
-export type { CheckboxFieldProps } from './CheckboxField.js';
+export { CheckboxField } from '../../patterns/CheckboxField/index.js';
+export type { CheckboxFieldProps } from '../../patterns/CheckboxField/index.js';

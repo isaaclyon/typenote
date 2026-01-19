@@ -1,2 +1,2 @@
-export { Checkbox, checkboxVariants } from './Checkbox.js';
-export type { CheckboxProps, CheckboxSize, CheckedState } from './Checkbox.js';
+export { Checkbox, checkboxVariants } from '../../primitives/Checkbox/index.js';
+export type { CheckboxProps, CheckboxSize, CheckedState } from '../../primitives/Checkbox/index.js';

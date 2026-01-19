@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Story } from '@ladle/react';
 import { Checkbox } from './Checkbox.js';
 import { Label } from '../Label/Label.js';
-import { CheckboxField } from '../CheckboxField/CheckboxField.js';
+import { CheckboxField } from '../../patterns/CheckboxField/CheckboxField.js';
 
 export const Overview: Story = () => {
   const [checked, setChecked] = React.useState(false);

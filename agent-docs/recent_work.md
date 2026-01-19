@@ -1,23 +1,33 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - Design System Atoms Continued)
+## Latest Session (2026-01-18 - Design System Migration + Primitives/Patterns)
 
 ### What was accomplished
 
-- Added Badge + Skeleton atoms with stories
-- Added IconButton atom with stories
-- Refined IconButton story glyph sizing for consistency
+- Added IconButton, SearchInput, Card, Divider, Tooltip components with stories
+- Adopted primitives/patterns/features org in docs and rules
+- Started migration into `src/primitives/` + `src/patterns/` with compatibility re-exports
+- Integrated Phosphor icons via SSR imports (runtime working; Ladle restart still flaky)
 
 ### Key files changed
 
-- `packages/design-system/src/components/Badge/*`
-- `packages/design-system/src/components/Skeleton/*`
-- `packages/design-system/src/components/IconButton/*`
-- `packages/design-system/src/components/index.ts`
+- `packages/design-system/src/primitives/*`
+- `packages/design-system/src/patterns/*`
+- `packages/design-system/src/components/*`
+- `packages/design-system/src/index.ts`
+- `packages/design-system/package.json`
+- `agent-docs/rules/design-system.md`
+- `docs/system/*`
 
 ### Commits
 
-- `e764b02` feat(design-system): add badge and skeleton atoms
+- `bab77d6` docs: update design-system progress notes
+- `0d74c82` chore: add opencode config commands
+- `055fb62` feat(design-system): add iconbutton and search input
+- `59b1404` feat(design-system): add divider atom
+- `e47d2e9` feat(design-system): add tooltip atom
+- `5145793` docs(system): refresh inventory after reset
+- `efde68a` docs(system): adopt primitives and patterns
 
 ---
 
