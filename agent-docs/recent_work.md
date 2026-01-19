@@ -1,6 +1,44 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - Migration Complete)
+## Latest Session (2026-01-18 - Primitives Complete + Radix Migration)
+
+### What was accomplished
+
+- Built 6 new primitives: Switch, Radio, Keycap, Textarea, Select, Spinner
+- Migrated 5 primitives to shadcn/Radix for proper accessibility:
+  - Checkbox → @radix-ui/react-checkbox
+  - Label → @radix-ui/react-label
+  - Switch → @radix-ui/react-switch
+  - Radio → @radix-ui/react-radio-group
+  - Select → @radix-ui/react-select
+- All 16 primitives now complete with Ladle stories
+- Updated CheckboxField pattern to work with Radix Checkbox
+- All checks passing: typecheck, lint, Ladle build (16 stories)
+
+### Key files changed
+
+- `packages/design-system/src/primitives/Switch/` (new)
+- `packages/design-system/src/primitives/Radio/` (new, then Radix)
+- `packages/design-system/src/primitives/Keycap/` (new)
+- `packages/design-system/src/primitives/Textarea/` (new)
+- `packages/design-system/src/primitives/Select/` (new, then Radix)
+- `packages/design-system/src/primitives/Spinner/` (new)
+- `packages/design-system/src/primitives/Checkbox/` (Radix migration)
+- `packages/design-system/src/primitives/Label/` (Radix migration)
+- `packages/design-system/src/patterns/CheckboxField/` (updated for Radix)
+- `packages/design-system/package.json` (added 5 Radix deps)
+
+### Commits
+
+- `fd4cf3c` feat(design-system): add spinner primitive
+- `6120d2f` refactor(design-system): replace primitives with shadcn/Radix implementations
+- `a800321` feat(design-system): add keycap, textarea, and select primitives
+- `af27675` feat(design-system): add radio primitive
+- `9ccc7b1` feat(design-system): add switch primitive
+
+---
+
+## Previous Session (2026-01-18 - Migration Complete)
 
 ### What was accomplished
 

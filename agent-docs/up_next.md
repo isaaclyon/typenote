@@ -2,7 +2,7 @@
 
 ## Design System Rebuild (Fresh Start)
 
-**Status:** Active — Migration in progress
+**Status:** Active — Primitives complete, ready for features
 **Approach:** Ladle-first development (components built in sandbox before desktop app)
 
 ### Current State
@@ -10,54 +10,52 @@
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
 - ✅ Documentation preserved: agent-docs/to-extract/skills/design-principles/, /docs/system/
 - ✅ Ladle configured and ready
-- ✅ 10 primitives implemented with co-located stories
+- ✅ **16 primitives** implemented with co-located stories
 - ✅ 2 patterns implemented with co-located stories
 - ✅ Focus styling updated to subtle outlines
 - ✅ Primitives/patterns migration complete (components/ has compat re-exports)
+- ✅ **All interactive primitives now use shadcn/Radix** for accessibility
 - ❌ Renderer is placeholder only (no sidebar, no editor, no navigation)
 
 ### Build Sequence
 
 Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
 
-1. **Primitives** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge ✅, Skeleton ✅, IconButton ✅, Divider ✅, Tooltip ✅, Card ✅
-2. **Patterns** — CheckboxField ✅, SearchInput ✅
+1. **Primitives** ✅ COMPLETE (16 total)
+2. **Patterns** — CheckboxField ✅, SearchInput ✅ (more as needed)
 3. **Features** — Sidebar, AppShell, InteractiveEditor
 
-### Primitive Inventory (Draft)
+### Primitive Inventory
 
-Core primitives for a note-taking app:
+All core primitives complete:
 
 - Button ✅
 - Input ✅
-- Label ✅
-- Checkbox ✅
+- Label ✅ (Radix)
+- Checkbox ✅ (Radix)
 - Badge ✅
 - Skeleton ✅
 - IconButton ✅
 - Divider ✅
-- Tooltip ✅
+- Tooltip ✅ (Radix)
 - Card ✅
+- Switch ✅ (Radix)
+- Radio ✅ (Radix)
+- Select ✅ (Radix)
+- Textarea ✅
+- Keycap ✅
+- Spinner ✅
 - Avatar (deprioritized for single-player)
-- Switch
-- Radio
-- SelectTrigger
-- Textarea
-- Keycap
-- Spinner
 
 ### Immediate Next Steps
 
-1. Finish primitives: Switch, Radio
-2. Backfill primitives: SelectTrigger, Textarea, Keycap, Spinner
-3. Finish migration: update imports in renderer + remove components/ when safe
-4. Keep iterating in Ladle before desktop integration
+1. **Start features** — Sidebar, AppShell, InteractiveEditor
+2. Build patterns as needed during feature development
+3. Integrate features into desktop renderer
 
-### Migration Completed (2026-01-18)
+### Folder Structure
 
-Folder structure is finalized:
-
-- `src/primitives/` — 10 atoms with stories
+- `src/primitives/` — 16 atoms with stories
 - `src/patterns/` — 2 molecules with stories
 - `src/components/` — backward-compat re-exports only
 
@@ -96,6 +94,11 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                              | Date       | Commits   |
 | ------------------------------------ | ---------- | --------- |
+| Spinner primitive                    | 2026-01-18 | `fd4cf3c` |
+| Radix migration (5 primitives)       | 2026-01-18 | `6120d2f` |
+| Keycap, Textarea, Select primitives  | 2026-01-18 | `a800321` |
+| Radio primitive                      | 2026-01-18 | `af27675` |
+| Switch primitive                     | 2026-01-18 | `9ccc7b1` |
 | Primitives/Patterns Migration        | 2026-01-18 | `e3a0c5d` |
 | Design System Atoms + Focus Outlines | 2026-01-18 | `af21b05` |
 | Design System Full Reset             | 2026-01-18 | `3fdbd5d` |
