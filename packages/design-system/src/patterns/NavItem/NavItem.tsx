@@ -67,6 +67,18 @@ export function NavItem({
   // Show hover elements when hovered OR when menu is open
   const showHoverElements = isHovered || isMenuOpen;
 
+  // Compute background style from iconColor
+  // Active state: stronger tint (26 = ~15% opacity)
+  // Hover state: lighter tint (1A = 10% opacity)
+  const computedStyle: React.CSSProperties | undefined =
+    iconColor && !disabled
+      ? active
+        ? { backgroundColor: `${iconColor}26` }
+        : showHoverElements
+          ? { backgroundColor: `${iconColor}1A` }
+          : undefined
+      : undefined;
+
   const handleClick = (e: React.MouseEvent) => {
     if (disabled) return;
     if (onClick) {
@@ -157,10 +169,12 @@ export function NavItem({
     'group flex h-7 w-full items-center gap-2 rounded-md px-2',
     'transition-colors duration-150 ease-out',
     'focus-visible:outline focus-visible:outline-1 focus-visible:outline-ring',
-    // Default state
-    !active && !disabled && 'text-foreground hover:bg-muted',
-    // Active state
-    active && !disabled && 'bg-accent text-accent-foreground',
+    // Default state (use hover:bg-muted only if no iconColor, otherwise inline style handles it)
+    !active && !disabled && 'text-foreground',
+    !active && !disabled && !iconColor && 'hover:bg-muted',
+    // Active state (use bg-accent only if no iconColor, otherwise inline style handles it)
+    active && !disabled && !iconColor && 'bg-accent text-accent-foreground',
+    active && !disabled && iconColor && 'text-foreground',
     // Disabled state
     disabled && 'pointer-events-none opacity-50',
     className
@@ -172,6 +186,7 @@ export function NavItem({
       <a
         href={href}
         className={baseClasses}
+        style={computedStyle}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
@@ -186,6 +201,7 @@ export function NavItem({
       role="button"
       tabIndex={disabled ? -1 : 0}
       className={baseClasses}
+      style={computedStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
