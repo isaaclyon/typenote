@@ -1,33 +1,27 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - Design System Migration + Primitives/Patterns)
+## Latest Session (2026-01-18 - Migration Complete)
 
 ### What was accomplished
 
-- Added IconButton, SearchInput, Card, Divider, Tooltip components with stories
-- Adopted primitives/patterns/features org in docs and rules
-- Started migration into `src/primitives/` + `src/patterns/` with compatibility re-exports
-- Integrated Phosphor icons via SSR imports (runtime working; Ladle restart still flaky)
+- Completed primitives/patterns folder structure migration
+- Moved 10 primitives to `src/primitives/` with co-located stories
+- Moved 2 patterns to `src/patterns/` with co-located stories
+- Converted `src/components/` to backward-compat re-exports only
+- Fixed duplicate exports in main `index.ts`
+- Removed redundant `.tsx` files from components/ (kept only `index.ts`)
+- All checks passing: typecheck, lint, Ladle build (12 stories)
 
 ### Key files changed
 
-- `packages/design-system/src/primitives/*`
-- `packages/design-system/src/patterns/*`
-- `packages/design-system/src/components/*`
+- `packages/design-system/src/primitives/` (10 components + stories)
+- `packages/design-system/src/patterns/` (2 components + stories)
+- `packages/design-system/src/components/` (re-exports only)
 - `packages/design-system/src/index.ts`
-- `packages/design-system/package.json`
-- `agent-docs/rules/design-system.md`
-- `docs/system/*`
 
 ### Commits
 
-- `bab77d6` docs: update design-system progress notes
-- `0d74c82` chore: add opencode config commands
-- `055fb62` feat(design-system): add iconbutton and search input
-- `59b1404` feat(design-system): add divider atom
-- `e47d2e9` feat(design-system): add tooltip atom
-- `5145793` docs(system): refresh inventory after reset
-- `efde68a` docs(system): adopt primitives and patterns
+- `e3a0c5d` refactor(design-system): migrate components to primitives/patterns structure
 
 ---
 
@@ -110,21 +104,7 @@ Reference: `pre-reset` git tag at `88eefdd` contains all deleted code.
 
 ---
 
-## Historical Milestones (Code Deleted in Reset)
+## Historical Milestones (Pre-Reset)
 
-These features were completed before the full reset. The code no longer exists but represents the implementation history:
-
-| Phase       | Description                                             | Date       |
-| ----------- | ------------------------------------------------------- | ---------- |
-| DarkModeFix | TanStack Query migration for useSettings (shared state) | 2026-01-17 |
-| TanStack+RR | TanStack Query + React Router refactor                  | 2026-01-17 |
-| E2EFixes    | E2E test fixes for TypeBrowser UI changes               | 2026-01-16 |
-| IntEditor   | InteractiveEditor migration (~30 files deleted)         | 2026-01-15 |
-| AppShell    | 3-column layout + sidebars + hooks                      | 2026-01-15 |
-| Duplicate   | Object duplication (7 TDD phases, 39 tests)             | 2026-01-15 |
-| Trash       | Restore from trash with FTS/refs re-index               | 2026-01-14 |
-| Pinning     | Object pinning/favorites for sidebar (54 tests)         | 2026-01-14 |
-| TypeBrowser | Phases 1-3 (sort/virtualize/rich cells)                 | 2026-01-14 |
-| (Earlier)   | Phases 0-7 + Templates + Tags + CLI + E2E               | 2026-01-04 |
-
-Note: Backend packages (api, core, storage) and E2E test infrastructure remain intact.
+Backend packages (api, core, storage) and E2E test infrastructure remain intact.
+Features completed before 2026-01-18 reset: Object duplication, Trash/restore, Pinning, TypeBrowser, Templates, Tags, CLI, E2E tests.
