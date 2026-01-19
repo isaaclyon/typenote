@@ -60,7 +60,7 @@ export const Default: Story = () => {
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        Full HeaderBar with all elements: search, breadcrumbs, settings, and theme toggle.
+        Full HeaderBar: breadcrumbs (left), search + theme toggle + settings (right).
       </p>
     </div>
   );
@@ -122,7 +122,7 @@ export const NoBreadcrumbs: Story = () => {
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        HeaderBar without breadcrumbs (e.g., on a dashboard or home view).
+        HeaderBar without breadcrumbs — right-side actions only.
       </p>
     </div>
   );
@@ -137,7 +137,7 @@ export const MinimalActions: Story = () => (
       />
     </div>
     <p className="text-xs text-muted-foreground">
-      HeaderBar with only search and breadcrumbs (no settings or theme toggle).
+      HeaderBar with breadcrumbs and search only (no settings or theme toggle).
     </p>
   </div>
 );

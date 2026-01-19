@@ -37,9 +37,8 @@ export interface HeaderBarProps {
  * App-level toolbar that sits above the content area (not spanning the sidebar).
  *
  * Layout:
- * - Left: Search trigger (command palette)
- * - Center: Breadcrumbs (absolutely centered)
- * - Right: Settings button, Theme toggle
+ * - Left: Breadcrumbs (navigation path)
+ * - Right: Search trigger, Theme toggle, Settings button
  *
  * Specs:
  * - Height: 40px (compact)
@@ -65,23 +64,20 @@ export function HeaderBar({
         className
       )}
     >
-      {/* Left: Search trigger */}
+      {/* Left: Breadcrumbs */}
       <div className="flex items-center">
+        {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+      </div>
+
+      {/* Right: Search + Actions */}
+      <div className="ml-auto flex items-center gap-2">
         <SearchTrigger
           {...(onSearchClick && { onClick: onSearchClick })}
           {...(searchShortcut && { shortcut: searchShortcut })}
         />
-      </div>
 
-      {/* Center: Breadcrumbs (absolutely centered) */}
-      {breadcrumbs.length > 0 && (
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <Breadcrumbs items={breadcrumbs} />
-        </div>
-      )}
+        {onThemeToggle && <ThemeToggle theme={theme} onToggle={onThemeToggle} />}
 
-      {/* Right: Actions */}
-      <div className="ml-auto flex items-center gap-1">
         {onSettingsClick && (
           <Tooltip content="Settings" side="bottom">
             <IconButton variant="ghost" size="sm" aria-label="Settings" onClick={onSettingsClick}>
@@ -89,8 +85,6 @@ export function HeaderBar({
             </IconButton>
           </Tooltip>
         )}
-
-        {onThemeToggle && <ThemeToggle theme={theme} onToggle={onThemeToggle} />}
       </div>
     </header>
   );
