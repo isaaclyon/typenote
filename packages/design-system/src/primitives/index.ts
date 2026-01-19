@@ -61,3 +61,6 @@ export type {
   SelectSeparatorProps,
   SelectSize,
 } from './Select/index.js';
+
+export { Spinner, spinnerVariants } from './Spinner/index.js';
+export type { SpinnerProps, SpinnerSize } from './Spinner/index.js';
