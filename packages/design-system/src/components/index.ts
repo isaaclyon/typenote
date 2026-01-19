@@ -24,3 +24,6 @@ export type { IconButtonProps, IconButtonVariant, IconButtonSize } from './IconB
 
 export { SearchInput } from './SearchInput/index.js';
 export type { SearchInputProps, SearchInputSize, SearchInputVariant } from './SearchInput/index.js';
+
+export { Card } from './Card/index.js';
+export type { CardProps } from './Card/index.js';
