@@ -32,17 +32,38 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - Section items slightly indented (`ml-1`)
   - Footer: Settings/theme (temporary, will relocate)
   - Uses semantic token `border-sidebar-border`
+  - Type-colored hover/active states (tinted backgrounds from iconColor)
 
-**Next:**
+**Next (AppShell decomposition):**
 
-- AppShell — Layout container with sidebar + main content area
-- InteractiveEditor — TipTap/ProseMirror integration
+AppShell is decomposed into smaller features built bottom-up:
+
+1. **TitleBar** (in progress) — Custom Electron window chrome
+   - Height: 28px compact
+   - Full width, spans above sidebar and content
+   - Entire region is draggable (`-webkit-app-region: drag`)
+   - macOS: Traffic lights positioned via Electron config (already done: x:16, y:16)
+   - Windows: Native overlay controls (already configured in main process)
+   - No app content in title bar (branding/breadcrumbs handled elsewhere)
+
+2. **HeaderBar** — App-level toolbar
+   - Search (command palette trigger)
+   - Settings access
+   - Theme toggle (light/dark)
+   - Breadcrumbs or page title (future)
+
+3. **AppShell** — Composition layer
+   - Combines TitleBar + HeaderBar + Sidebar + main content
+   - Controlled state pattern (parent owns sidebar collapsed state)
+   - Overall layout grid
+
+4. **InteractiveEditor** — TipTap/ProseMirror integration (future)
 
 ### Immediate Next Steps
 
-1. **Build AppShell feature** — Layout container with sidebar + main content
-2. Start editor integration (InteractiveEditor)
-3. Decide permanent location for search, settings, theme toggle
+1. **Build TitleBar feature** — Custom Electron window chrome with drag regions
+2. Build HeaderBar feature — Search, settings, theme toggle
+3. Compose into AppShell
 
 ### Folder Structure
 
@@ -88,6 +109,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                 | Date       | Commits   |
 | --------------------------------------- | ---------- | --------- |
+| Type-colored hover/active states        | 2026-01-19 | `4888b68` |
 | PlaceholderAction + Sidebar refinements | 2026-01-19 | `e8b73c4` |
 | Sidebar feature                         | 2026-01-19 | `86d8cc7` |
 | All field patterns (4)                  | 2026-01-18 | `e0ce6b1` |
