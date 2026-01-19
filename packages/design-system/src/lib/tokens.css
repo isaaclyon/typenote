@@ -71,6 +71,7 @@
   --color-border: var(--color-gray-200);
   --color-input: var(--color-gray-200);
   --color-ring: var(--color-accent-500);
+  --color-placeholder: var(--color-gray-400);
   --color-background: var(--color-white);
   --color-foreground: var(--color-gray-700);
   --color-primary: var(--color-accent-500);

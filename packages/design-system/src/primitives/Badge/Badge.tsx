@@ -21,7 +21,7 @@ const badgeVariants = cva(
         outline: 'border border-current bg-transparent',
       },
       intent: {
-        neutral: 'bg-gray-100 text-gray-600',
+        neutral: 'bg-secondary text-foreground',
         info: 'bg-info/20 text-info-dark',
         success: 'bg-success/20 text-success-dark',
         warning: 'bg-warning/20 text-warning-dark',
@@ -36,7 +36,7 @@ const badgeVariants = cva(
       {
         variant: 'outline',
         intent: 'neutral',
-        className: 'border-gray-200 text-gray-600',
+        className: 'border-border text-foreground',
       },
       {
         variant: 'outline',

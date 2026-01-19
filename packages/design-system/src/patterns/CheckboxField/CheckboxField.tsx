@@ -37,7 +37,7 @@ export function CheckboxField({
       />
       <div className="space-y-1">
         <Label htmlFor={labelId}>{label}</Label>
-        {description ? <p className="text-sm text-gray-500">{description}</p> : null}
+        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
       </div>
     </div>
   );

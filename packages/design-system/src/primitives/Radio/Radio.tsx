@@ -47,11 +47,11 @@ const radioVariants = cva(
   [
     'aspect-square rounded-full border',
     'transition-colors duration-150 ease-out',
-    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray-300',
+    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-ring',
     'focus-visible:outline-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
-    'data-[state=checked]:border-accent-500 data-[state=checked]:bg-accent-500',
-    'data-[state=unchecked]:border-gray-300 data-[state=unchecked]:bg-white',
+    'data-[state=checked]:border-primary data-[state=checked]:bg-primary',
+    'data-[state=unchecked]:border-border data-[state=unchecked]:bg-background',
   ],
   {
     variants: {
@@ -78,7 +78,7 @@ const indicatorVariants = cva('flex items-center justify-center', {
   },
 });
 
-const dotVariants = cva('rounded-full bg-white', {
+const dotVariants = cva('rounded-full bg-background', {
   variants: {
     size: {
       sm: 'h-1.5 w-1.5',

@@ -8,7 +8,7 @@ type KeycapSize = 'sm' | 'md';
 const keycapVariants = cva(
   [
     'inline-flex items-center justify-center font-mono font-medium',
-    'rounded border border-gray-200 bg-gray-50 text-gray-600',
+    'rounded border border-border bg-muted text-foreground',
     'select-none',
   ],
   {

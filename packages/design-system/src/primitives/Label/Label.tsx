@@ -17,8 +17,8 @@ const labelVariants = cva(
         md: 'text-base',
       },
       tone: {
-        default: 'text-gray-700',
-        muted: 'text-gray-500',
+        default: 'text-foreground',
+        muted: 'text-muted-foreground',
       },
     },
     defaultVariants: {

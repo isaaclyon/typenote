@@ -69,7 +69,7 @@ const Tooltip = ({
             align={align}
             sideOffset={8}
             className={cn(
-              'z-50 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700',
+              'z-50 rounded-md border border-border bg-popover px-2 py-1 text-xs text-popover-foreground',
               'shadow-sm shadow-black/5',
               'data-[state=delayed-open]:animate-in data-[state=closed]:animate-out',
               'data-[state=delayed-open]:fade-in-0 data-[state=closed]:fade-out-0',

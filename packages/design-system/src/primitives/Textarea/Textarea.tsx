@@ -9,8 +9,8 @@ type TextareaSize = 'sm' | 'md' | 'lg';
 
 const textareaVariants = cva(
   [
-    'flex w-full rounded-md border bg-white text-gray-900',
-    'placeholder:text-gray-400',
+    'flex w-full rounded-md border bg-background text-foreground',
+    'placeholder:text-placeholder',
     'transition-colors duration-150 ease-out',
     'focus-visible:outline focus-visible:outline-1',
     'focus-visible:outline-offset-2',
@@ -20,8 +20,8 @@ const textareaVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-gray-200 focus-visible:outline-gray-300',
-        subtle: 'border-gray-200 bg-gray-50 focus-visible:outline-gray-300',
+        default: 'border-border focus-visible:outline-ring',
+        subtle: 'border-border bg-muted focus-visible:outline-ring',
         error: 'border-error focus-visible:outline-error/60',
         success: 'border-success focus-visible:outline-success/60',
       },

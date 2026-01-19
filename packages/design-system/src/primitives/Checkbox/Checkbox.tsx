@@ -11,12 +11,12 @@ type CheckboxSize = 'sm' | 'md';
 const checkboxVariants = cva(
   [
     'peer shrink-0 border rounded-md transition-colors duration-150 ease-out',
-    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray-300',
+    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-ring',
     'focus-visible:outline-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
-    'data-[state=checked]:border-accent-500 data-[state=checked]:bg-accent-500 data-[state=checked]:text-white',
-    'data-[state=indeterminate]:border-accent-500 data-[state=indeterminate]:bg-accent-500 data-[state=indeterminate]:text-white',
-    'data-[state=unchecked]:border-gray-300 data-[state=unchecked]:bg-white',
+    'data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+    'data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground',
+    'data-[state=unchecked]:border-border data-[state=unchecked]:bg-background',
   ],
   {
     variants: {

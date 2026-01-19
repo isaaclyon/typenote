@@ -65,7 +65,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       <div className={cn('relative flex items-center', containerClassName)}>
         <span
           aria-hidden="true"
-          className={cn('pointer-events-none absolute left-3 text-gray-400', iconSizeMap[size])}
+          className={cn('pointer-events-none absolute left-3 text-placeholder', iconSizeMap[size])}
         >
           <MagnifyingGlass aria-hidden="true" className={iconSizeMap[size]} weight="bold" />
         </span>

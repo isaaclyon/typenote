@@ -11,8 +11,8 @@ export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const toneMap: Record<DividerTone, string> = {
-  default: 'bg-gray-200',
-  subtle: 'bg-gray-100',
+  default: 'bg-border',
+  subtle: 'bg-secondary',
 };
 
 const orientationMap: Record<DividerOrientation, string> = {

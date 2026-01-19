@@ -10,11 +10,11 @@ const switchVariants = cva(
   [
     'peer inline-flex shrink-0 cursor-pointer items-center rounded-md border-2 border-transparent',
     'transition-colors duration-150 ease-out',
-    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray-300',
+    'focus-visible:outline focus-visible:outline-1 focus-visible:outline-ring',
     'focus-visible:outline-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
-    'data-[state=checked]:bg-accent-500',
-    'data-[state=unchecked]:bg-gray-200',
+    'data-[state=checked]:bg-primary',
+    'data-[state=unchecked]:bg-border',
   ],
   {
     variants: {
@@ -31,7 +31,7 @@ const switchVariants = cva(
 
 const thumbVariants = cva(
   [
-    'pointer-events-none block rounded bg-white shadow-sm ring-0',
+    'pointer-events-none block rounded bg-background shadow-sm ring-0',
     'transition-transform duration-150 ease-out',
     'data-[state=unchecked]:translate-x-0',
   ],
