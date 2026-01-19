@@ -93,6 +93,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| RefNode styling improvements — hover underline effect             | 2026-01-19 | `2d94de1` |
 | Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |
 | Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |
 | HeaderBar feature + Link, Breadcrumbs, SearchTrigger, ThemeToggle | 2026-01-19 | `f4c4d73` |
