@@ -1,3 +1,6 @@
+export { Breadcrumbs } from './Breadcrumbs/index.js';
+export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumbs/index.js';
+
 export { CheckboxField } from './CheckboxField/index.js';
 export type { CheckboxFieldProps } from './CheckboxField/index.js';
 
@@ -16,11 +19,17 @@ export type { RadioFieldProps } from './RadioField/index.js';
 export { SearchInput } from './SearchInput/index.js';
 export type { SearchInputProps, SearchInputSize, SearchInputVariant } from './SearchInput/index.js';
 
+export { SearchTrigger } from './SearchTrigger/index.js';
+export type { SearchTriggerProps } from './SearchTrigger/index.js';
+
 export { SelectField } from './SelectField/index.js';
 export type { SelectFieldProps } from './SelectField/index.js';
 
 export { SwitchField } from './SwitchField/index.js';
 export type { SwitchFieldProps } from './SwitchField/index.js';
+
+export { ThemeToggle } from './ThemeToggle/index.js';
+export type { ThemeToggleProps, Theme } from './ThemeToggle/index.js';
 
 export { PlaceholderAction } from './PlaceholderAction/index.js';
 export type { PlaceholderActionProps } from './PlaceholderAction/index.js';

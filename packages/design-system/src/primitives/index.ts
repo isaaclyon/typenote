@@ -68,6 +68,9 @@ export type { SpinnerProps, SpinnerSize } from './Spinner/index.js';
 export { ScrollArea, ScrollBar } from './ScrollArea/index.js';
 export type { ScrollAreaProps, ScrollBarProps } from './ScrollArea/index.js';
 
+export { Link, linkVariants } from './Link/index.js';
+export type { LinkProps, LinkVariant } from './Link/index.js';
+
 export {
   DropdownMenu,
   DropdownMenuTrigger,

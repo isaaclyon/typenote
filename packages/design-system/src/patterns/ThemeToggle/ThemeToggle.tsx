@@ -1,0 +1,58 @@
+import * as React from 'react';
+import { Sun } from '@phosphor-icons/react/dist/ssr/Sun';
+import { Moon } from '@phosphor-icons/react/dist/ssr/Moon';
+
+import { IconButton } from '../../primitives/IconButton/IconButton.js';
+import { Tooltip } from '../../primitives/Tooltip/Tooltip.js';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+export type Theme = 'light' | 'dark';
+
+export interface ThemeToggleProps {
+  /** Current theme */
+  theme: Theme;
+  /** Callback when theme should change */
+  onToggle: () => void;
+  /** Whether to show tooltip */
+  showTooltip?: boolean;
+  /** Additional CSS classes */
+  className?: string;
+}
+
+// ============================================================================
+// ThemeToggle
+// ============================================================================
+
+/**
+ * A toggle button for switching between light and dark themes.
+ * Shows the current state (Sun for light, Moon for dark).
+ */
+export function ThemeToggle({ theme, onToggle, showTooltip = true, className }: ThemeToggleProps) {
+  const Icon = theme === 'dark' ? Moon : Sun;
+  const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+
+  const button = (
+    <IconButton
+      variant="ghost"
+      size="sm"
+      aria-label={label}
+      onClick={onToggle}
+      className={className}
+    >
+      <Icon className="h-4 w-4" weight="regular" />
+    </IconButton>
+  );
+
+  if (!showTooltip) {
+    return button;
+  }
+
+  return (
+    <Tooltip content={label} side="bottom">
+      {button}
+    </Tooltip>
+  );
+}
