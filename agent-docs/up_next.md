@@ -30,24 +30,24 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a) — TipTap/ProseMirror with references
+- Editor ✅ (Phase 1 + 2a + 2b partial) — TipTap/ProseMirror with references + slash commands
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
+  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider)
   - Type-colored inline references with click handling
-  - 13 Ladle stories
+  - 17 Ladle stories
 
-**Next — Editor Phase 2b:**
+**Next — Editor Phase 2b (remaining):**
 
 1. **Tags** — `#` syntax with TagNode extension
-2. **SlashCommand menu** — Block type insertion via `/`
-3. **NotateDoc converters** — Live in `packages/core`, not design-system
+2. **NotateDoc converters** — Live in `packages/core`, not design-system
 
 ### Immediate Next Steps
 
-1. Continue editor refinement (Phase 2 extensions)
-2. Wire AppShell + Editor to desktop renderer
-3. Enable basic navigation
+1. Wire AppShell + Editor to desktop renderer
+2. Enable basic navigation
+3. Continue editor refinement (Tags)
 
 ### Folder Structure
 
@@ -93,6 +93,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| SlashCommand menu for block type insertion                        | 2026-01-19 | `19b0551` |
 | RefNode styling improvements — hover underline effect             | 2026-01-19 | `2d94de1` |
 | Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |
 | Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |

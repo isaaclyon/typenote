@@ -1,34 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - RefNode Styling Improvements)
+## Latest Session (2026-01-19 - SlashCommand Menu)
 
 ### What was accomplished
 
-- **Brainstormed and designed** RefNode hover state using brainstorming skill
-- **Replaced Link primitive** with custom span + pseudo-element underline for refs
-- **Hover effect**: subtle → prominent underline transition
-  - Default: 2px underline at 70% opacity
-  - Hover: 4px underline at 100% opacity (150ms transition)
-  - Underline raised (`bottom: 2px`) so descenders (g, p, y) overlap
-- **Fixed bugs** from previous session:
-  - Unique `PluginKey` for @ and [[ suggestion triggers (fixed plugin conflict)
-  - Icons in suggestion dropdown (consistency with RefNode display)
-  - CSS scoping to not override ref link colors
-- **Design doc**: `docs/plans/2026-01-19-ref-node-hover-design.md`
+- **Brainstormed and designed** SlashCommand feature using brainstorming skill
+- **Built SlashCommand extension** — TipTap Suggestion plugin for `/` trigger
+- **9 block types supported**: paragraph, h1-h3, bullet list, numbered list, quote, code block, divider
+- **Filterable menu**: type `/head` to filter to headings
+- **SlashCommandList UI** — dropdown matching RefSuggestionList styling
+- **4 new Ladle stories**: WithSlashCommands, SlashCommandFiltering, SlashCommandDisabled, FullFeaturedEditor
+- **Design doc**: `docs/plans/2026-01-19-slash-command-design.md`
 
-### Key files changed
+### Key files created
 
-- `packages/design-system/src/features/Editor/extensions/RefNodeView.tsx` — Custom span styling
-- `packages/design-system/src/features/Editor/editor.css` — Pseudo-element underline + hover
-- `packages/design-system/src/features/Editor/Editor.tsx` — PluginKey fixes
-- `packages/design-system/src/features/Editor/extensions/RefSuggestionList.tsx` — Icons
+- `packages/design-system/src/features/Editor/extensions/SlashCommand.ts` — Core logic
+- `packages/design-system/src/features/Editor/extensions/SlashCommandList.tsx` — Dropdown UI
+
+### Key files modified
+
+- `Editor.tsx` — Wired in slash command state, render callbacks, popup rendering
+- `types.ts` — Added `enableSlashCommands` prop (default true)
+- `Editor.stories.tsx` — 4 new stories
 
 ### Commits
 
-- `b8be1dd` docs: add RefNode hover state design
-- `0af415e` feat(design-system): improve RefNode styling with hover underline effect
-- `0de9c41` fix(design-system): raise ref underline so descenders overlap
-- `2d94de1` fix(design-system): increase ref underline thickness (2px default, 4px hover)
+- `19b0551` feat(design-system): add SlashCommand menu for block type insertion
+
+---
+
+## Previous Session (2026-01-19 - RefNode Styling Improvements)
+
+- **Hover effect**: 2px → 4px underline transition with raised position for descenders
+- **Fixed bugs**: unique PluginKey for @ and [[ triggers, icons in dropdown
+- **Design doc**: `docs/plans/2026-01-19-ref-node-hover-design.md`
+- Commits: `2d94de1`, `0de9c41`, `0af415e`, `b8be1dd`
 
 ---
 
