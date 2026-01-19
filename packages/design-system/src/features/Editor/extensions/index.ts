@@ -1,0 +1,16 @@
+/**
+ * Editor Extensions
+ *
+ * Custom TipTap extensions for TypeNote's editor.
+ */
+
+export { RefNode } from './RefNode.js';
+export type { RefNodeAttributes, RefNodeOptions } from './RefNode.js';
+export { RefNodeView } from './RefNodeView.js';
+
+export { RefSuggestion, createDoubleBracketSuggestion } from './RefSuggestion.js';
+export type { RefSuggestionItem, RefSuggestionOptions } from './RefSuggestion.js';
+export { RefSuggestionList } from './RefSuggestionList.js';
+export type { RefSuggestionListProps } from './RefSuggestionList.js';
+export { useRefSuggestion } from './useRefSuggestion.js';
+export type { UseRefSuggestionReturn } from './useRefSuggestion.js';

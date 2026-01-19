@@ -3,9 +3,89 @@ import type { Story } from '@ladle/react';
 import type { JSONContent } from '@tiptap/core';
 
 import { Editor } from './Editor.js';
+import type { RefSuggestionItem, RefNodeAttributes } from './types.js';
 
 export default {
   title: 'Features / Editor',
+};
+
+// ============================================================================
+// Mock data for ref suggestions
+// ============================================================================
+
+const mockObjects: RefSuggestionItem[] = [
+  {
+    objectId: '01J1234567890123456789A',
+    objectType: 'Page',
+    title: 'Getting Started Guide',
+    color: '#6366F1',
+  },
+  {
+    objectId: '01J1234567890123456789B',
+    objectType: 'Page',
+    title: 'Project Roadmap',
+    color: '#6366F1',
+  },
+  {
+    objectId: '01J1234567890123456789C',
+    objectType: 'Person',
+    title: 'Alice Johnson',
+    color: '#EC4899',
+  },
+  {
+    objectId: '01J1234567890123456789D',
+    objectType: 'Person',
+    title: 'Bob Smith',
+    color: '#EC4899',
+  },
+  {
+    objectId: '01J1234567890123456789E',
+    objectType: 'DailyNote',
+    title: '2026-01-19',
+    color: '#F59E0B',
+  },
+  {
+    objectId: '01J1234567890123456789F',
+    objectType: 'Event',
+    title: 'Team Standup',
+    color: '#8B5CF6',
+  },
+  {
+    objectId: '01J1234567890123456789G',
+    objectType: 'Place',
+    title: 'San Francisco Office',
+    color: '#10B981',
+  },
+  {
+    objectId: '01J1234567890123456789H',
+    objectType: 'Task',
+    title: 'Fix login bug',
+    color: '#EF4444',
+  },
+];
+
+const mockSearch = async (query: string): Promise<RefSuggestionItem[]> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  if (!query) return mockObjects.slice(0, 5);
+
+  const lower = query.toLowerCase();
+  return mockObjects.filter(
+    (obj) => obj.title.toLowerCase().includes(lower) || obj.objectType.toLowerCase().includes(lower)
+  );
+};
+
+const mockCreate = async (title: string): Promise<RefSuggestionItem> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 200));
+
+  return {
+    objectId: `01J${Date.now()}`,
+    objectType: 'Page',
+    title,
+    color: '#6366F1',
+  };
 };
 
 // ============================================================================
@@ -287,3 +367,132 @@ export const InAppContext: Story = () => {
     </div>
   );
 };
+
+// ============================================================================
+// Phase 2: Reference Support Stories
+// ============================================================================
+
+export const WithRefs: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  const handleRefClick = (attrs: RefNodeAttributes) => {
+    setLastAction(`Clicked: ${attrs.displayTitle} (${attrs.objectType})`);
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Type @ or [[ to insert a reference..."
+        enableRefs
+        onRefSearch={mockSearch}
+        onRefClick={handleRefClick}
+        onRefCreate={mockCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          Type <code className="bg-muted px-1 rounded">@</code> or{' '}
+          <code className="bg-muted px-1 rounded">[[</code> to open the reference picker.
+        </p>
+        <p>Try searching for: &quot;Alice&quot;, &quot;Page&quot;, &quot;Task&quot;, etc.</p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+export const WithExistingRefs: Story = () => {
+  const contentWithRefs: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Meeting Notes' }],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'Discussed the ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789B',
+              objectType: 'Page',
+              displayTitle: 'Project Roadmap',
+              color: '#6366F1',
+            },
+          },
+          { type: 'text', text: ' with ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789C',
+              objectType: 'Person',
+              displayTitle: 'Alice Johnson',
+              color: '#EC4899',
+            },
+          },
+          { type: 'text', text: '.' },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'Action item: ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789H',
+              objectType: 'Task',
+              displayTitle: 'Fix login bug',
+              color: '#EF4444',
+            },
+          },
+          { type: 'text', text: ' by end of week.' },
+        ],
+      },
+    ],
+  };
+
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        content={contentWithRefs}
+        enableRefs
+        onRefSearch={mockSearch}
+        onRefClick={(attrs) => setLastAction(`Navigate to: ${attrs.displayTitle}`)}
+        onRefCreate={mockCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Editor with pre-existing references. Click any reference to navigate.</p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+export const RefTypeColors: Story = () => (
+  <div className="space-y-4 p-6">
+    <div className="grid gap-4">
+      {mockObjects.map((obj) => (
+        <div key={obj.objectId} className="flex items-center gap-3">
+          <span
+            className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm font-medium"
+            style={{
+              backgroundColor: `${obj.color}15`,
+              color: obj.color ?? '#71717A',
+            }}
+          >
+            {obj.title}
+          </span>
+          <span className="text-xs text-muted-foreground">{obj.objectType}</span>
+        </div>
+      ))}
+    </div>
+    <p className="text-xs text-muted-foreground">
+      Reference nodes are colored by object type. Each type has a distinct color.
+    </p>
+  </div>
+);

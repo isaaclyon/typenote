@@ -1,4 +1,6 @@
 import type { JSONContent, Editor as TiptapEditor } from '@tiptap/core';
+import type { RefNodeAttributes } from './extensions/RefNode.js';
+import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 
 /**
  * Editor component props.
@@ -19,6 +21,34 @@ export interface EditorProps {
   autoFocus?: boolean;
   /** Additional CSS classes for the container */
   className?: string;
+
+  // ============================================================================
+  // Reference Support (Phase 2)
+  // ============================================================================
+
+  /**
+   * Enable reference suggestions via `[[` and `@` triggers.
+   * When true, onRefSearch must be provided.
+   */
+  enableRefs?: boolean;
+
+  /**
+   * Search function for reference suggestions.
+   * Called when user types after `[[` or `@` trigger.
+   */
+  onRefSearch?: (query: string) => RefSuggestionItem[] | Promise<RefSuggestionItem[]>;
+
+  /**
+   * Called when user clicks a reference node.
+   * Use this to navigate to the referenced object.
+   */
+  onRefClick?: (attrs: RefNodeAttributes) => void;
+
+  /**
+   * Optional callback to create a new object from the search query.
+   * If provided, shows a "Create" option in the suggestion list.
+   */
+  onRefCreate?: (title: string) => RefSuggestionItem | Promise<RefSuggestionItem>;
 }
 
 /**
@@ -32,3 +62,7 @@ export interface EditorRef {
   /** Clear all content */
   clear: () => void;
 }
+
+// Re-export extension types for convenience
+export type { RefNodeAttributes } from './extensions/RefNode.js';
+export type { RefSuggestionItem } from './extensions/RefSuggestion.js';
