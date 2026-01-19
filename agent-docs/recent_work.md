@@ -1,6 +1,43 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - TitleBar Feature + Sidebar Refinements)
+## Latest Session (2026-01-19 - HeaderBar Feature)
+
+### What was accomplished
+
+- Built **HeaderBar** feature with bottom-up approach (primitives → patterns → feature)
+- New **Link primitive** — text links with icon support and colored underlines
+  - Variants: default, muted, unstyled
+  - Underline color matches iconColor when provided
+- New **Breadcrumbs pattern** — navigation path with type icons, clickable ancestors
+- New **SearchTrigger pattern** — input-styled button for command palette with ⌘K hint
+- New **ThemeToggle pattern** — light/dark mode toggle showing current state (Sun/Moon)
+- **HeaderBar feature** — composes all patterns
+  - Left: SearchTrigger (fixed 200px width)
+  - Center: Breadcrumbs (absolutely centered)
+  - Right: Settings button + ThemeToggle
+  - Height: 40px compact, no bottom border
+
+### Key files changed
+
+- `packages/design-system/src/primitives/Link/` (new primitive)
+- `packages/design-system/src/patterns/Breadcrumbs/` (new pattern)
+- `packages/design-system/src/patterns/SearchTrigger/` (new pattern)
+- `packages/design-system/src/patterns/ThemeToggle/` (new pattern)
+- `packages/design-system/src/features/HeaderBar/` (new feature)
+
+### Commits
+
+- `f4c4d73` feat(design-system): add HeaderBar feature with supporting primitives and patterns
+
+### Status
+
+- Ladle stories: 104 total (up from 79)
+- Design system: 19 primitives, 12 patterns, 3 features
+- Next: AppShell composition layer
+
+---
+
+## Previous Session (2026-01-19 - TitleBar Feature + Sidebar Refinements)
 
 ### What was accomplished
 
@@ -68,37 +105,7 @@
 
 ---
 
-## Previous Session (2026-01-19 - Sidebar Feature)
-
-### What was accomplished
-
-- Built first **feature** component: Sidebar (compound component pattern)
-- Created `src/features/` folder structure for domain-specific UI
-- Sidebar sub-components: Sidebar, SidebarHeader, SidebarSection, SidebarFooter, SidebarItem
-
-### Commits
-
-- `86d8cc7` feat(design-system): add Sidebar feature
-
----
-
-## Previous Session (2026-01-18 - All Patterns Complete)
-
-### What was accomplished
-
-- Built EmptyState pattern (icon + heading + description + action)
-- Built 4 field patterns: InputField, RadioField, SelectField, SwitchField
-- All 8 planned patterns now complete with Ladle stories
-- Total: 64 stories in Ladle sandbox
-
-### Commits
-
-- `c5b4a48` feat(design-system): add EmptyState pattern
-- `e0ce6b1` feat(design-system): add InputField, RadioField, SelectField, SwitchField patterns
-
----
-
-## Earlier Sessions (2026-01-18) — Collapsed
+## Earlier Sessions (2026-01-18 to 2026-01-19) — Collapsed
 
 Multiple sessions on 2026-01-18 completed the design system foundation:
 
