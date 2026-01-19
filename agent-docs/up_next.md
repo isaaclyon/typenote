@@ -30,18 +30,18 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a + 2b partial) — TipTap/ProseMirror with references + slash commands
+- Editor ✅ (Phase 1 + 2a + 2b) — TipTap/ProseMirror with references, slash commands, and tags
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
   - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider)
+  - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - Type-colored inline references with click handling
-  - 17 Ladle stories
+  - 20 Ladle stories
 
-**Next — Editor Phase 2b (remaining):**
+**Next — NotateDoc converters:**
 
-1. **Tags** — `#` syntax with TagNode extension
-2. **NotateDoc converters** — Live in `packages/core`, not design-system
+1. **NotateDoc converters** — Live in `packages/core`, not design-system (TipTap JSON ↔ NotateDoc)
 
 ### Immediate Next Steps
 
@@ -93,6 +93,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | (pending) |
 | SlashCommand menu for block type insertion                        | 2026-01-19 | `19b0551` |
 | RefNode styling improvements — hover underline effect             | 2026-01-19 | `2d94de1` |
 | Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |

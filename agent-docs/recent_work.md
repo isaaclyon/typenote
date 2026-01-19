@@ -1,6 +1,35 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - SlashCommand Menu)
+## Latest Session (2026-01-19 - TagNode Extension)
+
+### What was accomplished
+
+- **Brainstormed and designed** TagNode feature using brainstorming skill
+- **Built TagNode extension** — TipTap Node for inline hashtags
+- **Built TagSuggestion** — Autocomplete triggered by `#` with search/create support
+- **TagNodeView** — Colored pill/chip rendering with hover effect
+- **TagSuggestionList UI** — Dropdown matching RefSuggestionList styling
+- **3 new Ladle stories**: WithTags, WithExistingTags, TagColors
+- **Updated FullFeaturedEditor** — Now includes tags
+- **Design doc**: `docs/plans/2026-01-19-tag-node-design.md`
+
+### Key files created
+
+- `packages/design-system/src/features/Editor/extensions/TagNode.ts` — TipTap Node extension
+- `packages/design-system/src/features/Editor/extensions/TagNodeView.tsx` — React component
+- `packages/design-system/src/features/Editor/extensions/TagSuggestionList.tsx` — Dropdown UI
+
+### Key files modified
+
+- `Editor.tsx` — Wired in tag suggestion state, render callbacks, popup rendering
+- `types.ts` — Added `enableTags`, `onTagSearch`, `onTagCreate`, `onTagClick` props
+- `editor.css` — Added `.tag-node-pill` styles with color-mix for tinted backgrounds
+- `extensions/index.ts` — Exported TagNode types and components
+- `Editor.stories.tsx` — 3 new stories + updated FullFeaturedEditor
+
+---
+
+## Previous Session (2026-01-19 - SlashCommand Menu)
 
 ### What was accomplished
 
@@ -11,17 +40,6 @@
 - **SlashCommandList UI** — dropdown matching RefSuggestionList styling
 - **4 new Ladle stories**: WithSlashCommands, SlashCommandFiltering, SlashCommandDisabled, FullFeaturedEditor
 - **Design doc**: `docs/plans/2026-01-19-slash-command-design.md`
-
-### Key files created
-
-- `packages/design-system/src/features/Editor/extensions/SlashCommand.ts` — Core logic
-- `packages/design-system/src/features/Editor/extensions/SlashCommandList.tsx` — Dropdown UI
-
-### Key files modified
-
-- `Editor.tsx` — Wired in slash command state, render callbacks, popup rendering
-- `types.ts` — Added `enableSlashCommands` prop (default true)
-- `Editor.stories.tsx` — 4 new stories
 
 ### Commits
 
