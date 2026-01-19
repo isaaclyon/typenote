@@ -3,6 +3,10 @@ import type { Story } from '@ladle/react';
 
 import { CheckboxField } from './CheckboxField.js';
 
+export default {
+  title: 'Patterns/CheckboxField',
+};
+
 export const Overview: Story = () => {
   const [checked, setChecked] = React.useState(false);
 

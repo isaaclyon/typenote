@@ -1,6 +1,10 @@
 import type { Story } from '@ladle/react';
 import { Input } from './Input.js';
 
+export default {
+  title: 'Primitives/Input',
+};
+
 export const Overview: Story = () => (
   <div className="space-y-10 p-6">
     <section className="space-y-4">

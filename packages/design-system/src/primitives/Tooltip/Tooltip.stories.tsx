@@ -4,6 +4,10 @@ import { Button } from '../Button/Button.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import { Tooltip } from './Tooltip.js';
 
+export default {
+  title: 'Primitives/Tooltip',
+};
+
 export const Overview: Story = () => (
   <div className="space-y-10 p-6">
     <section className="space-y-4">

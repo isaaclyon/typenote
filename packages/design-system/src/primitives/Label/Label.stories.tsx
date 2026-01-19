@@ -1,6 +1,10 @@
 import type { Story } from '@ladle/react';
 import { Label } from './Label.js';
 
+export default {
+  title: 'Primitives/Label',
+};
+
 export const Overview: Story = () => (
   <div className="space-y-8 p-6">
     <section className="space-y-3">

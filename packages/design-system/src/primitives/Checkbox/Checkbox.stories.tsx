@@ -4,6 +4,10 @@ import { Checkbox } from './Checkbox.js';
 import { Label } from '../Label/Label.js';
 import { CheckboxField } from '../../patterns/CheckboxField/CheckboxField.js';
 
+export default {
+  title: 'Primitives/Checkbox',
+};
+
 export const Overview: Story = () => {
   const [checked, setChecked] = React.useState(false);
   const [indeterminate, setIndeterminate] = React.useState<boolean | 'indeterminate'>(

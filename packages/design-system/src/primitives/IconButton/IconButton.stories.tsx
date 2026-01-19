@@ -2,6 +2,10 @@ import type { Story } from '@ladle/react';
 import { Plus, Star, X } from '@phosphor-icons/react/ssr';
 import { IconButton } from './IconButton.js';
 
+export default {
+  title: 'Primitives/IconButton',
+};
+
 const sizeIconMap = {
   sm: 'h-3.5 w-3.5',
   md: 'h-4 w-4',

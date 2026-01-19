@@ -1,6 +1,10 @@
 import type { Story } from '@ladle/react';
 import { Button } from './Button.js';
 
+export default {
+  title: 'Primitives/Button',
+};
+
 export const Overview: Story = () => (
   <div className="space-y-10 p-6">
     <section className="space-y-4">

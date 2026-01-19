@@ -2,6 +2,10 @@ import * as React from 'react';
 import type { Story } from '@ladle/react';
 import { SearchInput } from './SearchInput.js';
 
+export default {
+  title: 'Patterns/SearchInput',
+};
+
 export const Overview: Story = () => {
   const [value, setValue] = React.useState('Project notes');
   const [emptyValue, setEmptyValue] = React.useState('');

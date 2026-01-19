@@ -1,6 +1,10 @@
 import type { Story } from '@ladle/react';
 import { Skeleton } from './Skeleton.js';
 
+export default {
+  title: 'Primitives/Skeleton',
+};
+
 export const Overview: Story = () => (
   <div className="space-y-10 p-6">
     <section className="space-y-4">
