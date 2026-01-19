@@ -30,3 +30,6 @@ export type { CardProps } from './Card/index.js';
 
 export { Divider } from './Divider/index.js';
 export type { DividerProps, DividerOrientation, DividerTone } from './Divider/index.js';
+
+export { Tooltip } from './Tooltip/index.js';
+export type { TooltipProps, TooltipSide, TooltipAlign } from './Tooltip/index.js';
