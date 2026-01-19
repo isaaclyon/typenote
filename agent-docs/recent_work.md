@@ -1,6 +1,27 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - Design System Atoms + Focus Outlines)
+## Latest Session (2026-01-18 - Design System Atoms Continued)
+
+### What was accomplished
+
+- Added Badge + Skeleton atoms with stories
+- Added IconButton atom with stories
+- Refined IconButton story glyph sizing for consistency
+
+### Key files changed
+
+- `packages/design-system/src/components/Badge/*`
+- `packages/design-system/src/components/Skeleton/*`
+- `packages/design-system/src/components/IconButton/*`
+- `packages/design-system/src/components/index.ts`
+
+### Commits
+
+- `e764b02` feat(design-system): add badge and skeleton atoms
+
+---
+
+## Previous Session (2026-01-18 - Design System Atoms + Focus Outlines)
 
 ### What was accomplished
 

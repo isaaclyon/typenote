@@ -18,3 +18,9 @@ export type { BadgeProps, BadgeVariant, BadgeIntent, BadgeSize } from './Badge/i
 
 export { Skeleton } from './Skeleton/index.js';
 export type { SkeletonProps } from './Skeleton/index.js';
+
+export { IconButton, iconButtonVariants } from './IconButton/index.js';
+export type { IconButtonProps, IconButtonVariant, IconButtonSize } from './IconButton/index.js';
+
+export { SearchInput } from './SearchInput/index.js';
+export type { SearchInputProps, SearchInputSize, SearchInputVariant } from './SearchInput/index.js';

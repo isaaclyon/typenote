@@ -19,14 +19,35 @@
 
 Follow bottom-up approach as documented in `agent-docs/rules/design-system.md`:
 
-1. **Atoms** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge, Skeleton
-2. **Molecules** — CheckboxField ✅, IconButton, SearchInput, Card
+1. **Atoms** — Button ✅, Input ✅, Label ✅, Checkbox ✅, Badge ✅, Skeleton ✅
+2. **Molecules** — CheckboxField ✅, IconButton ✅, SearchInput, Card
 3. **Organisms** — Sidebar, AppShell, InteractiveEditor
+
+### Atom Inventory (Draft)
+
+Core atoms for a note-taking app:
+
+- Button ✅
+- Input ✅
+- Label ✅
+- Checkbox ✅
+- Badge ✅
+- Skeleton ✅
+- IconButton ✅
+- Divider
+- Avatar
+- Tooltip
+- Switch
+- Radio
+- SelectTrigger
+- Textarea
+- Keycap
+- Spinner
 
 ### Immediate Next Steps
 
-1. Continue atoms: Badge, Skeleton
-2. Start molecules: IconButton, SearchInput
+1. Start molecules: SearchInput, Card
+2. Fill remaining atoms list: Divider, Avatar, Tooltip, Switch, Radio
 3. Keep iterating in Ladle before desktop integration
 
 ### Reference
