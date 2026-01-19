@@ -1,6 +1,36 @@
 # Recent Work
 
-## Latest Session (2026-01-18 - All Patterns Complete)
+## Latest Session (2026-01-19 - Sidebar Feature)
+
+### What was accomplished
+
+- Built first **feature** component: Sidebar (compound component pattern)
+- Created `src/features/` folder structure for domain-specific UI
+- Sidebar sub-components: Sidebar, SidebarHeader, SidebarSection, SidebarFooter, SidebarItem
+- SidebarItem wraps NavItem with collapsed-mode tooltip support
+- Header layout: Collapse toggle + Search trigger (row 1), New action (row 2)
+- Footer: Full rows with icon + label (expanded), icon-only with tooltips (collapsed)
+- Uses `Sidebar` icon from Phosphor for collapse/expand toggle
+- Right border uses semantic token `border-sidebar-border`
+- 6 Ladle stories: Default, Collapsed, WithSecondarySections (Types + Favorites), WithManyItems, WithActionsAndCounts, NoLabels
+- All checks passing: typecheck, lint, Ladle build
+
+### Key files changed
+
+- `packages/design-system/src/features/Sidebar/` (new folder)
+  - `types.ts`, `SidebarContext.tsx`, `Sidebar.tsx`
+  - `SidebarHeader.tsx`, `SidebarSection.tsx`, `SidebarFooter.tsx`, `SidebarItem.tsx`
+  - `Sidebar.stories.tsx`, `index.ts`
+- `packages/design-system/src/features/index.ts` (new)
+- `packages/design-system/src/index.ts` (added features export)
+
+### Commits
+
+- (uncommitted) feat(design-system): add Sidebar feature
+
+---
+
+## Previous Session (2026-01-18 - All Patterns Complete)
 
 ### What was accomplished
 
@@ -8,16 +38,6 @@
 - Built 4 field patterns: InputField, RadioField, SelectField, SwitchField
 - All 8 planned patterns now complete with Ladle stories
 - Total: 64 stories in Ladle sandbox
-- All checks passing: typecheck, lint, Ladle build
-
-### Key files changed
-
-- `packages/design-system/src/patterns/EmptyState/` (new)
-- `packages/design-system/src/patterns/InputField/` (new)
-- `packages/design-system/src/patterns/RadioField/` (new)
-- `packages/design-system/src/patterns/SelectField/` (new)
-- `packages/design-system/src/patterns/SwitchField/` (new)
-- `packages/design-system/src/patterns/index.ts` (updated exports)
 
 ### Commits
 
@@ -64,37 +84,13 @@
 
 ---
 
-## Previous Session (2026-01-18 - Migration Complete)
-
-### What was accomplished
-
-- Completed primitives/patterns folder structure migration
-- Moved 10 primitives to `src/primitives/` with co-located stories
-- Moved 2 patterns to `src/patterns/` with co-located stories
-- Converted `src/components/` to backward-compat re-exports only
-- Fixed duplicate exports in main `index.ts`
-- Removed redundant `.tsx` files from components/ (kept only `index.ts`)
-- All checks passing: typecheck, lint, Ladle build (12 stories)
-
-### Key files changed
-
-- `packages/design-system/src/primitives/` (10 components + stories)
-- `packages/design-system/src/patterns/` (2 components + stories)
-- `packages/design-system/src/components/` (re-exports only)
-- `packages/design-system/src/index.ts`
-
-### Commits
-
-- `e3a0c5d` refactor(design-system): migrate components to primitives/patterns structure
-
----
-
 ## Earlier Sessions (2026-01-18) — Collapsed
 
 Multiple sessions on 2026-01-18 completed the design system foundation:
 
+- **Primitives Complete + Radix Migration** — 18 primitives, 5 migrated to Radix
+- **Migration Complete** — Moved to primitives/patterns folder structure
 - **Design System Atoms** — Button, Input, Label, Checkbox with subtle focus outlines
-- **Primitives/Patterns Migration** — Reorganized to primitives/ and patterns/ folders
 - **Design System Full Reset** — Deleted pre-reset code, preserved tokens and docs
 
 Reference: `pre-reset` git tag at `88eefdd` contains all deleted code.
