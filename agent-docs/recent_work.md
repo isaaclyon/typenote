@@ -1,6 +1,46 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - PlaceholderAction + Sidebar Refinements)
+## Latest Session (2026-01-19 - TitleBar Feature + Sidebar Refinements)
+
+### What was accomplished
+
+- Built **TitleBar** feature — custom Electron window chrome replacement
+  - 28px height, full width above sidebar and content
+  - White background (`bg-background`) for seamless app integration
+  - Always draggable via `-webkit-app-region: drag` for window movement
+  - Supports both macOS traffic lights and Windows overlay controls
+  - 5 Ladle stories: Default, MacOSSimulation, WindowsSimulation, FullAppLayout, DarkMode
+- **Sidebar refinements:**
+  - Added type-colored hover/active states (tinted backgrounds from `iconColor`)
+  - Hover: 10% opacity tint (`#color1A`)
+  - Active/selected: 15% opacity tint (`#color26`)
+  - Both expanded (NavItem) and collapsed (icon-only) modes supported
+  - Improved collapsed-mode tooltip: count displayed as dimmed element (60% opacity) with gap separator
+- **AppShell decomposition documented** — planned sequence: TitleBar ✅ → HeaderBar → AppShell
+
+### Key files changed
+
+- `packages/design-system/src/features/TitleBar/` (new feature)
+- `packages/design-system/src/patterns/NavItem/NavItem.tsx` (type-colored states)
+- `packages/design-system/src/features/Sidebar/SidebarItem.tsx` (type-colored states + tooltip)
+- `packages/design-system/src/lib/tokens.css` (added `@source '../features'`)
+- `agent-docs/up_next.md` (AppShell decomposition, TitleBar specs)
+
+### Commits
+
+- `4888b68` feat(design-system): add type-colored hover and active states to sidebar items
+- `8542c61` refactor(design-system): improve tooltip count display in collapsed sidebar
+- `5aaaa86` feat(design-system): add TitleBar feature for custom Electron window chrome
+
+### Status
+
+- Ladle stories: 79 total (up from 74)
+- Design system features: 2 complete (Sidebar ✅, TitleBar ✅)
+- Next: HeaderBar feature
+
+---
+
+## Previous Session (2026-01-19 - PlaceholderAction + Sidebar Refinements)
 
 ### What was accomplished
 

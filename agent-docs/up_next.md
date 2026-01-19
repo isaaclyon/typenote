@@ -24,7 +24,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ### Feature Inventory
 
-**Complete (1):**
+**Complete (2):**
 
 - Sidebar ✅ — Compound component with Header, Section, Footer, Item
   - Collapsible (240px → 56px icon-only mode)
@@ -33,43 +33,45 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - Footer: Settings/theme (temporary, will relocate)
   - Uses semantic token `border-sidebar-border`
   - Type-colored hover/active states (tinted backgrounds from iconColor)
+  - Improved tooltip count display (60% opacity, gap separator)
+
+- TitleBar ✅ — Custom Electron window chrome
+  - Height: 28px compact
+  - Full width, spans above sidebar and content
+  - Entire region is draggable (`-webkit-app-region: drag`)
+  - White background for seamless app integration
+  - macOS: Traffic lights positioned via Electron config (x:16, y:16)
+  - Windows: Native overlay controls (configured in main process)
+  - No app content in title bar (branding/breadcrumbs handled elsewhere)
 
 **Next (AppShell decomposition):**
 
 AppShell is decomposed into smaller features built bottom-up:
 
-1. **TitleBar** (in progress) — Custom Electron window chrome
-   - Height: 28px compact
-   - Full width, spans above sidebar and content
-   - Entire region is draggable (`-webkit-app-region: drag`)
-   - macOS: Traffic lights positioned via Electron config (already done: x:16, y:16)
-   - Windows: Native overlay controls (already configured in main process)
-   - No app content in title bar (branding/breadcrumbs handled elsewhere)
-
-2. **HeaderBar** — App-level toolbar
+1. **HeaderBar** (next) — App-level toolbar
    - Search (command palette trigger)
    - Settings access
    - Theme toggle (light/dark)
    - Breadcrumbs or page title (future)
 
-3. **AppShell** — Composition layer
+2. **AppShell** — Composition layer
    - Combines TitleBar + HeaderBar + Sidebar + main content
    - Controlled state pattern (parent owns sidebar collapsed state)
    - Overall layout grid
 
-4. **InteractiveEditor** — TipTap/ProseMirror integration (future)
+3. **InteractiveEditor** — TipTap/ProseMirror integration (future)
 
 ### Immediate Next Steps
 
-1. **Build TitleBar feature** — Custom Electron window chrome with drag regions
-2. Build HeaderBar feature — Search, settings, theme toggle
-3. Compose into AppShell
+1. **Build HeaderBar feature** — Search, settings, theme toggle
+2. Compose into AppShell
+3. Wire up to desktop renderer
 
 ### Folder Structure
 
 - `src/primitives/` — 18 atoms with stories
 - `src/patterns/` — 9 molecules with stories
-- `src/features/` — 1 feature (Sidebar) with stories
+- `src/features/` — 2 features (Sidebar, TitleBar) with stories
 - `src/components/` — backward-compat re-exports only
 
 ### Reference
@@ -109,7 +111,9 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                 | Date       | Commits   |
 | --------------------------------------- | ---------- | --------- |
+| TitleBar feature                        | 2026-01-19 | `5aaaa86` |
 | Type-colored hover/active states        | 2026-01-19 | `4888b68` |
+| Tooltip count display refinement        | 2026-01-19 | `8542c61` |
 | PlaceholderAction + Sidebar refinements | 2026-01-19 | `e8b73c4` |
 | Sidebar feature                         | 2026-01-19 | `86d8cc7` |
 | All field patterns (4)                  | 2026-01-18 | `e0ce6b1` |
