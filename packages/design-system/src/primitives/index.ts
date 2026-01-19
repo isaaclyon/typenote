@@ -30,3 +30,6 @@ export type { TooltipProps, TooltipSide, TooltipAlign } from './Tooltip/index.js
 
 export { Switch, switchVariants } from './Switch/index.js';
 export type { SwitchProps, SwitchSize } from './Switch/index.js';
+
+export { RadioGroup, RadioItem, radioVariants } from './Radio/index.js';
+export type { RadioGroupProps, RadioItemProps, RadioSize } from './Radio/index.js';
