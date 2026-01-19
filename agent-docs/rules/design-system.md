@@ -20,19 +20,24 @@ For design principles and decisions, see:
 ```
 packages/design-system/
 ├── src/
-│   ├── components/       # React components
-│   │   ├── Button/       # Component folder (compound components)
+│   ├── components/       # Current location (migration in progress)
+│   ├── primitives/       # Foundational UI building blocks (target)
+│   │   ├── Button/
 │   │   │   ├── Button.tsx
-│   │   │   ├── Button.stories.tsx  # Ladle stories
-│   │   │   ├── types.ts            # Shared types
-│   │   │   └── index.ts            # Exports
-│   │   └── index.ts      # Package exports
+│   │   │   ├── Button.stories.tsx
+│   │   │   └── index.ts
+│   │   └── index.ts
+│   ├── patterns/         # Reusable composed UI patterns (target)
+│   │   ├── SearchInput/
+│   │   │   ├── SearchInput.tsx
+│   │   │   ├── SearchInput.stories.tsx
+│   │   │   └── index.ts
+│   │   └── index.ts
 │   ├── utils/            # Shared utilities (cn, etc.)
 │   └── index.ts
 ├── .ladle/               # Ladle configuration
 │   └── config.mjs
-├── tailwind.config.ts    # Tailwind config for design system
-└── package.json
+├── package.json
 ```
 
 ## Component Development Workflow
@@ -43,7 +48,7 @@ packages/design-system/
 
 This is a non-negotiable requirement. Do NOT create or modify UI components directly in `apps/desktop/src/renderer/` without following this workflow:
 
-1. **Create component in** `packages/design-system/src/components/`
+1. **Create component in** `packages/design-system/src/primitives/` or `packages/design-system/src/patterns/`
 2. **Write Ladle stories** covering all variants and states
 3. **Test in Ladle sandbox** at http://localhost:61000
 4. **Verify:**
@@ -70,26 +75,43 @@ pnpm --filter @typenote/design-system sandbox
 - **Living documentation** — Ladle becomes the source of truth
 - **Prevents design debt** — No ad-hoc, one-off components in app code
 
-### 2. Bottom-Up Build Sequence
+### 2. Build Sequence (Primitives → Patterns → Features)
 
 Build components in this order:
 
-1. **Atoms** — Smallest units (Button, Input, Icon)
-2. **Molecules** — Simple combos (SearchInput, IconButton)
-3. **Organisms** — Complex composites (Sidebar, TypeBrowser, AppShell)
+1. **Primitives** — Smallest units (Button, Input, Icon)
+2. **Patterns** — Reusable compositions (SearchInput, FormField)
+3. **Features** — Domain-specific UI (Sidebar, TypeBrowser, InteractiveEditor)
 
-**Example from Sidebar organism:**
+**Example from Sidebar feature:**
 
 ```
-1. SidebarTypeItem (atom - button with icon/label/count)
-2. SidebarSearchTrigger (molecule - button + KeyboardKey)
-3. SidebarTypesList (molecule - ScrollArea + TypeItems)
-4. Sidebar (organism - compose all parts)
+1. SidebarTypeItem (pattern - button with icon/label/count)
+2. SidebarSearchTrigger (pattern - button + Keycap)
+3. SidebarTypesList (pattern - ScrollArea + TypeItems)
+4. Sidebar (feature - compose all parts + data)
 ```
 
 ### 3. Component Architecture Patterns
 
-#### Pattern A: Simple Component (Atoms/Molecules)
+#### Layering Rules (Primitives/Patterns/Features)
+
+- **Primitives:** No domain nouns, no API calls, no routing, no IPC hooks.
+- **Patterns:** Reusable composition, still no domain nouns or IPC hooks.
+- **Features:** Domain-specific UI; can use IPC hooks, routing, and app state.
+
+#### Graduation Rule
+
+- Build in features first.
+- Promote to patterns after 2–3 real uses across features.
+- Promote to primitives rarely, only for universal building blocks.
+
+#### Hooks Guidance
+
+- ✅ Allowed in design-system: UI-only hooks (`useDisclosure`, `useKeyboardListNavigation`).
+- ❌ Not allowed in design-system: IPC, data fetching, routing, or backend nouns.
+
+#### Pattern A: Simple Component (Primitives/Patterns)
 
 **Use when:** Component is self-contained with no sub-parts
 
@@ -140,9 +162,9 @@ Button.displayName = 'Button';
 export { Button, buttonVariants };
 ```
 
-#### Pattern B: Compound Component (Organisms)
+#### Pattern B: Compound Component (Features)
 
-**Use when:** Component has multiple sub-parts that can be composed
+**Use when:** Component has multiple sub-parts that can be composed, and includes domain data/behavior
 
 ```typescript
 // Sidebar/index.ts
@@ -437,10 +459,10 @@ const Component = ({ icon: Icon }: Props) => (
 
 ```typescript
 // apps/desktop/src/renderer/App.tsx
-import { Sidebar, SidebarTypeItem } from '@typenote/design-system';
+import { Card, SearchInput } from '@typenote/design-system';
 
 // NOT:
-import { Sidebar } from '../../../packages/design-system/src/components/Sidebar';
+import { Card } from '../../../packages/design-system/src/primitives/Card';
 ```
 
 ### Desktop App Should NOT Duplicate Components

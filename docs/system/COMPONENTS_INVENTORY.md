@@ -81,7 +81,7 @@ Quick reference guide for all components and systems defined in the design syste
 
 Design system rebuild is in progress. The following components are currently implemented in `packages/design-system` with Ladle stories.
 
-**Atoms:**
+**Primitives:**
 
 - Button (primary/secondary/outline/ghost/destructive/neutral/success)
 - Input (default/subtle/error/success)
@@ -93,7 +93,7 @@ Design system rebuild is in progress. The following components are currently imp
 - Divider
 - Tooltip
 
-**Molecules:**
+**Patterns:**
 
 - CheckboxField
 - SearchInput
@@ -101,7 +101,7 @@ Design system rebuild is in progress. The following components are currently imp
 
 ---
 
-### Planned Atoms (Not Implemented Yet)
+### Planned Primitives (Not Implemented Yet)
 
 - Switch
 - Radio

@@ -467,12 +467,13 @@ style={{
 When proposing changes:
 
 1. **Build in Ladle first** — Stories before app integration
-2. **Document thoroughly** — Add to DESIGN_SYSTEM_BREAKDOWN.md
-3. **Include variants** — Show default, hover, active states
-4. **Specify tokens** — Reference colors, spacing, typography
-5. **Test accessibility** — Verify contrast, focus indicators
-6. **Consider responsiveness** — How does it scale?
-7. **Update references** — Keep QUICK_REFERENCE.md current
+2. **Follow primitives/patterns/features** — Keep domain logic out of primitives/patterns
+3. **Document thoroughly** — Add to DESIGN_SYSTEM_BREAKDOWN.md
+4. **Include variants** — Show default, hover, active states
+5. **Specify tokens** — Reference colors, spacing, typography
+6. **Test accessibility** — Verify contrast, focus indicators
+7. **Consider responsiveness** — How does it scale?
+8. **Update references** — Keep QUICK_REFERENCE.md current
 
 ---
 
@@ -502,6 +503,11 @@ A: Use 150ms for hover/micro, 200ms for transitions. Always ease-out. No spring/
 ---
 
 ## Changelog
+
+### Version 1.2 (2026-01-18)
+
+- Adopt primitives/patterns/features organization
+- Added migration guidance for design-system rebuild
 
 ### Version 1.1 (2026-01-18)
 
