@@ -71,6 +71,7 @@ export function getSlashCommandItems(icons: {
   TextHThree: PhosphorIcon;
   ListBullets: PhosphorIcon;
   ListNumbers: PhosphorIcon;
+  ListChecks: PhosphorIcon;
   Quotes: PhosphorIcon;
   Code: PhosphorIcon;
   Minus: PhosphorIcon;
@@ -128,6 +129,15 @@ export function getSlashCommandItems(icons: {
       ['numbered', 'ol', 'number', 'ordered', 'numbered list'],
       (editor, range) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+      }
+    ),
+    createCommand(
+      'taskList',
+      'Task List',
+      icons.ListChecks,
+      ['task', 'todo', 'checkbox', 'check', 'task list', 'todo list', '[]'],
+      (editor, range) => {
+        editor.chain().focus().deleteRange(range).toggleTaskList().run();
       }
     ),
     createCommand('blockquote', 'Quote', icons.Quotes, ['quote', 'blockquote'], (editor, range) => {

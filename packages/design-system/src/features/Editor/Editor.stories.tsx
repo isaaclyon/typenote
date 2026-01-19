@@ -767,3 +767,200 @@ export const TagColors: Story = () => (
     </p>
   </div>
 );
+
+// ============================================================================
+// Task List Stories
+// ============================================================================
+
+export const WithTaskList: Story = () => {
+  const contentWithTasks: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Project Tasks' }],
+      },
+      {
+        type: 'taskList',
+        content: [
+          {
+            type: 'taskItem',
+            attrs: { checked: true },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Set up project repository' }],
+              },
+            ],
+          },
+          {
+            type: 'taskItem',
+            attrs: { checked: true },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Create initial design mockups' }],
+              },
+            ],
+          },
+          {
+            type: 'taskItem',
+            attrs: { checked: false },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Implement authentication flow' }],
+              },
+            ],
+          },
+          {
+            type: 'taskItem',
+            attrs: { checked: false },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Write unit tests' }],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Click checkboxes to toggle completion!' }],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithTasks} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Task lists with interactive checkboxes. Completed items show strikethrough text.</p>
+        <p>
+          Use <code className="bg-muted px-1 rounded">/task</code> or{' '}
+          <code className="bg-muted px-1 rounded">/todo</code> to insert a new task list.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const TaskListViaSlash: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type /task or /todo to create a task list..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Insert task lists using slash commands:</p>
+      <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <li>
+          <code className="bg-muted px-1 rounded">/task</code> — Task List
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/todo</code> — Task List
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/checkbox</code> — Task List
+        </li>
+      </ul>
+      <p className="mt-2">Press Enter to create new items, Backspace on empty to exit.</p>
+    </div>
+  </div>
+);
+
+export const NestedTaskList: Story = () => {
+  const contentWithNestedTasks: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Sprint Planning' }],
+      },
+      {
+        type: 'taskList',
+        content: [
+          {
+            type: 'taskItem',
+            attrs: { checked: false },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Backend API' }],
+              },
+              {
+                type: 'taskList',
+                content: [
+                  {
+                    type: 'taskItem',
+                    attrs: { checked: true },
+                    content: [
+                      {
+                        type: 'paragraph',
+                        content: [{ type: 'text', text: 'User endpoints' }],
+                      },
+                    ],
+                  },
+                  {
+                    type: 'taskItem',
+                    attrs: { checked: false },
+                    content: [
+                      {
+                        type: 'paragraph',
+                        content: [{ type: 'text', text: 'Auth middleware' }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'taskItem',
+            attrs: { checked: false },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Frontend UI' }],
+              },
+              {
+                type: 'taskList',
+                content: [
+                  {
+                    type: 'taskItem',
+                    attrs: { checked: true },
+                    content: [
+                      {
+                        type: 'paragraph',
+                        content: [{ type: 'text', text: 'Component library' }],
+                      },
+                    ],
+                  },
+                  {
+                    type: 'taskItem',
+                    attrs: { checked: false },
+                    content: [
+                      {
+                        type: 'paragraph',
+                        content: [{ type: 'text', text: 'Dashboard page' }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithNestedTasks} />
+      <p className="text-xs text-muted-foreground">
+        Nested task lists for hierarchical todo tracking. Use Tab to indent, Shift+Tab to outdent.
+      </p>
+    </div>
+  );
+};

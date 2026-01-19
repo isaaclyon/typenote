@@ -160,6 +160,69 @@
   list-style-type: square;
 }
 
+/* Task lists */
+.ProseMirror ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.75rem 0;
+}
+
+.ProseMirror ul[data-type='taskList'] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.ProseMirror ul[data-type='taskList'] li > label {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.ProseMirror ul[data-type='taskList'] li > label > input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 0.25rem;
+  background-color: var(--color-background);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ProseMirror ul[data-type='taskList'] li > label > input[type='checkbox']:hover {
+  border-color: var(--color-muted-foreground);
+}
+
+.ProseMirror ul[data-type='taskList'] li > label > input[type='checkbox']:checked {
+  background-color: var(--color-accent-600);
+  border-color: var(--color-accent-600);
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.ProseMirror ul[data-type='taskList'] li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Checked task item text styling - strikethrough effect */
+.ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div {
+  text-decoration: line-through;
+  color: var(--color-muted-foreground);
+}
+
+/* Nested task lists */
+.ProseMirror ul[data-type='taskList'] ul[data-type='taskList'] {
+  margin: 0.25rem 0;
+  padding-left: 1.5rem;
+}
+
 /* Horizontal rule */
 .ProseMirror hr {
   border: none;

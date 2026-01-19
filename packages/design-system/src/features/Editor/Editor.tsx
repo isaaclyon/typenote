@@ -3,6 +3,8 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import type { AnyExtension, Range } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import type { SuggestionProps } from '@tiptap/suggestion';
@@ -15,6 +17,7 @@ import { TextHTwo } from '@phosphor-icons/react/dist/ssr/TextHTwo';
 import { TextHThree } from '@phosphor-icons/react/dist/ssr/TextHThree';
 import { ListBullets } from '@phosphor-icons/react/dist/ssr/ListBullets';
 import { ListNumbers } from '@phosphor-icons/react/dist/ssr/ListNumbers';
+import { ListChecks } from '@phosphor-icons/react/dist/ssr/ListChecks';
 import { Quotes } from '@phosphor-icons/react/dist/ssr/Quotes';
 import { Code } from '@phosphor-icons/react/dist/ssr/Code';
 import { Minus } from '@phosphor-icons/react/dist/ssr/Minus';
@@ -42,6 +45,7 @@ const slashCommandIcons = {
   TextHThree,
   ListBullets,
   ListNumbers,
+  ListChecks,
   Quotes,
   Code,
   Minus,
@@ -385,6 +389,11 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         Placeholder.configure({
           placeholder,
           emptyEditorClass: 'is-editor-empty',
+        }),
+        // Task lists (not included in StarterKit)
+        TaskList,
+        TaskItem.configure({
+          nested: true, // Allow nesting task items
         }),
       ];
 
