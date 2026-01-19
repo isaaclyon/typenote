@@ -27,3 +27,6 @@ export type { DividerProps, DividerOrientation, DividerTone } from './Divider/in
 
 export { Tooltip } from './Tooltip/index.js';
 export type { TooltipProps, TooltipSide, TooltipAlign } from './Tooltip/index.js';
+
+export { Switch, switchVariants } from './Switch/index.js';
+export type { SwitchProps, SwitchSize } from './Switch/index.js';
