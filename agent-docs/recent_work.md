@@ -27,6 +27,14 @@
 - `extensions/index.ts` — Exported TagNode types and components
 - `Editor.stories.tsx` — 3 new stories + updated FullFeaturedEditor
 
+### Commits
+
+- `38ebbb5` feat(design-system): add TagNode and TagSuggestion for hashtag support
+
+### Notes
+
+- React 18 warnings about `flushSync` during initial render are a known TipTap issue (not affecting functionality)
+
 ---
 
 ## Previous Session (2026-01-19 - SlashCommand Menu)

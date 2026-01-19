@@ -47,7 +47,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 1. Wire AppShell + Editor to desktop renderer
 2. Enable basic navigation
-3. Continue editor refinement (Tags)
+3. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
 
 ### Folder Structure
 
