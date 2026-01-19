@@ -19,3 +19,9 @@ export { getSlashCommandItems, filterSlashCommands } from './SlashCommand.js';
 export type { SlashCommandItem } from './SlashCommand.js';
 export { SlashCommandList } from './SlashCommandList.js';
 export type { SlashCommandListProps } from './SlashCommandList.js';
+
+export { TagNode } from './TagNode.js';
+export type { TagNodeAttributes, TagNodeOptions } from './TagNode.js';
+export { TagNodeView } from './TagNodeView.js';
+export { TagSuggestionList } from './TagSuggestionList.js';
+export type { TagSuggestionItem, TagSuggestionListProps } from './TagSuggestionList.js';

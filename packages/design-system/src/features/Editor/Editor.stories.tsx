@@ -10,7 +10,12 @@ import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 
 import { Editor } from './Editor.js';
-import type { RefSuggestionItem, RefNodeAttributes } from './types.js';
+import type {
+  RefSuggestionItem,
+  RefNodeAttributes,
+  TagSuggestionItem,
+  TagNodeAttributes,
+} from './types.js';
 
 // Import editor.css for ref-node styles in RefTypeColors story
 import './editor.css';
@@ -576,12 +581,16 @@ export const FullFeaturedEditor: Story = () => {
   return (
     <div className="space-y-4 p-6">
       <Editor
-        placeholder="Full-featured editor: / for blocks, @ or [[ for refs..."
+        placeholder="Full-featured editor: / for blocks, @ or [[ for refs, # for tags..."
         enableSlashCommands
         enableRefs
         onRefSearch={mockSearch}
         onRefClick={(attrs) => setLastAction(`Navigate to: ${attrs.displayTitle}`)}
         onRefCreate={mockCreate}
+        enableTags
+        onTagSearch={mockTagSearch}
+        onTagClick={(attrs) => setLastAction(`Navigate to tag: ${attrs.displayName}`)}
+        onTagCreate={mockTagCreate}
       />
       <div className="text-xs text-muted-foreground space-y-1">
         <p>This editor has all Phase 2 features enabled:</p>
@@ -593,9 +602,168 @@ export const FullFeaturedEditor: Story = () => {
             <code className="bg-muted px-1 rounded">@</code> or{' '}
             <code className="bg-muted px-1 rounded">[[</code> — Reference suggestions
           </li>
+          <li>
+            <code className="bg-muted px-1 rounded">#</code> — Tag suggestions
+          </li>
         </ul>
         {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
       </div>
     </div>
   );
 };
+
+// ============================================================================
+// Phase 2b: Tag Support Stories
+// ============================================================================
+
+const mockTags: TagSuggestionItem[] = [
+  { tagId: '01TAG00000000000000001', name: 'important', color: '#EF4444' },
+  { tagId: '01TAG00000000000000002', name: 'idea', color: '#8B5CF6' },
+  { tagId: '01TAG00000000000000003', name: 'todo', color: '#F59E0B' },
+  { tagId: '01TAG00000000000000004', name: 'work', color: '#6366F1' },
+  { tagId: '01TAG00000000000000005', name: 'personal', color: '#10B981' },
+  { tagId: '01TAG00000000000000006', name: 'meeting', color: '#EC4899' },
+  { tagId: '01TAG00000000000000007', name: 'research', color: '#06B6D4' },
+];
+
+const mockTagSearch = async (query: string): Promise<TagSuggestionItem[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  if (!query) return mockTags.slice(0, 5);
+
+  const lower = query.toLowerCase();
+  return mockTags.filter((tag) => tag.name.toLowerCase().includes(lower));
+};
+
+const mockTagCreate = async (name: string): Promise<TagSuggestionItem> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+
+  return {
+    tagId: `01TAG${Date.now()}`,
+    name: name.toLowerCase().replace(/\s+/g, '-'),
+    color: '#71717A',
+  };
+};
+
+export const WithTags: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  const handleTagClick = (attrs: TagNodeAttributes) => {
+    setLastAction(`Clicked tag: ${attrs.displayName}`);
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Type # to insert a tag..."
+        enableTags
+        onTagSearch={mockTagSearch}
+        onTagClick={handleTagClick}
+        onTagCreate={mockTagCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          Type <code className="bg-muted px-1 rounded">#</code> to open the tag picker.
+        </p>
+        <p>Try searching for: &quot;important&quot;, &quot;work&quot;, &quot;todo&quot;</p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+export const WithExistingTags: Story = () => {
+  const contentWithTags: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Quick Notes' }],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'Remember to follow up on the ' },
+          {
+            type: 'tagNode',
+            attrs: {
+              tagId: '01TAG00000000000000001',
+              displayName: 'important',
+              color: '#EF4444',
+            },
+          },
+          { type: 'text', text: ' items from the ' },
+          {
+            type: 'tagNode',
+            attrs: {
+              tagId: '01TAG00000000000000006',
+              displayName: 'meeting',
+              color: '#EC4899',
+            },
+          },
+          { type: 'text', text: '.' },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'New ' },
+          {
+            type: 'tagNode',
+            attrs: {
+              tagId: '01TAG00000000000000002',
+              displayName: 'idea',
+              color: '#8B5CF6',
+            },
+          },
+          { type: 'text', text: ': Build a knowledge graph.' },
+        ],
+      },
+    ],
+  };
+
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        content={contentWithTags}
+        enableTags
+        onTagSearch={mockTagSearch}
+        onTagClick={(attrs) => setLastAction(`Navigate to tag: ${attrs.displayName}`)}
+        onTagCreate={mockTagCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Editor with pre-existing tags. Click any tag to navigate.</p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+export const TagColors: Story = () => (
+  <div className="space-y-4 p-6">
+    <p className="text-sm text-foreground leading-relaxed">
+      Tag nodes display as colored pills. Hover to see the enhanced background:
+    </p>
+    <div className="space-y-3 mt-4">
+      {mockTags.map((tag) => {
+        const tagColor = tag.color ?? '#71717A';
+        return (
+          <div key={tag.tagId} className="flex items-center gap-4">
+            <span
+              className="tag-node inline-flex cursor-pointer"
+              style={{ '--tag-color': tagColor } as React.CSSProperties}
+            >
+              <span className="tag-node-pill">#{tag.name}</span>
+            </span>
+          </div>
+        );
+      })}
+    </div>
+    <p className="text-xs text-muted-foreground mt-4">
+      Each tag displays with its assigned color. Background is subtle, darkens on hover.
+    </p>
+  </div>
+);

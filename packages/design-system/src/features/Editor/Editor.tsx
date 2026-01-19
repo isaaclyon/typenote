@@ -27,6 +27,9 @@ import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 import { getSlashCommandItems, filterSlashCommands } from './extensions/SlashCommand.js';
 import type { SlashCommandItem } from './extensions/SlashCommand.js';
 import { SlashCommandList } from './extensions/SlashCommandList.js';
+import { TagNode } from './extensions/TagNode.js';
+import { TagSuggestionList } from './extensions/TagSuggestionList.js';
+import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 
 // Editor typography styles
 import './editor.css';
@@ -80,6 +83,11 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onRefSearch,
       onRefClick,
       onRefCreate,
+      // Phase 2b: Tags
+      enableTags = false,
+      onTagSearch,
+      onTagCreate,
+      onTagClick,
     },
     ref
   ) => {
@@ -119,6 +127,23 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       range: null,
     });
 
+    // Tag suggestion state
+    const [tagSuggestionState, setTagSuggestionState] = React.useState<{
+      isOpen: boolean;
+      items: TagSuggestionItem[];
+      query: string;
+      selectedIndex: number;
+      position: { top: number; left: number } | null;
+      command: ((item: TagSuggestionItem) => void) | null;
+    }>({
+      isOpen: false,
+      items: [],
+      query: '',
+      selectedIndex: 0,
+      position: null,
+      command: null,
+    });
+
     // Store refs in refs so they're available in extension callbacks
     const onRefSearchRef = React.useRef(onRefSearch);
     const onRefCreateRef = React.useRef(onRefCreate);
@@ -126,6 +151,14 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onRefSearchRef.current = onRefSearch;
       onRefCreateRef.current = onRefCreate;
     }, [onRefSearch, onRefCreate]);
+
+    // Store tag callbacks in refs
+    const onTagSearchRef = React.useRef(onTagSearch);
+    const onTagCreateRef = React.useRef(onTagCreate);
+    React.useEffect(() => {
+      onTagSearchRef.current = onTagSearch;
+      onTagCreateRef.current = onTagCreate;
+    }, [onTagSearch, onTagCreate]);
 
     // Create ref suggestion render callbacks
     const createRefSuggestionRender = React.useCallback(
@@ -269,6 +302,78 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         },
       }),
       [allSlashCommands]
+    );
+
+    // Create tag suggestion render callbacks
+    const createTagSuggestionRender = React.useCallback(
+      () => ({
+        onStart: (props: SuggestionProps<TagSuggestionItem>) => {
+          const rect = props.clientRect?.();
+          setTagSuggestionState({
+            isOpen: true,
+            items: props.items,
+            query: props.query,
+            selectedIndex: 0,
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : null,
+            command: props.command,
+          });
+        },
+        onUpdate: (props: SuggestionProps<TagSuggestionItem>) => {
+          const rect = props.clientRect?.();
+          setTagSuggestionState((prev) => ({
+            ...prev,
+            items: props.items,
+            query: props.query,
+            selectedIndex: Math.min(prev.selectedIndex, Math.max(0, props.items.length - 1)),
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : prev.position,
+            command: props.command,
+          }));
+        },
+        onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+          if (event.key === 'ArrowUp') {
+            setTagSuggestionState((prev) => ({
+              ...prev,
+              selectedIndex:
+                prev.selectedIndex <= 0 ? prev.items.length - 1 : prev.selectedIndex - 1,
+            }));
+            return true;
+          }
+          if (event.key === 'ArrowDown') {
+            setTagSuggestionState((prev) => ({
+              ...prev,
+              selectedIndex:
+                prev.selectedIndex >= prev.items.length - 1 ? 0 : prev.selectedIndex + 1,
+            }));
+            return true;
+          }
+          if (event.key === 'Enter') {
+            setTagSuggestionState((prev) => {
+              const item = prev.items[prev.selectedIndex];
+              if (item && prev.command) {
+                prev.command(item);
+              }
+              return { ...prev, isOpen: false };
+            });
+            return true;
+          }
+          if (event.key === 'Escape') {
+            setTagSuggestionState((prev) => ({ ...prev, isOpen: false }));
+            return true;
+          }
+          return false;
+        },
+        onExit: () => {
+          setTagSuggestionState({
+            isOpen: false,
+            items: [],
+            query: '',
+            selectedIndex: 0,
+            position: null,
+            command: null,
+          });
+        },
+      }),
+      []
     );
 
     // Build extensions array - stable across renders
@@ -415,6 +520,57 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         baseExtensions.push(SlashCommandExtension);
       }
 
+      // Tags (when enabled)
+      if (enableTags) {
+        // Add TagNode
+        baseExtensions.push(
+          TagNode.configure({
+            onTagClick,
+          })
+        );
+
+        // Create suggestion extension for # trigger
+        const HashtagSuggestion = Extension.create({
+          name: 'hashtagSuggestion',
+          addProseMirrorPlugins() {
+            return [
+              Suggestion({
+                editor: this.editor,
+                pluginKey: new PluginKey('hashtagSuggestion'),
+                char: '#',
+                allowSpaces: false,
+                startOfLine: false,
+                items: async ({ query }) => {
+                  const search = onTagSearchRef.current;
+                  return search ? search(query) : [];
+                },
+                command: ({ editor: ed, range, props: item }) => {
+                  const typedItem = item as TagSuggestionItem;
+                  ed.chain()
+                    .focus()
+                    .deleteRange(range)
+                    .insertContent([
+                      {
+                        type: 'tagNode',
+                        attrs: {
+                          tagId: typedItem.tagId,
+                          displayName: typedItem.name,
+                          color: typedItem.color,
+                        },
+                      },
+                      { type: 'text', text: ' ' },
+                    ])
+                    .run();
+                },
+                render: createTagSuggestionRender,
+              }),
+            ];
+          },
+        });
+
+        baseExtensions.push(HashtagSuggestion);
+      }
+
       return baseExtensions;
     }, [
       placeholder,
@@ -425,6 +581,9 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       readOnly,
       allSlashCommands,
       createSlashCommandRender,
+      enableTags,
+      onTagClick,
+      createTagSuggestionRender,
     ]);
 
     const editor = useEditor({
@@ -525,6 +684,41 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       [editor, slashCommandState.range]
     );
 
+    // Handle tag suggestion item selection
+    const handleTagSelect = React.useCallback(
+      (item: TagSuggestionItem) => {
+        if (tagSuggestionState.command) {
+          tagSuggestionState.command(item);
+        }
+      },
+      [tagSuggestionState.command]
+    );
+
+    // Handle create new from tag suggestion
+    const handleTagCreate = React.useCallback(
+      async (name: string) => {
+        if (!onTagCreate || !editor) return;
+        const newItem = await onTagCreate(name);
+        editor
+          .chain()
+          .focus()
+          .insertContent([
+            {
+              type: 'tagNode',
+              attrs: {
+                tagId: newItem.tagId,
+                displayName: newItem.name,
+                color: newItem.color,
+              },
+            },
+            { type: 'text', text: ' ' },
+          ])
+          .run();
+        setTagSuggestionState((prev) => ({ ...prev, isOpen: false }));
+      },
+      [onTagCreate, editor]
+    );
+
     // Handle Enter key for slash commands (since TipTap suggestion handles navigation but not selection)
     React.useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -591,6 +785,25 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
               items={slashCommandState.filteredItems}
               selectedIndex={slashCommandState.selectedIndex}
               onSelect={handleSlashCommandSelect}
+            />
+          </div>
+        )}
+
+        {/* Tag suggestion popup */}
+        {tagSuggestionState.isOpen && tagSuggestionState.position && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: tagSuggestionState.position.top,
+              left: tagSuggestionState.position.left,
+            }}
+          >
+            <TagSuggestionList
+              items={tagSuggestionState.items}
+              query={tagSuggestionState.query}
+              selectedIndex={tagSuggestionState.selectedIndex}
+              onSelect={handleTagSelect}
+              onCreate={onTagCreate ? handleTagCreate : undefined}
             />
           </div>
         )}

@@ -234,3 +234,19 @@
   height: 2px;
   opacity: 1;
 }
+
+/* Tag node (inline hashtags) */
+.tag-node-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 9999px;
+  font-size: 0.875em;
+  background-color: color-mix(in srgb, var(--tag-color) 12%, transparent);
+  color: var(--tag-color);
+  transition: background-color 150ms ease-out;
+}
+
+.tag-node:hover .tag-node-pill {
+  background-color: color-mix(in srgb, var(--tag-color) 20%, transparent);
+}

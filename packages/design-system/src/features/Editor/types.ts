@@ -1,6 +1,8 @@
 import type { JSONContent, Editor as TiptapEditor } from '@tiptap/core';
 import type { RefNodeAttributes } from './extensions/RefNode.js';
 import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
+import type { TagNodeAttributes } from './extensions/TagNode.js';
+import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 
 /**
  * Editor component props.
@@ -60,6 +62,34 @@ export interface EditorProps {
    * If provided, shows a "Create" option in the suggestion list.
    */
   onRefCreate?: (title: string) => RefSuggestionItem | Promise<RefSuggestionItem>;
+
+  // ============================================================================
+  // Tag Support (Phase 2b)
+  // ============================================================================
+
+  /**
+   * Enable tag suggestions via `#` trigger.
+   * When true, onTagSearch must be provided.
+   */
+  enableTags?: boolean;
+
+  /**
+   * Search function for tag suggestions.
+   * Called when user types after `#` trigger.
+   */
+  onTagSearch?: (query: string) => TagSuggestionItem[] | Promise<TagSuggestionItem[]>;
+
+  /**
+   * Optional callback to create a new tag from the search query.
+   * If provided, shows a "Create" option in the suggestion list.
+   */
+  onTagCreate?: (name: string) => TagSuggestionItem | Promise<TagSuggestionItem>;
+
+  /**
+   * Called when a tag node is clicked.
+   * Use this to navigate to the tag page.
+   */
+  onTagClick?: (attrs: TagNodeAttributes) => void;
 }
 
 /**
@@ -77,3 +107,5 @@ export interface EditorRef {
 // Re-export extension types for convenience
 export type { RefNodeAttributes } from './extensions/RefNode.js';
 export type { RefSuggestionItem } from './extensions/RefSuggestion.js';
+export type { TagNodeAttributes } from './extensions/TagNode.js';
+export type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
