@@ -1,36 +1,53 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Editor Feature Phase 1)
+## Latest Session (2026-01-19 - Editor Phase 2a: RefNode + RefSuggestion)
+
+### What was accomplished
+
+- Built **RefNode** extension — inline reference nodes with type-colored styling
+- Built **RefSuggestion** — autocomplete popup triggered by `@` and `[[`
+- Both triggers open identical picker, insert same RefNode on selection
+- Type-colored styling: Page=indigo, Person=pink, DailyNote=amber, etc.
+- **RefSuggestionList** — dropdown UI with keyboard navigation (arrows, Enter, Escape)
+- **useRefSuggestion** hook — extracted for potential reuse
+- **3 new Ladle stories**: WithRefs, WithExistingRefs, RefTypeColors
+
+### Key files changed
+
+- `packages/design-system/src/features/Editor/extensions/` (new directory)
+  - `RefNode.ts` — TipTap Node extension for inline references
+  - `RefNodeView.tsx` — React component rendering reference pills
+  - `RefSuggestion.ts` — Suggestion extension configuration
+  - `RefSuggestionList.tsx` — Dropdown UI component
+  - `useRefSuggestion.ts` — State management hook
+- `packages/design-system/src/features/Editor/Editor.tsx` — Integrated refs support
+- `packages/design-system/src/features/Editor/types.ts` — Added ref-related props
+- `packages/design-system/package.json` — Added @tiptap/suggestion
+
+### Commits
+
+- `507aba8` feat(design-system): add RefNode and RefSuggestion for wiki-links and mentions
+
+### Status
+
+- Ladle stories: 122 total (up from 104)
+- Editor: 13 stories (up from 10)
+- Editor Phase 2a complete; Phase 2b next (Tags, SlashCommand)
+
+---
+
+## Previous Session (2026-01-19 - Editor Feature Phase 1)
 
 ### What was accomplished
 
 - Built **Editor** feature — TipTap/ProseMirror integration as design-system component
 - Phase 1 scope: paragraphs, headings (h1-h6), basic marks (bold, italic, code, strike)
 - **Full-width clickable area** with centered content (650px max-width)
-  - Click anywhere in editor area (including margins) to focus
-  - Click below content focuses at end of document
-  - `cursor-text` across entire area for clear affordance
-- Custom **editor.css** for typography (no @tailwindcss/typography dependency)
 - **10 Ladle stories**: Default, WithContent, AllMarks, Controlled, ReadOnly, Focused, CustomPlaceholder, LongDocument, MultipleEditors, InAppContext
-
-### Key files changed
-
-- `packages/design-system/src/features/Editor/` (new feature)
-  - `Editor.tsx` — TipTap wrapper with click-to-focus behavior
-  - `editor.css` — Typography styles for headings, marks, code, etc.
-  - `types.ts` — EditorProps, EditorRef interfaces
-  - `Editor.stories.tsx` — 10 comprehensive stories
-- `packages/design-system/package.json` — Added TipTap dependencies
 
 ### Commits
 
 - `437af80` feat(design-system): add Editor feature with TipTap integration
-
-### Status
-
-- Design system: 19 primitives, 12 patterns, **5 features** (added Editor)
-- Editor Phase 1 complete; ready for Phase 2 (extensions, converters)
-- Next session: Continue editor refinement (wiki-links, tags, slash commands)
 
 ---
 

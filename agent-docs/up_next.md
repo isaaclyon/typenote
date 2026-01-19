@@ -30,17 +30,18 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1) — TipTap/ProseMirror foundation
+- Editor ✅ (Phase 1 + 2a) — TipTap/ProseMirror with references
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
-  - 10 Ladle stories
+  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
+  - Type-colored inline references with click handling
+  - 13 Ladle stories
 
-**Next — Editor Phase 2:**
+**Next — Editor Phase 2b:**
 
-1. **NotateDoc converters** — Bidirectional TipTap ↔ NotateDoc conversion
-2. **Wiki-links** — `[[` syntax with RefNode extension + autocomplete
-3. **Tags** — `#` syntax with TagNode extension
-4. **SlashCommand menu** — Block type insertion
+1. **Tags** — `#` syntax with TagNode extension
+2. **SlashCommand menu** — Block type insertion via `/`
+3. **NotateDoc converters** — Live in `packages/core`, not design-system
 
 ### Immediate Next Steps
 
@@ -92,6 +93,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |
 | Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |
 | HeaderBar feature + Link, Breadcrumbs, SearchTrigger, ThemeToggle | 2026-01-19 | `f4c4d73` |
 | TitleBar feature                                                  | 2026-01-19 | `5aaaa86` |
