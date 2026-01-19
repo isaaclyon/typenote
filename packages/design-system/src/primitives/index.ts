@@ -64,3 +64,35 @@ export type {
 
 export { Spinner, spinnerVariants } from './Spinner/index.js';
 export type { SpinnerProps, SpinnerSize } from './Spinner/index.js';
+
+export { ScrollArea, ScrollBar } from './ScrollArea/index.js';
+export type { ScrollAreaProps, ScrollBarProps } from './ScrollArea/index.js';
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+} from './DropdownMenu/index.js';
+export type {
+  DropdownMenuSubTriggerProps,
+  DropdownMenuSubContentProps,
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+  DropdownMenuCheckboxItemProps,
+  DropdownMenuRadioItemProps,
+  DropdownMenuLabelProps,
+  DropdownMenuSeparatorProps,
+  DropdownMenuShortcutProps,
+} from './DropdownMenu/index.js';
