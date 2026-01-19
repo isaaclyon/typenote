@@ -10,46 +10,30 @@
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
 - ✅ Documentation preserved: agent-docs/to-extract/skills/design-principles/, /docs/system/
 - ✅ Ladle configured and ready
-- ✅ **16 primitives** implemented with co-located stories
-- ✅ 2 patterns implemented with co-located stories
+- ✅ **18 primitives** implemented with co-located stories
+- ✅ **8 patterns** implemented with co-located stories
 - ✅ Focus styling updated to subtle outlines
 - ✅ Primitives/patterns migration complete (components/ has compat re-exports)
 - ✅ **All interactive primitives now use shadcn/Radix** for accessibility
+- ✅ **All planned patterns complete** (64 stories total)
 - ❌ Renderer is placeholder only (no sidebar, no editor, no navigation)
 
 ### Build Sequence
 
 Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
 
-1. **Primitives** — 16 complete, 2 in progress (ScrollArea, DropdownMenu)
-2. **Patterns** — CheckboxField ✅, SearchInput ✅, more planned (see below)
-3. **Features** — Sidebar, AppShell, InteractiveEditor
+1. **Primitives** — 18 complete (including ScrollArea, DropdownMenu)
+2. **Patterns** — 8 complete (all planned patterns done)
+3. **Features** — Sidebar, AppShell, InteractiveEditor (next phase)
 
 ### Primitive Inventory
 
-**Complete (16):**
+**Complete (18):**
 
-- Button ✅
-- Input ✅
-- Label ✅ (Radix)
-- Checkbox ✅ (Radix)
-- Badge ✅
-- Skeleton ✅
-- IconButton ✅
-- Divider ✅
-- Tooltip ✅ (Radix)
-- Card ✅
-- Switch ✅ (Radix)
-- Radio ✅ (Radix)
-- Select ✅ (Radix)
-- Textarea ✅
-- Keycap ✅
-- Spinner ✅
-
-**In Progress:**
-
-- ScrollArea ⏳ (Radix) — Custom scrollbar for lists
-- DropdownMenu ⏳ (Radix) — Action menus, context menus
+- Button, Input, Label (Radix), Checkbox (Radix), Badge, Skeleton
+- IconButton, Divider, Tooltip (Radix), Card, Switch (Radix)
+- Radio (Radix), Select (Radix), Textarea, Keycap, Spinner
+- ScrollArea (Radix), DropdownMenu (Radix)
 
 **Deprioritized:**
 
@@ -57,27 +41,22 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ### Pattern Inventory
 
-**Complete (2):**
+**Complete (8):**
 
 - CheckboxField ✅ — Checkbox + Label + help text
-- SearchInput ✅ — Input with search icon
-
-**Planned (6):**
-
-- NavItem — Sidebar navigation item (icon, label, count, action menu)
-- EmptyState — Icon + heading + description + optional action
-- InputField — Input + Label + help/error text
-- RadioField — RadioGroup + Label + help text
-- SelectField — Select + Label + help/error text
-- SwitchField — Switch + Label + help text
+- EmptyState ✅ — Icon + heading + description + action
+- InputField ✅ — Input + Label + help/error text
+- NavItem ✅ — Sidebar nav with icon, count, actions
+- RadioField ✅ — RadioGroup + Label + help text
+- SearchInput ✅ — Input with search icon + clear
+- SelectField ✅ — Select + Label + help/error text
+- SwitchField ✅ — Switch + Label + help text
 
 ### Immediate Next Steps
 
-1. **Build ScrollArea primitive** (Radix-based)
-2. **Build DropdownMenu primitive** (Radix-based)
-3. **Build NavItem pattern** (needs DropdownMenu for action menu)
-4. Continue with remaining patterns
-5. Start feature components (Sidebar, AppShell)
+1. **Build Sidebar feature** — Uses NavItem, ScrollArea, DropdownMenu
+2. **Build AppShell feature** — Layout container with sidebar + main content
+3. Start editor integration (InteractiveEditor)
 
 ### Folder Structure
 
@@ -92,167 +71,6 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - Token reference: `/docs/system/QUICK_REFERENCE.md`
 
 ---
-
-## Design Decisions Log
-
-Detailed design decisions for components being built. Serves as a reference during implementation.
-
-### ScrollArea (Primitive)
-
-| Aspect          | Decision                                   |
-| --------------- | ------------------------------------------ |
-| Implementation  | Radix `@radix-ui/react-scroll-area`        |
-| Visibility      | Fade in/out with hover reveal (200ms ease) |
-| Scrollbar width | 8px                                        |
-| Thumb color     | `gray-300` (hover: `gray-400`)             |
-| Border radius   | Fully rounded (rounded-full)               |
-| Orientation     | Both available via prop, vertical default  |
-
-**Props:**
-
-```tsx
-interface ScrollAreaProps {
-  children: React.ReactNode;
-  className?: string;
-  orientation?: 'vertical' | 'horizontal' | 'both';
-}
-```
-
-### DropdownMenu (Primitive)
-
-| Aspect         | Decision                              |
-| -------------- | ------------------------------------- |
-| Implementation | Radix `@radix-ui/react-dropdown-menu` |
-| Trigger        | Flexible (any element via asChild)    |
-| Animation      | Subtle fade + scale (150ms ease-out)  |
-| Styling        | Shadow-md, rounded-md, white bg       |
-
-**Compound components:** Trigger, Content, Item, Separator, Label, Sub, etc.
-
-### NavItem (Pattern)
-
-| Aspect      | Decision                                                                  |
-| ----------- | ------------------------------------------------------------------------- |
-| Height      | ~28px (per sidebar spec)                                                  |
-| Icon        | Component type (`LucideIcon`), 14px                                       |
-| Icon color  | Optional `color` prop tints the icon                                      |
-| Label       | Fills middle, text-sm, medium weight                                      |
-| Count badge | Hover-only, appears on row hover                                          |
-| Action menu | "..." button on right, triggers DropdownMenu                              |
-| States      | Default, hover (gray-50 bg), active (accent-50 bg, accent text), disabled |
-
-**Visual structure:**
-
-```
-[Icon] Label                    [Count] [...]
-   ^                               ^      ^
-colored via prop           hover-only  action menu
-```
-
-**Props:**
-
-```tsx
-interface NavItemProps {
-  icon: LucideIcon;
-  label: string;
-  count?: number;
-  active?: boolean;
-  disabled?: boolean;
-  color?: string; // Tints the icon
-  onClick?: () => void;
-  href?: string; // Link semantics
-  actions?: NavItemAction[];
-}
-
-interface NavItemAction {
-  label: string;
-  icon?: LucideIcon;
-  onClick: () => void;
-  destructive?: boolean; // Red styling
-}
-```
-
-### EmptyState (Pattern)
-
-| Aspect      | Decision                     |
-| ----------- | ---------------------------- |
-| Icon        | Large (40px+), muted opacity |
-| Heading     | text-base, medium weight     |
-| Description | text-sm, muted color         |
-| Action      | Optional primary Button      |
-| Background  | gray-50, dashed border       |
-
-**Props:**
-
-```tsx
-interface EmptyStateProps {
-  icon?: LucideIcon;
-  heading: string;
-  description?: string;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
-}
-```
-
-### InputField (Pattern)
-
-| Aspect      | Decision                                 |
-| ----------- | ---------------------------------------- |
-| Layout      | Vertical stack: Label, Input, Help/Error |
-| Error state | Red border on input, red help text       |
-| Required    | Asterisk on label                        |
-
-**Props:**
-
-```tsx
-interface InputFieldProps extends InputProps {
-  label: string;
-  help?: string;
-  error?: string;
-  required?: boolean;
-}
-```
-
-### RadioField (Pattern)
-
-| Aspect      | Decision                                      |
-| ----------- | --------------------------------------------- |
-| Layout      | Label above, RadioGroup below, help at bottom |
-| Orientation | RadioGroup handles horizontal/vertical        |
-
-**Props:**
-
-```tsx
-interface RadioFieldProps extends RadioGroupProps {
-  label: string;
-  help?: string;
-  children: React.ReactNode; // RadioItems
-}
-```
-
-### SelectField (Pattern)
-
-| Aspect      | Decision                                  |
-| ----------- | ----------------------------------------- |
-| Layout      | Vertical stack: Label, Select, Help/Error |
-| Error state | Red border on trigger, red help text      |
-
-**Props:**
-
-```tsx
-interface SelectFieldProps {
-  label: string;
-  help?: string;
-  error?: string;
-  required?: boolean;
-  placeholder?: string;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  children: React.ReactNode; // SelectItems
-}
-```
 
 ---
 
@@ -283,6 +101,10 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                              | Date       | Commits   |
 | ------------------------------------ | ---------- | --------- |
+| All field patterns (4)               | 2026-01-18 | `e0ce6b1` |
+| EmptyState pattern                   | 2026-01-18 | `c5b4a48` |
+| NavItem pattern + semantic tokens    | 2026-01-18 | `790cd45` |
+| ScrollArea, DropdownMenu primitives  | 2026-01-18 | `ddaa58d` |
 | Spinner primitive                    | 2026-01-18 | `fd4cf3c` |
 | Radix migration (5 primitives)       | 2026-01-18 | `6120d2f` |
 | Keycap, Textarea, Select primitives  | 2026-01-18 | `a800321` |
