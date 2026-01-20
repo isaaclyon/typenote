@@ -1,29 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Tables)
+## Latest Session (2026-01-19 - Table Toolbar & Controls)
 
 ### What was accomplished
 
-- **Table extension** — TipTap table support using official extensions
-- **`/table` slash command** — Inserts 3x3 table with header row
-- **Header row styling** — Bold text, muted background
-- **Tab/Shift+Tab navigation** — Move between cells
-- **Cell selection highlighting** — Visual feedback for selected cells
-- **4 new Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable
-- **Column resizing disabled** — prosemirror-tables widget causes layout issues (deferred to Phase 2)
+- **ContextMenu primitive** — New Radix-based primitive for right-click menus
+- **TableToolbar component** — Floating toolbar appears when cursor is in table cell
+  - Tracks position to active cell (moves as you navigate)
+  - Row menu: insert above/below, delete row
+  - Column menu: insert left/right, delete column
+  - Delete table with inline confirmation ("Delete table?" + confirm/cancel)
+  - Auto-cancels confirmation on click outside or cursor leaving table
+- **5 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable, TableWithToolbar
 
 ### Key files created/modified
 
-- `extensions/Table.ts` — TipTap table extensions bundle (resizable: false)
-- `extensions/SlashCommand.ts` — Added `/table` command with Table icon
-- `editor.css` — Table styling (~50 lines)
-- `Editor.tsx` — Registered TableExtensions
-- `Editor.stories.tsx` — 4 new table stories
-- `docs/plans/2026-01-19-table-design.md` — Design doc
+- `primitives/ContextMenu/` — New Radix-based context menu primitive
+- `extensions/TableToolbar.tsx` — Floating toolbar with row/column/table operations
+- `extensions/Table.ts` — Simplified (removed NodeView approach)
+- `Editor.tsx` — Added table toolbar integration with cell tracking
+- `Editor.stories.tsx` — Added TableWithToolbar story
+- `primitives/index.ts` — Export ContextMenu
+- `docs/plans/2026-01-19-table-design.md` — Updated status to Phase 1 + 2 complete
 
 ### Commits
 
 - Not yet committed
+
+---
+
+## Previous Session (2026-01-19 - Tables Phase 1)
+
+- **Table extension** — TipTap table support using official extensions
+- **`/table` slash command** — Inserts 3x3 table with header row
+- **4 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable
+- Commits: `cf7287a`
 
 ---
 

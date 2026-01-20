@@ -8,7 +8,7 @@
 ### Current State
 
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
-- ✅ **19 primitives** implemented with co-located stories (added Link)
+- ✅ **20 primitives** implemented with co-located stories (added ContextMenu)
 - ✅ **12 patterns** implemented with co-located stories (added Breadcrumbs, SearchTrigger, ThemeToggle)
 - ✅ **All interactive primitives now use shadcn/Radix** for accessibility
 - ✅ **5 features complete** — Sidebar, TitleBar, HeaderBar, AppShell, Editor (Phase 1)
@@ -18,7 +18,7 @@
 
 Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
 
-1. **Primitives** — 19 complete
+1. **Primitives** — 20 complete
 2. **Patterns** — 12 complete
 3. **Features** — 5 complete (Sidebar, TitleBar, HeaderBar, AppShell, Editor Phase 1)
 
@@ -39,9 +39,9 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
   - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
   - **Callout** — 4 types (info, warning, tip, error) with type dropdown, nested content support
-  - **Table** — `/table` inserts 3x3 with header row, Tab navigation (resizing deferred)
+  - **Table** — `/table` inserts 3x3 with header row, Tab navigation, floating toolbar (resizing deferred)
   - Type-colored inline references with click handling
-  - 38 Ladle stories
+  - 39 Ladle stories
 
 **Next — NotateDoc converters:**
 
@@ -55,7 +55,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ### Folder Structure
 
-- `src/primitives/` — 19 atoms with stories
+- `src/primitives/` — 20 atoms with stories
 - `src/patterns/` — 12 molecules with stories
 - `src/features/` — 5 features (Sidebar, TitleBar, HeaderBar, AppShell, Editor) with stories
 - `src/components/` — backward-compat re-exports only
@@ -97,7 +97,9 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
-| Table support (resizing deferred)                                 | 2026-01-19 | pending   |
+| Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
+| ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
+| Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |
 | Callout blocks with 4 types (info, warning, tip, error)           | 2026-01-19 | `ae98f89` |
 | CodeBlock with Shiki syntax highlighting                          | 2026-01-19 | `7d3d04b` |
 | TaskList support with slash command and styling                   | 2026-01-19 | `fb84e66` |
