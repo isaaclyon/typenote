@@ -1,30 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Markdown Contract + Links)
+## Latest Session (2026-01-20 - Highlight + Images)
 
 ### What was accomplished
 
-- **Markdown contract plan** — Drafted CommonMark + GFM + Obsidian extras contract and gap list
-- **Link + autolink support** — Added TipTap link extension (autolink, open on click)
-- **Ladle story** — Added WithLinks story and sample content
-- **Editor styling** — Updated link styling to cover all anchors
+- **Highlight mark** — `==text==` syntax with `Cmd+Shift+H` shortcut
+- **Image display (Phase 1)** — Display images from URLs with rounded corners and selection state
+- **Ladle stories** — Added WithHighlight and WithImages stories
+- **Image design plan** — Full 4-phase plan for images (display, resize, upload, alt text)
+- **Dark mode highlight** — Light/dark mode styling for highlight mark
 
 ### Key files changed
 
-- `docs/plans/2026-01-19-markdown-contract-adherence.md`
 - `packages/design-system/src/features/Editor/Editor.tsx`
 - `packages/design-system/src/features/Editor/Editor.stories.tsx`
 - `packages/design-system/src/features/Editor/editor.css`
 - `packages/design-system/package.json`
-- `pnpm-lock.yaml`
+- `docs/plans/2026-01-20-image-support-design.md`
+- `docs/plans/2026-01-19-markdown-contract-adherence.md`
 
 ### Commits
 
-- Not yet committed
+- `43699d8` feat(design-system): add highlight mark and image display support
 
 ---
 
-## Previous Session (2026-01-19 - Table Toolbar & Controls)
+## Previous Session (2026-01-19 - Markdown Contract + Links)
+
+- **Markdown contract plan** — Drafted CommonMark + GFM + Obsidian extras contract and gap list
+- **Link + autolink support** — Added TipTap link extension (autolink, open on click)
+- **Ladle story** — Added WithLinks story
+- Commits: `c5d8fa8`
+
+---
+
+## Earlier Session (2026-01-19 - Table Toolbar & Controls)
 
 - **ContextMenu primitive** — New Radix-based right-click menu
 - **TableToolbar component** — Floating row/column/table controls in editor
