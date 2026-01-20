@@ -1,27 +1,22 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Table Toolbar & Controls)
+## Latest Session (2026-01-19 - Markdown Contract + Links)
 
 ### What was accomplished
 
-- **ContextMenu primitive** — New Radix-based primitive for right-click menus
-- **TableToolbar component** — Floating toolbar appears when cursor is in table cell
-  - Tracks position to active cell (moves as you navigate)
-  - Row menu: insert above/below, delete row
-  - Column menu: insert left/right, delete column
-  - Delete table with inline confirmation ("Delete table?" + confirm/cancel)
-  - Auto-cancels confirmation on click outside or cursor leaving table
-- **5 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable, TableWithToolbar
+- **Markdown contract plan** — Drafted CommonMark + GFM + Obsidian extras contract and gap list
+- **Link + autolink support** — Added TipTap link extension (autolink, open on click)
+- **Ladle story** — Added WithLinks story and sample content
+- **Editor styling** — Updated link styling to cover all anchors
 
-### Key files created/modified
+### Key files changed
 
-- `primitives/ContextMenu/` — New Radix-based context menu primitive
-- `extensions/TableToolbar.tsx` — Floating toolbar with row/column/table operations
-- `extensions/Table.ts` — Simplified (removed NodeView approach)
-- `Editor.tsx` — Added table toolbar integration with cell tracking
-- `Editor.stories.tsx` — Added TableWithToolbar story
-- `primitives/index.ts` — Export ContextMenu
-- `docs/plans/2026-01-19-table-design.md` — Updated status to Phase 1 + 2 complete
+- `docs/plans/2026-01-19-markdown-contract-adherence.md`
+- `packages/design-system/src/features/Editor/Editor.tsx`
+- `packages/design-system/src/features/Editor/Editor.stories.tsx`
+- `packages/design-system/src/features/Editor/editor.css`
+- `packages/design-system/package.json`
+- `pnpm-lock.yaml`
 
 ### Commits
 
@@ -29,61 +24,31 @@
 
 ---
 
-## Previous Session (2026-01-19 - Tables Phase 1)
+## Previous Session (2026-01-19 - Table Toolbar & Controls)
 
-- **Table extension** — TipTap table support using official extensions
-- **`/table` slash command** — Inserts 3x3 table with header row
-- **4 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable
-- Commits: `cf7287a`
-
----
-
-## Previous Session (2026-01-19 - Callout Blocks)
-
-- **Callout extension** — 4 types (info, warning, tip, error) with type dropdown, nested content
-- **4 slash commands** — `/info`, `/warning`, `/tip`, `/error`
-- **4 Ladle stories**
-- Commits: `ae98f89`
-
----
-
-## Previous Session (2026-01-19 - CodeBlock with Shiki)
-
-- **CodeBlock extension** — Shiki syntax highlighting, 27 languages, language dropdown, copy button
-- **7 new Ladle stories**: WithCodeBlock, CodeBlockViaMarkdown, CodeBlockViaSlash, CodeBlockLanguages, CodeBlockCopyButton, CodeBlockLongLines, CodeBlockPlainText
-- Commits: `7d3d04b`
-
----
-
-## Previous Session (2026-01-19 - TaskList Extension)
-
-- **TaskList support** — Interactive checkboxes with `/task`, `/todo`, `/checkbox` slash commands
-- **Nested support** — Tab/Shift+Tab for indentation
-- **3 new Ladle stories**: WithTaskList, TaskListViaSlash, NestedTaskList
-- Commits: `fb84e66`
+- **ContextMenu primitive** — New Radix-based right-click menu
+- **TableToolbar component** — Floating row/column/table controls in editor
+- **5 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable, TableWithToolbar
+- Commits: not yet committed
 
 ---
 
 ## Earlier Sessions (2026-01-19) — Collapsed
 
-- **TaskList** (`fb84e66`) — Checkboxes with `/task` slash command, nested support
-- **TagNode + TagSuggestion** (`38ebbb5`) — Hashtags via `#`
-- **SlashCommand** (`19b0551`) — `/` trigger for block types
-- **RefNode styling** (`2d94de1`) — Hover underline effect
-- **RefNode + RefSuggestion** (`507aba8`) — Wiki-links via `[[` and mentions via `@`
-- **Editor Phase 1** (`437af80`) — TipTap integration with paragraphs, headings, marks
-- **HeaderBar feature** (`f4c4d73`) — Link, Breadcrumbs, SearchTrigger, ThemeToggle
-- **TitleBar feature** (`5aaaa86`) — Custom Electron window chrome
-- **AppShell feature** (`ef71be8`) — Composition layer for full app layout
-- **Sidebar refinements** (`4888b68`, `e8b73c4`) — Type-colored hover/active states
+- **Tables Phase 1** (`cf7287a`) — TipTap tables + `/table` command
+- **Callouts** (`ae98f89`) — 4 types with dropdown and slash commands
+- **CodeBlock** (`7d3d04b`) — Shiki highlighting + language dropdown + copy
+- **TaskList** (`fb84e66`) — Interactive checkboxes + nesting
+- **TagNode** (`38ebbb5`) — Hashtag pills + suggestions
+- **SlashCommand** (`19b0551`) — Block insert menu
+- **RefNode** (`507aba8`) — Wiki-links + mentions
+- **Editor Phase 1** (`437af80`) — Paragraphs/headings/marks
+
+---
 
 ## Earlier Sessions (2026-01-18) — Collapsed
 
-- **Primitives Complete + Radix Migration** — 19 primitives, 5 migrated to Radix
-- **All patterns complete** — 12 patterns including field patterns, NavItem, EmptyState
-- **Design System Full Reset** (`3fdbd5d`) — Deleted pre-reset code, preserved tokens
-
-Reference: `pre-reset` git tag at `88eefdd` contains all deleted code.
+- **Primitives + patterns complete** — Radix migration and design-system reset (`3fdbd5d`)
 
 ---
 

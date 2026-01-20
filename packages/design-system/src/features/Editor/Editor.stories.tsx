@@ -117,6 +117,85 @@ const mockCreate = async (title: string): Promise<RefSuggestionItem> => {
 // Sample content
 // ============================================================================
 
+const highlightContent: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Highlighted Text' }],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Use the ' },
+        { type: 'text', marks: [{ type: 'highlight' }], text: '==double equals==' },
+        { type: 'text', text: ' syntax to highlight important text.' },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Highlights work great with other marks: ' },
+        {
+          type: 'text',
+          marks: [{ type: 'highlight' }, { type: 'bold' }],
+          text: 'bold + highlight',
+        },
+        { type: 'text', text: ' or ' },
+        {
+          type: 'text',
+          marks: [{ type: 'highlight' }, { type: 'italic' }],
+          text: 'italic + highlight',
+        },
+        { type: 'text', text: '.' },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Keyboard shortcut: ' },
+        { type: 'text', marks: [{ type: 'code' }], text: 'Cmd+Shift+H' },
+        { type: 'text', text: ' toggles highlight.' },
+      ],
+    },
+  ],
+};
+
+const linkContent: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Links and Autolink' }],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Standard Markdown links render as: ' },
+        {
+          type: 'text',
+          marks: [{ type: 'link', attrs: { href: 'https://typenote.app', target: '_blank' } }],
+          text: 'TypeNote website',
+        },
+        { type: 'text', text: '.' },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Paste or type a URL to autolink: ' },
+        {
+          type: 'text',
+          marks: [{ type: 'link', attrs: { href: 'https://github.com', target: '_blank' } }],
+          text: 'https://github.com',
+        },
+      ],
+    },
+  ],
+};
+
 const basicContent: JSONContent = {
   type: 'doc',
   content: [
@@ -273,6 +352,31 @@ export const AllMarks: Story = () => (
     <p className="text-xs text-muted-foreground">
       Demonstrates all supported text formatting: bold, italic, strikethrough, code, and headings.
     </p>
+  </div>
+);
+
+export const WithLinks: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor content={linkContent} />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Markdown links render as clickable anchors.</p>
+      <p>Try typing or pasting a URL to see autolink in action.</p>
+    </div>
+  </div>
+);
+
+export const WithHighlight: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor content={highlightContent} />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>
+        Type <code className="bg-muted px-1 rounded">==text==</code> to highlight text.
+      </p>
+      <p>
+        Use <code className="bg-muted px-1 rounded">Cmd+Shift+H</code> to toggle highlight on
+        selected text.
+      </p>
+    </div>
   </div>
 );
 

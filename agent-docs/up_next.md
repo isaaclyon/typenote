@@ -30,7 +30,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a + 2b + 2c + 2d + 2e) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, and tables
+- Editor ✅ (Phase 1 + 2a + 2b + 2c + 2d + 2e) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, and links
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
@@ -40,8 +40,9 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
   - **Callout** — 4 types (info, warning, tip, error) with type dropdown, nested content support
   - **Table** — `/table` inserts 3x3 with header row, Tab navigation, floating toolbar (resizing deferred)
+  - **Links** — Markdown links + autolink (open on click)
   - Type-colored inline references with click handling
-  - 39 Ladle stories
+  - 40 Ladle stories
 
 **Next — NotateDoc converters:**
 
@@ -52,6 +53,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 1. Wire AppShell + Editor to desktop renderer
 2. Enable basic navigation
 3. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
+4. Fill Markdown contract gaps: images/embeds, highlight, math, footnotes, block refs
 
 ### Folder Structure
 

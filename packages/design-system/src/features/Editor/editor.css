@@ -231,13 +231,13 @@
 }
 
 /* Links - external/URL links only, not ref nodes */
-.ProseMirror a:not([data-object-id]) {
+.ProseMirror a {
   color: var(--color-accent-600);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.ProseMirror a:not([data-object-id]):hover {
+.ProseMirror a:hover {
   color: var(--color-accent-700);
 }
 
@@ -262,11 +262,17 @@
   font-style: italic;
 }
 
-/* Highlighted text */
+/* Highlighted text (==text==) */
 .ProseMirror mark {
-  background-color: #fef3c7;
+  background-color: #fef3c7; /* amber-100 for light mode */
   padding: 0.125rem 0.25rem;
   border-radius: 0.125rem;
+}
+
+/* Dark mode highlight - darker yellow background */
+.dark .ProseMirror mark {
+  background-color: #78350f; /* amber-900 */
+  color: #fef3c7; /* amber-100 text */
 }
 
 /* Ref node (inline references) */
