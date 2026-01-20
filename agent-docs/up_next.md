@@ -30,16 +30,17 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a + 2b + 2c) — TipTap/ProseMirror with references, slash commands, tags, and code blocks
+- Editor ✅ (Phase 1 + 2a + 2b + 2c + 2d) — TipTap/ProseMirror with references, slash commands, tags, code blocks, and callouts
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
-  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider)
+  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
   - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
+  - **Callout** — 4 types (info, warning, tip, error) with type dropdown, nested content support
   - Type-colored inline references with click handling
-  - 30 Ladle stories
+  - 34 Ladle stories
 
 **Next — NotateDoc converters:**
 
@@ -95,6 +96,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Callout blocks with 4 types (info, warning, tip, error)           | 2026-01-19 | `ae98f89` |
 | CodeBlock with Shiki syntax highlighting                          | 2026-01-19 | `7d3d04b` |
 | TaskList support with slash command and styling                   | 2026-01-19 | `fb84e66` |
 | TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | `38ebbb5` |
