@@ -56,13 +56,14 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Tags (#tag)
 - Wiki links via RefNode (exportable to [[Title]])
 - Inline marks: bold, italic, strikethrough, inline code
+- Links + autolink
+- Highlight mark (==text==)
+- Images (display from URLs, Phase 1)
 
 ### Not Implemented Yet
 
-- Links + autolink
-- Images + attachments
+- Image upload + attachments (Phase 3)
 - Embeds (![[Page]] / ![[file]])
-- Highlight mark (==text==)
 - Inline + block math
 - Footnotes
 - Block IDs + block references
@@ -77,6 +78,8 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 
 ## Next Steps
 
-1. Implement Link + Autolink support in the editor (extension + Ladle stories).
-2. Add Markdown export mapping for refs, tags, and callouts to match Obsidian conventions.
-3. Plan follow-on feature blocks: images/embeds, highlight, math, footnotes, block references.
+1. ~~Implement Link + Autolink support in the editor (extension + Ladle stories).~~ ✅
+2. ~~Implement Highlight mark (==text==) in the editor.~~ ✅
+3. Add Markdown export mapping for refs, tags, and callouts to match Obsidian conventions.
+4. ~~Add image display support (Phase 1).~~ ✅
+5. Plan follow-on feature blocks: image upload, embeds, math, footnotes, block references.

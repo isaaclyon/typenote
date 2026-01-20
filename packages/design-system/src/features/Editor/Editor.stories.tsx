@@ -162,6 +162,47 @@ const highlightContent: JSONContent = {
   ],
 };
 
+const imageContent: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Images' }],
+    },
+    {
+      type: 'paragraph',
+      content: [{ type: 'text', text: 'Images can be displayed from URLs:' }],
+    },
+    {
+      type: 'image',
+      attrs: {
+        src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop',
+        alt: 'Mountain landscape with snow-capped peaks',
+      },
+    },
+    {
+      type: 'paragraph',
+      content: [{ type: 'text', text: 'Another example with a different aspect ratio:' }],
+    },
+    {
+      type: 'image',
+      attrs: {
+        src: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&h=300&fit=crop',
+        alt: 'Forest aerial view',
+      },
+    },
+    {
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'Click an image to select it. The ' },
+        { type: 'text', marks: [{ type: 'code' }], text: '![alt](url)' },
+        { type: 'text', text: ' Markdown syntax works too.' },
+      ],
+    },
+  ],
+};
+
 const linkContent: JSONContent = {
   type: 'doc',
   content: [
@@ -376,6 +417,17 @@ export const WithHighlight: Story = () => (
         Use <code className="bg-muted px-1 rounded">Cmd+Shift+H</code> to toggle highlight on
         selected text.
       </p>
+    </div>
+  </div>
+);
+
+export const WithImages: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor content={imageContent} />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Images display from URLs with rounded corners and max-width constraint.</p>
+      <p>Click an image to select it (shown with accent outline).</p>
+      <p>Phase 2 will add resize handles. Phase 3 will add drag-drop and paste upload.</p>
     </div>
   </div>
 );
