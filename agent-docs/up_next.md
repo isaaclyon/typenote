@@ -30,11 +30,11 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a + 2b + 2c + 2d + 2e + 2f) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, links, highlight, images
+- Editor ✅ (Phase 1 + 2a-2g) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, links, highlight, images, math
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`, alias support via context menu
-  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts, table)
+  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts, table, math)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
   - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
@@ -43,8 +43,9 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **Links** — Markdown links + autolink (open on click)
   - **Highlight** — `==text==` syntax with `Cmd+Shift+H` shortcut
   - **Images** — Display + resize handles (Phase 1+2 complete), upload planned
+  - **Math** — Inline `$...$` and block `$$`/`/math` with KaTeX rendering
   - Type-colored inline references with click handling
-  - 43 Ladle stories (added ImageResize)
+  - 47 Ladle stories (added Math: 4 stories)
 
 **Next — NotateDoc converters:**
 
@@ -56,7 +57,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 2. Wire AppShell + Editor to desktop renderer
 3. Enable basic navigation
 4. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
-5. Fill Markdown contract gaps: image upload, embeds, math, footnotes, block refs
+5. Fill Markdown contract gaps: image upload, embeds, footnotes, block refs
 
 ### Folder Structure
 
@@ -102,6 +103,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Math support (inline + block with KaTeX)                          | 2026-01-19 | `fa68e93` |
 | Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |
 | Image resize + story reorg                                        | 2026-01-20 | `ccb0261` |
 | Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
@@ -117,15 +119,8 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 | Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |
 | HeaderBar feature + Link, Breadcrumbs, SearchTrigger, ThemeToggle | 2026-01-19 | `f4c4d73` |
 | TitleBar feature                                                  | 2026-01-19 | `5aaaa86` |
-| Type-colored hover/active states                                  | 2026-01-19 | `4888b68` |
-| PlaceholderAction + Sidebar refinements                           | 2026-01-19 | `e8b73c4` |
 | Sidebar feature                                                   | 2026-01-19 | `86d8cc7` |
-| All field patterns (4)                                            | 2026-01-18 | `e0ce6b1` |
-| EmptyState pattern                                                | 2026-01-18 | `c5b4a48` |
-| NavItem pattern + semantic tokens                                 | 2026-01-18 | `790cd45` |
-| ScrollArea, DropdownMenu primitives                               | 2026-01-18 | `ddaa58d` |
-| Radix migration (5 primitives)                                    | 2026-01-18 | `6120d2f` |
-| Design System Full Reset                                          | 2026-01-18 | `3fdbd5d` |
+| Primitives + patterns complete                                    | 2026-01-18 | `3fdbd5d` |
 
 Note: All features completed before 2026-01-18 were deleted in the full reset.
 See `recent_work.md` for historical milestones.
