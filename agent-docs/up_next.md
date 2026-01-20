@@ -33,7 +33,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - Editor ✅ (Phase 1 + 2a + 2b + 2c + 2d + 2e + 2f) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, links, highlight, images
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
-  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
+  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`, alias support via context menu
   - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts, table)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
@@ -52,10 +52,11 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ### Immediate Next Steps
 
-1. Wire AppShell + Editor to desktop renderer
-2. Enable basic navigation
-3. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
-4. Fill Markdown contract gaps: image upload, embeds, math, footnotes, block refs
+1. **Fix `[[` trigger** — The double-bracket suggestion isn't detecting the preceding `[` (debug code in Editor.tsx)
+2. Wire AppShell + Editor to desktop renderer
+3. Enable basic navigation
+4. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
+5. Fill Markdown contract gaps: image upload, embeds, math, footnotes, block refs
 
 ### Folder Structure
 
@@ -101,7 +102,8 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
-| Image resize + wiki-link aliases + story reorg                    | 2026-01-20 | `ccb0261` |
+| Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |
+| Image resize + story reorg                                        | 2026-01-20 | `ccb0261` |
 | Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
 | ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
 | Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |

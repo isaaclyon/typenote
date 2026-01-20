@@ -1,51 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-20 - Image Resize + Story Reorg)
+## Latest Session (2026-01-20 - Wiki-Link Alias Debugging)
 
 ### What was accomplished
 
-- **Image resize handles (Phase 2)** — Custom NodeView with left/right drag handles, aspect ratio lock
-- **Wiki-link aliases** — `[[Page|alias]]` syntax + context menu editing
-- **Story reorganization** — Split 43 stories into 6 focused files (41 total after cleanup)
+- **Wiki-link alias context menu** — Right-click RefNode → "Edit alias..." works correctly
+- **Alias state management fix** — Used external Set to survive TipTap NodeView remounts
+- **Alias blur timing fix** — Prevented immediate blur on input focus
+- **Pipe syntax WIP** — `[[Page|alias]]` syntax partially implemented but `[[` trigger has issues
+- **Design doc** — Created `docs/plans/2026-01-20-wiki-link-alias-design.md`
 
 ### Key files changed
 
-- `packages/design-system/src/features/Editor/extensions/ImageNodeView.tsx` (new)
-- `packages/design-system/src/features/Editor/extensions/ResizableImage.ts` (new)
-- `packages/design-system/src/features/Editor/stories/` (new directory, 7 files)
-- `packages/design-system/src/features/Editor/extensions/RefNode.ts` (alias attr)
-- `packages/design-system/src/features/Editor/extensions/RefNodeView.tsx` (alias UI)
+- `packages/design-system/src/features/Editor/extensions/RefNodeView.tsx` — Context menu + inline editing
+- `packages/design-system/src/features/Editor/extensions/RefNode.ts` — Added `alias` attribute
+- `packages/design-system/src/features/Editor/extensions/RefSuggestion.ts` — Added `parseQueryWithAlias()`
+- `packages/design-system/src/features/Editor/Editor.tsx` — WIP: `[[` trigger debugging
 
 ### Commits
 
-- `ccb0261` feat(design-system): add image resize and reorganize editor stories
+- `e680d99` fix(design-system): improve alias editing state management
 - `c2076f3` fix(design-system): fix alias edit popover timing issue
 
+### Known Issues (for next session)
+
+- **`[[` trigger not working** — The `allow()` callback isn't detecting the preceding `[` character correctly. Debug logs show empty text. The `@` trigger works fine.
+- **Uncommitted debug code** — Editor.tsx has debug logging for `[[` trigger investigation
+
 ---
 
-## Previous Session (2026-01-20 - Highlight + Images)
+## Previous Session (2026-01-20 - Image Resize + Story Reorg)
+
+- **Image resize handles (Phase 2)** — Custom NodeView with left/right drag handles
+- **Story reorganization** — Split monolithic stories into `stories/` subfolder (6 files)
+- Commits: `ccb0261`
+
+---
+
+## Earlier Session (2026-01-20 - Highlight + Images)
 
 - **Highlight mark** — `==text==` syntax with `Cmd+Shift+H` shortcut
-- **Image display (Phase 1)** — Display images from URLs with rounded corners
+- **Image display (Phase 1)** — Display images from URLs
 - Commits: `43699d8`
-
----
-
-## Earlier Session (2026-01-19 - Markdown Contract + Links)
-
-- **Markdown contract plan** — Drafted CommonMark + GFM + Obsidian extras contract and gap list
-- **Link + autolink support** — Added TipTap link extension (autolink, open on click)
-- **Ladle story** — Added WithLinks story
-- Commits: `c5d8fa8`
-
----
-
-## Earlier Session (2026-01-19 - Table Toolbar & Controls)
-
-- **ContextMenu primitive** — New Radix-based right-click menu
-- **TableToolbar component** — Floating row/column/table controls in editor
-- **5 Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable, TableWithToolbar
-- Commits: not yet committed
 
 ---
 
