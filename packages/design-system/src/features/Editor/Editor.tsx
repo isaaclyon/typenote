@@ -21,6 +21,11 @@ import { ListChecks } from '@phosphor-icons/react/dist/ssr/ListChecks';
 import { Quotes } from '@phosphor-icons/react/dist/ssr/Quotes';
 import { Code } from '@phosphor-icons/react/dist/ssr/Code';
 import { Minus } from '@phosphor-icons/react/dist/ssr/Minus';
+// Callout icons
+import { Info } from '@phosphor-icons/react/dist/ssr/Info';
+import { Warning } from '@phosphor-icons/react/dist/ssr/Warning';
+import { Lightbulb } from '@phosphor-icons/react/dist/ssr/Lightbulb';
+import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 
 import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
@@ -34,6 +39,7 @@ import { TagNode } from './extensions/TagNode.js';
 import { TagSuggestionList } from './extensions/TagSuggestionList.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 import { CodeBlock } from './extensions/CodeBlock.js';
+import { Callout } from './extensions/Callout.js';
 
 // Editor typography styles
 import './editor.css';
@@ -50,6 +56,11 @@ const slashCommandIcons = {
   Quotes,
   Code,
   Minus,
+  // Callout icons
+  Info,
+  Warning,
+  Lightbulb,
+  WarningCircle,
 };
 
 // ============================================================================
@@ -400,6 +411,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         }),
         // Custom code block with Shiki syntax highlighting
         CodeBlock,
+        // Callout blocks
+        Callout,
       ];
 
       if (enableRefs) {

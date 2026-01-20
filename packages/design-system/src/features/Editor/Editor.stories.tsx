@@ -1257,3 +1257,281 @@ Just monospace formatting.`,
     </div>
   );
 };
+
+// ============================================================================
+// Callout Stories
+// ============================================================================
+
+export const WithCallouts: Story = () => {
+  const contentWithCallouts: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Callout Blocks' }],
+      },
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Callouts help highlight important information:' }],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'info' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'This is an ' },
+              { type: 'text', marks: [{ type: 'bold' }], text: 'info callout' },
+              {
+                type: 'text',
+                text: '. Use it to provide additional context or helpful notes to readers.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'warning' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'This is a ' },
+              { type: 'text', marks: [{ type: 'bold' }], text: 'warning callout' },
+              {
+                type: 'text',
+                text: '. Use it to caution readers about potential issues or important considerations.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'tip' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'This is a ' },
+              { type: 'text', marks: [{ type: 'bold' }], text: 'tip callout' },
+              {
+                type: 'text',
+                text: '. Use it to share best practices, shortcuts, or helpful hints.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'error' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'This is an ' },
+              { type: 'text', marks: [{ type: 'bold' }], text: 'error callout' },
+              {
+                type: 'text',
+                text: '. Use it to highlight critical warnings, errors, or things to avoid.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithCallouts} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          Four callout types with distinct colors: Info (blue), Warning (amber), Tip (green), Error
+          (red).
+        </p>
+        <p>Click the icon/label to change the callout type via dropdown menu.</p>
+      </div>
+    </div>
+  );
+};
+
+export const CalloutViaSlash: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type /info, /warning, /tip, or /error to insert a callout..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Insert callouts using slash commands:</p>
+      <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <li>
+          <code className="bg-muted px-1 rounded">/info</code> — Info callout (blue)
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/warning</code> — Warning callout (amber)
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/tip</code> — Tip callout (green)
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">/error</code> — Error callout (red)
+        </li>
+      </ul>
+      <p className="mt-2">
+        Also searchable by: <code className="bg-muted px-1 rounded">note</code>,{' '}
+        <code className="bg-muted px-1 rounded">caution</code>,{' '}
+        <code className="bg-muted px-1 rounded">hint</code>,{' '}
+        <code className="bg-muted px-1 rounded">danger</code>
+      </p>
+    </div>
+  </div>
+);
+
+export const CalloutWithNestedContent: Story = () => {
+  const contentWithNestedCallout: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Rich Callout Content' }],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'tip' },
+        content: [
+          {
+            type: 'heading',
+            attrs: { level: 3 },
+            content: [{ type: 'text', text: 'Pro Tip: Keyboard Shortcuts' }],
+          },
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Use these shortcuts to work faster:' }],
+          },
+          {
+            type: 'bulletList',
+            content: [
+              {
+                type: 'listItem',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [
+                      { type: 'text', marks: [{ type: 'code' }], text: 'Cmd+B' },
+                      { type: 'text', text: ' — Bold text' },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'listItem',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [
+                      { type: 'text', marks: [{ type: 'code' }], text: 'Cmd+I' },
+                      { type: 'text', text: ' — Italic text' },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'listItem',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [
+                      { type: 'text', marks: [{ type: 'code' }], text: 'Cmd+K' },
+                      { type: 'text', text: ' — Insert link' },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'warning' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Breaking Change in v2.0' }],
+          },
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: 'The API endpoint has changed. Update your code:',
+              },
+            ],
+          },
+          {
+            type: 'codeBlock',
+            attrs: { language: 'typescript' },
+            content: [
+              {
+                type: 'text',
+                text: `// Old (v1.x)
+const response = await api.getUser(id);
+
+// New (v2.0)
+const response = await api.users.get(id);`,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithNestedCallout} />
+      <p className="text-xs text-muted-foreground">
+        Callouts support full nested content: headings, lists, code blocks, and more.
+      </p>
+    </div>
+  );
+};
+
+export const CalloutTypeChange: Story = () => {
+  const simpleCallout: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Click the icon to change the callout type:' }],
+      },
+      {
+        type: 'callout',
+        attrs: { calloutType: 'info' },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: 'This callout can be changed to any type. Click the "Info" label with the dropdown arrow to see the options.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={simpleCallout} />
+      <p className="text-xs text-muted-foreground">
+        Use the dropdown to switch between Info, Warning, Tip, and Error callout types.
+      </p>
+    </div>
+  );
+};

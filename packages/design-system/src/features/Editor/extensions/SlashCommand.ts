@@ -12,6 +12,7 @@
  * - Quote (quote/blockquote)
  * - Code Block (code/codeblock)
  * - Divider (divider/hr)
+ * - Callout: Info, Warning, Tip, Error
  */
 
 import type { Editor, Range } from '@tiptap/core';
@@ -75,6 +76,11 @@ export function getSlashCommandItems(icons: {
   Quotes: PhosphorIcon;
   Code: PhosphorIcon;
   Minus: PhosphorIcon;
+  // Callout icons
+  Info: PhosphorIcon;
+  Warning: PhosphorIcon;
+  Lightbulb: PhosphorIcon;
+  WarningCircle: PhosphorIcon;
 }): SlashCommandItem[] {
   return [
     createCommand(
@@ -159,6 +165,79 @@ export function getSlashCommandItems(icons: {
       ['divider', 'hr', 'horizontal', 'rule', 'line'],
       (editor, range) => {
         editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+      }
+    ),
+    // Callouts
+    createCommand(
+      'calloutInfo',
+      'Info Callout',
+      icons.Info,
+      ['info', 'note', 'callout'],
+      (editor, range) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent({
+            type: 'callout',
+            attrs: { calloutType: 'info' },
+            content: [{ type: 'paragraph' }],
+          })
+          .run();
+      }
+    ),
+    createCommand(
+      'calloutWarning',
+      'Warning Callout',
+      icons.Warning,
+      ['warning', 'caution', 'alert'],
+      (editor, range) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent({
+            type: 'callout',
+            attrs: { calloutType: 'warning' },
+            content: [{ type: 'paragraph' }],
+          })
+          .run();
+      }
+    ),
+    createCommand(
+      'calloutTip',
+      'Tip Callout',
+      icons.Lightbulb,
+      ['tip', 'hint', 'idea'],
+      (editor, range) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent({
+            type: 'callout',
+            attrs: { calloutType: 'tip' },
+            content: [{ type: 'paragraph' }],
+          })
+          .run();
+      }
+    ),
+    createCommand(
+      'calloutError',
+      'Error Callout',
+      icons.WarningCircle,
+      ['error', 'danger', 'critical'],
+      (editor, range) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent({
+            type: 'callout',
+            attrs: { calloutType: 'error' },
+            content: [{ type: 'paragraph' }],
+          })
+          .run();
       }
     ),
   ];

@@ -25,3 +25,10 @@ export type { TagNodeAttributes, TagNodeOptions } from './TagNode.js';
 export { TagNodeView } from './TagNodeView.js';
 export { TagSuggestionList } from './TagSuggestionList.js';
 export type { TagSuggestionItem, TagSuggestionListProps } from './TagSuggestionList.js';
+
+export { CodeBlock } from './CodeBlock.js';
+export { CodeBlockView } from './CodeBlockView.js';
+
+export { Callout } from './Callout.js';
+export type { CalloutType, CalloutAttributes, CalloutOptions } from './Callout.js';
+export { CalloutView } from './CalloutView.js';
