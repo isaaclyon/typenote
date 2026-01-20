@@ -1535,3 +1535,326 @@ export const CalloutTypeChange: Story = () => {
     </div>
   );
 };
+
+// ============================================================================
+// Table Stories
+// ============================================================================
+
+export const WithTable: Story = () => {
+  const contentWithTable: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Project Timeline' }],
+      },
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Here is our quarterly roadmap:' }],
+      },
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Quarter' }] }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Milestone' }] }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Status' }] }],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Q1' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  { type: 'paragraph', content: [{ type: 'text', text: 'Design System' }] },
+                ],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Complete' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Q2' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  { type: 'paragraph', content: [{ type: 'text', text: 'Editor Features' }] },
+                ],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'In Progress' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Q3' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Desktop App' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Planned' }] }],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'Click cells to edit. Use Tab to navigate between cells.' },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithTable} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Table with header row. Tab/Shift+Tab navigates between cells.</p>
+        <p>Drag column borders to resize. Header row has distinct styling.</p>
+      </div>
+    </div>
+  );
+};
+
+export const TableViaSlash: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type /table to insert a table..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Insert tables using slash commands:</p>
+      <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <li>
+          <code className="bg-muted px-1 rounded">/table</code> — Insert 3x3 table with header row
+        </li>
+      </ul>
+      <p className="mt-2">
+        Also searchable by: <code className="bg-muted px-1 rounded">grid</code>
+      </p>
+    </div>
+  </div>
+);
+
+export const TableWithRichContent: Story = () => {
+  const tableWithRichContent: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Feature Comparison' }],
+      },
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Feature' }] }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Description' }] }],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Tables' }],
+                  },
+                ],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [
+                      { type: 'text', text: 'Supports ' },
+                      { type: 'text', marks: [{ type: 'bold' }], text: 'bold' },
+                      { type: 'text', text: ', ' },
+                      { type: 'text', marks: [{ type: 'italic' }], text: 'italic' },
+                      { type: 'text', text: ', and ' },
+                      { type: 'text', marks: [{ type: 'code' }], text: 'code' },
+                      { type: 'text', text: ' formatting.' },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Cell Content' }],
+                  },
+                ],
+              },
+              {
+                type: 'tableCell',
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', text: 'Cells can contain:' }],
+                  },
+                  {
+                    type: 'bulletList',
+                    content: [
+                      {
+                        type: 'listItem',
+                        content: [
+                          { type: 'paragraph', content: [{ type: 'text', text: 'Lists' }] },
+                        ],
+                      },
+                      {
+                        type: 'listItem',
+                        content: [
+                          {
+                            type: 'paragraph',
+                            content: [{ type: 'text', text: 'Multiple paragraphs' }],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={tableWithRichContent} />
+      <p className="text-xs text-muted-foreground">
+        Table cells support rich content including formatted text, lists, and multiple paragraphs.
+      </p>
+    </div>
+  );
+};
+
+export const EmptyTable: Story = () => {
+  const emptyTable: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'An empty table for you to fill in:' }],
+      },
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph' }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph' }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph' }],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+              { type: 'tableCell', content: [{ type: 'paragraph' }] },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          {
+            type: 'text',
+            text: 'Click any cell to start typing. Use Tab to move to the next cell.',
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={emptyTable} />
+      <p className="text-xs text-muted-foreground">
+        Empty 3x3 table. Click any cell and start typing.
+      </p>
+    </div>
+  );
+};

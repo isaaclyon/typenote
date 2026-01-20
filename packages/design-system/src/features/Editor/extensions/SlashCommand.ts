@@ -76,6 +76,7 @@ export function getSlashCommandItems(icons: {
   Quotes: PhosphorIcon;
   Code: PhosphorIcon;
   Minus: PhosphorIcon;
+  Table: PhosphorIcon;
   // Callout icons
   Info: PhosphorIcon;
   Warning: PhosphorIcon;
@@ -167,6 +168,14 @@ export function getSlashCommandItems(icons: {
         editor.chain().focus().deleteRange(range).setHorizontalRule().run();
       }
     ),
+    createCommand('table', 'Table', icons.Table, ['table', 'grid'], (editor, range) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+        .run();
+    }),
     // Callouts
     createCommand(
       'calloutInfo',

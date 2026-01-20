@@ -21,6 +21,7 @@ import { ListChecks } from '@phosphor-icons/react/dist/ssr/ListChecks';
 import { Quotes } from '@phosphor-icons/react/dist/ssr/Quotes';
 import { Code } from '@phosphor-icons/react/dist/ssr/Code';
 import { Minus } from '@phosphor-icons/react/dist/ssr/Minus';
+import { Table } from '@phosphor-icons/react/dist/ssr/Table';
 // Callout icons
 import { Info } from '@phosphor-icons/react/dist/ssr/Info';
 import { Warning } from '@phosphor-icons/react/dist/ssr/Warning';
@@ -40,6 +41,7 @@ import { TagSuggestionList } from './extensions/TagSuggestionList.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 import { CodeBlock } from './extensions/CodeBlock.js';
 import { Callout } from './extensions/Callout.js';
+import { TableExtensions } from './extensions/Table.js';
 
 // Editor typography styles
 import './editor.css';
@@ -56,6 +58,7 @@ const slashCommandIcons = {
   Quotes,
   Code,
   Minus,
+  Table,
   // Callout icons
   Info,
   Warning,
@@ -413,6 +416,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         CodeBlock,
         // Callout blocks
         Callout,
+        // Tables
+        ...TableExtensions,
       ];
 
       if (enableRefs) {

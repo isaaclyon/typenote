@@ -133,23 +133,12 @@
 /* Lists */
 .ProseMirror ul,
 .ProseMirror ol {
-  padding-left: 0;
+  padding-left: 1.5rem;
   margin: 0.75rem 0;
-  --list-depth: 1;
 }
 
-.ProseMirror li > ul,
-.ProseMirror li > ol {
-  --list-depth: calc(var(--list-depth, 1) + 1);
-  margin-left: calc(-1 * var(--list-indent, 0px));
-}
-
-.ProseMirror ul > li,
-.ProseMirror ol > li {
+.ProseMirror li {
   margin: 0.25rem 0;
-  --list-indent: calc(var(--list-depth, 1) * 1.5rem);
-  margin-left: var(--list-indent);
-  transition: margin-left 150ms ease-out;
 }
 
 .ProseMirror ul {
@@ -171,19 +160,11 @@
   list-style-type: square;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ProseMirror ul > li,
-  .ProseMirror ol > li {
-    transition: none;
-  }
-}
-
 /* Task lists */
 .ProseMirror ul[data-type='taskList'] {
   list-style: none;
   padding-left: 0;
   margin: 0.75rem 0;
-  --list-depth: 1;
 }
 
 .ProseMirror ul[data-type='taskList'] li {
@@ -191,9 +172,6 @@
   align-items: flex-start;
   gap: 0.5rem;
   margin: 0.25rem 0;
-  --list-indent: calc(var(--list-depth, 1) * 1.5rem);
-  margin-left: var(--list-indent);
-  transition: margin-left 150ms ease-out;
 }
 
 .ProseMirror ul[data-type='taskList'] li > label {
@@ -242,15 +220,7 @@
 /* Nested task lists */
 .ProseMirror ul[data-type='taskList'] ul[data-type='taskList'] {
   margin: 0.25rem 0;
-  padding-left: 0;
-  --list-depth: calc(var(--list-depth, 1) + 1);
-  margin-left: calc(-1 * var(--list-indent, 0px));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ProseMirror ul[data-type='taskList'] li {
-    transition: none;
-  }
+  padding-left: 1.5rem;
 }
 
 /* Horizontal rule */
@@ -518,4 +488,57 @@
 
 .callout-dropdown-icon-error {
   color: #dc2626;
+}
+
+/* ============================================================================
+   Tables
+   ============================================================================ */
+
+/* Table wrapper */
+.ProseMirror .tableWrapper {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+/* Table container */
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Table cells */
+.ProseMirror td,
+.ProseMirror th {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  min-width: 50px;
+  vertical-align: top;
+  position: relative;
+}
+
+/* Header cells */
+.ProseMirror th {
+  background-color: var(--color-muted);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Cell selection overlay */
+.ProseMirror .selectedCell::after {
+  z-index: 2;
+  position: absolute;
+  content: '';
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--color-accent-100);
+  pointer-events: none;
+}
+
+/* Paragraphs inside cells shouldn't have bottom margin */
+.ProseMirror td > p:last-child,
+.ProseMirror th > p:last-child {
+  margin-bottom: 0;
 }

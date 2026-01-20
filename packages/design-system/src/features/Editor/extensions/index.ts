@@ -32,3 +32,12 @@ export { CodeBlockView } from './CodeBlockView.js';
 export { Callout } from './Callout.js';
 export type { CalloutType, CalloutAttributes, CalloutOptions } from './Callout.js';
 export { CalloutView } from './CalloutView.js';
+
+export {
+  TableExtensions,
+  TableExtension,
+  TableRowExtension,
+  TableCellExtension,
+  TableHeaderExtension,
+} from './Table.js';
+export type { TableOptions } from './Table.js';
