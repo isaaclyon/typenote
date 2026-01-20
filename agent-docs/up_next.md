@@ -36,8 +36,9 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
   - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
+  - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
   - Type-colored inline references with click handling
-  - 20 Ladle stories
+  - 23 Ladle stories
 
 **Next — NotateDoc converters:**
 
@@ -93,7 +94,8 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
-| TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | (pending) |
+| TaskList support with slash command and styling                   | 2026-01-19 | `fb84e66` |
+| TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | `38ebbb5` |
 | SlashCommand menu for block type insertion                        | 2026-01-19 | `19b0551` |
 | RefNode styling improvements — hover underline effect             | 2026-01-19 | `2d94de1` |
 | Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |

@@ -1,45 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - TagNode Extension)
+## Latest Session (2026-01-19 - TaskList Extension)
 
 ### What was accomplished
 
-- **Brainstormed and designed** TagNode feature using brainstorming skill
-- **Built TagNode extension** — TipTap Node for inline hashtags
-- **Built TagSuggestion** — Autocomplete triggered by `#` with search/create support
-- **TagNodeView** — Colored pill/chip rendering with hover effect
-- **TagSuggestionList UI** — Dropdown matching RefSuggestionList styling
-- **3 new Ladle stories**: WithTags, WithExistingTags, TagColors
-- **Updated FullFeaturedEditor** — Now includes tags
-- **Design doc**: `docs/plans/2026-01-19-tag-node-design.md`
-
-### Key files created
-
-- `packages/design-system/src/features/Editor/extensions/TagNode.ts` — TipTap Node extension
-- `packages/design-system/src/features/Editor/extensions/TagNodeView.tsx` — React component
-- `packages/design-system/src/features/Editor/extensions/TagSuggestionList.tsx` — Dropdown UI
+- **Added TaskList support** — Interactive checkboxes with slash command
+- **Installed TipTap extensions** — `@tiptap/extension-task-list`, `@tiptap/extension-task-item`
+- **Added slash command** — `/task`, `/todo`, `/checkbox` keywords
+- **Custom CSS styling** — Checkboxes with hover/checked states, strikethrough for completed items
+- **Nested support** — Tab/Shift+Tab for indentation
+- **3 new Ladle stories**: WithTaskList, TaskListViaSlash, NestedTaskList
 
 ### Key files modified
 
-- `Editor.tsx` — Wired in tag suggestion state, render callbacks, popup rendering
-- `types.ts` — Added `enableTags`, `onTagSearch`, `onTagCreate`, `onTagClick` props
-- `editor.css` — Added `.tag-node-pill` styles with color-mix for tinted backgrounds
-- `extensions/index.ts` — Exported TagNode types and components
-- `Editor.stories.tsx` — 3 new stories + updated FullFeaturedEditor
+- `Editor.tsx` — Added TaskList + TaskItem extensions, ListChecks icon
+- `editor.css` — Custom checkbox styling (63 lines added)
+- `extensions/SlashCommand.ts` — Added Task List command with keywords
+- `Editor.stories.tsx` — 3 new stories (197 lines)
 
 ### Commits
 
-- `38ebbb5` feat(design-system): add TagNode and TagSuggestion for hashtag support
+- `fb84e66` feat(design-system): add TaskList support with slash command and styling
 
-### Notes
+---
 
-- React 18 warnings about `flushSync` during initial render are a known TipTap issue (not affecting functionality)
+## Previous Session (2026-01-19 - TagNode Extension)
+
+- **Built TagNode extension** — TipTap Node for inline hashtags
+- **Built TagSuggestion** — Autocomplete triggered by `#` with search/create support
+- **3 new Ladle stories**: WithTags, WithExistingTags, TagColors
+- **Design doc**: `docs/plans/2026-01-19-tag-node-design.md`
+- Commits: `38ebbb5`
 
 ---
 
 ## Previous Session (2026-01-19 - SlashCommand Menu)
-
-### What was accomplished
 
 - **Brainstormed and designed** SlashCommand feature using brainstorming skill
 - **Built SlashCommand extension** — TipTap Suggestion plugin for `/` trigger
@@ -48,10 +43,7 @@
 - **SlashCommandList UI** — dropdown matching RefSuggestionList styling
 - **4 new Ladle stories**: WithSlashCommands, SlashCommandFiltering, SlashCommandDisabled, FullFeaturedEditor
 - **Design doc**: `docs/plans/2026-01-19-slash-command-design.md`
-
-### Commits
-
-- `19b0551` feat(design-system): add SlashCommand menu for block type insertion
+- Commits: `19b0551`
 
 ---
 
@@ -66,16 +58,11 @@
 
 ## Previous Session (2026-01-19 - Editor Phase 2a: RefNode + RefSuggestion)
 
-### What was accomplished
-
 - Built **RefNode** extension — inline reference nodes
 - Built **RefSuggestion** — autocomplete via `@` and `[[` triggers
 - **RefSuggestionList** — dropdown UI with keyboard navigation
 - **3 new Ladle stories**: WithRefs, WithExistingRefs, RefTypeColors
-
-### Commits
-
-- `507aba8` feat(design-system): add RefNode and RefSuggestion for wiki-links and mentions
+- Commits: `507aba8`
 
 ---
 
@@ -83,7 +70,7 @@
 
 - Built **Editor** feature — TipTap/ProseMirror integration
 - Phase 1: paragraphs, headings, basic marks, full-width clickable area
-- `437af80` feat(design-system): add Editor feature with TipTap integration
+- Commits: `437af80`
 
 ---
 
