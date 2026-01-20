@@ -46,6 +46,9 @@ const TYPE_ICONS: Record<string, PhosphorIcon> = {
   Task: CheckSquare,
 };
 
+// Track editing state outside React to survive TipTap remounts
+const editingNodes = new Set<string>();
+
 export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps) {
   const { objectId, objectType, displayTitle, color, alias } = node.attrs as {
     objectId: string;
@@ -55,15 +58,34 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
     alias?: string | null;
   };
 
-  const [isEditingAlias, setIsEditingAlias] = React.useState(false);
+  // Use external Set to track editing state (survives TipTap remounts)
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+  const isEditingAlias = editingNodes.has(objectId);
   const [aliasValue, setAliasValue] = React.useState(alias ?? '');
   const inputRef = React.useRef<HTMLInputElement>(null);
+  // Prevent blur from firing immediately after opening edit mode
+  const blurEnabledRef = React.useRef(false);
+
+  const setIsEditingAlias = (editing: boolean) => {
+    if (editing) {
+      editingNodes.add(objectId);
+    } else {
+      editingNodes.delete(objectId);
+    }
+    forceUpdate();
+  };
 
   // Focus and select input when entering edit mode
   React.useEffect(() => {
     if (isEditingAlias && inputRef.current) {
+      blurEnabledRef.current = false;
       inputRef.current.focus();
       inputRef.current.select();
+      // Enable blur handler after a short delay to prevent immediate firing
+      const timer = setTimeout(() => {
+        blurEnabledRef.current = true;
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isEditingAlias]);
 
@@ -99,13 +121,8 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
   };
 
   const handleEditAlias = () => {
-    console.log('[RefNodeView] handleEditAlias called');
-    // Small delay to let context menu close before showing input
-    setTimeout(() => {
-      console.log('[RefNodeView] setting isEditingAlias to true');
-      setAliasValue(alias ?? '');
-      setIsEditingAlias(true);
-    }, 50);
+    setAliasValue(alias ?? '');
+    setIsEditingAlias(true);
   };
 
   const handleSaveAlias = () => {
@@ -113,6 +130,13 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
     // Empty alias = null (revert to displayTitle)
     updateAttributes({ alias: trimmedAlias || null });
     setIsEditingAlias(false);
+  };
+
+  const handleBlur = () => {
+    // Only save on blur if blur is enabled (prevents immediate firing)
+    if (blurEnabledRef.current) {
+      handleSaveAlias();
+    }
   };
 
   const handleCancelEdit = () => {
@@ -144,7 +168,7 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
             value={aliasValue}
             onChange={(e) => setAliasValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            onBlur={handleSaveAlias}
+            onBlur={handleBlur}
             placeholder={displayTitle || 'Custom display text'}
             size="sm"
             className="h-5 min-w-[100px] max-w-[200px] px-1 py-0 text-sm"

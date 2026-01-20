@@ -1,6 +1,6 @@
 # Markdown Contract Adherence
 
-**Status:** Draft
+**Status:** Active
 **Owner:** Design System
 
 ## Goal
@@ -54,11 +54,11 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - GFM tables (basic)
 - Callouts
 - Tags (#tag)
-- Wiki links via RefNode (exportable to [[Title]])
+- Wiki links via RefNode (exportable to [[Title]] or [[Title|Alias]])
 - Inline marks: bold, italic, strikethrough, inline code
 - Links + autolink
 - Highlight mark (==text==)
-- Images (display from URLs, Phase 1)
+- Images (display from URLs + resize, Phase 1-2 complete)
 
 ### Not Implemented Yet
 
@@ -67,7 +67,6 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Inline + block math
 - Footnotes
 - Block IDs + block references
-- Wiki link aliases ([[Page|Alias]])
 - Wiki link heading / block targets ([[Page#Heading]])
 
 ## Export Notes
@@ -76,10 +75,15 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Tag colors are visual-only and not serialized.
 - Table resizing or UI controls are not serialized.
 
-## Next Steps
+## Next Steps (Design System Scope)
 
 1. ~~Implement Link + Autolink support in the editor (extension + Ladle stories).~~ ✅
 2. ~~Implement Highlight mark (==text==) in the editor.~~ ✅
-3. Add Markdown export mapping for refs, tags, and callouts to match Obsidian conventions.
-4. ~~Add image display support (Phase 1).~~ ✅
-5. Plan follow-on feature blocks: image upload, embeds, math, footnotes, block references.
+3. ~~Add image display support (Phase 1-2).~~ ✅
+4. ~~Implement wiki link aliases ([[Page|Alias]]).~~ ✅
+5. Implement remaining contract gaps: image upload, embeds, math, footnotes, block references.
+
+## Out of Scope (Other Packages)
+
+- **NotateDoc converters** (TipTap JSON ↔ NotateDoc) — lives in `packages/core`
+- **Markdown export/import** — depends on NotateDoc converters, lives in `packages/core`
