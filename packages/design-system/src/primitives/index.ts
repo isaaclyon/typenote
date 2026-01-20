@@ -99,3 +99,32 @@ export type {
   DropdownMenuSeparatorProps,
   DropdownMenuShortcutProps,
 } from './DropdownMenu/index.js';
+
+export {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuGroup,
+  ContextMenuPortal,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuRadioGroup,
+} from './ContextMenu/index.js';
+export type {
+  ContextMenuSubTriggerProps,
+  ContextMenuSubContentProps,
+  ContextMenuContentProps,
+  ContextMenuItemProps,
+  ContextMenuCheckboxItemProps,
+  ContextMenuRadioItemProps,
+  ContextMenuLabelProps,
+  ContextMenuSeparatorProps,
+  ContextMenuShortcutProps,
+} from './ContextMenu/index.js';

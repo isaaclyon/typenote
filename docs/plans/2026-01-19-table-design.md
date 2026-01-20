@@ -1,7 +1,7 @@
 # Table Design
 
 **Date:** 2026-01-19  
-**Status:** Complete (Phase 1)
+**Status:** Complete (Phase 1 + Phase 2)
 
 ## Overview
 
@@ -9,18 +9,21 @@ Add simple data tables to the TypeNote editor using TipTap's official table exte
 
 ## Scope
 
-**In scope:**
+**Phase 1 (Complete):**
 
 - Basic table structure (rows, columns, cells)
 - First row as header (bold, subtle background)
 - Tab/Shift+Tab navigation between cells
 - `/table` slash command
 
-**Deferred (Phase 2):**
+**Phase 2 (Complete):**
+
+- Hover buttons to add rows/columns (+ buttons at edges)
+- Context menu for table operations (right-click)
+
+**Deferred (Phase 3):**
 
 - Column resizing (disabled due to prosemirror-tables widget layout issues)
-- Hover buttons to add rows/columns
-- Context menu for table operations
 
 **Out of scope:**
 

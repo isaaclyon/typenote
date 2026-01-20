@@ -1858,3 +1858,105 @@ export const EmptyTable: Story = () => {
     </div>
   );
 };
+
+export const TableWithToolbar: Story = () => {
+  const tableWithData: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Table Manipulation' }],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          {
+            type: 'text',
+            text: 'Click inside any table cell to see the floating toolbar above the table.',
+          },
+        ],
+      },
+      {
+        type: 'table',
+        content: [
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Name' }] }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Role' }] }],
+              },
+              {
+                type: 'tableHeader',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Status' }] }],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Alice' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Developer' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Active' }] }],
+              },
+            ],
+          },
+          {
+            type: 'tableRow',
+            content: [
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Bob' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Designer' }] }],
+              },
+              {
+                type: 'tableCell',
+                content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Active' }] }],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={tableWithData} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          <strong>Floating toolbar</strong> appears when cursor is in a table:
+        </p>
+        <ul className="list-disc list-inside space-y-0.5 ml-2">
+          <li>
+            <strong>Rows icon</strong> — Insert row above/below, delete row
+          </li>
+          <li>
+            <strong>Columns icon</strong> — Insert column left/right, delete column
+          </li>
+          <li>
+            <strong>Trash icon</strong> — Delete entire table
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+TableWithToolbar.storyName = 'Table With Toolbar';

@@ -7,6 +7,7 @@
  * Features:
  * - First row as header (styled distinctly)
  * - Tab/Shift+Tab navigation between cells
+ * - Floating table toolbar (see TableToolbar component)
  *
  * Note: Column resizing is disabled due to layout issues with prosemirror-tables
  * widget decorations. Can revisit later.

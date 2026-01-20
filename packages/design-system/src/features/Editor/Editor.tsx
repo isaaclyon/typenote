@@ -42,6 +42,7 @@ import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 import { CodeBlock } from './extensions/CodeBlock.js';
 import { Callout } from './extensions/Callout.js';
 import { TableExtensions } from './extensions/Table.js';
+import { TableToolbar } from './extensions/TableToolbar.js';
 
 // Editor typography styles
 import './editor.css';
@@ -618,6 +619,13 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       createTagSuggestionRender,
     ]);
 
+    // Track if cursor is in a table (for showing table toolbar)
+    const [isInTable, setIsInTable] = React.useState(false);
+    const [tableToolbarPosition, setTableToolbarPosition] = React.useState<{
+      top: number;
+      left: number;
+    } | null>(null);
+
     const editor = useEditor({
       extensions,
       content: content ?? null,
@@ -625,6 +633,41 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       autofocus: autoFocus,
       onUpdate: ({ editor: ed }) => {
         onChange?.(ed.getJSON());
+      },
+      onSelectionUpdate: ({ editor: ed }) => {
+        // Check if cursor is in a table
+        const inTable = ed.isActive('table');
+        setIsInTable(inTable);
+
+        if (inTable) {
+          // Get position for toolbar (above the active cell)
+          const { from } = ed.state.selection;
+          const domAtPos = ed.view.domAtPos(from);
+          const node = domAtPos.node as HTMLElement;
+
+          // Find the closest table cell (td or th)
+          const cell =
+            node?.nodeType === Node.ELEMENT_NODE
+              ? (node as HTMLElement).closest?.('td, th')
+              : node?.parentElement?.closest?.('td, th');
+
+          if (cell) {
+            const cellRect = cell.getBoundingClientRect();
+            setTableToolbarPosition({
+              top: cellRect.top - 44, // 44px above cell (toolbar height + gap)
+              left: cellRect.left,
+            });
+          } else {
+            // Fallback to cursor position
+            const coords = ed.view.coordsAtPos(from);
+            setTableToolbarPosition({
+              top: coords.top - 44,
+              left: coords.left,
+            });
+          }
+        } else {
+          setTableToolbarPosition(null);
+        }
       },
       editorProps: {
         attributes: {
@@ -837,6 +880,19 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
               onSelect={handleTagSelect}
               onCreate={onTagCreate ? handleTagCreate : undefined}
             />
+          </div>
+        )}
+
+        {/* Table toolbar */}
+        {editor && isInTable && tableToolbarPosition && !readOnly && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: tableToolbarPosition.top,
+              left: tableToolbarPosition.left,
+            }}
+          >
+            <TableToolbar editor={editor} />
           </div>
         )}
       </div>
