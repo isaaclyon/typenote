@@ -98,11 +98,14 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
     }
   };
 
-  const handleEditAlias = (e: Event) => {
-    // Prevent the context menu from closing immediately
-    e.preventDefault();
-    setAliasValue(alias ?? '');
-    setIsEditingAlias(true);
+  const handleEditAlias = () => {
+    console.log('[RefNodeView] handleEditAlias called');
+    // Small delay to let context menu close before showing input
+    setTimeout(() => {
+      console.log('[RefNodeView] setting isEditingAlias to true');
+      setAliasValue(alias ?? '');
+      setIsEditingAlias(true);
+    }, 50);
   };
 
   const handleSaveAlias = () => {
