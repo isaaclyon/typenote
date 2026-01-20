@@ -1,29 +1,38 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Callout Blocks)
+## Latest Session (2026-01-19 - Tables)
 
 ### What was accomplished
 
-- **Built Callout extension** — Custom TipTap node with 4 types: info, warning, tip, error
-- **CalloutView with type dropdown** — Click icon/label to change callout type
-- **Color-coded styling** — Blue (info), amber (warning), green (tip), red (error)
-- **Sharp left border** — Clean rectangular accent border on left side
-- **Full nested content** — Supports headings, lists, code blocks inside callouts
-- **4 slash commands** — `/info`, `/warning`, `/tip`, `/error`
-- **4 new Ladle stories**: WithCallouts, CalloutViaSlash, CalloutWithNestedContent, CalloutTypeChange
+- **Table extension** — TipTap table support using official extensions
+- **`/table` slash command** — Inserts 3x3 table with header row
+- **Header row styling** — Bold text, muted background
+- **Tab/Shift+Tab navigation** — Move between cells
+- **Cell selection highlighting** — Visual feedback for selected cells
+- **4 new Ladle stories**: WithTable, TableViaSlash, TableWithRichContent, EmptyTable
+- **Column resizing disabled** — prosemirror-tables widget causes layout issues (deferred to Phase 2)
 
 ### Key files created/modified
 
-- `extensions/Callout.ts` — TipTap Node extension with keyboard shortcuts
-- `extensions/CalloutView.tsx` — React NodeView with Phosphor icons + dropdown
-- `extensions/SlashCommand.ts` — Added 4 callout commands
-- `editor.css` — Callout styling (~90 lines added)
-- `Editor.stories.tsx` — 4 new stories
-- `extensions/index.ts` — Exported Callout and CodeBlock
+- `extensions/Table.ts` — TipTap table extensions bundle (resizable: false)
+- `extensions/SlashCommand.ts` — Added `/table` command with Table icon
+- `editor.css` — Table styling (~50 lines)
+- `Editor.tsx` — Registered TableExtensions
+- `Editor.stories.tsx` — 4 new table stories
+- `docs/plans/2026-01-19-table-design.md` — Design doc
 
 ### Commits
 
-- `ae98f89` feat(design-system): add Callout blocks with 4 types (info, warning, tip, error)
+- Not yet committed
+
+---
+
+## Previous Session (2026-01-19 - Callout Blocks)
+
+- **Callout extension** — 4 types (info, warning, tip, error) with type dropdown, nested content
+- **4 slash commands** — `/info`, `/warning`, `/tip`, `/error`
+- **4 Ladle stories**
+- Commits: `ae98f89`
 
 ---
 
@@ -44,18 +53,11 @@
 
 ---
 
-## Previous Session (2026-01-19 - TagNode Extension)
-
-- **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
-- **3 new Ladle stories**: WithTags, WithExistingTags, TagColors
-- Commits: `38ebbb5`
-
----
-
 ## Earlier Sessions (2026-01-19) — Collapsed
 
-- **SlashCommand** (`19b0551`) — `/` trigger for block types
+- **TaskList** (`fb84e66`) — Checkboxes with `/task` slash command, nested support
 - **TagNode + TagSuggestion** (`38ebbb5`) — Hashtags via `#`
+- **SlashCommand** (`19b0551`) — `/` trigger for block types
 - **RefNode styling** (`2d94de1`) — Hover underline effect
 - **RefNode + RefSuggestion** (`507aba8`) — Wiki-links via `[[` and mentions via `@`
 - **Editor Phase 1** (`437af80`) — TipTap integration with paragraphs, headings, marks
