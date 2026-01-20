@@ -50,12 +50,14 @@ const TYPE_ICONS: Record<string, PhosphorIcon> = {
 const editingNodes = new Set<string>();
 
 export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps) {
-  const { objectId, objectType, displayTitle, color, alias } = node.attrs as {
+  const { objectId, objectType, displayTitle, color, alias, headingText, blockId } = node.attrs as {
     objectId: string;
     objectType: string;
     displayTitle: string;
     color?: string | null;
     alias?: string | null;
+    headingText?: string | null;
+    blockId?: string | null;
   };
 
   // Use external Set to track editing state (survives TipTap remounts)
@@ -93,8 +95,22 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
   const refColor = color ?? TYPE_COLORS[objectType] ?? '#71717A';
   const RefIcon = TYPE_ICONS[objectType] ?? File;
 
-  // Display alias if set, otherwise displayTitle
-  const displayText = alias ?? displayTitle ?? 'Untitled';
+  // Display logic:
+  // - If alias is set, show alias only
+  // - Otherwise show title with optional heading/block suffix
+  const baseText = alias ?? displayTitle ?? 'Untitled';
+
+  // Build suffix for heading/block references
+  let suffix = '';
+  if (!alias) {
+    if (headingText) {
+      suffix = ` > ${headingText}`;
+    } else if (blockId) {
+      suffix = `#^${blockId}`;
+    }
+  }
+
+  const displayText = baseText;
 
   const handleClick = (e: React.MouseEvent) => {
     // Don't navigate if we're editing
@@ -112,11 +128,20 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
           objectType: string;
           displayTitle: string;
           alias?: string | null;
+          headingText?: string | null;
+          blockId?: string | null;
         }) => void)
       | undefined;
 
     if (onRefClick) {
-      onRefClick({ objectId, objectType, displayTitle, alias: alias ?? null });
+      onRefClick({
+        objectId,
+        objectType,
+        displayTitle,
+        alias: alias ?? null,
+        headingText: headingText ?? null,
+        blockId: blockId ?? null,
+      });
     }
   };
 
@@ -194,7 +219,10 @@ export function RefNodeView({ node, extension, updateAttributes }: NodeViewProps
               weight="regular"
               style={{ color: refColor }}
             />
-            <span className="ref-node-text">{displayText}</span>
+            <span className="ref-node-text">
+              {displayText}
+              {suffix && <span className="opacity-60">{suffix}</span>}
+            </span>
           </span>
         </ContextMenuTrigger>
         <ContextMenuContent>

@@ -1,6 +1,10 @@
 import type { JSONContent, Editor as TiptapEditor } from '@tiptap/core';
 import type { RefNodeAttributes } from './extensions/RefNode.js';
-import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
+import type {
+  RefSuggestionItem,
+  HeadingSuggestionItem,
+  BlockSuggestionItem,
+} from './extensions/RefSuggestion.js';
 import type { TagNodeAttributes } from './extensions/TagNode.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 
@@ -62,6 +66,34 @@ export interface EditorProps {
    * If provided, shows a "Create" option in the suggestion list.
    */
   onRefCreate?: (title: string) => RefSuggestionItem | Promise<RefSuggestionItem>;
+
+  // ============================================================================
+  // Heading & Block References (Phase 2c)
+  // ============================================================================
+
+  /**
+   * Search function for headings within an object.
+   * Called when user types `[[Object#` to search headings.
+   */
+  onHeadingSearch?: (
+    objectId: string,
+    query: string
+  ) => HeadingSuggestionItem[] | Promise<HeadingSuggestionItem[]>;
+
+  /**
+   * Search function for blocks within an object.
+   * Called when user types `[[Object#^` to search blocks.
+   */
+  onBlockSearch?: (
+    objectId: string,
+    query: string
+  ) => BlockSuggestionItem[] | Promise<BlockSuggestionItem[]>;
+
+  /**
+   * Called when a block without an alias is selected.
+   * Use this to insert a BlockIdNode at the source block.
+   */
+  onBlockIdInsert?: (objectId: string, blockKsuid: string, newAlias: string) => void;
 
   // ============================================================================
   // Tag Support (Phase 2b)

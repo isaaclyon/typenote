@@ -37,8 +37,20 @@ import type { EditorProps, EditorRef } from './types.js';
 import { RefNode } from './extensions/RefNode.js';
 import { RefSuggestionList } from './extensions/RefSuggestionList.js';
 import type { AliasMode } from './extensions/RefSuggestionList.js';
-import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
-import { parseQueryWithAlias } from './extensions/RefSuggestion.js';
+import type {
+  RefSuggestionItem,
+  AnySuggestionItem,
+  SuggestionMode,
+  HeadingSuggestionItem,
+  BlockSuggestionItem,
+} from './extensions/RefSuggestion.js';
+import {
+  parseQueryWithAlias,
+  isRefItem,
+  isHeadingItem,
+  isBlockItem,
+} from './extensions/RefSuggestion.js';
+import { generateBlockId } from './extensions/block-id-utils.js';
 import { getSlashCommandItems, filterSlashCommands } from './extensions/SlashCommand.js';
 import type { SlashCommandItem } from './extensions/SlashCommand.js';
 import { SlashCommandList } from './extensions/SlashCommandList.js';
@@ -115,6 +127,10 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onRefSearch,
       onRefClick,
       onRefCreate,
+      // Phase 2c: Heading & Block references
+      onHeadingSearch,
+      onBlockSearch,
+      onBlockIdInsert,
       // Phase 2b: Tags
       enableTags = false,
       onTagSearch,
@@ -126,13 +142,14 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     // Ref suggestion state
     const [refSuggestionState, setRefSuggestionState] = React.useState<{
       isOpen: boolean;
-      items: RefSuggestionItem[];
+      items: AnySuggestionItem[];
       query: string;
       selectedIndex: number;
       position: { top: number; left: number } | null;
-      command: ((item: RefSuggestionItem) => void) | null;
+      command: ((item: AnySuggestionItem) => void) | null;
       range: { from: number; to: number } | null;
       editor: ReturnType<typeof useEditor> | null;
+      mode: SuggestionMode;
     }>({
       isOpen: false,
       items: [],
@@ -142,6 +159,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       command: null,
       range: null,
       editor: null,
+      mode: 'object',
     });
 
     // Slash command state
@@ -183,10 +201,16 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     // Store refs in refs so they're available in extension callbacks
     const onRefSearchRef = React.useRef(onRefSearch);
     const onRefCreateRef = React.useRef(onRefCreate);
+    const onHeadingSearchRef = React.useRef(onHeadingSearch);
+    const onBlockSearchRef = React.useRef(onBlockSearch);
+    const onBlockIdInsertRef = React.useRef(onBlockIdInsert);
     React.useEffect(() => {
       onRefSearchRef.current = onRefSearch;
       onRefCreateRef.current = onRefCreate;
-    }, [onRefSearch, onRefCreate]);
+      onHeadingSearchRef.current = onHeadingSearch;
+      onBlockSearchRef.current = onBlockSearch;
+      onBlockIdInsertRef.current = onBlockIdInsert;
+    }, [onRefSearch, onRefCreate, onHeadingSearch, onBlockSearch, onBlockIdInsert]);
 
     // Store tag callbacks in refs
     const onTagSearchRef = React.useRef(onTagSearch);
@@ -199,7 +223,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     // Create ref suggestion render callbacks
     const createRefSuggestionRender = React.useCallback(
       () => ({
-        onStart: (props: SuggestionProps<RefSuggestionItem>) => {
+        onStart: (props: SuggestionProps<AnySuggestionItem> & { mode?: SuggestionMode }) => {
           const rect = props.clientRect?.();
           setRefSuggestionState({
             isOpen: true,
@@ -210,9 +234,10 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             command: props.command,
             range: props.range,
             editor: props.editor,
+            mode: props.mode ?? 'object',
           });
         },
-        onUpdate: (props: SuggestionProps<RefSuggestionItem>) => {
+        onUpdate: (props: SuggestionProps<AnySuggestionItem> & { mode?: SuggestionMode }) => {
           const rect = props.clientRect?.();
           setRefSuggestionState((prev) => ({
             ...prev,
@@ -223,16 +248,18 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             command: props.command,
             range: props.range,
             editor: props.editor,
+            mode: props.mode ?? prev.mode,
           }));
         },
         onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-          // Helper to check if we're in alias mode
+          // Helper to check if we're in alias mode (only applies to object mode)
           const isInAliasMode = (prev: typeof refSuggestionState) => {
+            if (prev.mode !== 'object') return false;
             const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
             const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
             if (alias === null) return false;
             return prev.items.some(
-              (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
+              (item) => isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
             );
           };
 
@@ -262,18 +289,21 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
           }
           if (event.key === 'Enter') {
             setRefSuggestionState((prev) => {
-              // In alias mode, select the matched item
-              const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
-              const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+              // In alias mode (object mode only), select the matched item
+              if (prev.mode === 'object') {
+                const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
+                const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
 
-              if (alias !== null) {
-                // Find the matched item
-                const matchedItem = prev.items.find(
-                  (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
-                );
-                if (matchedItem && prev.command) {
-                  prev.command(matchedItem);
-                  return { ...prev, isOpen: false };
+                if (alias !== null) {
+                  // Find the matched item
+                  const matchedItem = prev.items.find(
+                    (item) =>
+                      isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
+                  );
+                  if (matchedItem && prev.command) {
+                    prev.command(matchedItem);
+                    return { ...prev, isOpen: false };
+                  }
                 }
               }
 
@@ -289,11 +319,13 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
           if (event.key === 'Tab') {
             event.preventDefault();
             setRefSuggestionState((prev) => {
+              // Tab completion only works in object mode
+              if (prev.mode !== 'object') return prev;
               // Disable Tab in alias mode (already have full title)
               if (isInAliasMode(prev)) return prev;
 
               const item = prev.items[prev.selectedIndex];
-              if (!item || !prev.editor || !prev.range) return prev;
+              if (!item || !prev.editor || !prev.range || !isRefItem(item)) return prev;
 
               // Get the title to autocomplete
               const title = item.title;
@@ -328,6 +360,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             command: null,
             range: null,
             editor: null,
+            mode: 'object',
           });
         },
       }),
@@ -619,32 +652,134 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                   if (!search) return [];
                   // Strip leading `[` since our range includes both brackets `[[`
                   const cleanQuery = query.startsWith('[') ? query.slice(1) : query;
-                  // Parse query to separate search term from alias
-                  const { objectQuery } = parseQueryWithAlias(cleanQuery);
-                  return search(objectQuery);
+                  // Parse query to detect mode (object, heading, block)
+                  const parsed = parseQueryWithAlias(cleanQuery);
+
+                  // Heading mode: [[Object#query
+                  if (parsed.mode === 'heading' && onHeadingSearchRef.current) {
+                    // First find the object
+                    const objects = await search(parsed.objectQuery);
+                    const matchedObject = objects.find(
+                      (o) => o.title.toLowerCase() === parsed.objectQuery.toLowerCase()
+                    );
+                    if (matchedObject) {
+                      // Store matched object for command handler
+                      setRefSuggestionState((prev) => ({
+                        ...prev,
+                        mode: 'heading',
+                        // Store object in a way the command can access it
+                      }));
+                      const headings = await onHeadingSearchRef.current(
+                        matchedObject.objectId,
+                        parsed.subQuery
+                      );
+                      // Tag headings with the parent object for the command handler
+                      return headings.map((h) => ({
+                        ...h,
+                        _parentObject: matchedObject,
+                      })) as unknown as AnySuggestionItem[];
+                    }
+                  }
+
+                  // Block mode: [[Object#^query
+                  if (parsed.mode === 'block' && onBlockSearchRef.current) {
+                    // First find the object
+                    const objects = await search(parsed.objectQuery);
+                    const matchedObject = objects.find(
+                      (o) => o.title.toLowerCase() === parsed.objectQuery.toLowerCase()
+                    );
+                    if (matchedObject) {
+                      setRefSuggestionState((prev) => ({
+                        ...prev,
+                        mode: 'block',
+                      }));
+                      const blocks = await onBlockSearchRef.current(
+                        matchedObject.objectId,
+                        parsed.subQuery
+                      );
+                      // Tag blocks with the parent object for the command handler
+                      return blocks.map((b) => ({
+                        ...b,
+                        _parentObject: matchedObject,
+                      })) as unknown as AnySuggestionItem[];
+                    }
+                  }
+
+                  // Default: object mode
+                  setRefSuggestionState((prev) => ({
+                    ...prev,
+                    mode: 'object',
+                  }));
+                  return search(parsed.objectQuery);
                 },
                 command: ({ editor: ed, range, props: item }) => {
-                  const typedItem = item as RefSuggestionItem;
                   // Get the full query text to check for alias
                   const fullQuery = ed.state.doc.textBetween(range.from, range.to);
                   // Strip leading `[` since our range includes both brackets `[[`
                   const cleanQuery = fullQuery.startsWith('[') ? fullQuery.slice(1) : fullQuery;
                   const { alias } = parseQueryWithAlias(cleanQuery);
-                  // Delete entire range (includes both `[[`)
+
+                  // Handle different item types
+                  let attrs: Record<string, unknown>;
+
+                  if (isRefItem(item)) {
+                    // Object mode
+                    attrs = {
+                      objectId: item.objectId,
+                      objectType: item.objectType,
+                      displayTitle: item.title,
+                      color: item.color,
+                      alias,
+                    };
+                  } else if (isHeadingItem(item)) {
+                    // Heading mode - get parent object from tagged item
+                    const parentObject = (
+                      item as HeadingSuggestionItem & { _parentObject?: RefSuggestionItem }
+                    )._parentObject;
+                    if (!parentObject) return;
+                    attrs = {
+                      objectId: parentObject.objectId,
+                      objectType: parentObject.objectType,
+                      displayTitle: parentObject.title,
+                      color: parentObject.color,
+                      alias,
+                      headingText: item.text,
+                    };
+                  } else if (isBlockItem(item)) {
+                    // Block mode - get parent object from tagged item
+                    const parentObject = (
+                      item as BlockSuggestionItem & { _parentObject?: RefSuggestionItem }
+                    )._parentObject;
+                    if (!parentObject) return;
+
+                    // Determine block ID: use existing alias or generate new one
+                    let blockId = item.alias;
+                    if (!blockId) {
+                      blockId = generateBlockId();
+                      // Notify parent to insert BlockIdNode at source
+                      if (onBlockIdInsertRef.current) {
+                        onBlockIdInsertRef.current(parentObject.objectId, item.ksuid, blockId);
+                      }
+                    }
+
+                    attrs = {
+                      objectId: parentObject.objectId,
+                      objectType: parentObject.objectType,
+                      displayTitle: parentObject.title,
+                      color: parentObject.color,
+                      alias,
+                      blockId,
+                    };
+                  } else {
+                    return; // Unknown item type
+                  }
+
+                  // Delete entire range (includes both `[[`) and insert refNode
                   ed.chain()
                     .focus()
                     .deleteRange(range)
                     .insertContent([
-                      {
-                        type: 'refNode',
-                        attrs: {
-                          objectId: typedItem.objectId,
-                          objectType: typedItem.objectType,
-                          displayTitle: typedItem.title,
-                          color: typedItem.color,
-                          alias,
-                        },
-                      },
+                      { type: 'refNode', attrs },
                       { type: 'text', text: ' ' },
                     ])
                     .run();
@@ -848,7 +983,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
 
     // Handle ref suggestion item selection
     const handleRefSelect = React.useCallback(
-      (item: RefSuggestionItem) => {
+      (item: AnySuggestionItem) => {
         if (refSuggestionState.command) {
           refSuggestionState.command(item);
         }
@@ -971,16 +1106,16 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
               ? refSuggestionState.query.slice(1)
               : refSuggestionState.query;
 
-            // Detect alias mode
+            // Detect alias mode (only in object mode)
             const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
             let aliasMode: AliasMode | null = null;
 
-            if (alias !== null) {
+            if (alias !== null && refSuggestionState.mode === 'object') {
               // Find exact match for search term (case-insensitive)
               const matchedItem = refSuggestionState.items.find(
-                (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
+                (item) => isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
               );
-              if (matchedItem) {
+              if (matchedItem && isRefItem(matchedItem)) {
                 aliasMode = { targetItem: matchedItem, alias };
               }
             }
@@ -994,6 +1129,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                 }}
               >
                 <RefSuggestionList
+                  mode={refSuggestionState.mode}
                   items={refSuggestionState.items}
                   query={cleanQuery}
                   selectedIndex={refSuggestionState.selectedIndex}

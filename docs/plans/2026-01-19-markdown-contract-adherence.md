@@ -59,15 +59,20 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Links + autolink
 - Highlight mark (==text==)
 - Images (display from URLs + resize, Phase 1-2 complete)
+- Inline math ($...$) + block math ($$) with KaTeX rendering
 
 ### Not Implemented Yet
 
 - Image upload + attachments (Phase 3)
 - Embeds (![[Page]] / ![[file]])
-- Inline + block math
 - Footnotes
-- Block IDs + block references
-- Wiki link heading / block targets ([[Page#Heading]])
+
+### Recently Completed
+
+- Block IDs (^block-id syntax) ✅ (2026-01-20)
+- Heading targets ([[Page#Heading]]) ✅ (2026-01-20)
+- Block references ([[Page#^block-id]]) ✅ (2026-01-20)
+- Inline math ($...$) + block math ($$) with KaTeX rendering ✅ (2026-01-19)
 
 ## Export Notes
 
@@ -81,7 +86,14 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 2. ~~Implement Highlight mark (==text==) in the editor.~~ ✅
 3. ~~Add image display support (Phase 1-2).~~ ✅
 4. ~~Implement wiki link aliases ([[Page|Alias]]).~~ ✅
-5. Implement remaining contract gaps: image upload, embeds, math, footnotes, block references.
+5. ~~Implement inline + block math with KaTeX.~~ ✅
+6. ~~Implement block IDs (^block-id syntax).~~ ✅
+7. ~~Implement heading targets ([[Page#Heading]]).~~ ✅
+8. ~~Implement block references ([[Page#^block-id]]).~~ ✅
+9. Implement remaining contract gaps (priority order):
+   - **Footnotes** — [^1] syntax with definition blocks at document end
+   - **Embeds** — ![[Page]] / ![[file]] for inline object rendering
+   - **Image upload** — Phase 3, requires main process file handling
 
 ## Out of Scope (Other Packages)
 

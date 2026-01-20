@@ -21,6 +21,10 @@ export interface RefNodeAttributes {
   displayTitle: string;
   color?: string | null;
   alias?: string | null;
+  /** For heading references: [[Page#Heading]] */
+  headingText?: string | null;
+  /** For block references: [[Page#^block-id]] */
+  blockId?: string | null;
 }
 
 export interface RefNodeOptions {
@@ -99,6 +103,22 @@ export const RefNode = Node.create<RefNodeOptions>({
         renderHTML: (attributes: Record<string, unknown>) => {
           if (!attributes['alias']) return {};
           return { 'data-alias': attributes['alias'] as string };
+        },
+      },
+      headingText: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-heading-text'),
+        renderHTML: (attributes: Record<string, unknown>) => {
+          if (!attributes['headingText']) return {};
+          return { 'data-heading-text': attributes['headingText'] as string };
+        },
+      },
+      blockId: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-block-id'),
+        renderHTML: (attributes: Record<string, unknown>) => {
+          if (!attributes['blockId']) return {};
+          return { 'data-block-id': attributes['blockId'] as string };
         },
       },
     };

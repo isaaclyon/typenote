@@ -4,6 +4,7 @@
 
 import type { JSONContent } from '@tiptap/core';
 import type { RefSuggestionItem, TagSuggestionItem } from '../types.js';
+import type { HeadingSuggestionItem, BlockSuggestionItem } from '../extensions/RefSuggestion.js';
 
 // ============================================================================
 // Mock data for ref suggestions
@@ -115,6 +116,148 @@ export const mockTagCreate = async (name: string): Promise<TagSuggestionItem> =>
     name: name.toLowerCase().replace(/\s+/g, '-'),
     color: '#71717A',
   };
+};
+
+// ============================================================================
+// Mock data for heading suggestions
+// ============================================================================
+
+/** Mock headings for "Getting Started Guide" */
+const mockHeadingsForGettingStarted: HeadingSuggestionItem[] = [
+  { level: 1, text: 'Getting Started' },
+  { level: 2, text: 'Installation' },
+  { level: 3, text: 'System Requirements' },
+  { level: 3, text: 'Download' },
+  { level: 2, text: 'Quick Start' },
+  { level: 2, text: 'Configuration' },
+  { level: 3, text: 'Basic Setup' },
+  { level: 3, text: 'Advanced Options' },
+];
+
+/** Mock headings for "Project Roadmap" */
+const mockHeadingsForRoadmap: HeadingSuggestionItem[] = [
+  { level: 1, text: 'Project Roadmap' },
+  { level: 2, text: 'Q1 Goals' },
+  { level: 2, text: 'Q2 Goals' },
+  { level: 2, text: 'Future Plans' },
+];
+
+export const mockHeadingSearch = async (
+  objectId: string,
+  query: string
+): Promise<HeadingSuggestionItem[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  // Get headings based on object
+  let headings: HeadingSuggestionItem[] = [];
+  if (objectId === '01J1234567890123456789A') {
+    headings = mockHeadingsForGettingStarted;
+  } else if (objectId === '01J1234567890123456789B') {
+    headings = mockHeadingsForRoadmap;
+  } else {
+    // Default headings for any other object
+    headings = [
+      { level: 1, text: 'Overview' },
+      { level: 2, text: 'Details' },
+      { level: 2, text: 'Summary' },
+    ];
+  }
+
+  // Filter by query
+  if (!query) return headings;
+  const lower = query.toLowerCase();
+  return headings.filter((h) => h.text.toLowerCase().includes(lower));
+};
+
+// ============================================================================
+// Mock data for block suggestions
+// ============================================================================
+
+/** Mock blocks for "Getting Started Guide" */
+const mockBlocksForGettingStarted: BlockSuggestionItem[] = [
+  {
+    ksuid: '2NxK7vPq001',
+    preview: 'Welcome to TypeNote, your local-first knowledge app.',
+    blockType: 'paragraph',
+  },
+  { ksuid: '2NxK7vPq002', preview: 'Getting Started', blockType: 'heading' },
+  {
+    ksuid: '2NxK7vPq003',
+    preview: 'Before installing, ensure your system meets these requirements.',
+    blockType: 'paragraph',
+  },
+  { ksuid: '2NxK7vPq004', preview: 'Installation', blockType: 'heading' },
+  {
+    ksuid: '2NxK7vPq005',
+    alias: 'install-cmd',
+    preview: 'npm install typenote',
+    blockType: 'code_block',
+  },
+  {
+    ksuid: '2NxK7vPq006',
+    preview: 'TypeNote is designed for power users who value data ownership.',
+    blockType: 'paragraph',
+  },
+  {
+    ksuid: '2NxK7vPq007',
+    alias: 'key-insight',
+    preview: 'Your data never leaves your device.',
+    blockType: 'blockquote',
+  },
+];
+
+/** Mock blocks for "Project Roadmap" */
+const mockBlocksForRoadmap: BlockSuggestionItem[] = [
+  { ksuid: '2NxK7vPr001', preview: 'Project Roadmap', blockType: 'heading' },
+  {
+    ksuid: '2NxK7vPr002',
+    preview: 'This document outlines our development priorities.',
+    blockType: 'paragraph',
+  },
+  {
+    ksuid: '2NxK7vPr003',
+    alias: 'q1-summary',
+    preview: 'Q1: Foundation and core features',
+    blockType: 'paragraph',
+  },
+  { ksuid: '2NxK7vPr004', preview: 'Complete block-based editor', blockType: 'list_item' },
+  { ksuid: '2NxK7vPr005', preview: 'Implement reference system', blockType: 'list_item' },
+];
+
+export const mockBlockSearch = async (
+  objectId: string,
+  query: string
+): Promise<BlockSuggestionItem[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  // Get blocks based on object
+  let blocks: BlockSuggestionItem[] = [];
+  if (objectId === '01J1234567890123456789A') {
+    blocks = mockBlocksForGettingStarted;
+  } else if (objectId === '01J1234567890123456789B') {
+    blocks = mockBlocksForRoadmap;
+  } else {
+    // Default blocks for any other object
+    blocks = [
+      { ksuid: '2NxK7vPz001', preview: 'Sample paragraph content.', blockType: 'paragraph' },
+      { ksuid: '2NxK7vPz002', preview: 'Another block of text.', blockType: 'paragraph' },
+    ];
+  }
+
+  // Filter by query
+  if (!query) return blocks;
+  const lower = query.toLowerCase();
+  return blocks.filter(
+    (b) =>
+      b.preview.toLowerCase().includes(lower) || (b.alias && b.alias.toLowerCase().includes(lower))
+  );
+};
+
+/** Mock callback for when a new block ID is inserted */
+export const mockBlockIdInsert = (objectId: string, blockKsuid: string, newAlias: string): void => {
+  console.log(
+    `[Mock] Insert BlockIdNode: objectId=${objectId}, blockKsuid=${blockKsuid}, alias=${newAlias}`
+  );
 };
 
 // ============================================================================

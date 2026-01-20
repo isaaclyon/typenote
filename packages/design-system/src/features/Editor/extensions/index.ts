@@ -10,10 +10,22 @@ export { RefNodeView } from './RefNodeView.js';
 
 export {
   RefSuggestion,
-  createDoubleBracketSuggestion,
-  parseQueryWithAlias,
+  parseQuery,
+  parseQuery as parseQueryWithAlias, // backward compat
+  isRefItem,
+  isHeadingItem,
+  isBlockItem,
 } from './RefSuggestion.js';
-export type { RefSuggestionItem, RefSuggestionOptions } from './RefSuggestion.js';
+export type {
+  RefSuggestionItem,
+  RefSuggestionOptions,
+  HeadingSuggestionItem,
+  BlockSuggestionItem,
+  AnySuggestionItem,
+  SuggestionMode,
+  ParsedQuery,
+  SuggestionPropsWithMode,
+} from './RefSuggestion.js';
 export { RefSuggestionList } from './RefSuggestionList.js';
 export type { RefSuggestionListProps } from './RefSuggestionList.js';
 export { useRefSuggestion } from './useRefSuggestion.js';

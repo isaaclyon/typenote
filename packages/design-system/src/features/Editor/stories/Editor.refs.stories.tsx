@@ -24,6 +24,9 @@ import {
   mockTags,
   mockTagSearch,
   mockTagCreate,
+  mockHeadingSearch,
+  mockBlockSearch,
+  mockBlockIdInsert,
 } from './shared.js';
 
 // Import editor.css for ref-node styles
@@ -482,3 +485,242 @@ export const TagColors: Story = () => (
 );
 
 TagColors.storyName = 'Tag Colors';
+
+// ============================================================================
+// Heading & Block Reference Stories
+// ============================================================================
+
+export const HeadingReferences: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  const handleRefClick = (attrs: RefNodeAttributes) => {
+    const suffix = attrs.headingText ? ` > ${attrs.headingText}` : '';
+    setLastAction(`Navigate to: ${attrs.displayTitle}${suffix}`);
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Type [[Getting Started Guide# to search headings..."
+        enableRefs
+        onRefSearch={mockRefSearch}
+        onRefClick={handleRefClick}
+        onRefCreate={mockRefCreate}
+        onHeadingSearch={mockHeadingSearch}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          <strong>Heading References:</strong> Type{' '}
+          <code className="bg-muted px-1 rounded">[[Object#</code> to search headings within that
+          object.
+        </p>
+        <p>
+          Try: <code className="bg-muted px-1 rounded">[[Getting Started Guide#Install</code>
+        </p>
+        <p className="text-xs opacity-70">
+          (The object name must match exactly before the # is recognized)
+        </p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+HeadingReferences.storyName = 'Heading References';
+
+export const BlockReferences: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  const handleRefClick = (attrs: RefNodeAttributes) => {
+    const suffix = attrs.blockId ? `#^${attrs.blockId}` : '';
+    setLastAction(`Navigate to: ${attrs.displayTitle}${suffix}`);
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Type [[Getting Started Guide#^ to search blocks..."
+        enableRefs
+        onRefSearch={mockRefSearch}
+        onRefClick={handleRefClick}
+        onRefCreate={mockRefCreate}
+        onBlockSearch={mockBlockSearch}
+        onBlockIdInsert={mockBlockIdInsert}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          <strong>Block References:</strong> Type{' '}
+          <code className="bg-muted px-1 rounded">[[Object#^</code> to search blocks within that
+          object.
+        </p>
+        <p>
+          Try: <code className="bg-muted px-1 rounded">[[Getting Started Guide#^install</code>
+        </p>
+        <p className="text-xs opacity-70">
+          Blocks with existing ^aliases show the alias badge. Selecting a block without an alias
+          auto-generates a 6-char ID.
+        </p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+BlockReferences.storyName = 'Block References';
+
+export const ExistingHeadingBlockRefs: Story = () => {
+  const contentWithHeadingBlockRefs: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 1 },
+        content: [{ type: 'text', text: 'Document with Granular References' }],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'See the ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789A',
+              objectType: 'Page',
+              displayTitle: 'Getting Started Guide',
+              color: '#6366F1',
+              headingText: 'Installation',
+            },
+          },
+          { type: 'text', text: ' section for setup instructions.' },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'The key insight is documented here: ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789A',
+              objectType: 'Page',
+              displayTitle: 'Getting Started Guide',
+              color: '#6366F1',
+              blockId: 'key-insight',
+            },
+          },
+          { type: 'text', text: '.' },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          { type: 'text', text: 'For Q1 priorities, refer to ' },
+          {
+            type: 'refNode',
+            attrs: {
+              objectId: '01J1234567890123456789B',
+              objectType: 'Page',
+              displayTitle: 'Project Roadmap',
+              color: '#6366F1',
+              blockId: 'q1-summary',
+            },
+          },
+          { type: 'text', text: '.' },
+        ],
+      },
+    ],
+  };
+
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        content={contentWithHeadingBlockRefs}
+        enableRefs
+        onRefSearch={mockRefSearch}
+        onRefClick={(attrs) => {
+          let target = attrs.displayTitle;
+          if (attrs.headingText) target += ` > ${attrs.headingText}`;
+          if (attrs.blockId) target += `#^${attrs.blockId}`;
+          setLastAction(`Navigate to: ${target}`);
+        }}
+        onRefCreate={mockRefCreate}
+        onHeadingSearch={mockHeadingSearch}
+        onBlockSearch={mockBlockSearch}
+        onBlockIdInsert={mockBlockIdInsert}
+      />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>
+          <strong>Pre-existing heading and block references.</strong>
+        </p>
+        <p>
+          Heading refs show <code className="bg-muted px-1 rounded">Page &gt; Heading</code>
+        </p>
+        <p>
+          Block refs show <code className="bg-muted px-1 rounded">Page#^blockId</code>
+        </p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+ExistingHeadingBlockRefs.storyName = 'Existing Heading/Block Refs';
+
+export const AllReferenceTypes: Story = () => {
+  const [lastAction, setLastAction] = React.useState<string | null>(null);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor
+        placeholder="Try all reference types: [[Object]], [[Object#Heading]], [[Object#^block]]"
+        enableRefs
+        enableTags
+        onRefSearch={mockRefSearch}
+        onRefClick={(attrs) => {
+          let desc = attrs.displayTitle;
+          if (attrs.headingText) desc += ` > ${attrs.headingText}`;
+          if (attrs.blockId) desc += `#^${attrs.blockId}`;
+          if (attrs.alias) desc = `"${attrs.alias}" → ${desc}`;
+          setLastAction(`Clicked: ${desc}`);
+        }}
+        onRefCreate={mockRefCreate}
+        onHeadingSearch={mockHeadingSearch}
+        onBlockSearch={mockBlockSearch}
+        onBlockIdInsert={mockBlockIdInsert}
+        onTagSearch={mockTagSearch}
+        onTagCreate={mockTagCreate}
+      />
+      <div className="text-xs text-muted-foreground space-y-2">
+        <p>
+          <strong>Complete Reference System:</strong>
+        </p>
+        <ul className="list-disc list-inside space-y-1 ml-2">
+          <li>
+            <code className="bg-muted px-1 rounded">@</code> or{' '}
+            <code className="bg-muted px-1 rounded">[[</code> — Object reference
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">[[Object#</code> — Heading reference
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">[[Object#^</code> — Block reference
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">[[Object|alias]]</code> — Custom display text
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">#</code> — Tags
+          </li>
+        </ul>
+        <p className="mt-2">
+          Objects to try: &quot;Getting Started Guide&quot;, &quot;Project Roadmap&quot;
+        </p>
+        {lastAction && <p className="text-accent-600 mt-2">{lastAction}</p>}
+      </div>
+    </div>
+  );
+};
+
+AllReferenceTypes.storyName = 'All Reference Types';
