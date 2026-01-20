@@ -101,7 +101,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
-| Image resize handles (Phase 2)                                    | 2026-01-20 | pending   |
+| Image resize + wiki-link aliases + story reorg                    | 2026-01-20 | `ccb0261` |
 | Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
 | ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
 | Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |

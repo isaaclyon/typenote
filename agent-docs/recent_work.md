@@ -1,37 +1,32 @@
 # Recent Work
 
-## Latest Session (2026-01-20 - Image Resize)
+## Latest Session (2026-01-20 - Image Resize + Story Reorg)
 
 ### What was accomplished
 
-- **Image resize handles (Phase 2)** — Custom NodeView with draggable resize handles
-- **ResizableImage extension** — Custom TipTap extension using ReactNodeViewRenderer
-- **ImageNodeView component** — React component with left/right drag handles
-- **Aspect ratio lock** — Images maintain proportions while resizing
-- **Width persistence** — Width stored in node attributes, reflected in JSON
-- **Ladle stories** — Added ImageResize story to demonstrate resizing
+- **Image resize handles (Phase 2)** — Custom NodeView with left/right drag handles, aspect ratio lock
+- **Wiki-link aliases** — `[[Page|alias]]` syntax + context menu editing
+- **Story reorganization** — Split 43 stories into 6 focused files (41 total after cleanup)
 
 ### Key files changed
 
 - `packages/design-system/src/features/Editor/extensions/ImageNodeView.tsx` (new)
 - `packages/design-system/src/features/Editor/extensions/ResizableImage.ts` (new)
-- `packages/design-system/src/features/Editor/Editor.tsx`
-- `packages/design-system/src/features/Editor/Editor.stories.tsx`
-- `packages/design-system/src/features/Editor/editor.css`
-- `docs/plans/2026-01-20-image-support-design.md`
+- `packages/design-system/src/features/Editor/stories/` (new directory, 7 files)
+- `packages/design-system/src/features/Editor/extensions/RefNode.ts` (alias attr)
+- `packages/design-system/src/features/Editor/extensions/RefNodeView.tsx` (alias UI)
 
 ### Commits
 
-- pending
+- `ccb0261` feat(design-system): add image resize and reorganize editor stories
+- `c2076f3` fix(design-system): fix alias edit popover timing issue
 
 ---
 
 ## Previous Session (2026-01-20 - Highlight + Images)
 
 - **Highlight mark** — `==text==` syntax with `Cmd+Shift+H` shortcut
-- **Image display (Phase 1)** — Display images from URLs with rounded corners and selection state
-- **Ladle stories** — Added WithHighlight and WithImages stories
-- **Image design plan** — Full 4-phase plan for images (display, resize, upload, alt text)
+- **Image display (Phase 1)** — Display images from URLs with rounded corners
 - Commits: `43699d8`
 
 ---
