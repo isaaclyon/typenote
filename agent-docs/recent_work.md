@@ -1,31 +1,42 @@
 # Recent Work
 
-## Latest Session (2026-01-20 - Highlight + Images)
+## Latest Session (2026-01-20 - Image Resize)
 
 ### What was accomplished
+
+- **Image resize handles (Phase 2)** — Custom NodeView with draggable resize handles
+- **ResizableImage extension** — Custom TipTap extension using ReactNodeViewRenderer
+- **ImageNodeView component** — React component with left/right drag handles
+- **Aspect ratio lock** — Images maintain proportions while resizing
+- **Width persistence** — Width stored in node attributes, reflected in JSON
+- **Ladle stories** — Added ImageResize story to demonstrate resizing
+
+### Key files changed
+
+- `packages/design-system/src/features/Editor/extensions/ImageNodeView.tsx` (new)
+- `packages/design-system/src/features/Editor/extensions/ResizableImage.ts` (new)
+- `packages/design-system/src/features/Editor/Editor.tsx`
+- `packages/design-system/src/features/Editor/Editor.stories.tsx`
+- `packages/design-system/src/features/Editor/editor.css`
+- `docs/plans/2026-01-20-image-support-design.md`
+
+### Commits
+
+- pending
+
+---
+
+## Previous Session (2026-01-20 - Highlight + Images)
 
 - **Highlight mark** — `==text==` syntax with `Cmd+Shift+H` shortcut
 - **Image display (Phase 1)** — Display images from URLs with rounded corners and selection state
 - **Ladle stories** — Added WithHighlight and WithImages stories
 - **Image design plan** — Full 4-phase plan for images (display, resize, upload, alt text)
-- **Dark mode highlight** — Light/dark mode styling for highlight mark
-
-### Key files changed
-
-- `packages/design-system/src/features/Editor/Editor.tsx`
-- `packages/design-system/src/features/Editor/Editor.stories.tsx`
-- `packages/design-system/src/features/Editor/editor.css`
-- `packages/design-system/package.json`
-- `docs/plans/2026-01-20-image-support-design.md`
-- `docs/plans/2026-01-19-markdown-contract-adherence.md`
-
-### Commits
-
-- `43699d8` feat(design-system): add highlight mark and image display support
+- Commits: `43699d8`
 
 ---
 
-## Previous Session (2026-01-19 - Markdown Contract + Links)
+## Earlier Session (2026-01-19 - Markdown Contract + Links)
 
 - **Markdown contract plan** — Drafted CommonMark + GFM + Obsidian extras contract and gap list
 - **Link + autolink support** — Added TipTap link extension (autolink, open on click)

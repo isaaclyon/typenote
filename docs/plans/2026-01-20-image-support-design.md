@@ -95,19 +95,20 @@ Width/height are visual-only and not exported to Markdown (consistent with stand
 
 ## Implementation Phases
 
-### Phase 1: Basic Image Display ✅ Current
+### Phase 1: Basic Image Display ✅ Complete
 
 - Add `@tiptap/extension-image` to Editor
 - Basic styling in `editor.css` (max-width, rounded corners)
 - Ladle story with sample image content
 - No upload, no resize — just display from URLs
 
-### Phase 2: Resize Handles
+### Phase 2: Resize Handles ✅ Complete
 
-- Create `ImageNodeView` React component
-- Add resize handles on selection
-- Store width in node attributes
-- Aspect ratio lock
+- `ImageNodeView` React component with resize handles
+- `ResizableImage` extension using ReactNodeViewRenderer
+- Resize handles on left/right edges when image selected
+- Width stored in node attributes, aspect ratio maintained
+- Minimum width: 100px, Maximum: container width
 
 ### Phase 3: Upload Support
 

@@ -29,6 +29,27 @@ export interface RefSuggestionItem {
 }
 
 /**
+ * Parse a query string to extract search term and optional alias.
+ * Supports [[Page|alias]] syntax where text after first pipe is the alias.
+ *
+ * @example
+ * parseQueryWithAlias("Project Roadmap") // { search: "Project Roadmap", alias: null }
+ * parseQueryWithAlias("Project Roadmap|roadmap") // { search: "Project Roadmap", alias: "roadmap" }
+ * parseQueryWithAlias("|alias only") // { search: "", alias: "alias only" }
+ * parseQueryWithAlias("A|B|C") // { search: "A", alias: "B|C" }
+ */
+export function parseQueryWithAlias(query: string): { search: string; alias: string | null } {
+  const pipeIndex = query.indexOf('|');
+  if (pipeIndex === -1) {
+    return { search: query.trim(), alias: null };
+  }
+  const search = query.slice(0, pipeIndex).trim();
+  const aliasText = query.slice(pipeIndex + 1).trim();
+  // Empty alias after pipe = no alias (treat as null)
+  return { search, alias: aliasText || null };
+}
+
+/**
  * Options for the RefSuggestion extension.
  */
 export interface RefSuggestionOptions {
@@ -86,6 +107,7 @@ export const RefSuggestion = Extension.create<RefSuggestionOptions>({
     const { onSearch, render, insertSpacer } = this.options;
 
     // Create a suggestion config that works with both `[[` and `@` triggers
+    // Supports [[Page|alias]] syntax for custom display text
     const createSuggestionConfig = (
       char: string
     ): Omit<SuggestionOptions<RefSuggestionItem>, 'editor'> => ({
@@ -97,17 +119,24 @@ export const RefSuggestion = Extension.create<RefSuggestionOptions>({
       startOfLine: false,
 
       items: async ({ query }) => {
-        const results = await onSearch(query);
+        // Parse query to separate search term from alias
+        const { search } = parseQueryWithAlias(query);
+        const results = await onSearch(search);
         return results;
       },
 
       command: ({ editor, range, props: item }) => {
+        // Get the full query text to check for alias
+        const fullQuery = editor.state.doc.textBetween(range.from, range.to);
+        const { alias } = parseQueryWithAlias(fullQuery);
+
         // Delete the trigger text and insert RefNode
         const attrs: RefNodeAttributes = {
           objectId: item.objectId,
           objectType: item.objectType,
           displayTitle: item.title,
           color: item.color,
+          alias,
         };
 
         editor
@@ -136,10 +165,11 @@ export const RefSuggestion = Extension.create<RefSuggestionOptions>({
         editor: this.editor,
         ...createSuggestionConfig('@'),
       }),
-      // `[[` trigger — we use `[` as the char and check for double
-      // Actually, for `[[` we need a different approach since suggestion
-      // expects a single char. Let's use a custom plugin or just support `@` first
-      // TODO: Add `[[` support via custom input rule or modified suggestion
+      // `[[` trigger (uses `[` as char with allow() check for double bracket)
+      Suggestion({
+        editor: this.editor,
+        ...createDoubleBracketSuggestion(this.options),
+      }),
     ];
   },
 });
@@ -148,6 +178,8 @@ export const RefSuggestion = Extension.create<RefSuggestionOptions>({
  * Helper to create a ref suggestion config for the `[[` trigger.
  * Since TipTap's suggestion plugin expects a single character,
  * we need to handle `[[` specially.
+ *
+ * Supports [[Page|alias]] syntax for custom display text.
  */
 export function createDoubleBracketSuggestion(
   options: RefSuggestionOptions
@@ -168,15 +200,22 @@ export function createDoubleBracketSuggestion(
     startOfLine: false,
 
     items: async ({ query }) => {
-      return options.onSearch(query);
+      // Parse query to separate search term from alias
+      const { search } = parseQueryWithAlias(query);
+      return options.onSearch(search);
     },
 
     command: ({ editor, range, props: item }) => {
+      // Get the full query text to check for alias
+      const fullQuery = editor.state.doc.textBetween(range.from, range.to);
+      const { alias } = parseQueryWithAlias(fullQuery);
+
       const attrs: RefNodeAttributes = {
         objectId: item.objectId,
         objectType: item.objectType,
         displayTitle: item.title,
         color: item.color,
+        alias,
       };
 
       // Extend range to include the extra `[`

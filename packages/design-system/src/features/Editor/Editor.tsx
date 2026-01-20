@@ -5,7 +5,6 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import { Highlight as HighlightExtension } from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import { Extension } from '@tiptap/core';
@@ -46,6 +45,7 @@ import { CodeBlock } from './extensions/CodeBlock.js';
 import { Callout } from './extensions/Callout.js';
 import { TableExtensions } from './extensions/Table.js';
 import { TableToolbar } from './extensions/TableToolbar.js';
+import { ResizableImage } from './extensions/ResizableImage.js';
 
 // Editor typography styles
 import './editor.css';
@@ -422,8 +422,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         }),
         // Highlight mark (==text== input rule)
         HighlightExtension,
-        // Image support (Phase 1: display only)
-        Image,
+        // Image support (Phase 2: resizable)
+        ResizableImage,
         // Task lists (not included in StarterKit)
         TaskList,
         TaskItem.configure({

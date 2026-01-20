@@ -42,9 +42,9 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **Table** — `/table` inserts 3x3 with header row, Tab navigation, floating toolbar (resizing deferred)
   - **Links** — Markdown links + autolink (open on click)
   - **Highlight** — `==text==` syntax with `Cmd+Shift+H` shortcut
-  - **Images** — Display from URLs (Phase 1), upload/resize planned
+  - **Images** — Display + resize handles (Phase 1+2 complete), upload planned
   - Type-colored inline references with click handling
-  - 42 Ladle stories
+  - 43 Ladle stories (added ImageResize)
 
 **Next — NotateDoc converters:**
 
@@ -101,6 +101,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Image resize handles (Phase 2)                                    | 2026-01-20 | pending   |
 | Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
 | ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
 | Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |

@@ -20,6 +20,7 @@ export interface RefNodeAttributes {
   objectType: string;
   displayTitle: string;
   color?: string | null;
+  alias?: string | null;
 }
 
 export interface RefNodeOptions {
@@ -90,6 +91,14 @@ export const RefNode = Node.create<RefNodeOptions>({
         renderHTML: (attributes: Record<string, unknown>) => {
           if (!attributes['color']) return {};
           return { 'data-color': attributes['color'] as string };
+        },
+      },
+      alias: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-alias'),
+        renderHTML: (attributes: Record<string, unknown>) => {
+          if (!attributes['alias']) return {};
+          return { 'data-alias': attributes['alias'] as string };
         },
       },
     };
