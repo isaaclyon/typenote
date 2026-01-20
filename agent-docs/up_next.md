@@ -30,15 +30,16 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a + 2b) — TipTap/ProseMirror with references, slash commands, and tags
+- Editor ✅ (Phase 1 + 2a + 2b + 2c) — TipTap/ProseMirror with references, slash commands, tags, and code blocks
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
   - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`
   - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
+  - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
   - Type-colored inline references with click handling
-  - 23 Ladle stories
+  - 30 Ladle stories
 
 **Next — NotateDoc converters:**
 
@@ -94,6 +95,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| CodeBlock with Shiki syntax highlighting                          | 2026-01-19 | `7d3d04b` |
 | TaskList support with slash command and styling                   | 2026-01-19 | `fb84e66` |
 | TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | `38ebbb5` |
 | SlashCommand menu for block type insertion                        | 2026-01-19 | `19b0551` |

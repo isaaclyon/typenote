@@ -1,80 +1,69 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - TaskList Extension)
+## Latest Session (2026-01-19 - CodeBlock with Shiki)
 
 ### What was accomplished
 
-- **Added TaskList support** — Interactive checkboxes with slash command
-- **Installed TipTap extensions** — `@tiptap/extension-task-list`, `@tiptap/extension-task-item`
-- **Added slash command** — `/task`, `/todo`, `/checkbox` keywords
-- **Custom CSS styling** — Checkboxes with hover/checked states, strikethrough for completed items
-- **Nested support** — Tab/Shift+Tab for indentation
-- **3 new Ladle stories**: WithTaskList, TaskListViaSlash, NestedTaskList
+- **Built CodeBlock extension** — Custom TipTap extension with language attribute
+- **Integrated Shiki** — VS Code-quality syntax highlighting with lazy loading
+- **27 supported languages** — TypeScript, Python, Rust, Go, JSON, and more
+- **Language dropdown** — Click to change syntax highlighting
+- **Copy button** — One-click copy with "Copied!" feedback
+- **Markdown input rules** — Type ` ```typescript ` + Enter to create
+- **Slash command** — `/code` inserts a code block
+- **7 new Ladle stories**: WithCodeBlock, CodeBlockViaMarkdown, CodeBlockViaSlash, CodeBlockLanguages, CodeBlockCopyButton, CodeBlockLongLines, CodeBlockPlainText
 
-### Key files modified
+### Key files created/modified
 
-- `Editor.tsx` — Added TaskList + TaskItem extensions, ListChecks icon
-- `editor.css` — Custom checkbox styling (63 lines added)
-- `extensions/SlashCommand.ts` — Added Task List command with keywords
-- `Editor.stories.tsx` — 3 new stories (197 lines)
+- `extensions/shiki-highlighter.ts` — Shiki singleton with lazy loading
+- `extensions/CodeBlock.ts` — Extended TipTap extension
+- `extensions/CodeBlockView.tsx` — React NodeView with dropdown + copy button
+- `Editor.tsx` — Integrated CodeBlock, disabled StarterKit's codeBlock
+- `editor.css` — Code block styling (75 lines added)
+- `Editor.stories.tsx` — 7 new stories (293 lines)
 
 ### Commits
 
-- `fb84e66` feat(design-system): add TaskList support with slash command and styling
+- `7d3d04b` feat(design-system): add CodeBlock with Shiki syntax highlighting
+
+---
+
+## Previous Session (2026-01-19 - TaskList Extension)
+
+- **TaskList support** — Interactive checkboxes with `/task`, `/todo`, `/checkbox` slash commands
+- **Nested support** — Tab/Shift+Tab for indentation
+- **3 new Ladle stories**: WithTaskList, TaskListViaSlash, NestedTaskList
+- Commits: `fb84e66`
 
 ---
 
 ## Previous Session (2026-01-19 - TagNode Extension)
 
-- **Built TagNode extension** — TipTap Node for inline hashtags
-- **Built TagSuggestion** — Autocomplete triggered by `#` with search/create support
+- **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
 - **3 new Ladle stories**: WithTags, WithExistingTags, TagColors
-- **Design doc**: `docs/plans/2026-01-19-tag-node-design.md`
 - Commits: `38ebbb5`
 
 ---
 
 ## Previous Session (2026-01-19 - SlashCommand Menu)
 
-- **Brainstormed and designed** SlashCommand feature using brainstorming skill
-- **Built SlashCommand extension** — TipTap Suggestion plugin for `/` trigger
-- **9 block types supported**: paragraph, h1-h3, bullet list, numbered list, quote, code block, divider
-- **Filterable menu**: type `/head` to filter to headings
-- **SlashCommandList UI** — dropdown matching RefSuggestionList styling
+- **SlashCommand extension** — `/` trigger for 9 block types
 - **4 new Ladle stories**: WithSlashCommands, SlashCommandFiltering, SlashCommandDisabled, FullFeaturedEditor
-- **Design doc**: `docs/plans/2026-01-19-slash-command-design.md`
 - Commits: `19b0551`
 
 ---
 
-## Previous Session (2026-01-19 - RefNode Styling Improvements)
-
-- **Hover effect**: 2px → 4px underline transition with raised position for descenders
-- **Fixed bugs**: unique PluginKey for @ and [[ triggers, icons in dropdown
-- **Design doc**: `docs/plans/2026-01-19-ref-node-hover-design.md`
-- Commits: `2d94de1`, `0de9c41`, `0af415e`, `b8be1dd`
-
----
-
-## Previous Session (2026-01-19 - Editor Phase 2a: RefNode + RefSuggestion)
-
-- Built **RefNode** extension — inline reference nodes
-- Built **RefSuggestion** — autocomplete via `@` and `[[` triggers
-- **RefSuggestionList** — dropdown UI with keyboard navigation
-- **3 new Ladle stories**: WithRefs, WithExistingRefs, RefTypeColors
-- Commits: `507aba8`
-
----
-
-## Previous Session (2026-01-19 - Editor Feature Phase 1)
-
-- Built **Editor** feature — TipTap/ProseMirror integration
-- Phase 1: paragraphs, headings, basic marks, full-width clickable area
-- Commits: `437af80`
-
----
-
 ## Earlier Sessions (2026-01-19) — Collapsed
+
+- **RefNode styling** (`2d94de1`) — Hover underline effect
+- **RefNode + RefSuggestion** (`507aba8`) — Wiki-links via `[[` and mentions via `@`
+- **Editor Phase 1** (`437af80`) — TipTap integration with paragraphs, headings, marks
+- **HeaderBar feature** (`f4c4d73`) — Link, Breadcrumbs, SearchTrigger, ThemeToggle
+- **TitleBar feature** (`5aaaa86`) — Custom Electron window chrome
+- **AppShell feature** (`ef71be8`) — Composition layer for full app layout
+- **Sidebar refinements** (`4888b68`, `e8b73c4`) — Type-colored hover/active states
+
+## Earlier Sessions (2026-01-18) — Collapsed
 
 - **HeaderBar feature** (`f4c4d73`) — Link primitive, Breadcrumbs, SearchTrigger, ThemeToggle
 - **TitleBar feature** (`5aaaa86`) — Custom Electron window chrome (28px, draggable)
