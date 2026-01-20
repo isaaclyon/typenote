@@ -36,6 +36,7 @@ import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
 import { RefNode } from './extensions/RefNode.js';
 import { RefSuggestionList } from './extensions/RefSuggestionList.js';
+import type { AliasMode } from './extensions/RefSuggestionList.js';
 import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 import { parseQueryWithAlias } from './extensions/RefSuggestion.js';
 import { getSlashCommandItems, filterSlashCommands } from './extensions/SlashCommand.js';
@@ -51,6 +52,7 @@ import { TableToolbar } from './extensions/TableToolbar.js';
 import { ResizableImage } from './extensions/ResizableImage.js';
 import { InlineMath } from './extensions/InlineMath.js';
 import { MathBlock } from './extensions/MathBlock.js';
+import { BlockIdNode } from './extensions/BlockIdNode.js';
 
 // Editor typography styles
 import './editor.css';
@@ -129,6 +131,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       selectedIndex: number;
       position: { top: number; left: number } | null;
       command: ((item: RefSuggestionItem) => void) | null;
+      range: { from: number; to: number } | null;
+      editor: ReturnType<typeof useEditor> | null;
     }>({
       isOpen: false,
       items: [],
@@ -136,6 +140,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       selectedIndex: 0,
       position: null,
       command: null,
+      range: null,
+      editor: null,
     });
 
     // Slash command state
@@ -202,6 +208,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             selectedIndex: 0,
             position: rect ? { top: rect.bottom + 4, left: rect.left } : null,
             command: props.command,
+            range: props.range,
+            editor: props.editor,
           });
         },
         onUpdate: (props: SuggestionProps<RefSuggestionItem>) => {
@@ -213,32 +221,94 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             selectedIndex: Math.min(prev.selectedIndex, Math.max(0, props.items.length - 1)),
             position: rect ? { top: rect.bottom + 4, left: rect.left } : prev.position,
             command: props.command,
+            range: props.range,
+            editor: props.editor,
           }));
         },
         onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+          // Helper to check if we're in alias mode
+          const isInAliasMode = (prev: typeof refSuggestionState) => {
+            const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
+            const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+            if (alias === null) return false;
+            return prev.items.some(
+              (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
+            );
+          };
+
           if (event.key === 'ArrowUp') {
-            setRefSuggestionState((prev) => ({
-              ...prev,
-              selectedIndex:
-                prev.selectedIndex <= 0 ? prev.items.length - 1 : prev.selectedIndex - 1,
-            }));
+            setRefSuggestionState((prev) => {
+              // Disable arrow keys in alias mode (only one item)
+              if (isInAliasMode(prev)) return prev;
+              return {
+                ...prev,
+                selectedIndex:
+                  prev.selectedIndex <= 0 ? prev.items.length - 1 : prev.selectedIndex - 1,
+              };
+            });
             return true;
           }
           if (event.key === 'ArrowDown') {
-            setRefSuggestionState((prev) => ({
-              ...prev,
-              selectedIndex:
-                prev.selectedIndex >= prev.items.length - 1 ? 0 : prev.selectedIndex + 1,
-            }));
+            setRefSuggestionState((prev) => {
+              // Disable arrow keys in alias mode (only one item)
+              if (isInAliasMode(prev)) return prev;
+              return {
+                ...prev,
+                selectedIndex:
+                  prev.selectedIndex >= prev.items.length - 1 ? 0 : prev.selectedIndex + 1,
+              };
+            });
             return true;
           }
           if (event.key === 'Enter') {
             setRefSuggestionState((prev) => {
+              // In alias mode, select the matched item
+              const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
+              const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+
+              if (alias !== null) {
+                // Find the matched item
+                const matchedItem = prev.items.find(
+                  (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
+                );
+                if (matchedItem && prev.command) {
+                  prev.command(matchedItem);
+                  return { ...prev, isOpen: false };
+                }
+              }
+
+              // Normal mode: select the highlighted item
               const item = prev.items[prev.selectedIndex];
               if (item && prev.command) {
                 prev.command(item);
               }
               return { ...prev, isOpen: false };
+            });
+            return true;
+          }
+          if (event.key === 'Tab') {
+            event.preventDefault();
+            setRefSuggestionState((prev) => {
+              // Disable Tab in alias mode (already have full title)
+              if (isInAliasMode(prev)) return prev;
+
+              const item = prev.items[prev.selectedIndex];
+              if (!item || !prev.editor || !prev.range) return prev;
+
+              // Get the title to autocomplete
+              const title = item.title;
+
+              // For `[[` trigger, range starts at first `[` and includes `[[query`
+              // So we replace the entire range with `[[title`
+              // For `@` trigger, range starts at `@` and includes `@query`
+              // So we replace with `@title`
+              const isDoubleBracket = prev.query.startsWith('[');
+              const newText = isDoubleBracket ? `[[${title}` : `@${title}`;
+
+              prev.editor.chain().focus().deleteRange(prev.range).insertContent(newText).run();
+
+              // Don't close - let the suggestion update naturally
+              return prev;
             });
             return true;
           }
@@ -256,6 +326,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
             selectedIndex: 0,
             position: null,
             command: null,
+            range: null,
+            editor: null,
           });
         },
       }),
@@ -445,6 +517,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         // Math support
         InlineMath,
         MathBlock,
+        // Block IDs (^block-id syntax)
+        BlockIdNode,
       ];
 
       if (enableRefs) {
@@ -470,8 +544,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                   const search = onRefSearchRef.current;
                   if (!search) return [];
                   // Parse query to separate search term from alias
-                  const { search: searchTerm } = parseQueryWithAlias(query);
-                  return search(searchTerm);
+                  const { objectQuery } = parseQueryWithAlias(query);
+                  return search(objectQuery);
                 },
                 command: ({ editor: ed, range, props: item }) => {
                   const typedItem = item as RefSuggestionItem;
@@ -514,59 +588,52 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                 allowSpaces: true,
                 startOfLine: false,
                 allow: ({ state, range }) => {
-                  // Only trigger when there are two brackets `[[`
-                  // The suggestion plugin matches on `[` char, so range.from is right after it
-                  // We need to check if the preceding char (before the trigger) is also `[`
-                  // Use resolved position for accurate cross-block handling
+                  // The suggestion plugin triggers on `[` and range.from points to the
+                  // trigger position. For `[[`, we need at least 2 chars in the range
+                  // and the first two chars should both be `[`.
+                  //
+                  // range.from = position of first `[`
+                  // range.to = current cursor position
+                  // We need range.to - range.from >= 2 (at least `[[`)
+                  // And chars at range.from and range.from+1 should both be `[`
+
+                  const queryLength = range.to - range.from;
+                  if (queryLength < 1) return false; // Need at least the second `[`
+
+                  // Check if char at range.from+1 is also `[`
+                  // (range.from is already `[` since that's what triggered this)
                   try {
-                    const $from = state.doc.resolve(range.from);
-                    // Check the character before the trigger `[`
-                    // Position: ...[first bracket]<trigger `[` is here><range.from>
-                    // So we need to look at range.from - 2 (the char before the trigger)
-                    const posToCheck = range.from - 2;
-                    if (posToCheck < 0) return false;
-
-                    // Get parent text content and check char
-                    const textContent = $from.parent.textContent;
-                    const offsetInParent = $from.parentOffset;
-                    // The trigger `[` is at offsetInParent - 1, preceding char is at offsetInParent - 2
-                    const charIndex = offsetInParent - 2;
-                    if (charIndex < 0) return false;
-
-                    const precedingChar = textContent[charIndex];
-                    console.log(
-                      '[BracketSuggestion] textContent:',
-                      JSON.stringify(textContent),
-                      'offsetInParent:',
-                      offsetInParent,
-                      'charIndex:',
-                      charIndex,
-                      'char:',
-                      precedingChar
+                    const secondChar = state.doc.textBetween(
+                      range.from + 1,
+                      range.from + 2,
+                      undefined,
+                      '\ufffc'
                     );
-                    return precedingChar === '[';
-                  } catch (e) {
-                    console.error('[BracketSuggestion] error:', e);
+                    return secondChar === '[';
+                  } catch {
                     return false;
                   }
                 },
                 items: async ({ query }) => {
                   const search = onRefSearchRef.current;
                   if (!search) return [];
+                  // Strip leading `[` since our range includes both brackets `[[`
+                  const cleanQuery = query.startsWith('[') ? query.slice(1) : query;
                   // Parse query to separate search term from alias
-                  const { search: searchTerm } = parseQueryWithAlias(query);
-                  return search(searchTerm);
+                  const { objectQuery } = parseQueryWithAlias(cleanQuery);
+                  return search(objectQuery);
                 },
                 command: ({ editor: ed, range, props: item }) => {
                   const typedItem = item as RefSuggestionItem;
                   // Get the full query text to check for alias
                   const fullQuery = ed.state.doc.textBetween(range.from, range.to);
-                  const { alias } = parseQueryWithAlias(fullQuery);
-                  // Extend range to include the extra `[`
-                  const extendedRange = { from: range.from - 1, to: range.to };
+                  // Strip leading `[` since our range includes both brackets `[[`
+                  const cleanQuery = fullQuery.startsWith('[') ? fullQuery.slice(1) : fullQuery;
+                  const { alias } = parseQueryWithAlias(cleanQuery);
+                  // Delete entire range (includes both `[[`)
                   ed.chain()
                     .focus()
-                    .deleteRange(extendedRange)
+                    .deleteRange(range)
                     .insertContent([
                       {
                         type: 'refNode',
@@ -896,23 +963,47 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         <EditorContent editor={editor} className="h-full w-full" />
 
         {/* Ref suggestion popup */}
-        {refSuggestionState.isOpen && refSuggestionState.position && (
-          <div
-            className="fixed z-50"
-            style={{
-              top: refSuggestionState.position.top,
-              left: refSuggestionState.position.left,
-            }}
-          >
-            <RefSuggestionList
-              items={refSuggestionState.items}
-              query={refSuggestionState.query}
-              selectedIndex={refSuggestionState.selectedIndex}
-              onSelect={handleRefSelect}
-              onCreate={onRefCreate ? handleRefCreate : undefined}
-            />
-          </div>
-        )}
+        {refSuggestionState.isOpen &&
+          refSuggestionState.position &&
+          (() => {
+            // Clean query (strip leading `[` for `[[` trigger)
+            const cleanQuery = refSuggestionState.query.startsWith('[')
+              ? refSuggestionState.query.slice(1)
+              : refSuggestionState.query;
+
+            // Detect alias mode
+            const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+            let aliasMode: AliasMode | null = null;
+
+            if (alias !== null) {
+              // Find exact match for search term (case-insensitive)
+              const matchedItem = refSuggestionState.items.find(
+                (item) => item.title.toLowerCase() === objectQuery.toLowerCase()
+              );
+              if (matchedItem) {
+                aliasMode = { targetItem: matchedItem, alias };
+              }
+            }
+
+            return (
+              <div
+                className="fixed z-50"
+                style={{
+                  top: refSuggestionState.position.top,
+                  left: refSuggestionState.position.left,
+                }}
+              >
+                <RefSuggestionList
+                  items={refSuggestionState.items}
+                  query={cleanQuery}
+                  selectedIndex={refSuggestionState.selectedIndex}
+                  onSelect={handleRefSelect}
+                  onCreate={onRefCreate ? handleRefCreate : undefined}
+                  aliasMode={aliasMode}
+                />
+              </div>
+            );
+          })()}
 
         {/* Slash command popup */}
         {slashCommandState.isOpen && slashCommandState.position && (

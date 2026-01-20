@@ -1,52 +1,45 @@
 # Recent Work
 
-## Latest Session (2026-01-19 - Math Support)
+## Latest Session (2026-01-20 - Wiki-Link Trigger Fix + Alias Mode UX)
 
 ### What was accomplished
 
-- **Math support complete** — Inline (`$...$`) and block (`$$`/`/math`) math with KaTeX rendering
-- **InlineMath** — Atom node with Obsidian-style focus editing (click to edit, blur to render)
-- **MathBlock** — Block node with live preview, `/math` slash command
-- **KaTeX integration** — Fast synchronous rendering with inline error display
-- **7 unit tests** for `katex-utils.ts`
-- **4 Ladle stories** — InlineMath, MathBlocks, ErrorHandling, TryItOut
-- **Design doc** — `docs/plans/2026-01-19-math-support-design.md`
-- **Code review fixes** — Blur timeout cleanup, dark mode CSS selectors
+- **Fixed `[[` wiki-link trigger** — Corrected position calculation in `allow()` callback; now properly detects double brackets
+- **Tab completion for suggestions** — Press Tab to autocomplete selected item's title (e.g., type `[[Get` → Tab → `[[Getting Started Guide`)
+- **Alias Mode UX** — When typing `|` after a matched item:
+  - Popup collapses to show only the matched item
+  - Live preview: `→ displays as "alias"`
+  - Arrow keys disabled (single item)
+  - Tab disabled (already have full title)
+  - Enter confirms with alias
+- **Design doc** — `docs/plans/2026-01-20-alias-mode-ux-design.md`
+- **Fixed opencode plugin error** — Removed `kdco/worktree` from `opencode.json` plugins (already installed via OCX)
 
-### Key files created
+### Key files changed
 
-- `extensions/InlineMath.ts` + `InlineMathView.tsx`
-- `extensions/MathBlock.ts` + `MathBlockView.tsx`
-- `extensions/katex-utils.ts` + test
-- `stories/Editor.math.stories.tsx`
+- `packages/design-system/src/features/Editor/Editor.tsx` — Trigger fix, Tab completion, alias mode detection
+- `packages/design-system/src/features/Editor/extensions/RefSuggestion.ts` — Matching trigger fix
+- `packages/design-system/src/features/Editor/extensions/RefSuggestionList.tsx` — Alias mode UI
+- `opencode.json` — Removed duplicate plugin entry
 
 ### Commits
 
-- `fa68e93` feat(design-system): add math support with KaTeX
-
-### Known Issues (for next session)
-
-- **`[[` trigger not working** — The `allow()` callback isn't detecting the preceding `[` character correctly. Debug logs in Editor.tsx.
+- Uncommitted — ready for commit
 
 ---
 
-## Previous Session (2026-01-20 - Wiki-Link Alias)
+## Previous Session (2026-01-19 - Math Support)
 
-- **Wiki-link alias context menu** — Right-click RefNode → "Edit alias..."
-- **Alias state management fix** — External Set survives TipTap remounts
-- Commits: `e680d99`, `c2076f3`
-
----
-
-## Earlier Session (2026-01-20 - Image Resize + Story Reorg)
-
-- **Image resize handles (Phase 2)** — Custom NodeView with left/right drag handles
-- **Story reorganization** — Split monolithic stories into `stories/` subfolder (6 files)
-- Commits: `ccb0261`
+- **Math support complete** — Inline (`$...$`) and block (`$$`/`/math`) with KaTeX
+- **InlineMath/MathBlock** — Custom NodeViews with live preview
+- Commits: `fa68e93`
 
 ---
 
 ## Earlier Sessions (2026-01-19/20) — Collapsed
+
+- **Wiki-link alias context menu** (`e680d99`) — Right-click RefNode → "Edit alias..."
+- **Image resize + story reorg** (`ccb0261`) — Drag handles, 6-file story split
 
 - **Highlight + Images** (`43699d8`) — `==text==` syntax, image display
 - **Tables** (`cf7287a`) — TipTap tables + `/table` command

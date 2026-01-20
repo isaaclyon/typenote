@@ -33,7 +33,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - Editor ✅ (Phase 1 + 2a-2g) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, links, highlight, images, math
   - Paragraphs, headings (h1-h6), basic marks
   - Full-width clickable area with centered content (650px)
-  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`, alias support via context menu
+  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`, alias support via `|` syntax and context menu, Tab completion, alias mode UX
   - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts, table, math)
   - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
   - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
@@ -53,7 +53,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ### Immediate Next Steps
 
-1. **Fix `[[` trigger** — The double-bracket suggestion isn't detecting the preceding `[` (debug code in Editor.tsx)
+1. ~~**Fix `[[` trigger**~~ ✅ Fixed — position calculation corrected
 2. Wire AppShell + Editor to desktop renderer
 3. Enable basic navigation
 4. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
@@ -103,6 +103,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX       | 2026-01-20 | pending   |
 | Math support (inline + block with KaTeX)                          | 2026-01-19 | `fa68e93` |
 | Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |
 | Image resize + story reorg                                        | 2026-01-20 | `ccb0261` |
