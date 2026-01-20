@@ -649,3 +649,125 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* ============================================================================
+   Math Support (InlineMath + MathBlock)
+   ============================================================================ */
+
+/* Inline math - rendered state */
+.inline-math-rendered {
+  display: inline;
+  padding: 0 2px;
+  border-radius: 3px;
+  background-color: color-mix(in srgb, var(--color-neutral-500) 8%, transparent);
+  transition: background-color 150ms ease;
+}
+
+.inline-math-rendered:hover {
+  background-color: color-mix(in srgb, var(--color-neutral-500) 15%, transparent);
+}
+
+/* Inline math - editing state */
+.inline-math-editing {
+  display: inline-flex;
+  align-items: center;
+}
+
+.inline-math-input {
+  font-family: var(--font-mono);
+}
+
+/* Inline math - error state */
+.inline-math-error {
+  color: var(--color-danger-500);
+}
+
+/* Empty math placeholder */
+.katex-empty {
+  color: var(--color-neutral-400);
+  font-style: italic;
+  font-size: 0.875em;
+}
+
+/* Math block container */
+.math-block {
+  margin: 1rem 0;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  background-color: var(--color-neutral-50);
+  overflow: hidden;
+}
+
+.dark .math-block {
+  border-color: var(--color-neutral-700);
+  background-color: var(--color-neutral-900);
+}
+
+/* Math block header */
+.math-block-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--color-neutral-200);
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark .math-block-header {
+  border-bottom-color: var(--color-neutral-700);
+  background-color: var(--color-neutral-800);
+  color: var(--color-neutral-400);
+}
+
+/* Math block input area */
+.math-block-input {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.dark .math-block-input {
+  border-bottom-color: var(--color-neutral-700);
+}
+
+.math-block-code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-neutral-800);
+  white-space: pre-wrap;
+  outline: none;
+}
+
+.dark .math-block-code {
+  color: var(--color-neutral-200);
+}
+
+/* Math block preview area */
+.math-block-preview {
+  padding: 16px;
+  text-align: center;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.math-block-preview .katex {
+  font-size: 1.25em;
+}
+
+/* Math block error state */
+.math-block-error {
+  color: var(--color-danger-500);
+}
+
+/* KaTeX overrides for better integration */
+.katex .katex-html {
+  /* Prevent KaTeX from breaking inline flow */
+  white-space: nowrap;
+}

@@ -45,3 +45,14 @@ export {
   TableHeaderExtension,
 } from './Table.js';
 export type { TableOptions } from './Table.js';
+
+export { InlineMath } from './InlineMath.js';
+export type { InlineMathAttributes, InlineMathOptions } from './InlineMath.js';
+export { InlineMathView } from './InlineMathView.js';
+
+export { MathBlock } from './MathBlock.js';
+export type { MathBlockAttributes, MathBlockOptions } from './MathBlock.js';
+export { MathBlockView } from './MathBlockView.js';
+
+export { renderMath } from './katex-utils.js';
+export type { MathRenderResult } from './katex-utils.js';

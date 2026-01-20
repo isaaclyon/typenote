@@ -29,12 +29,15 @@ import { Info } from '@phosphor-icons/react/dist/ssr/Info';
 import { Warning } from '@phosphor-icons/react/dist/ssr/Warning';
 import { Lightbulb } from '@phosphor-icons/react/dist/ssr/Lightbulb';
 import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
+// Math icon
+import { MathOperations } from '@phosphor-icons/react/dist/ssr/MathOperations';
 
 import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
 import { RefNode } from './extensions/RefNode.js';
 import { RefSuggestionList } from './extensions/RefSuggestionList.js';
 import type { RefSuggestionItem } from './extensions/RefSuggestion.js';
+import { parseQueryWithAlias } from './extensions/RefSuggestion.js';
 import { getSlashCommandItems, filterSlashCommands } from './extensions/SlashCommand.js';
 import type { SlashCommandItem } from './extensions/SlashCommand.js';
 import { SlashCommandList } from './extensions/SlashCommandList.js';
@@ -46,6 +49,8 @@ import { Callout } from './extensions/Callout.js';
 import { TableExtensions } from './extensions/Table.js';
 import { TableToolbar } from './extensions/TableToolbar.js';
 import { ResizableImage } from './extensions/ResizableImage.js';
+import { InlineMath } from './extensions/InlineMath.js';
+import { MathBlock } from './extensions/MathBlock.js';
 
 // Editor typography styles
 import './editor.css';
@@ -68,6 +73,8 @@ const slashCommandIcons = {
   Warning,
   Lightbulb,
   WarningCircle,
+  // Math icon
+  MathOperations,
 };
 
 // ============================================================================
@@ -435,6 +442,9 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         Callout,
         // Tables
         ...TableExtensions,
+        // Math support
+        InlineMath,
+        MathBlock,
       ];
 
       if (enableRefs) {
@@ -445,7 +455,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
           })
         );
 
-        // Create suggestion extension for @ trigger
+        // Create suggestion extension for @ trigger (supports @query|alias syntax)
         const AtSuggestion = Extension.create({
           name: 'atSuggestion',
           addProseMirrorPlugins() {
@@ -458,10 +468,16 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                 startOfLine: false,
                 items: async ({ query }) => {
                   const search = onRefSearchRef.current;
-                  return search ? search(query) : [];
+                  if (!search) return [];
+                  // Parse query to separate search term from alias
+                  const { search: searchTerm } = parseQueryWithAlias(query);
+                  return search(searchTerm);
                 },
                 command: ({ editor: ed, range, props: item }) => {
                   const typedItem = item as RefSuggestionItem;
+                  // Get the full query text to check for alias
+                  const fullQuery = ed.state.doc.textBetween(range.from, range.to);
+                  const { alias } = parseQueryWithAlias(fullQuery);
                   ed.chain()
                     .focus()
                     .deleteRange(range)
@@ -473,6 +489,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                           objectType: typedItem.objectType,
                           displayTitle: typedItem.title,
                           color: typedItem.color,
+                          alias,
                         },
                       },
                       { type: 'text', text: ' ' },
@@ -485,7 +502,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
           },
         });
 
-        // Create suggestion extension for [[ trigger
+        // Create suggestion extension for [[ trigger (supports [[query|alias]] syntax)
         const BracketSuggestion = Extension.create({
           name: 'bracketSuggestion',
           addProseMirrorPlugins() {
@@ -497,21 +514,54 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                 allowSpaces: true,
                 startOfLine: false,
                 allow: ({ state, range }) => {
-                  // Only trigger when there are two brackets
-                  const text = state.doc.textBetween(
-                    Math.max(0, range.from - 1),
-                    range.from,
-                    undefined,
-                    '\ufffc'
-                  );
-                  return text === '[';
+                  // Only trigger when there are two brackets `[[`
+                  // The suggestion plugin matches on `[` char, so range.from is right after it
+                  // We need to check if the preceding char (before the trigger) is also `[`
+                  // Use resolved position for accurate cross-block handling
+                  try {
+                    const $from = state.doc.resolve(range.from);
+                    // Check the character before the trigger `[`
+                    // Position: ...[first bracket]<trigger `[` is here><range.from>
+                    // So we need to look at range.from - 2 (the char before the trigger)
+                    const posToCheck = range.from - 2;
+                    if (posToCheck < 0) return false;
+
+                    // Get parent text content and check char
+                    const textContent = $from.parent.textContent;
+                    const offsetInParent = $from.parentOffset;
+                    // The trigger `[` is at offsetInParent - 1, preceding char is at offsetInParent - 2
+                    const charIndex = offsetInParent - 2;
+                    if (charIndex < 0) return false;
+
+                    const precedingChar = textContent[charIndex];
+                    console.log(
+                      '[BracketSuggestion] textContent:',
+                      JSON.stringify(textContent),
+                      'offsetInParent:',
+                      offsetInParent,
+                      'charIndex:',
+                      charIndex,
+                      'char:',
+                      precedingChar
+                    );
+                    return precedingChar === '[';
+                  } catch (e) {
+                    console.error('[BracketSuggestion] error:', e);
+                    return false;
+                  }
                 },
                 items: async ({ query }) => {
                   const search = onRefSearchRef.current;
-                  return search ? search(query) : [];
+                  if (!search) return [];
+                  // Parse query to separate search term from alias
+                  const { search: searchTerm } = parseQueryWithAlias(query);
+                  return search(searchTerm);
                 },
                 command: ({ editor: ed, range, props: item }) => {
                   const typedItem = item as RefSuggestionItem;
+                  // Get the full query text to check for alias
+                  const fullQuery = ed.state.doc.textBetween(range.from, range.to);
+                  const { alias } = parseQueryWithAlias(fullQuery);
                   // Extend range to include the extra `[`
                   const extendedRange = { from: range.from - 1, to: range.to };
                   ed.chain()
@@ -525,6 +575,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                           objectType: typedItem.objectType,
                           displayTitle: typedItem.title,
                           color: typedItem.color,
+                          alias,
                         },
                       },
                       { type: 'text', text: ' ' },

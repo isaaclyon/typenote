@@ -82,6 +82,8 @@ export function getSlashCommandItems(icons: {
   Warning: PhosphorIcon;
   Lightbulb: PhosphorIcon;
   WarningCircle: PhosphorIcon;
+  // Math icon
+  MathOperations: PhosphorIcon;
 }): SlashCommandItem[] {
   return [
     createCommand(
@@ -245,6 +247,24 @@ export function getSlashCommandItems(icons: {
             type: 'callout',
             attrs: { calloutType: 'error' },
             content: [{ type: 'paragraph' }],
+          })
+          .run();
+      }
+    ),
+    // Math block
+    createCommand(
+      'mathBlock',
+      'Math Block',
+      icons.MathOperations,
+      ['math', 'equation', 'latex', 'formula', 'katex'],
+      (editor, range) => {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertContent({
+            type: 'mathBlock',
+            attrs: { latex: '' },
           })
           .run();
       }
