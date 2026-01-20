@@ -964,3 +964,296 @@ export const NestedTaskList: Story = () => {
     </div>
   );
 };
+
+// ============================================================================
+// Code Block Stories
+// ============================================================================
+
+export const WithCodeBlock: Story = () => {
+  const contentWithCode: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Code Example' }],
+      },
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Here is a TypeScript function:' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'typescript' },
+        content: [
+          {
+            type: 'text',
+            text: `function greet(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+
+const message = greet('World');
+console.log(message);`,
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'The code above demonstrates basic TypeScript syntax.' }],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithCode} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Code block with Shiki syntax highlighting.</p>
+        <p>Click the language badge to change the language, or the Copy button to copy code.</p>
+      </div>
+    </div>
+  );
+};
+
+export const CodeBlockViaMarkdown: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type ```typescript and press Enter to create a code block..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Create code blocks using Markdown syntax:</p>
+      <ul className="list-disc list-inside space-y-0.5 ml-2">
+        <li>
+          <code className="bg-muted px-1 rounded">```typescript</code> + Enter
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">```python</code> + Enter
+        </li>
+        <li>
+          <code className="bg-muted px-1 rounded">```</code> + Enter (plain text)
+        </li>
+      </ul>
+    </div>
+  </div>
+);
+
+export const CodeBlockViaSlash: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor placeholder="Type /code to insert a code block..." />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>
+        Use <code className="bg-muted px-1 rounded">/code</code> slash command to insert a code
+        block.
+      </p>
+      <p>Then use the language dropdown to select the syntax.</p>
+    </div>
+  </div>
+);
+
+export const CodeBlockLanguages: Story = () => {
+  const contentWithMultipleLanguages: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'heading',
+        attrs: { level: 2 },
+        content: [{ type: 'text', text: 'Multi-Language Support' }],
+      },
+      {
+        type: 'heading',
+        attrs: { level: 3 },
+        content: [{ type: 'text', text: 'TypeScript' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'typescript' },
+        content: [
+          {
+            type: 'text',
+            text: `interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+const users: User[] = [];`,
+          },
+        ],
+      },
+      {
+        type: 'heading',
+        attrs: { level: 3 },
+        content: [{ type: 'text', text: 'Python' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'python' },
+        content: [
+          {
+            type: 'text',
+            text: `def fibonacci(n: int) -> list[int]:
+    if n <= 0:
+        return []
+    fib = [0, 1]
+    for i in range(2, n):
+        fib.append(fib[i-1] + fib[i-2])
+    return fib[:n]`,
+          },
+        ],
+      },
+      {
+        type: 'heading',
+        attrs: { level: 3 },
+        content: [{ type: 'text', text: 'Rust' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'rust' },
+        content: [
+          {
+            type: 'text',
+            text: `fn main() {
+    let greeting = "Hello, Rust!";
+    println!("{}", greeting);
+    
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum: i32 = numbers.iter().sum();
+    println!("Sum: {}", sum);
+}`,
+          },
+        ],
+      },
+      {
+        type: 'heading',
+        attrs: { level: 3 },
+        content: [{ type: 'text', text: 'JSON' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'json' },
+        content: [
+          {
+            type: 'text',
+            text: `{
+  "name": "typenote",
+  "version": "1.0.0",
+  "dependencies": {
+    "shiki": "^1.0.0",
+    "tiptap": "^3.0.0"
+  }
+}`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithMultipleLanguages} />
+      <p className="text-xs text-muted-foreground">
+        Shiki supports 25+ languages. Click the language badge to change syntax highlighting.
+      </p>
+    </div>
+  );
+};
+
+export const CodeBlockCopyButton: Story = () => {
+  const contentWithCode: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Click the Copy button to copy the code:' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'bash' },
+        content: [
+          {
+            type: 'text',
+            text: `npm install @typenote/design-system
+npm run dev`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithCode} />
+      <p className="text-xs text-muted-foreground">
+        The Copy button shows a checkmark and &quot;Copied&quot; feedback for 2 seconds.
+      </p>
+    </div>
+  );
+};
+
+export const CodeBlockLongLines: Story = () => {
+  const contentWithLongCode: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Long lines scroll horizontally:' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: 'typescript' },
+        content: [
+          {
+            type: 'text',
+            text: `// This is a very long line that should scroll horizontally rather than wrap, demonstrating the overflow behavior of the code block component
+const veryLongVariableName = "This string is intentionally very long to test horizontal scrolling in code blocks when the content exceeds the container width";
+
+function anotherExampleFunction(param1: string, param2: number, param3: boolean, param4: object, param5: string[]): { result: string; count: number } {
+  return { result: param1, count: param2 };
+}`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithLongCode} />
+      <p className="text-xs text-muted-foreground">
+        Long lines scroll horizontally. The code block maintains its max-width within the editor.
+      </p>
+    </div>
+  );
+};
+
+export const CodeBlockPlainText: Story = () => {
+  const contentWithPlainCode: JSONContent = {
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Code block without language (plain text):' }],
+      },
+      {
+        type: 'codeBlock',
+        attrs: { language: null },
+        content: [
+          {
+            type: 'text',
+            text: `Some plain text content
+without any syntax highlighting.
+
+Just monospace formatting.`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={contentWithPlainCode} />
+      <p className="text-xs text-muted-foreground">
+        When no language is set, the code displays as plain text without highlighting.
+      </p>
+    </div>
+  );
+};

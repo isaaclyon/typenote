@@ -313,3 +313,78 @@
 .tag-node:hover .tag-node-pill {
   background-color: color-mix(in srgb, var(--tag-color) 20%, transparent);
 }
+
+/* ============================================================================
+   Code Block (custom NodeView with syntax highlighting)
+   ============================================================================ */
+
+/* Container wrapper - ensures proper spacing in editor flow */
+.code-block-wrapper {
+  margin: 0.75rem 0;
+}
+
+/* Override default ProseMirror pre styling for custom NodeView */
+.ProseMirror .code-block-wrapper pre {
+  margin: 0;
+  padding: 1rem;
+  background: none;
+  border-radius: 0;
+}
+
+/* Code block content area - contains both highlighted overlay and editable content */
+.code-block-content {
+  position: relative;
+  min-height: 2.5rem;
+}
+
+/* The syntax highlighted overlay - rendered by Shiki */
+.code-block-highlighted {
+  /* Positioned absolutely to overlay the editable content */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.code-block-highlighted code {
+  display: block;
+  background: transparent !important;
+}
+
+/* Ensure Shiki output doesn't add extra backgrounds */
+.code-block-highlighted pre.shiki,
+.code-block-highlighted .shiki code {
+  background: transparent !important;
+}
+
+/* The editable content - actual ProseMirror content */
+.code-block-editable {
+  position: relative;
+  z-index: 2;
+  padding: 1rem;
+  /* When highlighted, make text transparent so shiki overlay shows */
+  /* caret-foreground keeps the cursor visible */
+}
+
+/* Selection in code blocks */
+.code-block-editable ::selection {
+  background-color: var(--color-accent-200);
+}
+
+/* Ensure code text doesn't wrap unexpectedly */
+.code-block-content code,
+.code-block-content pre {
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+}
+
+/* Line height consistency */
+.code-block-highlighted,
+.code-block-editable {
+  line-height: 1.5;
+}

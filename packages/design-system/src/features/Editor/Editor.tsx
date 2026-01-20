@@ -33,6 +33,7 @@ import { SlashCommandList } from './extensions/SlashCommandList.js';
 import { TagNode } from './extensions/TagNode.js';
 import { TagSuggestionList } from './extensions/TagSuggestionList.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
+import { CodeBlock } from './extensions/CodeBlock.js';
 
 // Editor typography styles
 import './editor.css';
@@ -385,6 +386,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       const baseExtensions: AnyExtension[] = [
         StarterKit.configure({
           heading: { levels: [1, 2, 3, 4, 5, 6] },
+          // Disable built-in code block - we use our custom one with syntax highlighting
+          codeBlock: false,
         }),
         Placeholder.configure({
           placeholder,
@@ -395,6 +398,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         TaskItem.configure({
           nested: true, // Allow nesting task items
         }),
+        // Custom code block with Shiki syntax highlighting
+        CodeBlock,
       ];
 
       if (enableRefs) {
