@@ -2,7 +2,7 @@
 
 Based on my exploration, here's what you'd hand to a developer to build Capacities from scratch.
 
-**Last Updated:** 2026-01-15 (updateObject unblocks "Change object type")
+**Last Updated:** 2026-01-21 (design-system rebuild; renderer is placeholder)
 
 ## Status Legend
 
@@ -14,25 +14,27 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | 🔧     | Backend Only (needs UI)       |
 | 📦     | Library Installed (not wired) |
 
+**Frontend note:** UI currently lives in `packages/design-system` (Ladle). Desktop renderer routes are placeholders until integration.
+
 ---
 
 ## Summary Scorecard
 
 | Category                  | Backend  | Frontend | Overall  |
 | ------------------------- | :------: | :------: | :------: |
-| **1. Core Data Model**    |   90%    |   10%    |   50%    |
-| **2. Rich Text Editor**   |   95%    |   80%    |   87%    |
-| **3. Navigation & Views** |   60%    |   20%    |   40%    |
-| **4. Calendar System**    |   100%   |   70%    |   85%    |
+| **1. Core Data Model**    |   90%    |    5%    |   45%    |
+| **2. Rich Text Editor**   |   95%    |   85%    |   90%    |
+| **3. Navigation & Views** |   60%    |   15%    |   38%    |
+| **4. Calendar System**    |   100%   |    0%    |   50%    |
 | **5. Task Management**    |   100%   |    0%    |   50%    |
-| **6. Command Palette**    |   100%   |   90%    |   95%    |
+| **6. Command Palette**    |   100%   |    0%    |   50%    |
 | **7. AI Assistant**       |    0%    |    0%    |    0%    |
 | **8. Settings & Config**  |   60%    |    0%    |   30%    |
 | **9. Integrations**       |   60%    |    0%    |   30%    |
-| **10. Sharing & Collab**  |   50%    |   25%    |   37%    |
-| **11. System Features**   |   85%    |   28%    |   56%    |
-| **12. UI Components**     |   N/A    |   45%    |   45%    |
-| **OVERALL**               | **~66%** | **~25%** | **~45%** |
+| **10. Sharing & Collab**  |   50%    |    0%    |   25%    |
+| **11. System Features**   |   85%    |    5%    |   45%    |
+| **12. UI Components**     |   N/A    |   60%    |   60%    |
+| **OVERALL**               | **~66%** | **~18%** | **~40%** |
 
 ---
 
@@ -47,9 +49,9 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Color field                                  |   ✅    |    ❌    | Hex color in type schema, no picker UI                       |
 | Object Type definitions (schema templates)   |   ✅    |    ❌    | Full CRUD in `objectTypeService.ts`                          |
 | Built-in Types: Task                         |   ✅    |    🔧    | Status, priority, due_date properties                        |
-| Built-in Types: Daily Note                   |   ✅    |    ✅    | Auto-create, date navigation working                         |
-| Built-in Types: Tag                          |   ✅    |    ⚠️    | Inline `#tag` works, no management UI                        |
-| Built-in Types: Page                         |   ✅    |    ✅    | Basic object with blocks                                     |
+| Built-in Types: Daily Note                   |   ✅    |    ❌    | Auto-create backend only; renderer not wired                 |
+| Built-in Types: Tag                          |   ✅    |    ⚠️    | Design-system inline tags only; no management UI             |
+| Built-in Types: Page                         |   ✅    |    ❌    | No renderer object view after reset                          |
 | Custom Object Types (user-created)           |   ✅    |    ❌    | Name, pluralName, icon, color, description                   |
 | Type inheritance (parent → child)            |   ✅    |    ❌    | Two-level max, cycle prevention                              |
 | Bi-directional linking                       |   ✅    |    ⚠️    | `refs` table complete, basic UI via wiki-links               |
@@ -60,7 +62,7 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Property Type             | Backend | Frontend | Notes                                  |
 | ------------------------- | :-----: | :------: | -------------------------------------- |
 | Text                      |   ✅    |    ❌    | Single-line text                       |
-| Blocks (rich content)     |   ✅    |    ✅    | NotateDoc v1 schema                    |
+| Blocks (rich content)     |   ✅    |    ⚠️    | Design-system editor only; not wired   |
 | Label                     |   ❌    |    ❌    | Use Tags instead (first-class objects) |
 | Object Select (relations) |   ✅    |    ⚠️    | `ref` type, wiki-link UI only          |
 | Multi-Object Select       |   ✅    |    ⚠️    | `refs` type, no multi-select UI        |
@@ -102,57 +104,57 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Block Types
 
-| Block Type            | Backend | Frontend | Notes                                         |
-| --------------------- | :-----: | :------: | --------------------------------------------- |
-| Paragraph             |   ✅    |    ✅    | Complete                                      |
-| Headings (H1-H6)      |   ✅    |    ✅    | Schema supports H1-H6                         |
-| Bullet lists          |   ✅    |    ✅    | Complete                                      |
-| Numbered lists        |   ✅    |    ✅    | Complete                                      |
-| Checkboxes/Todo items |   ✅    |    ✅    | `list_item` with `checked` property           |
-| Blockquotes           |   ✅    |    ✅    | Complete                                      |
-| Code blocks           |   ✅    |    ✅    | With language support                         |
-| Dividers              |   ✅    |    ✅    | `thematic_break` type                         |
-| Tables                |   ✅    |    ✅    | GFM-style with alignment                      |
-| Callouts              |   ✅    |    ✅    | Obsidian-style (kind/title/collapsed)         |
-| Math blocks           |   ✅    |    ⚠️    | Schema ready, renders as raw LaTeX (no KaTeX) |
-| Footnotes             |   ✅    |    ❌    | `footnote_def` in schema, no UI               |
-| Attachments           |   ✅    |    ❌    | Full backend, no embed UI                     |
+| Block Type            | Backend | Frontend | Notes                                                    |
+| --------------------- | :-----: | :------: | -------------------------------------------------------- |
+| Paragraph             |   ✅    |    ✅    | Complete                                                 |
+| Headings (H1-H6)      |   ✅    |    ✅    | Schema supports H1-H6                                    |
+| Bullet lists          |   ✅    |    ✅    | Complete                                                 |
+| Numbered lists        |   ✅    |    ✅    | Complete                                                 |
+| Checkboxes/Todo items |   ✅    |    ✅    | `list_item` with `checked` property                      |
+| Blockquotes           |   ✅    |    ✅    | Complete                                                 |
+| Code blocks           |   ✅    |    ✅    | With language support                                    |
+| Dividers              |   ✅    |    ✅    | `thematic_break` type                                    |
+| Tables                |   ✅    |    ✅    | GFM-style with alignment                                 |
+| Callouts              |   ✅    |    ✅    | Obsidian-style (kind/title/collapsed)                    |
+| Math blocks           |   ✅    |    ✅    | KaTeX rendering in design-system; app wiring pending     |
+| Footnotes             |   ✅    |    ✅    | Design-system extensions + stories; app wiring pending   |
+| Attachments           |   ✅    |    ⚠️    | Image upload UX in design-system; storage wiring pending |
 
 ### Inline Formatting
 
-| Format            | Backend | Frontend | Notes                         |
-| ----------------- | :-----: | :------: | ----------------------------- |
-| Bold              |   ✅    |    ✅    | `strong` mark                 |
-| Italic            |   ✅    |    ✅    | `em` mark                     |
-| Underline         |   ❌    |    ❌    | Not in schema                 |
-| Strikethrough     |   ✅    |    ✅    | `strike` mark                 |
-| Inline code       |   ✅    |    ✅    | `code` mark                   |
-| Highlight         |   ✅    |    ✅    | Custom TipTap extension       |
-| Hyperlinks        |   ✅    |    ✅    | Full support                  |
-| @ mentions        |   ✅    |    ✅    | `@` trigger with autocomplete |
-| Wiki-links `[[]]` |   ✅    |    ✅    | Object/block references       |
-| Hashtags `#tag`   |   ✅    |    ✅    | Links to tag objects          |
-| Emoji support     |   ⚠️    |    ⚠️    | Unicode works, no picker      |
-| Math inline       |   ✅    |    ⚠️    | LaTeX in schema, raw display  |
+| Format            | Backend | Frontend | Notes                                                |
+| ----------------- | :-----: | :------: | ---------------------------------------------------- |
+| Bold              |   ✅    |    ✅    | `strong` mark                                        |
+| Italic            |   ✅    |    ✅    | `em` mark                                            |
+| Underline         |   ❌    |    ❌    | Not in schema                                        |
+| Strikethrough     |   ✅    |    ✅    | `strike` mark                                        |
+| Inline code       |   ✅    |    ✅    | `code` mark                                          |
+| Highlight         |   ✅    |    ✅    | Custom TipTap extension                              |
+| Hyperlinks        |   ✅    |    ✅    | Full support                                         |
+| @ mentions        |   ✅    |    ✅    | `@` trigger with autocomplete                        |
+| Wiki-links `[[]]` |   ✅    |    ✅    | Object/block references                              |
+| Hashtags `#tag`   |   ✅    |    ✅    | Links to tag objects                                 |
+| Emoji support     |   ⚠️    |    ⚠️    | Unicode works, no picker                             |
+| Math inline       |   ✅    |    ✅    | KaTeX rendering in design-system; app wiring pending |
 
 ### Editor Features
 
 | Feature                        | Backend | Frontend | Notes                                                       |
 | ------------------------------ | :-----: | :------: | ----------------------------------------------------------- |
 | Drag-and-drop block reordering |   ✅    |    ❌    | `block.move` operation exists                               |
-| Slash command menu (/)         |   N/A   |    ✅    | 15 commands, keyboard nav, 39 tests                         |
+| Slash command menu (/)         |   N/A   |    ✅    | Design-system only (Ladle); renderer wiring pending         |
 | Markdown shortcuts             |   N/A   |    ⚠️    | Via TipTap StarterKit                                       |
 | Spellcheck                     |   N/A   |    ❌    | Not configured                                              |
 | "Unlinked mentions" detection  |   ✅    |    ❌    | `getUnlinkedMentionsTo()` complete with 18 tests, no UI yet |
-| Auto-save                      |   N/A   |    ✅    | 500ms debounce, `useAutoSave` hook                          |
+| Auto-save                      |   N/A   |    ❌    | No persistence wiring in renderer yet                       |
 
 **Key Files:**
 
 - Content Schema: `packages/api/src/notateDoc.ts` (238 lines)
 - Block Patch: `packages/api/src/blockPatch.ts` (163 lines)
-- Editor: `apps/desktop/src/renderer/components/NoteEditor.tsx`
-- Conversion: `apps/desktop/src/renderer/lib/notateToTiptap.ts`, `tiptapToNotate.ts`
-- Extensions: `apps/desktop/src/renderer/extensions/` (8 custom extensions)
+- Editor: `packages/design-system/src/features/Editor/Editor.tsx`
+- Extensions: `packages/design-system/src/features/Editor/extensions/`
+- Stories: `packages/design-system/src/features/Editor/stories/`
 - Unlinked Mentions: `packages/storage/src/unlinkedMentions.ts` (145 lines, 18 tests)
 
 **Architecture Note:** NotateDoc v1 schema is editor-agnostic (not storing TipTap JSON), enabling future editor swaps without data migration.
@@ -163,30 +165,30 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Sidebar
 
-| Feature                           | Backend | Frontend | Notes                                                               |
-| --------------------------------- | :-----: | :------: | ------------------------------------------------------------------- |
-| Workspace switcher (top)          |   ❌    |    ❌    | No multi-workspace support                                          |
-| Calendar shortcut                 |   N/A   |    ❌    | No sidebar shortcuts                                                |
-| Tasks shortcut                    |   N/A   |    ❌    | No sidebar shortcuts                                                |
-| Pinned items section              |   ✅    |    ✅    | Full pinning/favorites with drag-to-reorder (11 tests, UI complete) |
-| Object Types section (expandable) |   ✅    |    ❌    | Types queryable, not grouped in UI                                  |
-| "Add section" capability          |   ❌    |    ❌    | Static sidebar                                                      |
-| Bottom utilities                  |   N/A   |    ❌    | No utilities section                                                |
-| Settings gear icon                |   N/A   |    ❌    | No settings UI                                                      |
-| Dark mode toggle                  |   N/A   |    ❌    | No theme system                                                     |
-| User profile                      |   ❌    |    ❌    | No user/auth system                                                 |
+| Feature                           | Backend | Frontend | Notes                                            |
+| --------------------------------- | :-----: | :------: | ------------------------------------------------ |
+| Workspace switcher (top)          |   ❌    |    ❌    | No multi-workspace support                       |
+| Calendar shortcut                 |   N/A   |    ❌    | No sidebar shortcuts                             |
+| Tasks shortcut                    |   N/A   |    ❌    | No sidebar shortcuts                             |
+| Pinned items section              |   ✅    |    ⚠️    | Design-system Sidebar only; pinning UI not wired |
+| Object Types section (expandable) |   ✅    |    ⚠️    | Design-system Sidebar only; no data wiring       |
+| "Add section" capability          |   ❌    |    ❌    | Static sidebar                                   |
+| Bottom utilities                  |   N/A   |    ❌    | No utilities section                             |
+| Settings gear icon                |   N/A   |    ❌    | No settings UI                                   |
+| Dark mode toggle                  |   N/A   |    ❌    | No theme system                                  |
+| User profile                      |   ❌    |    ❌    | No user/auth system                              |
 
-**Current Sidebar:** Fixed 264px width, TypeNote header, "Create Daily Note" button, scrollable object list.
+**Current Sidebar:** Design-system Sidebar + HeaderBar exist in Ladle; renderer is placeholder only.
 
 ### Collection Views (for each Object Type)
 
 | Feature                          | Backend | Frontend | Notes                              |
 | -------------------------------- | :-----: | :------: | ---------------------------------- |
 | Overview tab (summary/dashboard) |   ❌    |    ❌    | Not implemented                    |
-| All tab (full list)              |   ✅    |    ⚠️    | Basic card list only               |
+| All tab (full list)              |   ✅    |    ❌    | No renderer list UI after reset    |
 | Table view                       |   ✅    |    📦    | `@tanstack/react-table` installed  |
-| Card/Grid view                   |   ⚠️    |    ⚠️    | Basic cards in ObjectList          |
-| List view                        |   ⚠️    |    ⚠️    | Current default                    |
+| Card/Grid view                   |   ⚠️    |    ❌    | No renderer cards after reset      |
+| List view                        |   ⚠️    |    ❌    | No renderer list after reset       |
 | Board (Kanban) view              |   ❌    |    ❌    | Not implemented                    |
 | Sorting                          |   ✅    |    ❌    | `listObjects` accepts options      |
 | Filtering                        |   ✅    |    ❌    | Backend ready, no UI               |
@@ -199,18 +201,21 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 | Feature                         | Backend | Frontend | Notes                                |
 | ------------------------------- | :-----: | :------: | ------------------------------------ |
 | Modal/overlay presentation      |   N/A   |    ❌    | Full-page only                       |
-| Full-page expansion option      |   N/A   |    ✅    | Current default                      |
+| Full-page expansion option      |   N/A   |    ❌    | Renderer view not implemented        |
 | Left sidebar showing properties |   ✅    |    ❌    | Properties in JSON, no display panel |
-| Main content area (rich text)   |   ✅    |    ✅    | NoteEditor working                   |
+| Main content area (rich text)   |   ✅    |    ⚠️    | Design-system Editor only            |
 | Navigation (prev/next arrows)   |   N/A   |    ❌    | Only list selection                  |
 | Breadcrumb                      |   N/A   |    ❌    | Not implemented                      |
-| Object type badge/dropdown      |   N/A   |    ⚠️    | Type shown, no dropdown              |
+| Object type badge/dropdown      |   N/A   |    ❌    | Renderer view not implemented        |
 | "Collections" link              |   N/A   |    ❌    | Not implemented                      |
 
 **Key Files:**
 
-- App Layout: `apps/desktop/src/renderer/App.tsx`
-- Object List: `apps/desktop/src/renderer/components/ObjectList.tsx`
+- App Shell: `packages/design-system/src/features/AppShell/AppShell.tsx`
+- Sidebar: `packages/design-system/src/features/Sidebar/Sidebar.tsx`
+- Header Bar: `packages/design-system/src/features/HeaderBar/HeaderBar.tsx`
+- Renderer Shell: `apps/desktop/src/renderer/App.tsx`
+- Routes: `apps/desktop/src/renderer/routes/*.tsx`
 
 ---
 
@@ -218,44 +223,43 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Calendar Views
 
-| Feature                     | Backend | Frontend | Notes                                       |
-| --------------------------- | :-----: | :------: | ------------------------------------------- |
-| Month view                  |   ✅    |    ✅    | 6-week grid with dot indicators             |
-| Week view                   |   ❌    |    ❌    | Not implemented                             |
-| 3-day view                  |   ❌    |    ❌    | Not implemented                             |
-| Day view                    |   ❌    |    ❌    | Not implemented                             |
-| Mini calendar (date picker) |   N/A   |    📦    | `react-day-picker` installed                |
-| "Today" quick navigation    |   ✅    |    ✅    | CalendarHeader + DailyNoteNavigation        |
-| Week number display         |   ❌    |    ❌    | Not implemented                             |
-| Month navigation            |   ✅    |    ✅    | Prev/Next buttons in CalendarHeader         |
-| Day selection with sidebar  |   ✅    |    ✅    | CalendarSidebar shows selected day's events |
+| Feature                     | Backend | Frontend | Notes                        |
+| --------------------------- | :-----: | :------: | ---------------------------- |
+| Month view                  |   ✅    |    ❌    | Calendar UI removed in reset |
+| Week view                   |   ❌    |    ❌    | Not implemented              |
+| 3-day view                  |   ❌    |    ❌    | Not implemented              |
+| Day view                    |   ❌    |    ❌    | Not implemented              |
+| Mini calendar (date picker) |   N/A   |    📦    | `react-day-picker` installed |
+| "Today" quick navigation    |   ✅    |    ❌    | No renderer calendar UI      |
+| Week number display         |   ❌    |    ❌    | Not implemented              |
+| Month navigation            |   ✅    |    ❌    | No renderer calendar UI      |
+| Day selection with sidebar  |   ✅    |    ❌    | No renderer calendar UI      |
 
 ### Daily Note Integration
 
 | Feature                                | Backend | Frontend | Notes                           |
 | -------------------------------------- | :-----: | :------: | ------------------------------- |
-| Auto-create daily note for current day |   ✅    |    ✅    | `getOrCreateTodayDailyNote()`   |
+| Auto-create daily note for current day |   ✅    |    ❌    | No renderer calendar UI         |
 | Quick-add buttons (+ Task, etc.)       |   N/A   |    ❌    | No UI                           |
 | Tags section on daily notes            |   ✅    |    ❌    | Tags work, no dedicated section |
-| Show calendar events alongside         |   ✅    |    ✅    | CalendarSidebar shows all items |
+| Show calendar events alongside         |   ✅    |    ❌    | No renderer calendar UI         |
 
 ### Calendar Object Integration
 
-| Feature                               | Backend | Frontend | Notes                                     |
-| ------------------------------------- | :-----: | :------: | ----------------------------------------- |
-| Objects with dates appear in calendar |   ✅    |    ✅    | Events, Tasks, DailyNotes unified display |
-| Per-type calendar settings            |   ✅    |    ❌    | `showInCalendar` in DB, no UI toggle      |
-| Create objects from calendar events   |   ❌    |    ❌    | Not implemented                           |
-| Color-coded events                    |   ❌    |    ❌    | Not implemented (type badge only)         |
-| Click event to navigate               |   ✅    |    ✅    | Opens object in editor                    |
+| Feature                               | Backend | Frontend | Notes                                |
+| ------------------------------------- | :-----: | :------: | ------------------------------------ |
+| Objects with dates appear in calendar |   ✅    |    ❌    | No renderer calendar UI              |
+| Per-type calendar settings            |   ✅    |    ❌    | `showInCalendar` in DB, no UI toggle |
+| Create objects from calendar events   |   ❌    |    ❌    | Not implemented                      |
+| Color-coded events                    |   ❌    |    ❌    | Not implemented (type badge only)    |
+| Click event to navigate               |   ✅    |    ❌    | No renderer calendar UI              |
 
 **Key Files:**
 
 - Calendar Service: `packages/storage/src/calendarService.ts`
 - Calendar Date Utils: `packages/core/src/calendarDateUtils.ts`
-- Calendar Components: `apps/desktop/src/renderer/components/calendar/`
 - Daily Notes Service: `packages/storage/src/dailyNoteService.ts`
-- Navigation Component: `apps/desktop/src/renderer/components/DailyNoteNavigation.tsx`
+- Renderer Route: `apps/desktop/src/renderer/routes/CalendarView.tsx`
 
 ---
 
@@ -278,12 +282,12 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 | Property                | Backend | Frontend | Notes                           |
 | ----------------------- | :-----: | :------: | ------------------------------- |
-| Title                   |   ✅    |    🔧    | Object title field              |
+| Title                   |   ✅    |    ❌    | No renderer task UI             |
 | Status                  |   ✅    |    ❌    | Backlog, Todo, InProgress, Done |
 | Due date                |   ✅    |    ❌    | ISO datetime                    |
-| Context/Tags            |   ✅    |    ⚠️    | Via tag system                  |
-| Linked to other objects |   ✅    |    ⚠️    | Via refs                        |
-| Notes/description       |   ✅    |    ✅    | Tasks have blocks               |
+| Context/Tags            |   ✅    |    ❌    | No renderer task UI             |
+| Linked to other objects |   ✅    |    ❌    | No renderer task UI             |
+| Notes/description       |   ✅    |    ❌    | No renderer task UI             |
 | Priority                |   ✅    |    ❌    | Low, Medium, High               |
 
 ### Task Features
@@ -308,28 +312,26 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 6. COMMAND PALETTE / QUICK ACTIONS
 
-| Feature                         | Backend | Frontend | Notes                                             |
-| ------------------------------- | :-----: | :------: | ------------------------------------------------- |
-| Global keyboard shortcut (⌘K)   |   N/A   |    ✅    | Working with tests, Cmd+K (Mac) / Ctrl+K (Win)    |
-| Universal search across objects |   ✅    |    ✅    | Title + FTS5, 300ms debounce, deduplication       |
-| Object type filtering           |   ⚠️    |    ⚠️    | Works via search text, no explicit filter UI      |
-| Quick actions                   |   N/A   |    ❌    | Not implemented (only nav/create)                 |
-| Quick create                    |   ✅    |    ✅    | 6 built-in types, auto-navigates to new object    |
-| Recent objects list             |   ✅    |    ✅    | `recordView()` + `getRecentObjects()` fully wired |
-| Paste from clipboard            |   N/A   |    ❌    | No smart paste                                    |
-| Keyboard navigation             |   N/A   |    ✅    | Arrow keys + Enter + Escape working               |
-| Open in new tab                 |   N/A   |    ❌    | Single-pane only                                  |
-| Open in side panel              |   N/A   |    ❌    | No side panel                                     |
+| Feature                         | Backend | Frontend | Notes                     |
+| ------------------------------- | :-----: | :------: | ------------------------- |
+| Global keyboard shortcut (⌘K)   |   N/A   |    ❌    | No renderer hotkey wiring |
+| Universal search across objects |   ✅    |    ❌    | Backend FTS5 only; no UI  |
+| Object type filtering           |   ⚠️    |    ❌    | No UI                     |
+| Quick actions                   |   N/A   |    ❌    | Not implemented           |
+| Quick create                    |   ✅    |    ❌    | No UI                     |
+| Recent objects list             |   ✅    |    ❌    | No UI                     |
+| Paste from clipboard            |   N/A   |    ❌    | No smart paste            |
+| Keyboard navigation             |   N/A   |    ❌    | No UI                     |
+| Open in new tab                 |   N/A   |    ❌    | Single-pane only          |
+| Open in side panel              |   N/A   |    ❌    | No side panel             |
 
-**Architecture:** Custom implementation (not using cmdk directly), built with design system primitives.
+**Architecture:** Backend search exists; no command palette UI after design-system reset.
 
 **Key Files:**
 
 - Backend: `packages/storage/src/search.ts`, `packages/storage/src/indexing.ts`
-- Design System: `packages/design-system/src/components/CommandPalette/`
-- Renderer Hooks: `apps/desktop/src/renderer/hooks/useCommandPalette.ts`, `useCommandSearch.ts`, `useCommandActions.ts`, `useRecentObjects.ts`
 - IPC: `apps/desktop/src/main/ipc.ts` (recordView, getRecentObjects, searchBlocks, listObjects)
-- Tests: `apps/desktop/src/renderer/hooks/useCommandPalette.test.ts` (8 tests)
+- Frontend: not implemented since reset
 
 ---
 
@@ -431,12 +433,12 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## 10. SHARING & COLLABORATION
 
-| Feature             | Backend | Frontend | Notes                                                                                      |
-| ------------------- | :-----: | :------: | ------------------------------------------------------------------------------------------ |
-| Share (public link) |   ❌    |    ❌    | Not implemented                                                                            |
-| Pin to sidebar      |   ✅    |    ✅    | Complete with drag-to-reorder (pinnedObjectsService, 11 tests, UI in SidebarPinnedSection) |
-| Duplicate objects   |   ✅    |    🔧    | Complete backend (duplicateObjectService, 19 tests), no UI - internal ref remapping works  |
-| Change object type  |   ✅    |    ❌    | Backend complete (updateObject with property migration), needs UI                          |
+| Feature             | Backend | Frontend | Notes                                                                                     |
+| ------------------- | :-----: | :------: | ----------------------------------------------------------------------------------------- |
+| Share (public link) |   ❌    |    ❌    | Not implemented                                                                           |
+| Pin to sidebar      |   ✅    |    ⚠️    | Backend complete; no renderer wiring (design-system only)                                 |
+| Duplicate objects   |   ✅    |    🔧    | Complete backend (duplicateObjectService, 19 tests), no UI - internal ref remapping works |
+| Change object type  |   ✅    |    ❌    | Backend complete (updateObject with property migration), needs UI                         |
 
 ---
 
@@ -462,14 +464,14 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ### Keyboard Shortcuts
 
-| Shortcut                 | Status | Notes                          |
-| ------------------------ | :----: | ------------------------------ |
-| ⌘K - Command palette     |   ❌   | `cmdk` installed but not wired |
-| ⌘H - Open calendar/today |   ❌   | No hotkey system               |
-| ⌘J - Open AI chat        |   ❌   | No AI                          |
-| ⌘⇧P - Extended search    |   ❌   | No hotkey system               |
-| ⌘, - Settings            |   ❌   | No settings                    |
-| Standard text editing    |   ✅   | Via TipTap                     |
+| Shortcut                 | Status | Notes                             |
+| ------------------------ | :----: | --------------------------------- |
+| ⌘K - Command palette     |   ❌   | No command palette UI after reset |
+| ⌘H - Open calendar/today |   ❌   | No hotkey system                  |
+| ⌘J - Open AI chat        |   ❌   | No AI                             |
+| ⌘⇧P - Extended search    |   ❌   | No hotkey system                  |
+| ⌘, - Settings            |   ❌   | No settings                       |
+| Standard text editing    |   ⚠️   | Design-system editor only         |
 
 ---
 
@@ -477,22 +479,26 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 | Component                   |        Installed         | Integrated | Notes                        |
 | --------------------------- | :----------------------: | :--------: | ---------------------------- |
-| Resizable sidebar           |            ❌            |     ❌     | Fixed 264px                  |
+| App shell layout            |          Custom          |     ⚠️     | Design-system only (Ladle)   |
+| Title bar                   |          Custom          |     ⚠️     | Design-system only (Ladle)   |
+| Header bar                  |          Custom          |     ⚠️     | Design-system only (Ladle)   |
+| Sidebar                     |          Custom          |     ⚠️     | Design-system only (Ladle)   |
+| Rich text editor            |        ✅ TipTap         |     ⚠️     | Design-system only (Ladle)   |
+| Resizable sidebar           |            ❌            |     ❌     | Fixed width in design-system |
 | Modal/overlay system        |         ✅ Radix         |     ❌     | Available, not used          |
 | Side panel                  |            ❌            |     ❌     | Not implemented              |
 | Dropdown menus              |         ✅ Radix         |     ❌     | Available, not used          |
 | Context menus (right-click) |         ✅ Radix         |     ❌     | Available, not used          |
-| Toast notifications         |        ✅ Sonner         |     ✅     | Wired in App.tsx             |
-| Tag/pill components         |            ⚠️            |     ⚠️     | Badge available              |
+| Toast notifications         |        ✅ Sonner         |     ❌     | No renderer wiring           |
+| Tag/pill components         |            ⚠️            |     ⚠️     | Badge primitive only         |
 | Date picker                 |   ✅ react-day-picker    |     ❌     | Installed, not wired         |
 | Icon picker                 |            ❌            |     ❌     | Not implemented              |
 | Color picker                |            ❌            |     ❌     | Not implemented              |
 | Table component             | ✅ @tanstack/react-table |     ❌     | Installed, not integrated    |
 | Kanban board component      |            ❌            |     ❌     | Not implemented              |
-| Card grid component         |            ⚠️            |     ⚠️     | Basic ObjectList only        |
-| Calendar components         |          Custom          |     ✅     | Month grid with 7 components |
-| Rich text editor            |        ✅ TipTap         |     ✅     | Complete with extensions     |
-| Command palette             |         ✅ cmdk          |     ✅     | Wired with search + create   |
+| Card grid component         |            ⚠️            |     ❌     | No renderer grid             |
+| Calendar components         |          Custom          |     ❌     | Calendar UI removed in reset |
+| Command palette             |         ✅ cmdk          |     ❌     | No UI after reset            |
 
 ### Installed Dependencies (Available but Unused)
 
@@ -516,20 +522,20 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ---
 
-## Quick Wins (Libraries Already Installed)
+## Quick Wins (Design-System + Libraries Ready)
 
-1. **Command Palette** — Wire `cmdk` (1-2 days)
-2. **Toast Notifications** — Wire `sonner` (hours)
-3. **Date Picker** — Wire `react-day-picker` (1 day)
-4. **Table Views** — Integrate `@tanstack/react-table` (2-3 days)
-5. **Modal Dialogs** — Use Radix Dialog (1 day)
+1. **Renderer Integration** — Wire AppShell + Editor from design-system (1-2 days)
+2. **Command Palette** — Rebuild UI around search backend (1-2 days)
+3. **Toast Notifications** — Wire `sonner` in renderer (hours)
+4. **Date Picker** — Wire `react-day-picker` (1 day)
+5. **Table Views** — Integrate `@tanstack/react-table` (2-3 days)
 
 ## High-Priority Gaps
 
-1. **Task Management UI** — Backend 100% complete, needs views
-2. **Collection Views** — Table/Card/Board layouts for object types
-3. **Object Type Manager UI** — Create/edit custom types
-4. **Settings Panel** — Preferences, appearance, type config
+1. **Renderer Integration** — AppShell + Editor + Sidebar wiring
+2. **Task Management UI** — Backend 100% complete, needs views
+3. **Collection Views** — Table/Card/Board layouts for object types
+4. **Object Type Manager UI** — Create/edit custom types
 5. **Calendar Views** — Month/week/day with daily note integration
 
 ---
@@ -549,21 +555,21 @@ Based on my exploration, here's what you'd hand to a developer to build Capaciti
 
 ## Reference Files
 
-| Purpose              | Location                                              |
-| -------------------- | ----------------------------------------------------- |
-| Object Schema        | `packages/storage/src/schema.ts`                      |
-| Object Types         | `packages/storage/src/objectTypeService.ts`           |
-| Tasks                | `packages/storage/src/taskService.ts`                 |
-| Daily Notes          | `packages/storage/src/dailyNoteService.ts`            |
-| Pinned Objects       | `packages/storage/src/pinnedObjectsService.ts`        |
-| Duplicate Objects    | `packages/storage/src/duplicateObjectService.ts`      |
-| Trash & Restore      | `packages/storage/src/trashService.ts`                |
-| Export/Import        | `packages/storage/src/exportService.ts`               |
-| Search               | `packages/storage/src/search.ts`                      |
-| Content Schema       | `packages/api/src/notateDoc.ts`                       |
-| Block Patch          | `packages/api/src/blockPatch.ts`                      |
-| IPC Handlers         | `apps/desktop/src/main/ipc.ts`                        |
-| Preload API          | `apps/desktop/src/preload/index.ts`                   |
-| Main Editor          | `apps/desktop/src/renderer/components/NoteEditor.tsx` |
-| TipTap Extensions    | `apps/desktop/src/renderer/extensions/`               |
-| Reference Components | `_reference/shadcn-admin/src/components/ui/`          |
+| Purpose              | Location                                                 |
+| -------------------- | -------------------------------------------------------- |
+| Object Schema        | `packages/storage/src/schema.ts`                         |
+| Object Types         | `packages/storage/src/objectTypeService.ts`              |
+| Tasks                | `packages/storage/src/taskService.ts`                    |
+| Daily Notes          | `packages/storage/src/dailyNoteService.ts`               |
+| Pinned Objects       | `packages/storage/src/pinnedObjectsService.ts`           |
+| Duplicate Objects    | `packages/storage/src/duplicateObjectService.ts`         |
+| Trash & Restore      | `packages/storage/src/trashService.ts`                   |
+| Export/Import        | `packages/storage/src/exportService.ts`                  |
+| Search               | `packages/storage/src/search.ts`                         |
+| Content Schema       | `packages/api/src/notateDoc.ts`                          |
+| Block Patch          | `packages/api/src/blockPatch.ts`                         |
+| IPC Handlers         | `apps/desktop/src/main/ipc.ts`                           |
+| Preload API          | `apps/desktop/src/preload/index.ts`                      |
+| Main Editor          | `packages/design-system/src/features/Editor/Editor.tsx`  |
+| TipTap Extensions    | `packages/design-system/src/features/Editor/extensions/` |
+| Reference Components | `_reference/shadcn-admin/src/components/ui/`             |
