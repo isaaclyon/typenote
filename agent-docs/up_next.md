@@ -47,8 +47,10 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **Block IDs** — `^block-id` syntax with input rule, click-to-copy
   - **Heading References** — `[[Page#Heading]]` with H1-H6 level indicators
   - **Block References** — `[[Page#^id]]` with auto-generated IDs
+  - **Embeds** — `![[...]]` with read-only previews, heading/block targets, `/embed`
+  - **Footnotes** — `[^key]` refs + `[^key]:` defs with auto ordering
   - Type-colored inline references with click handling
-  - 55 Ladle stories (added Block IDs: 4, Heading/Block refs: 4)
+  - 62 Ladle stories (added Embeds: 4, Footnotes: 3)
 
 **Next — NotateDoc converters:**
 
@@ -58,10 +60,11 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 1. ~~**Fix `[[` trigger**~~ ✅ Fixed — position calculation corrected
 2. ~~**Block IDs + Heading/Block refs**~~ ✅ Complete — Full Obsidian-style syntax
-3. Wire AppShell + Editor to desktop renderer
-4. Enable basic navigation (clicking refs navigates to target)
-5. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
-6. Fill Markdown contract gaps: image upload, embeds, footnotes
+3. ~~**Embeds + Footnotes**~~ ✅ Complete — `![[...]]` + `[^key]` support
+4. Wire AppShell + Editor to desktop renderer
+5. Enable basic navigation (clicking refs navigates to target)
+6. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
+7. Fill Markdown contract gaps: image upload
 
 ### Folder Structure
 
@@ -107,12 +110,14 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
-| Block IDs + Heading/Block references                              | 2026-01-20 | pending   |
-| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX       | 2026-01-20 | pending   |
+| Embeds (`![[...]]`)                                               | 2026-01-21 | `6501991` |
+| Footnotes (`[^key]`)                                              | 2026-01-21 | `352b859` |
+| Block IDs + Heading/Block references                              | 2026-01-20 | `cf4b70f` |
+| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX       | 2026-01-20 | `342d296` |
 | Math support (inline + block with KaTeX)                          | 2026-01-19 | `fa68e93` |
 | Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |
 | Image resize + story reorg                                        | 2026-01-20 | `ccb0261` |
-| Table toolbar with row/column/delete controls                     | 2026-01-19 | pending   |
+| Table toolbar with row/column/delete controls                     | 2026-01-19 | `15fddf5` |
 | ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
 | Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |
 | Callout blocks with 4 types (info, warning, tip, error)           | 2026-01-19 | `ae98f89` |

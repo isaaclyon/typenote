@@ -1,6 +1,30 @@
 # Recent Work
 
-## Latest Session (2026-01-20 - Block IDs + Heading/Block References)
+## Latest Session (2026-01-21 - Embeds + Footnotes)
+
+### What was accomplished
+
+- **Embeds (![[...]])** — New EmbedNode block with read-only preview, expand/collapse, open action
+- **Embed suggestions** — `![[` trigger with heading/block targets + `/embed` slash command
+- **Footnotes** — Inline `[^key]` refs + `[^key]:` definitions with auto ordering + separator
+- **Warning states** — Missing ref highlights and duplicate def notices
+- **Utilities + tests** — embed-utils + footnote-utils with Vitest coverage
+- **New Ladle stories** — Embeds and Footnotes
+
+### Key files created/changed
+
+- `extensions/EmbedNode.ts`, `EmbedNodeView.tsx` — Embed node + preview renderer
+- `extensions/FootnoteRefNode.ts`, `FootnoteDefNode.ts`, `FootnoteManager.ts` — Footnote system
+- `Editor.tsx`, `SlashCommand.ts`, `types.ts` — Embed/footnote wiring
+- `stories/Editor.embeds.stories.tsx`, `Editor.footnotes.stories.tsx` — New stories
+
+### Commits
+
+- `6501991`, `352b859`
+
+---
+
+## Previous Session (2026-01-20 - Block IDs + Heading/Block References)
 
 ### What was accomplished
 
@@ -22,7 +46,7 @@
 
 ### Commits
 
-- Uncommitted — ready for commit
+- `cf4b70f`
 
 ---
 
