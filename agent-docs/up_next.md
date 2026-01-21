@@ -44,8 +44,11 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
   - **Highlight** — `==text==` syntax with `Cmd+Shift+H` shortcut
   - **Images** — Display + resize handles (Phase 1+2 complete), upload planned
   - **Math** — Inline `$...$` and block `$$`/`/math` with KaTeX rendering
+  - **Block IDs** — `^block-id` syntax with input rule, click-to-copy
+  - **Heading References** — `[[Page#Heading]]` with H1-H6 level indicators
+  - **Block References** — `[[Page#^id]]` with auto-generated IDs
   - Type-colored inline references with click handling
-  - 47 Ladle stories (added Math: 4 stories)
+  - 55 Ladle stories (added Block IDs: 4, Heading/Block refs: 4)
 
 **Next — NotateDoc converters:**
 
@@ -54,10 +57,11 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 ### Immediate Next Steps
 
 1. ~~**Fix `[[` trigger**~~ ✅ Fixed — position calculation corrected
-2. Wire AppShell + Editor to desktop renderer
-3. Enable basic navigation
-4. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
-5. Fill Markdown contract gaps: image upload, embeds, footnotes, block refs
+2. ~~**Block IDs + Heading/Block refs**~~ ✅ Complete — Full Obsidian-style syntax
+3. Wire AppShell + Editor to desktop renderer
+4. Enable basic navigation (clicking refs navigates to target)
+5. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
+6. Fill Markdown contract gaps: image upload, embeds, footnotes
 
 ### Folder Structure
 
@@ -103,6 +107,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                           | Date       | Commits   |
 | ----------------------------------------------------------------- | ---------- | --------- |
+| Block IDs + Heading/Block references                              | 2026-01-20 | pending   |
 | Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX       | 2026-01-20 | pending   |
 | Math support (inline + block with KaTeX)                          | 2026-01-19 | `fa68e93` |
 | Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |

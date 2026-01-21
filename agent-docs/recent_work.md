@@ -1,30 +1,37 @@
 # Recent Work
 
-## Latest Session (2026-01-20 - Wiki-Link Trigger Fix + Alias Mode UX)
+## Latest Session (2026-01-20 - Block IDs + Heading/Block References)
 
 ### What was accomplished
 
-- **Fixed `[[` wiki-link trigger** — Corrected position calculation in `allow()` callback; now properly detects double brackets
-- **Tab completion for suggestions** — Press Tab to autocomplete selected item's title (e.g., type `[[Get` → Tab → `[[Getting Started Guide`)
-- **Alias Mode UX** — When typing `|` after a matched item:
-  - Popup collapses to show only the matched item
-  - Live preview: `→ displays as "alias"`
-  - Arrow keys disabled (single item)
-  - Tab disabled (already have full title)
-  - Enter confirms with alias
-- **Design doc** — `docs/plans/2026-01-20-alias-mode-ux-design.md`
-- **Fixed opencode plugin error** — Removed `kdco/worktree` from `opencode.json` plugins (already installed via OCX)
+- **Block IDs (`^block-id` syntax)** — New BlockIdNode extension with input rule, click-to-copy reference
+- **Heading References (`[[Page#Heading]]`)** — Extended RefNode with `headingText` attribute, H1-H6 level indicators in dropdown
+- **Block References (`[[Page#^blockid]]`)** — Extended RefNode with `blockId` attribute, auto-generates 6-char ID
+- **Refactored RefSuggestion** — Clean state machine with 3 modes: `object`, `heading`, `block`
+- **New Editor callbacks** — `onHeadingSearch`, `onBlockSearch`, `onBlockIdInsert`
+- **8 new Ladle stories** — Block IDs (4), Heading/Block refs (4)
 
-### Key files changed
+### Key files created/changed
 
-- `packages/design-system/src/features/Editor/Editor.tsx` — Trigger fix, Tab completion, alias mode detection
-- `packages/design-system/src/features/Editor/extensions/RefSuggestion.ts` — Matching trigger fix
-- `packages/design-system/src/features/Editor/extensions/RefSuggestionList.tsx` — Alias mode UI
-- `opencode.json` — Removed duplicate plugin entry
+- `extensions/BlockIdNode.ts`, `BlockIdNodeView.tsx`, `block-id-utils.ts` — New block ID feature
+- `extensions/RefNode.ts`, `RefNodeView.tsx` — Added headingText/blockId attributes
+- `extensions/RefSuggestion.ts` — Refactored state machine with type guards
+- `extensions/RefSuggestionList.tsx` — Heading/block item rendering
+- `Editor.tsx`, `types.ts` — Wire new callbacks
+- `stories/Editor.blockId.stories.tsx`, `Editor.refs.stories.tsx` — New stories
 
 ### Commits
 
 - Uncommitted — ready for commit
+
+---
+
+## Previous Session (2026-01-20 - Wiki-Link Trigger Fix + Alias Mode UX)
+
+- **Fixed `[[` wiki-link trigger** — Position calculation corrected
+- **Tab completion** — Autocomplete selected item's title
+- **Alias Mode UX** — Collapsed popup with live preview for `|alias` syntax
+- Commits: `342d296`
 
 ---
 
