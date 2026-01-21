@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { buildEmbedSyntax, formatEmbedDisplayTitle } from './embed-utils.js';
+import { buildEmbedSyntax, formatEmbedDisplayTitle, suppressNestedEmbeds } from './embed-utils.js';
 
 describe('embed utils', () => {
   describe('buildEmbedSyntax', () => {
@@ -58,6 +58,66 @@ describe('embed utils', () => {
 
     it('falls back to Untitled', () => {
       expect(formatEmbedDisplayTitle({ displayTitle: '' })).toBe('Untitled');
+    });
+  });
+
+  describe('suppressNestedEmbeds', () => {
+    it('replaces embed nodes with placeholder paragraphs', () => {
+      expect(suppressNestedEmbeds({ type: 'embedNode' })).toEqual({
+        type: 'paragraph',
+        content: [
+          {
+            type: 'text',
+            text: 'Embedded content hidden',
+          },
+        ],
+      });
+    });
+
+    it('recursively replaces nested embed nodes', () => {
+      const result = suppressNestedEmbeds({
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Intro' }],
+          },
+          {
+            type: 'embedNode',
+          },
+        ],
+      });
+
+      expect(result).toEqual({
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Intro' }],
+          },
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: 'Embedded content hidden',
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('keeps non-embed content intact', () => {
+      expect(
+        suppressNestedEmbeds({
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Keep me' }],
+        })
+      ).toEqual({
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'Keep me' }],
+      });
     });
   });
 });

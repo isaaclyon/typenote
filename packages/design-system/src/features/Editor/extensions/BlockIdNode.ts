@@ -54,7 +54,7 @@ declare module '@tiptap/core' {
 // Regex to match ` ^id ` pattern at end of input
 // ID rules: starts with letter/underscore, followed by alphanumeric/hyphen/underscore, max 64 chars
 // The full match (space + caret + id + space) gets replaced; capture group 1 is just the id
-const BLOCK_ID_INPUT_REGEX = /\s\^([a-zA-Z_][a-zA-Z0-9_-]{0,63})\s$/;
+export const BLOCK_ID_INPUT_REGEX = /\s\^([a-zA-Z_][a-zA-Z0-9_-]{0,63})\s$/;
 
 /**
  * Validate a block ID string.

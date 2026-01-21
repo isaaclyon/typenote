@@ -12,10 +12,12 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 
 import { computeFootnoteOrdering } from './footnote-utils.js';
 
-function nodesEqual(a: ProseMirrorNode[], b: ProseMirrorNode[]): boolean {
+export function nodesEqual(a: ProseMirrorNode[], b: ProseMirrorNode[]): boolean {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i += 1) {
-    if (!a[i].eq(b[i])) {
+    const next = a[i];
+    const other = b[i];
+    if (!next || !other || !next.eq(other)) {
       return false;
     }
   }
@@ -66,7 +68,9 @@ export const FootnoteManager = Extension.create({
           }
 
           const ordering = computeFootnoteOrdering(refKeys, defKeys);
-          const orderedDefNodes = ordering.orderedDefIndices.map((index) => defNodes[index]);
+          const orderedDefNodes = ordering.orderedDefIndices
+            .map((index) => defNodes[index])
+            .filter((node): node is ProseMirrorNode => Boolean(node));
 
           const nextNodes = orderedDefNodes.length
             ? [...otherNodes, footnoteSeparatorType.create(), ...orderedDefNodes]
