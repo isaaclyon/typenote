@@ -81,6 +81,10 @@ const footnoteWarnings: JSONContent = {
 // Stories
 // ============================================================================
 
+export default {
+  title: 'Features / Editor / Footnotes',
+};
+
 export const BasicFootnotes: Story = () => {
   const [content, setContent] = React.useState(footnoteContent);
 

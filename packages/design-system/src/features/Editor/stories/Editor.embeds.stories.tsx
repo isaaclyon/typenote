@@ -169,6 +169,10 @@ const resolveEmbed = async (target: { objectId: string }): Promise<JSONContent> 
 // Stories
 // ============================================================================
 
+export default {
+  title: 'Features / Editor / Embeds',
+};
+
 export const BasicEmbeds: Story = () => {
   const [content, setContent] = React.useState(embedContentBasic);
   const [lastAction, setLastAction] = React.useState<string | null>(null);
