@@ -2,6 +2,18 @@
 
 export const CORE_VERSION = '0.1.0';
 
+// NotateDoc ↔ TipTap converters
+export {
+  tiptapToNotateDoc,
+  notateDocToTiptap,
+  defaultRefResolver,
+  type ConvertedBlock,
+  type RefResolver,
+  type TiptapNode,
+  type TiptapMark,
+  type TiptapDoc,
+} from './converter/index.js';
+
 // IDs
 export { generateId, isValidUlid, parseUlid } from './ids.js';
 

@@ -1,27 +1,33 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - Editor.tsx refactoring)
+## Latest Session (2026-01-21 - NotateDoc Converters)
 
 ### What was accomplished
 
-- **Editor.tsx god file refactoring** — Reduced from 1,893 lines to 562 lines (70% reduction)
-- **Extracted hooks** — Created 5 new hooks for better separation of concerns:
-  - `useCallbackRef` (20 lines) — Stable callback refs for extensions
-  - `useImageUpload` (381 lines) — Image upload lifecycle management
-  - `useSuggestionState` (436 lines) — Ref/embed/tag/slash suggestion state machines
-  - `useEditorExtensions` (690 lines) — TipTap extension building
-- **Icon extraction** — Moved slash command icons to `extensions/slash-icons.ts`
-- **Bug fixes** — Fixed pre-existing type errors in `EmbedNodeView.tsx` and `footnote-utils.ts`
+- **NotateDoc converters** — Built TipTap JSONContent ↔ NotateDoc converters in `packages/core`
+- **tiptapToNotateDoc** — Converts editor content to storage format (drops UI-only attrs)
+- **notateDocToTiptap** — Converts storage format back to editor (with RefResolver callback for UI metadata)
+- **62 unit tests** — Full coverage for all block/inline types, marks, refs, embeds, tables, math, footnotes
 
-### Key files created/changed
+### Key files created
 
-- `hooks/useCallbackRef.ts`, `hooks/useImageUpload.ts`, `hooks/useSuggestionState.ts`, `hooks/useEditorExtensions.ts`, `hooks/index.ts`
-- `extensions/slash-icons.ts`
-- `Editor.tsx` (major rewrite), `types.ts`, `EmbedNodeView.tsx`, `footnote-utils.ts`
+- `packages/core/src/converter/types.ts` — TipTap JSONContent type definitions
+- `packages/core/src/converter/tiptapToNotateDoc.ts` — Editor → Storage converter (310 lines)
+- `packages/core/src/converter/notateDocToTiptap.ts` — Storage → Editor converter (365 lines)
+- `packages/core/src/converter/index.ts` — Module exports
+- `packages/core/src/converter/*.test.ts` — 62 tests
 
 ### Commits
 
-- (uncommitted) refactor(design-system): extract Editor.tsx into focused hooks
+- (uncommitted) feat(core): add NotateDoc ↔ TipTap converters
+
+---
+
+## Earlier Session (2026-01-21 - Editor.tsx refactoring)
+
+- **Editor.tsx god file refactoring** — Reduced from 1,893 lines to 562 lines (70% reduction)
+- **Extracted hooks** — `useCallbackRef`, `useImageUpload`, `useSuggestionState`, `useEditorExtensions`
+- **Commit:** `0bc2577`
 
 ---
 

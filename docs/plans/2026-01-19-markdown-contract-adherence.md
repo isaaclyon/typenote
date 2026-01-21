@@ -97,6 +97,6 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 
 ## Out of Scope (Other Packages)
 
-- **NotateDoc converters** (TipTap JSON ↔ NotateDoc) — lives in `packages/core`
-- **Markdown export/import** — depends on NotateDoc converters, lives in `packages/core`
+- **NotateDoc converters** (TipTap JSON ↔ NotateDoc) — ✅ Complete in `packages/core` (2026-01-21)
+- **Markdown export/import** — depends on NotateDoc converters (now unblocked), lives in `packages/core`
 - **Image storage + IPC** — handled by app layer; design-system exposes upload hooks only

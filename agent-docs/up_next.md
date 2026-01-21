@@ -18,28 +18,20 @@ Primitives → patterns → features (see `agent-docs/rules/design-system.md`)
 
 ### Feature Inventory
 
-**Complete (5):**
+**Complete (6):**
 
 - Sidebar ✅ — Compound component with Header, Section, Footer, Item
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
 - Editor ✅ — TipTap core plus refs (wiki/heading/block, block IDs), embeds, footnotes, slash command, tags, task lists, code blocks, callouts, tables (toolbar; resize deferred), links/highlight, images (resize + upload UX), math
-
-**Next — NotateDoc converters:**
-
-1. **NotateDoc converters** — Live in `packages/core`, not design-system (TipTap JSON ↔ NotateDoc)
+- NotateDoc Converters ✅ — `packages/core`: tiptapToNotateDoc + notateDocToTiptap (62 tests)
 
 ### Immediate Next Steps
 
-1. ~~**Fix `[[` trigger**~~ ✅ Fixed — position calculation corrected
-2. ~~**Block IDs + Heading/Block refs**~~ ✅ Complete — Full Obsidian-style syntax
-3. ~~**Embeds + Footnotes**~~ ✅ Complete — `![[...]]` + `[^key]` support
-4. Wire AppShell + Editor to desktop renderer
-5. Enable basic navigation (clicking refs navigates to target)
-6. Build NotateDoc converters (TipTap JSON ↔ NotateDoc)
-7. ~~Fill Markdown contract gaps: image upload UX~~ ✅ (design-system)
-8. Wire image uploads to app layer (IPC + storage)
+1. Wire AppShell + Editor to desktop renderer
+2. Enable basic navigation (clicking refs navigates to target)
+3. Wire image uploads to app layer (IPC + storage)
 
 ### Folder Structure
 
@@ -82,18 +74,19 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 ## Recently Completed
 
-| Feature                                                     | Date       | Commits     |
-| ----------------------------------------------------------- | ---------- | ----------- |
-| Editor.tsx refactoring (1893→562 lines, 5 hooks extracted)  | 2026-01-21 | uncommitted |
-| Image upload UX (`/image`)                                  | 2026-01-21 | `efd96d5`   |
-| Embeds (`![[...]]`)                                         | 2026-01-21 | `6501991`   |
-| Footnotes (`[^key]`)                                        | 2026-01-21 | `352b859`   |
-| Block IDs + Heading/Block references                        | 2026-01-20 | `cf4b70f`   |
-| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX | 2026-01-20 | `342d296`   |
-| Image resize + story reorg                                  | 2026-01-20 | `ccb0261`   |
-| Math support (inline + block with KaTeX)                    | 2026-01-19 | `fa68e93`   |
-| Table toolbar with row/column/delete controls               | 2026-01-19 | `15fddf5`   |
-| Primitives + patterns complete                              | 2026-01-18 | `3fdbd5d`   |
+| Feature                                                      | Date       | Commits     |
+| ------------------------------------------------------------ | ---------- | ----------- |
+| NotateDoc converters (tiptapToNotateDoc + notateDocToTiptap) | 2026-01-21 | uncommitted |
+| Editor.tsx refactoring (1893→562 lines, 5 hooks extracted)   | 2026-01-21 | `0bc2577`   |
+| Image upload UX (`/image`)                                   | 2026-01-21 | `efd96d5`   |
+| Embeds (`![[...]]`)                                          | 2026-01-21 | `6501991`   |
+| Footnotes (`[^key]`)                                         | 2026-01-21 | `352b859`   |
+| Block IDs + Heading/Block references                         | 2026-01-20 | `cf4b70f`   |
+| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX  | 2026-01-20 | `342d296`   |
+| Image resize + story reorg                                   | 2026-01-20 | `ccb0261`   |
+| Math support (inline + block with KaTeX)                     | 2026-01-19 | `fa68e93`   |
+| Table toolbar with row/column/delete controls                | 2026-01-19 | `15fddf5`   |
+| Primitives + patterns complete                               | 2026-01-18 | `3fdbd5d`   |
 
 Note: All features completed before 2026-01-18 were deleted in the full reset.
 See `recent_work.md` for historical milestones.
