@@ -53,7 +53,7 @@ export function computeFootnoteOrdering(
   for (const key of refOrder) {
     const indices = defIndexMap.get(key);
     if (indices && indices.length > 0) {
-      const first = indices[0];
+      const first = indices[0] as number; // Safe: checked length > 0
       orderedDefIndices.push(first);
       used.add(first);
     }

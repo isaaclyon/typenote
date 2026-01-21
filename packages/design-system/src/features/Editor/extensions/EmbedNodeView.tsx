@@ -143,7 +143,7 @@ export function EmbedNodeView({ node, extension }: NodeViewProps) {
   React.useEffect(() => {
     if (!previewEditor) return;
     const nextContent = resolvedContent ?? EMPTY_DOC;
-    previewEditor.commands.setContent(nextContent, false);
+    previewEditor.commands.setContent(nextContent, { emitUpdate: false });
   }, [previewEditor, resolvedContent]);
 
   React.useEffect(() => {

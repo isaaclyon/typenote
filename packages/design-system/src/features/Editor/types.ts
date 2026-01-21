@@ -200,3 +200,9 @@ export interface ImageUploadResult {
   alt?: string | null;
   caption?: string | null;
 }
+
+/** Handler function for uploading images */
+export type ImageUploadHandler = (
+  file: File,
+  context: ImageUploadRequest
+) => Promise<ImageUploadResult>;
