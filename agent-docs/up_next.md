@@ -8,19 +8,13 @@
 ### Current State
 
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
-- ✅ **20 primitives** implemented with co-located stories (added ContextMenu)
-- ✅ **12 patterns** implemented with co-located stories (added Breadcrumbs, SearchTrigger, ThemeToggle)
-- ✅ **All interactive primitives now use shadcn/Radix** for accessibility
-- ✅ **5 features complete** — Sidebar, TitleBar, HeaderBar, AppShell, Editor (Phase 1)
-- ❌ Renderer is placeholder only (no editor wired, no navigation)
+- ✅ Primitives (20) + patterns (12) complete; interactive primitives use shadcn/Radix
+- ✅ Features complete: Sidebar, TitleBar, HeaderBar, AppShell, Editor (Phase 1 + 2a-2g)
+- ❌ Renderer placeholder only (no editor wiring, no navigation)
 
 ### Build Sequence
 
-Follow primitives → patterns → features as documented in `agent-docs/rules/design-system.md`:
-
-1. **Primitives** — 20 complete
-2. **Patterns** — 12 complete
-3. **Features** — 5 complete (Sidebar, TitleBar, HeaderBar, AppShell, Editor Phase 1)
+Primitives → patterns → features (see `agent-docs/rules/design-system.md`)
 
 ### Feature Inventory
 
@@ -30,27 +24,7 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 - TitleBar ✅ — Custom Electron window chrome (28px, draggable)
 - HeaderBar ✅ — App toolbar with breadcrumbs + search + settings
 - AppShell ✅ — Composition layer for full app layout
-- Editor ✅ (Phase 1 + 2a-2g) — TipTap/ProseMirror with references, slash commands, tags, code blocks, callouts, tables, links, highlight, images, math
-  - Paragraphs, headings (h1-h6), basic marks
-  - Full-width clickable area with centered content (650px)
-  - **RefNode + RefSuggestion** — Wiki-links via `[[` and mentions via `@`, alias support via `|` syntax and context menu, Tab completion, alias mode UX
-  - **SlashCommand** — `/` trigger for block types (paragraph, h1-h3, lists, quote, code, divider, callouts, table, math)
-  - **TagNode + TagSuggestion** — Hashtags via `#` with autocomplete and creation
-  - **TaskList** — Checkboxes via `/task` with nested support, input rules `[ ]`/`[x]`
-  - **CodeBlock** — Shiki syntax highlighting, language dropdown, copy button, ` ```lang ` input rules
-  - **Callout** — 4 types (info, warning, tip, error) with type dropdown, nested content support
-  - **Table** — `/table` inserts 3x3 with header row, Tab navigation, floating toolbar (resizing deferred)
-  - **Links** — Markdown links + autolink (open on click)
-  - **Highlight** — `==text==` syntax with `Cmd+Shift+H` shortcut
-  - **Images** — Display + resize handles (Phase 1+2 complete), upload planned
-  - **Math** — Inline `$...$` and block `$$`/`/math` with KaTeX rendering
-  - **Block IDs** — `^block-id` syntax with input rule, click-to-copy
-  - **Heading References** — `[[Page#Heading]]` with H1-H6 level indicators
-  - **Block References** — `[[Page#^id]]` with auto-generated IDs
-  - **Embeds** — `![[...]]` with read-only previews, heading/block targets, `/embed`
-  - **Footnotes** — `[^key]` refs + `[^key]:` defs with auto ordering
-  - Type-colored inline references with click handling
-  - 62 Ladle stories (added Embeds: 4, Footnotes: 3)
+- Editor ✅ — TipTap core plus refs (wiki/heading/block, block IDs), embeds, footnotes, slash command, tags, task lists, code blocks, callouts, tables (toolbar; resize deferred), links/highlight, images (resize; upload pending), math
 
 **Next — NotateDoc converters:**
 
@@ -81,8 +55,6 @@ Follow primitives → patterns → features as documented in `agent-docs/rules/d
 
 ---
 
----
-
 ## Backlog
 
 ### E2E Tests
@@ -95,6 +67,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 - [x] Improve mutation testing scores (api: 86.92%, core: 96.50%, storage: 77.51%)
 - [x] Mutation testing parallel agent experiment — ~80 tests added, +16% on duplicateObjectService.ts
+- [x] Design-system editor helper unit tests (refs, block IDs, slash command, shiki, footnotes, cn)
 - [ ] Enable `ignoreStatic: true` in Stryker configs for more accurate scores
 - [ ] Performance benchmarks for 10k+ objects / 100k+ blocks
 
@@ -108,30 +81,16 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 ## Recently Completed
 
-| Feature                                                           | Date       | Commits   |
-| ----------------------------------------------------------------- | ---------- | --------- |
-| Embeds (`![[...]]`)                                               | 2026-01-21 | `6501991` |
-| Footnotes (`[^key]`)                                              | 2026-01-21 | `352b859` |
-| Block IDs + Heading/Block references                              | 2026-01-20 | `cf4b70f` |
-| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX       | 2026-01-20 | `342d296` |
-| Math support (inline + block with KaTeX)                          | 2026-01-19 | `fa68e93` |
-| Wiki-link alias context menu editing                              | 2026-01-20 | `e680d99` |
-| Image resize + story reorg                                        | 2026-01-20 | `ccb0261` |
-| Table toolbar with row/column/delete controls                     | 2026-01-19 | `15fddf5` |
-| ContextMenu primitive (Radix)                                     | 2026-01-19 | pending   |
-| Table support (resizing deferred)                                 | 2026-01-19 | `cf7287a` |
-| Callout blocks with 4 types (info, warning, tip, error)           | 2026-01-19 | `ae98f89` |
-| CodeBlock with Shiki syntax highlighting                          | 2026-01-19 | `7d3d04b` |
-| TaskList support with slash command and styling                   | 2026-01-19 | `fb84e66` |
-| TagNode + TagSuggestion for hashtag support                       | 2026-01-19 | `38ebbb5` |
-| SlashCommand menu for block type insertion                        | 2026-01-19 | `19b0551` |
-| RefNode styling improvements — hover underline effect             | 2026-01-19 | `2d94de1` |
-| Editor Phase 2a — RefNode + RefSuggestion for wiki-links/mentions | 2026-01-19 | `507aba8` |
-| Editor feature (Phase 1) — TipTap integration                     | 2026-01-19 | `437af80` |
-| HeaderBar feature + Link, Breadcrumbs, SearchTrigger, ThemeToggle | 2026-01-19 | `f4c4d73` |
-| TitleBar feature                                                  | 2026-01-19 | `5aaaa86` |
-| Sidebar feature                                                   | 2026-01-19 | `86d8cc7` |
-| Primitives + patterns complete                                    | 2026-01-18 | `3fdbd5d` |
+| Feature                                                     | Date       | Commits   |
+| ----------------------------------------------------------- | ---------- | --------- |
+| Embeds (`![[...]]`)                                         | 2026-01-21 | `6501991` |
+| Footnotes (`[^key]`)                                        | 2026-01-21 | `352b859` |
+| Block IDs + Heading/Block references                        | 2026-01-20 | `cf4b70f` |
+| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX | 2026-01-20 | `342d296` |
+| Image resize + story reorg                                  | 2026-01-20 | `ccb0261` |
+| Math support (inline + block with KaTeX)                    | 2026-01-19 | `fa68e93` |
+| Table toolbar with row/column/delete controls               | 2026-01-19 | `15fddf5` |
+| Primitives + patterns complete                              | 2026-01-18 | `3fdbd5d` |
 
 Note: All features completed before 2026-01-18 were deleted in the full reset.
 See `recent_work.md` for historical milestones.

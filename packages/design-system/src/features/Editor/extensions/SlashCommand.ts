@@ -86,6 +86,8 @@ export function getSlashCommandItems(icons: {
   MathOperations: PhosphorIcon;
   // Embed icon
   StackSimple: PhosphorIcon;
+  // Image icon
+  ImageSquare: PhosphorIcon;
 }): SlashCommandItem[] {
   return [
     createCommand(
@@ -278,6 +280,15 @@ export function getSlashCommandItems(icons: {
       ['embed', 'transclude', 'include'],
       (editor, range) => {
         editor.chain().focus().deleteRange(range).insertContent('![[').run();
+      }
+    ),
+    createCommand(
+      'image',
+      'Image',
+      icons.ImageSquare,
+      ['image', 'img', 'photo', 'picture'],
+      (editor, range) => {
+        editor.chain().focus().deleteRange(range).run();
       }
     ),
   ];

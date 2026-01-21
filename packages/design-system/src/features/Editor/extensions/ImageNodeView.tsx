@@ -13,24 +13,32 @@ import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 
 import { cn } from '../../../lib/utils.js';
+import type { ImageNodeAttributes, ResizableImageOptions } from './ResizableImage.js';
 
 // Minimum width for images
 const MIN_WIDTH = 100;
 // Maximum width (relative to container)
 const MAX_WIDTH_PERCENT = 100;
 
-export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProps) {
-  const { src, alt, width, title } = node.attrs as {
-    src: string;
-    alt?: string;
-    width?: number;
-    title?: string;
-  };
+export function ImageNodeView({
+  node,
+  updateAttributes,
+  selected,
+  editor,
+  extension,
+  getPos,
+}: NodeViewProps) {
+  const { src, alt, width, title, caption, uploadStatus, uploadProgress, errorMessage, uploadId } =
+    node.attrs as ImageNodeAttributes;
+
+  const options = extension.options as ResizableImageOptions;
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLImageElement>(null);
   const [isResizing, setIsResizing] = React.useState(false);
   const [aspectRatio, setAspectRatio] = React.useState<number | null>(null);
+  const [captionValue, setCaptionValue] = React.useState(caption ?? '');
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Capture aspect ratio when image loads
   const handleImageLoad = React.useCallback(() => {
@@ -41,6 +49,10 @@ export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProp
       }
     }
   }, []);
+
+  React.useEffect(() => {
+    setCaptionValue(caption ?? '');
+  }, [caption]);
 
   // Handle resize drag
   const handleResizeStart = React.useCallback(
@@ -86,9 +98,55 @@ export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProp
 
   // Calculate height based on aspect ratio (for proper sizing during resize)
   const calculatedHeight = width && aspectRatio ? Math.round(width / aspectRatio) : undefined;
+  const isEditable = editor?.isEditable ?? false;
+  const showCaption = Boolean(captionValue) || (selected && isEditable);
+  const isUploading = uploadStatus === 'uploading';
+  const isError = uploadStatus === 'error';
+  const progressValue =
+    typeof uploadProgress === 'number' && !Number.isNaN(uploadProgress)
+      ? Math.max(0, Math.min(100, uploadProgress))
+      : null;
+  const errorText = errorMessage ?? 'Upload failed';
+  const canRetry = Boolean(options.onRetryUpload && isEditable);
+  const canRemove = isEditable;
+
+  const handleCaptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value;
+    setCaptionValue(nextValue);
+    updateAttributes({ caption: nextValue.trim().length > 0 ? nextValue : null });
+  };
+
+  const handleRetryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!options.onRetryUpload) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!editor || !editor.isEditable || typeof getPos !== 'function') return;
+    options.onRemoveImage?.(uploadId ?? null);
+    const pos = getPos();
+    if (typeof pos !== 'number') return;
+    editor
+      .chain()
+      .focus()
+      .deleteRange({ from: pos, to: pos + node.nodeSize })
+      .run();
+  };
+
+  const handleRetryFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    event.target.value = '';
+    options.onRetryUpload?.(file, uploadId ?? null);
+  };
 
   return (
-    <NodeViewWrapper className="image-node-wrapper my-3">
+    <NodeViewWrapper className="image-node-wrapper my-3" contentEditable={false}>
       <div
         ref={containerRef}
         className={cn(
@@ -104,12 +162,13 @@ export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProp
           ref={imageRef}
           src={src}
           alt={alt ?? ''}
-          title={title}
+          title={title ?? undefined}
           onLoad={handleImageLoad}
           className={cn(
             'rounded-md block',
             'max-w-full h-auto',
-            isResizing && 'pointer-events-none select-none'
+            isResizing && 'pointer-events-none select-none',
+            isError && 'opacity-40'
           )}
           style={{
             width: width ? `${width}px` : undefined,
@@ -117,6 +176,41 @@ export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProp
           }}
           draggable={false}
         />
+
+        {isUploading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-md bg-background/70 text-xs text-muted-foreground">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+            <span>
+              {progressValue !== null ? `Uploading ${Math.round(progressValue)}%` : 'Uploading'}
+            </span>
+          </div>
+        )}
+
+        {isError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-md border border-amber-200 bg-amber-50/80 px-3 text-center text-xs text-amber-800">
+            <span className="font-medium">{errorText}</span>
+            <div className="flex items-center gap-2">
+              {canRetry && (
+                <button
+                  type="button"
+                  onClick={handleRetryClick}
+                  className="rounded border border-amber-200 bg-white px-2 py-1 text-[11px] text-amber-800 hover:bg-amber-100"
+                >
+                  Retry
+                </button>
+              )}
+              {canRemove && (
+                <button
+                  type="button"
+                  onClick={handleRemoveClick}
+                  className="rounded border border-amber-200 bg-white px-2 py-1 text-[11px] text-amber-800 hover:bg-amber-100"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Resize handles - only show when selected */}
         {selected && (
@@ -163,6 +257,35 @@ export function ImageNodeView({ node, updateAttributes, selected }: NodeViewProp
           </>
         )}
       </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        className="hidden"
+        onChange={handleRetryFileChange}
+      />
+
+      {showCaption && (
+        <div className="mt-2 w-full">
+          {isEditable ? (
+            <input
+              type="text"
+              value={captionValue}
+              onChange={handleCaptionChange}
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+              placeholder="Add caption"
+              className={cn(
+                'w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-xs text-muted-foreground',
+                'placeholder:text-muted-foreground/60 focus:border-accent-500 focus:text-foreground focus:outline-none'
+              )}
+            />
+          ) : (
+            <p className="px-2 py-1 text-xs text-muted-foreground">{captionValue}</p>
+          )}
+        </div>
+      )}
     </NodeViewWrapper>
   );
 }

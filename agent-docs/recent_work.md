@@ -1,26 +1,42 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - Embeds + Footnotes)
+## Latest Session (2026-01-21 - Design-system unit tests)
 
 ### What was accomplished
 
-- **Embeds (![[...]])** — New EmbedNode block with read-only preview, expand/collapse, open action
-- **Embed suggestions** — `![[` trigger with heading/block targets + `/embed` slash command
-- **Footnotes** — Inline `[^key]` refs + `[^key]:` definitions with auto ordering + separator
-- **Warning states** — Missing ref highlights and duplicate def notices
-- **Utilities + tests** — embed-utils + footnote-utils with Vitest coverage
-- **New Ladle stories** — Embeds and Footnotes
+- **Design-system test sweep** — Added unit tests for ref parsing, block IDs, slash command filtering, shiki helpers, footnote manager comparisons, input regexes, and cn utility
+- **Embed suppression coverage** — Added tests for nested embed sanitization
+- **Safety tweaks** — Exported block ID input regex and filtered undefined footnote nodes
+- **Test run** — `pnpm --filter @typenote/design-system test`
 
 ### Key files created/changed
 
-- `extensions/EmbedNode.ts`, `EmbedNodeView.tsx` — Embed node + preview renderer
-- `extensions/FootnoteRefNode.ts`, `FootnoteDefNode.ts`, `FootnoteManager.ts` — Footnote system
-- `Editor.tsx`, `SlashCommand.ts`, `types.ts` — Embed/footnote wiring
-- `stories/Editor.embeds.stories.tsx`, `Editor.footnotes.stories.tsx` — New stories
+- `extensions/*.test.ts` (RefSuggestion, block-id-utils, SlashCommand, shiki-highlighter, FootnoteManager, BlockIdNode, FootnoteRefNode, FootnoteDefNode)
+- `extensions/BlockIdNode.ts`, `extensions/FootnoteManager.ts`, `extensions/embed-utils.test.ts`, `lib/utils.test.ts`
 
 ### Commits
 
-- `6501991`, `352b859`
+- `611493c` test(design-system): lock in editor helper behavior
+
+---
+
+## Previous Session (2026-01-21 - Embeds + Footnotes + Ladle Fixes)
+
+### What was accomplished
+
+- **Embeds + suggestions** — EmbedNode preview, `![[` trigger, `/embed` command
+- **Footnotes** — Inline refs + definitions, ordering + separator
+- **Warning states + stories** — Missing ref/duplicate def highlights, new Ladle stories
+- **Docs + tests** — Utilities coverage and agent-docs refresh
+
+### Key files created/changed
+
+- `extensions/EmbedNode.ts`, `EmbedNodeView.tsx`, `FootnoteRefNode.ts`, `FootnoteDefNode.ts`, `FootnoteManager.ts`
+- `Editor.tsx`, `SlashCommand.ts`, `types.ts`, `stories/Editor.embeds.stories.tsx`, `stories/Editor.footnotes.stories.tsx`
+
+### Commits
+
+- `6501991`, `352b859`, `ce487b9`, `6d1b17d`, `4a0428f`
 
 ---
 
@@ -28,21 +44,14 @@
 
 ### What was accomplished
 
-- **Block IDs (`^block-id` syntax)** — New BlockIdNode extension with input rule, click-to-copy reference
-- **Heading References (`[[Page#Heading]]`)** — Extended RefNode with `headingText` attribute, H1-H6 level indicators in dropdown
-- **Block References (`[[Page#^blockid]]`)** — Extended RefNode with `blockId` attribute, auto-generates 6-char ID
-- **Refactored RefSuggestion** — Clean state machine with 3 modes: `object`, `heading`, `block`
-- **New Editor callbacks** — `onHeadingSearch`, `onBlockSearch`, `onBlockIdInsert`
-- **8 new Ladle stories** — Block IDs (4), Heading/Block refs (4)
+- **Block IDs** — BlockIdNode input rule + click-to-copy reference
+- **Heading/Block refs** — RefNode updates, dropdown indicators, auto block IDs
+- **RefSuggestion refactor** — Mode state machine, callbacks, new stories
 
 ### Key files created/changed
 
-- `extensions/BlockIdNode.ts`, `BlockIdNodeView.tsx`, `block-id-utils.ts` — New block ID feature
-- `extensions/RefNode.ts`, `RefNodeView.tsx` — Added headingText/blockId attributes
-- `extensions/RefSuggestion.ts` — Refactored state machine with type guards
-- `extensions/RefSuggestionList.tsx` — Heading/block item rendering
-- `Editor.tsx`, `types.ts` — Wire new callbacks
-- `stories/Editor.blockId.stories.tsx`, `Editor.refs.stories.tsx` — New stories
+- `extensions/BlockIdNode.ts`, `block-id-utils.ts`, `RefNode.ts`, `RefSuggestion.ts`, `RefSuggestionList.tsx`
+- `Editor.tsx`, `stories/Editor.blockId.stories.tsx`, `stories/Editor.refs.stories.tsx`
 
 ### Commits
 
@@ -50,38 +59,22 @@
 
 ---
 
-## Previous Session (2026-01-20 - Wiki-Link Trigger Fix + Alias Mode UX)
+## Earlier Sessions (2026-01-20/19) — Collapsed
 
-- **Fixed `[[` wiki-link trigger** — Position calculation corrected
-- **Tab completion** — Autocomplete selected item's title
-- **Alias Mode UX** — Collapsed popup with live preview for `|alias` syntax
-- Commits: `342d296`
-
----
-
-## Previous Session (2026-01-19 - Math Support)
-
-- **Math support complete** — Inline (`$...$`) and block (`$$`/`/math`) with KaTeX
-- **InlineMath/MathBlock** — Custom NodeViews with live preview
-- Commits: `fa68e93`
-
----
-
-## Earlier Sessions (2026-01-19/20) — Collapsed
-
-- **Wiki-link alias context menu** (`e680d99`) — Right-click RefNode → "Edit alias..."
-- **Image resize + story reorg** (`ccb0261`) — Drag handles, 6-file story split
-
-- **Highlight + Images** (`43699d8`) — `==text==` syntax, image display
-- **Tables** (`cf7287a`) — TipTap tables + `/table` command
-- **Callouts** (`ae98f89`) — 4 types with dropdown
-- **CodeBlock** (`7d3d04b`) — Shiki highlighting
-- **TaskList** (`fb84e66`) — Interactive checkboxes
-- **TagNode** (`38ebbb5`) — Hashtag pills
-- **SlashCommand** (`19b0551`) — Block insert menu
-- **RefNode** (`507aba8`) — Wiki-links + mentions
-- **Editor Phase 1** (`437af80`) — Paragraphs/headings/marks
-- **Primitives + patterns** (`3fdbd5d`) — Radix migration, design-system reset
+- **Wiki-link trigger fix + alias UX** (`342d296`)
+- **Math support (KaTeX)** (`fa68e93`)
+- **Wiki-link alias context menu** (`e680d99`)
+- **Image resize + story reorg** (`ccb0261`)
+- **Highlight + images** (`43699d8`)
+- **Tables** (`cf7287a`)
+- **Callouts** (`ae98f89`)
+- **CodeBlock** (`7d3d04b`)
+- **TaskList** (`fb84e66`)
+- **TagNode** (`38ebbb5`)
+- **SlashCommand** (`19b0551`)
+- **RefNode** (`507aba8`)
+- **Editor Phase 1** (`437af80`)
+- **Primitives + patterns** (`3fdbd5d`)
 
 ---
 

@@ -11,6 +11,21 @@ import Image from '@tiptap/extension-image';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ImageNodeView } from './ImageNodeView.js';
 
+export type ImageUploadStatus = 'uploading' | 'error' | null;
+
+export interface ImageNodeAttributes {
+  src: string;
+  alt?: string | null;
+  title?: string | null;
+  width?: number | null;
+  height?: number | null;
+  caption?: string | null;
+  uploadId?: string | null;
+  uploadStatus?: ImageUploadStatus;
+  uploadProgress?: number | null;
+  errorMessage?: string | null;
+}
+
 export interface ResizableImageOptions {
   /**
    * Whether to allow inline images (false = block-level only).
@@ -22,6 +37,16 @@ export interface ResizableImageOptions {
    * HTML attributes to add to the image element.
    */
   HTMLAttributes?: Record<string, unknown>;
+
+  /**
+   * Optional retry handler for failed uploads.
+   */
+  onRetryUpload?: (file: File, uploadId: string | null) => void;
+
+  /**
+   * Optional hook for cleaning up image resources on removal.
+   */
+  onRemoveImage?: (uploadId: string | null) => void;
 }
 
 export const ResizableImage = Image.extend<ResizableImageOptions>({
@@ -67,6 +92,61 @@ export const ResizableImage = Image.extend<ResizableImageOptions>({
           }
           return {
             height: attributes['height'],
+          };
+        },
+      },
+      caption: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-caption'),
+        renderHTML: (attributes) => {
+          if (!attributes['caption']) return {};
+          return {
+            'data-caption': attributes['caption'],
+          };
+        },
+      },
+      uploadId: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-upload-id'),
+        renderHTML: (attributes) => {
+          if (!attributes['uploadId']) return {};
+          return {
+            'data-upload-id': attributes['uploadId'],
+          };
+        },
+      },
+      uploadStatus: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-upload-status'),
+        renderHTML: (attributes) => {
+          if (!attributes['uploadStatus']) return {};
+          return {
+            'data-upload-status': attributes['uploadStatus'],
+          };
+        },
+      },
+      uploadProgress: {
+        default: null,
+        parseHTML: (element: HTMLElement) => {
+          const progress = element.getAttribute('data-upload-progress');
+          return progress ? Number(progress) : null;
+        },
+        renderHTML: (attributes) => {
+          if (attributes['uploadProgress'] === null || attributes['uploadProgress'] === undefined) {
+            return {};
+          }
+          return {
+            'data-upload-progress': attributes['uploadProgress'],
+          };
+        },
+      },
+      errorMessage: {
+        default: null,
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-error-message'),
+        renderHTML: (attributes) => {
+          if (!attributes['errorMessage']) return {};
+          return {
+            'data-error-message': attributes['errorMessage'],
           };
         },
       },

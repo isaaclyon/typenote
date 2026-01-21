@@ -125,6 +125,21 @@ export interface EditorProps {
   ) => () => void;
 
   // ============================================================================
+  // Images (Phase 3)
+  // ============================================================================
+
+  /**
+   * Upload handler for file-based image inserts (file picker, drop, paste).
+   * Should return the final source URL and optional metadata.
+   */
+  onImageUpload?: (file: File, context: ImageUploadRequest) => Promise<ImageUploadResult>;
+
+  /**
+   * Optional hook for cleaning up image resources on removal.
+   */
+  onImageRemove?: (uploadId: string | null) => void;
+
+  // ============================================================================
   // Tag Support (Phase 2b)
   // ============================================================================
 
@@ -171,3 +186,17 @@ export type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 export type { TagNodeAttributes } from './extensions/TagNode.js';
 export type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 export type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
+export type { ImageNodeAttributes } from './extensions/ResizableImage.js';
+
+export interface ImageUploadRequest {
+  uploadId: string;
+  alt: string | null;
+  caption: string | null;
+  onProgress: (progress: number) => void;
+}
+
+export interface ImageUploadResult {
+  src: string;
+  alt?: string | null;
+  caption?: string | null;
+}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
-import type { AnyExtension, Range } from '@tiptap/core';
+import type { AnyExtension, Range, Editor as TiptapEditor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
@@ -32,9 +32,11 @@ import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 // Math icon
 import { MathOperations } from '@phosphor-icons/react/dist/ssr/MathOperations';
 import { StackSimple } from '@phosphor-icons/react/dist/ssr/StackSimple';
+import { ImageSquare } from '@phosphor-icons/react/dist/ssr/ImageSquare';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 
 import { cn } from '../../lib/utils.js';
-import type { EditorProps, EditorRef } from './types.js';
+import type { EditorProps, EditorRef, ImageUploadRequest } from './types.js';
 import { RefNode } from './extensions/RefNode.js';
 import { RefSuggestionList } from './extensions/RefSuggestionList.js';
 import type { AliasMode } from './extensions/RefSuggestionList.js';
@@ -63,6 +65,7 @@ import { Callout } from './extensions/Callout.js';
 import { TableExtensions } from './extensions/Table.js';
 import { TableToolbar } from './extensions/TableToolbar.js';
 import { ResizableImage } from './extensions/ResizableImage.js';
+import type { ImageNodeAttributes } from './extensions/ResizableImage.js';
 import { InlineMath } from './extensions/InlineMath.js';
 import { MathBlock } from './extensions/MathBlock.js';
 import { BlockIdNode } from './extensions/BlockIdNode.js';
@@ -71,6 +74,12 @@ import { FootnoteRefNode } from './extensions/FootnoteRefNode.js';
 import { FootnoteDefNode } from './extensions/FootnoteDefNode.js';
 import { FootnoteSeparator } from './extensions/FootnoteSeparator.js';
 import { FootnoteManager } from './extensions/FootnoteManager.js';
+import { ImageInsertPopover } from './extensions/ImageInsertPopover.js';
+import {
+  createImageUploadId,
+  isRasterImageFile,
+  normalizeImageMeta,
+} from './extensions/image-utils.js';
 
 // Editor typography styles
 import './editor.css';
@@ -97,6 +106,8 @@ const slashCommandIcons = {
   MathOperations,
   // Embed icon
   StackSimple,
+  // Image icon
+  ImageSquare,
 };
 
 // ============================================================================
@@ -144,6 +155,9 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onEmbedResolve,
       onEmbedOpen,
       onEmbedSubscribe,
+      // Phase 3: Images
+      onImageUpload,
+      onImageRemove,
       // Phase 2b: Tags
       enableTags = false,
       onTagSearch,
@@ -217,6 +231,18 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       range: null,
     });
 
+    const [imageInsertState, setImageInsertState] = React.useState<{
+      isOpen: boolean;
+      mode: 'upload' | 'url';
+      position: { top: number; left: number } | null;
+      insertPosition: number | null;
+    }>({
+      isOpen: false,
+      mode: 'upload',
+      position: null,
+      insertPosition: null,
+    });
+
     // Tag suggestion state
     const [tagSuggestionState, setTagSuggestionState] = React.useState<{
       isOpen: boolean;
@@ -255,6 +281,295 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onTagSearchRef.current = onTagSearch;
       onTagCreateRef.current = onTagCreate;
     }, [onTagSearch, onTagCreate]);
+
+    const onImageUploadRef = React.useRef(onImageUpload);
+    const onImageRemoveRef = React.useRef(onImageRemove);
+    React.useEffect(() => {
+      onImageUploadRef.current = onImageUpload;
+      onImageRemoveRef.current = onImageRemove;
+    }, [onImageUpload, onImageRemove]);
+
+    const editorRef = React.useRef<TiptapEditor | null>(null);
+    const imageObjectUrlsRef = React.useRef(new Map<string, string>());
+    const imageUploadIdsRef = React.useRef(new Set<string>());
+
+    const releaseImageObjectUrl = React.useCallback((uploadId: string) => {
+      const existingUrl = imageObjectUrlsRef.current.get(uploadId);
+      if (existingUrl) {
+        URL.revokeObjectURL(existingUrl);
+        imageObjectUrlsRef.current.delete(uploadId);
+      }
+    }, []);
+
+    const collectImageUploadIds = React.useCallback((doc: ProseMirrorNode) => {
+      const uploadIds = new Set<string>();
+      doc.descendants((node) => {
+        if (node.type.name !== 'image') return true;
+        const uploadId = (node.attrs as ImageNodeAttributes)['uploadId'];
+        if (typeof uploadId === 'string' && uploadId.length > 0) {
+          uploadIds.add(uploadId);
+        }
+        return true;
+      });
+      return uploadIds;
+    }, []);
+
+    const setImageObjectUrl = React.useCallback((uploadId: string, objectUrl: string) => {
+      const existingUrl = imageObjectUrlsRef.current.get(uploadId);
+      if (existingUrl && existingUrl !== objectUrl) {
+        URL.revokeObjectURL(existingUrl);
+      }
+      imageObjectUrlsRef.current.set(uploadId, objectUrl);
+    }, []);
+
+    const syncImageUploadIds = React.useCallback(
+      (doc: ProseMirrorNode) => {
+        const currentIds = collectImageUploadIds(doc);
+        const previousIds = imageUploadIdsRef.current;
+
+        previousIds.forEach((uploadId) => {
+          if (!currentIds.has(uploadId)) {
+            releaseImageObjectUrl(uploadId);
+            onImageRemoveRef.current?.(uploadId);
+          }
+        });
+
+        imageUploadIdsRef.current = currentIds;
+      },
+      [collectImageUploadIds, releaseImageObjectUrl]
+    );
+
+    const updateImageNodeByUploadId = React.useCallback(
+      (uploadId: string, attrs: Partial<ImageNodeAttributes>) => {
+        const editorInstance = editorRef.current;
+        if (!editorInstance) return;
+        const { state, view } = editorInstance;
+        let transaction = state.tr;
+        let updated = false;
+
+        state.doc.descendants((node, pos) => {
+          if (node.type.name !== 'image') return true;
+          const nodeUploadId = (node.attrs as ImageNodeAttributes)['uploadId'];
+          if (nodeUploadId !== uploadId) return true;
+          transaction = transaction.setNodeMarkup(pos, undefined, {
+            ...node.attrs,
+            ...attrs,
+          });
+          updated = true;
+          return false;
+        });
+
+        if (updated) {
+          view.dispatch(transaction);
+        }
+      },
+      []
+    );
+
+    const findImageNodeByUploadId = React.useCallback(
+      (uploadId: string | null): ImageNodeAttributes | null => {
+        if (!uploadId) return null;
+        const editorInstance = editorRef.current;
+        if (!editorInstance) return null;
+        let found: ImageNodeAttributes | null = null;
+        editorInstance.state.doc.descendants((node) => {
+          if (node.type.name !== 'image') return true;
+          const nodeUploadId = (node.attrs as ImageNodeAttributes)['uploadId'];
+          if (nodeUploadId !== uploadId) return true;
+          found = node.attrs as ImageNodeAttributes;
+          return false;
+        });
+        return found;
+      },
+      []
+    );
+
+    const insertImageNodes = React.useCallback(
+      (nodes: ImageNodeAttributes[], position?: number | null) => {
+        const editorInstance = editorRef.current;
+        if (!editorInstance || readOnly) return;
+        const content = nodes.map((attrs) => ({
+          type: 'image',
+          attrs,
+        }));
+        const chain = editorInstance.chain().focus();
+        if (typeof position === 'number') {
+          chain.insertContentAt(position, content);
+        } else {
+          chain.insertContent(content);
+        }
+        chain.run();
+      },
+      [readOnly]
+    );
+
+    const startImageUpload = React.useCallback(
+      async (
+        file: File,
+        uploadId: string,
+        meta?: { alt?: string | null; caption?: string | null }
+      ) => {
+        const uploader = onImageUploadRef.current;
+        if (!uploader) return;
+
+        const baseMeta = meta ?? findImageNodeByUploadId(uploadId);
+        const normalizedMeta = normalizeImageMeta({
+          alt: baseMeta?.alt ?? null,
+          caption: baseMeta?.caption ?? null,
+        });
+
+        const request: ImageUploadRequest = {
+          uploadId,
+          alt: normalizedMeta.alt,
+          caption: normalizedMeta.caption,
+          onProgress: (progress) => {
+            const safeProgress = Math.max(0, Math.min(100, progress));
+            updateImageNodeByUploadId(uploadId, { uploadProgress: safeProgress });
+          },
+        };
+
+        try {
+          const result = await uploader(file, request);
+          const mergedMeta = normalizeImageMeta({
+            alt: result.alt ?? normalizedMeta.alt,
+            caption: result.caption ?? normalizedMeta.caption,
+          });
+          updateImageNodeByUploadId(uploadId, {
+            src: result.src,
+            alt: mergedMeta.alt,
+            caption: mergedMeta.caption,
+            uploadStatus: null,
+            uploadProgress: null,
+            errorMessage: null,
+          });
+          releaseImageObjectUrl(uploadId);
+        } catch (error) {
+          updateImageNodeByUploadId(uploadId, {
+            uploadStatus: 'error',
+            uploadProgress: null,
+            errorMessage: error instanceof Error && error.message ? error.message : 'Upload failed',
+          });
+        }
+      },
+      [findImageNodeByUploadId, releaseImageObjectUrl, updateImageNodeByUploadId]
+    );
+
+    const insertImageFiles = React.useCallback(
+      (
+        files: File[],
+        meta?: { alt?: string | null; caption?: string | null },
+        position?: number | null
+      ) => {
+        if (readOnly) return;
+        const validFiles = files.filter(isRasterImageFile);
+        if (validFiles.length === 0) return;
+        const uploader = onImageUploadRef.current;
+        const normalizedMeta = normalizeImageMeta(meta);
+
+        const uploads = validFiles.map((file) => {
+          const uploadId = createImageUploadId();
+          const objectUrl = URL.createObjectURL(file);
+          setImageObjectUrl(uploadId, objectUrl);
+
+          const attrs: ImageNodeAttributes = {
+            src: objectUrl,
+            alt: normalizedMeta.alt,
+            caption: normalizedMeta.caption,
+            uploadId,
+            uploadStatus: uploader ? 'uploading' : null,
+            uploadProgress: uploader ? 0 : null,
+            errorMessage: null,
+          };
+
+          return { file, uploadId, attrs };
+        });
+
+        insertImageNodes(
+          uploads.map((upload) => upload.attrs),
+          position
+        );
+
+        uploads.forEach((upload) => {
+          if (uploader) {
+            void startImageUpload(upload.file, upload.uploadId, normalizedMeta);
+          }
+        });
+      },
+      [insertImageNodes, readOnly, setImageObjectUrl, startImageUpload]
+    );
+
+    const insertImageFromUrl = React.useCallback(
+      (
+        src: string,
+        meta?: { alt?: string | null; caption?: string | null },
+        position?: number | null
+      ) => {
+        if (readOnly) return;
+        const normalizedMeta = normalizeImageMeta(meta);
+        insertImageNodes(
+          [
+            {
+              src,
+              alt: normalizedMeta.alt,
+              caption: normalizedMeta.caption,
+              uploadId: null,
+              uploadStatus: null,
+              uploadProgress: null,
+              errorMessage: null,
+            },
+          ],
+          position
+        );
+      },
+      [insertImageNodes, readOnly]
+    );
+
+    const handleRetryUpload = React.useCallback(
+      (file: File, uploadId: string | null) => {
+        if (!uploadId) {
+          insertImageFiles([file]);
+          return;
+        }
+
+        const existingMeta = findImageNodeByUploadId(uploadId);
+        const normalizedMeta = normalizeImageMeta({
+          alt: existingMeta?.alt ?? null,
+          caption: existingMeta?.caption ?? null,
+        });
+        const objectUrl = URL.createObjectURL(file);
+        setImageObjectUrl(uploadId, objectUrl);
+        updateImageNodeByUploadId(uploadId, {
+          src: objectUrl,
+          alt: normalizedMeta.alt,
+          caption: normalizedMeta.caption,
+          uploadStatus: onImageUploadRef.current ? 'uploading' : null,
+          uploadProgress: onImageUploadRef.current ? 0 : null,
+          errorMessage: null,
+        });
+
+        if (onImageUploadRef.current) {
+          void startImageUpload(file, uploadId, normalizedMeta);
+        }
+      },
+      [
+        findImageNodeByUploadId,
+        insertImageFiles,
+        setImageObjectUrl,
+        startImageUpload,
+        updateImageNodeByUploadId,
+      ]
+    );
+
+    const handleImageRemove = React.useCallback(
+      (uploadId: string | null) => {
+        if (uploadId) {
+          releaseImageObjectUrl(uploadId);
+          imageUploadIdsRef.current.delete(uploadId);
+        }
+        onImageRemoveRef.current?.(uploadId ?? null);
+      },
+      [releaseImageObjectUrl]
+    );
 
     // Create ref suggestion render callbacks
     const createRefSuggestionRender = React.useCallback(
@@ -700,7 +1015,10 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         // Highlight mark (==text== input rule)
         HighlightExtension,
         // Image support (Phase 2: resizable)
-        ResizableImage,
+        ResizableImage.configure({
+          onRetryUpload: handleRetryUpload,
+          onRemoveImage: handleImageRemove,
+        }),
         // Task lists (not included in StarterKit)
         TaskList,
         TaskItem.configure({
@@ -1210,6 +1528,8 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       enableRefs,
       onRefClick,
       createRefSuggestionRender,
+      handleRetryUpload,
+      handleImageRemove,
       enableEmbeds,
       onEmbedResolve,
       onEmbedOpen,
@@ -1238,6 +1558,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       autofocus: autoFocus,
       onUpdate: ({ editor: ed }) => {
         onChange?.(ed.getJSON());
+        syncImageUploadIds(ed.state.doc);
       },
       onSelectionUpdate: ({ editor: ed }) => {
         // Check if cursor is in a table
@@ -1278,8 +1599,47 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         attributes: {
           class: cn('outline-none', 'text-foreground'),
         },
+        handlePaste: (_view, event) => {
+          if (readOnly) return false;
+          const files = Array.from(event.clipboardData?.files ?? []);
+          if (files.length === 0) return false;
+          const imageFiles = files.filter(isRasterImageFile);
+          if (imageFiles.length === 0) return false;
+          event.preventDefault();
+          insertImageFiles(imageFiles);
+          return true;
+        },
+        handleDrop: (view, event) => {
+          if (readOnly) return false;
+          const files = Array.from(event.dataTransfer?.files ?? []);
+          if (files.length === 0) return false;
+          const imageFiles = files.filter(isRasterImageFile);
+          if (imageFiles.length === 0) return false;
+          event.preventDefault();
+          const coords = view.posAtCoords({ left: event.clientX, top: event.clientY });
+          insertImageFiles(imageFiles, undefined, coords?.pos ?? null);
+          return true;
+        },
       },
     });
+
+    React.useEffect(() => {
+      editorRef.current = editor ?? null;
+    }, [editor]);
+
+    React.useEffect(() => {
+      if (!editor) return;
+      imageUploadIdsRef.current = collectImageUploadIds(editor.state.doc);
+    }, [collectImageUploadIds, editor]);
+
+    React.useEffect(() => {
+      return () => {
+        imageObjectUrlsRef.current.forEach((url) => {
+          URL.revokeObjectURL(url);
+        });
+        imageObjectUrlsRef.current.clear();
+      };
+    }, []);
 
     // Expose imperative handle
     React.useImperativeHandle(
@@ -1336,6 +1696,30 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       [embedSuggestionState.command]
     );
 
+    const closeImageInsertPopover = React.useCallback(() => {
+      setImageInsertState((prev) => ({
+        ...prev,
+        isOpen: false,
+        position: null,
+        insertPosition: null,
+      }));
+    }, []);
+
+    const openImageInsertPopover = React.useCallback(
+      (range: Range | null, fallbackPosition?: { top: number; left: number } | null) => {
+        if (!editor || readOnly || !range) return;
+        const coords = editor.view.coordsAtPos(range.from);
+        const position = fallbackPosition ?? { top: coords.bottom + 4, left: coords.left };
+        setImageInsertState({
+          isOpen: true,
+          mode: 'upload',
+          position,
+          insertPosition: range.from,
+        });
+      },
+      [editor, readOnly]
+    );
+
     // Handle create new from ref suggestion
     const handleRefCreate = React.useCallback(
       async (title: string) => {
@@ -1366,12 +1750,51 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     const handleSlashCommandSelect = React.useCallback(
       (item: SlashCommandItem) => {
         if (editor && slashCommandState.range) {
+          if (item.id === 'image') {
+            editor.chain().focus().deleteRange(slashCommandState.range).run();
+            setSlashCommandState((prev) => ({ ...prev, isOpen: false }));
+            openImageInsertPopover(slashCommandState.range, slashCommandState.position);
+            return;
+          }
           item.command(editor, slashCommandState.range);
           setSlashCommandState((prev) => ({ ...prev, isOpen: false }));
         }
       },
-      [editor, slashCommandState.range]
+      [editor, openImageInsertPopover, slashCommandState.position, slashCommandState.range]
     );
+
+    const handleImageInsertUpload = React.useCallback(
+      (file: File, meta: { alt?: string | null; caption?: string | null }) => {
+        insertImageFiles([file], meta, imageInsertState.insertPosition);
+        closeImageInsertPopover();
+      },
+      [closeImageInsertPopover, imageInsertState.insertPosition, insertImageFiles]
+    );
+
+    const handleImageInsertUrl = React.useCallback(
+      (url: string, meta: { alt?: string | null; caption?: string | null }) => {
+        insertImageFromUrl(url, meta, imageInsertState.insertPosition);
+        closeImageInsertPopover();
+      },
+      [closeImageInsertPopover, imageInsertState.insertPosition, insertImageFromUrl]
+    );
+
+    React.useEffect(() => {
+      if (!imageInsertState.isOpen) return;
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          closeImageInsertPopover();
+        }
+      };
+      document.addEventListener('keydown', handleKeyDown, true);
+      return () => document.removeEventListener('keydown', handleKeyDown, true);
+    }, [closeImageInsertPopover, imageInsertState.isOpen]);
+
+    React.useEffect(() => {
+      if (readOnly && imageInsertState.isOpen) {
+        closeImageInsertPopover();
+      }
+    }, [closeImageInsertPopover, imageInsertState.isOpen, readOnly]);
 
     // Handle tag suggestion item selection
     const handleTagSelect = React.useCallback(
@@ -1540,6 +1963,30 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
               items={slashCommandState.filteredItems}
               selectedIndex={slashCommandState.selectedIndex}
               onSelect={handleSlashCommandSelect}
+            />
+          </div>
+        )}
+
+        {/* Image insert popover */}
+        {imageInsertState.isOpen && imageInsertState.position && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: imageInsertState.position.top,
+              left: imageInsertState.position.left,
+            }}
+          >
+            <ImageInsertPopover
+              mode={imageInsertState.mode}
+              onModeChange={(mode) =>
+                setImageInsertState((prev) => ({
+                  ...prev,
+                  mode,
+                }))
+              }
+              onUploadFile={handleImageInsertUpload}
+              onInsertUrl={handleImageInsertUrl}
+              onClose={closeImageInsertPopover}
             />
           </div>
         )}

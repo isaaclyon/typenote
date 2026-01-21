@@ -9,6 +9,7 @@ import type { Story } from '@ladle/react';
 import type { JSONContent } from '@tiptap/core';
 
 import { Editor } from '../Editor.js';
+import type { ImageUploadRequest } from '../types.js';
 
 export default {
   title: 'Features / Editor / Media',
@@ -100,6 +101,48 @@ const imageContent: JSONContent = {
   ],
 };
 
+const imageUploadContent: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Image Upload Flow' }],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Use /image to upload a file or insert a URL. Drop or paste images too.',
+        },
+      ],
+    },
+  ],
+};
+
+const imageErrorContent: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Image Upload Error' }],
+    },
+    {
+      type: 'image',
+      attrs: {
+        src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&h=500&fit=crop',
+        alt: 'Forest path',
+        caption: 'Upload failed example',
+        uploadId: 'error-demo',
+        uploadStatus: 'error',
+        errorMessage: 'Upload failed',
+      },
+    },
+  ],
+};
+
 // ============================================================================
 // Stories
 // ============================================================================
@@ -169,3 +212,42 @@ export const ImageResize: Story = () => {
 };
 
 ImageResize.storyName = 'Image Resize';
+
+export const ImageUploads: Story = () => {
+  const [content, setContent] = React.useState<JSONContent>(imageUploadContent);
+
+  const handleImageUpload = React.useCallback(async (_file: File, request: ImageUploadRequest) => {
+    const { onProgress } = request;
+    const steps = [15, 45, 75, 100];
+    for (const step of steps) {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      onProgress(step);
+    }
+
+    return {
+      src: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=800&h=500&fit=crop',
+      caption: 'Uploaded via async callback',
+    };
+  }, []);
+
+  return (
+    <div className="space-y-4 p-6">
+      <Editor content={content} onChange={setContent} onImageUpload={handleImageUpload} />
+      <div className="text-xs text-muted-foreground space-y-1">
+        <p>Use /image to open the upload chooser.</p>
+        <p>Upload callbacks update progress and replace the temporary image.</p>
+      </div>
+    </div>
+  );
+};
+
+ImageUploads.storyName = 'Image Uploads';
+
+export const ImageErrors: Story = () => (
+  <div className="space-y-4 p-6">
+    <Editor content={imageErrorContent} />
+    <div className="text-xs text-muted-foreground space-y-1">
+      <p>Error placeholders show retry/remove actions when editable.</p>
+    </div>
+  </div>
+);

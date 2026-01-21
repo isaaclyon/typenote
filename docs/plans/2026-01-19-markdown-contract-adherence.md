@@ -59,13 +59,13 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Links + autolink
 - Highlight mark (==text==)
 - Images (display from URLs + resize, Phase 1-2 complete)
+- Embeds (![[Page]] / ![[file]])
+- Footnotes (refs + definition blocks + ordering)
 - Inline math ($...$) + block math ($$) with KaTeX rendering
 
 ### Not Implemented Yet
 
-- Image upload + attachments (Phase 3)
-- Embeds (![[Page]] / ![[file]])
-- Footnotes
+- Image upload + attachments (Phase 3, design-system UX + callbacks only)
 
 ### Recently Completed
 
@@ -73,6 +73,8 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Heading targets ([[Page#Heading]]) ✅ (2026-01-20)
 - Block references ([[Page#^block-id]]) ✅ (2026-01-20)
 - Inline math ($...$) + block math ($$) with KaTeX rendering ✅ (2026-01-19)
+- Embeds (![[Page]] / ![[file]]) ✅ (2026-01-21)
+- Footnotes (refs + definitions) ✅ (2026-01-21)
 
 ## Export Notes
 
@@ -91,11 +93,10 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 7. ~~Implement heading targets ([[Page#Heading]]).~~ ✅
 8. ~~Implement block references ([[Page#^block-id]]).~~ ✅
 9. Implement remaining contract gaps (priority order):
-   - **Footnotes** — [^1] syntax with definition blocks at document end
-   - **Embeds** — ![[Page]] / ![[file]] for inline object rendering
-   - **Image upload** — Phase 3, requires main process file handling
+   - **Image upload UX (design-system)** — /image slash command, URL/file chooser, drag/drop + paste, async upload callbacks with progress, error placeholders, alt + caption attrs
 
 ## Out of Scope (Other Packages)
 
 - **NotateDoc converters** (TipTap JSON ↔ NotateDoc) — lives in `packages/core`
 - **Markdown export/import** — depends on NotateDoc converters, lives in `packages/core`
+- **Image storage + IPC** — handled by app layer; design-system exposes upload hooks only
