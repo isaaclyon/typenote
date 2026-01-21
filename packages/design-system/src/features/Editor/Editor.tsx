@@ -31,6 +31,7 @@ import { Lightbulb } from '@phosphor-icons/react/dist/ssr/Lightbulb';
 import { WarningCircle } from '@phosphor-icons/react/dist/ssr/WarningCircle';
 // Math icon
 import { MathOperations } from '@phosphor-icons/react/dist/ssr/MathOperations';
+import { StackSimple } from '@phosphor-icons/react/dist/ssr/StackSimple';
 
 import { cn } from '../../lib/utils.js';
 import type { EditorProps, EditorRef } from './types.js';
@@ -65,6 +66,7 @@ import { ResizableImage } from './extensions/ResizableImage.js';
 import { InlineMath } from './extensions/InlineMath.js';
 import { MathBlock } from './extensions/MathBlock.js';
 import { BlockIdNode } from './extensions/BlockIdNode.js';
+import { EmbedNode } from './extensions/EmbedNode.js';
 
 // Editor typography styles
 import './editor.css';
@@ -89,6 +91,8 @@ const slashCommandIcons = {
   WarningCircle,
   // Math icon
   MathOperations,
+  // Embed icon
+  StackSimple,
 };
 
 // ============================================================================
@@ -131,6 +135,11 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       onHeadingSearch,
       onBlockSearch,
       onBlockIdInsert,
+      // Phase 2d: Embeds
+      enableEmbeds = true,
+      onEmbedResolve,
+      onEmbedOpen,
+      onEmbedSubscribe,
       // Phase 2b: Tags
       enableTags = false,
       onTagSearch,
@@ -141,6 +150,29 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
   ) => {
     // Ref suggestion state
     const [refSuggestionState, setRefSuggestionState] = React.useState<{
+      isOpen: boolean;
+      items: AnySuggestionItem[];
+      query: string;
+      selectedIndex: number;
+      position: { top: number; left: number } | null;
+      command: ((item: AnySuggestionItem) => void) | null;
+      range: { from: number; to: number } | null;
+      editor: ReturnType<typeof useEditor> | null;
+      mode: SuggestionMode;
+    }>({
+      isOpen: false,
+      items: [],
+      query: '',
+      selectedIndex: 0,
+      position: null,
+      command: null,
+      range: null,
+      editor: null,
+      mode: 'object',
+    });
+
+    // Embed suggestion state
+    const [embedSuggestionState, setEmbedSuggestionState] = React.useState<{
       isOpen: boolean;
       items: AnySuggestionItem[];
       query: string;
@@ -367,6 +399,135 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       []
     );
 
+    // Create embed suggestion render callbacks
+    const createEmbedSuggestionRender = React.useCallback(
+      () => ({
+        onStart: (props: SuggestionProps<AnySuggestionItem> & { mode?: SuggestionMode }) => {
+          const rect = props.clientRect?.();
+          setEmbedSuggestionState({
+            isOpen: true,
+            items: props.items,
+            query: props.query,
+            selectedIndex: 0,
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : null,
+            command: props.command,
+            range: props.range,
+            editor: props.editor,
+            mode: props.mode ?? 'object',
+          });
+        },
+        onUpdate: (props: SuggestionProps<AnySuggestionItem> & { mode?: SuggestionMode }) => {
+          const rect = props.clientRect?.();
+          setEmbedSuggestionState((prev) => ({
+            ...prev,
+            items: props.items,
+            query: props.query,
+            selectedIndex: Math.min(prev.selectedIndex, Math.max(0, props.items.length - 1)),
+            position: rect ? { top: rect.bottom + 4, left: rect.left } : prev.position,
+            command: props.command,
+            range: props.range,
+            editor: props.editor,
+            mode: props.mode ?? prev.mode,
+          }));
+        },
+        onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+          const isInAliasMode = (prev: typeof embedSuggestionState) => {
+            if (prev.mode !== 'object') return false;
+            const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
+            const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+            if (alias === null) return false;
+            return prev.items.some(
+              (item) => isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
+            );
+          };
+
+          if (event.key === 'ArrowUp') {
+            setEmbedSuggestionState((prev) => {
+              if (isInAliasMode(prev)) return prev;
+              return {
+                ...prev,
+                selectedIndex:
+                  prev.selectedIndex <= 0 ? prev.items.length - 1 : prev.selectedIndex - 1,
+              };
+            });
+            return true;
+          }
+          if (event.key === 'ArrowDown') {
+            setEmbedSuggestionState((prev) => {
+              if (isInAliasMode(prev)) return prev;
+              return {
+                ...prev,
+                selectedIndex:
+                  prev.selectedIndex >= prev.items.length - 1 ? 0 : prev.selectedIndex + 1,
+              };
+            });
+            return true;
+          }
+          if (event.key === 'Enter') {
+            setEmbedSuggestionState((prev) => {
+              if (prev.mode === 'object') {
+                const cleanQuery = prev.query.startsWith('[') ? prev.query.slice(1) : prev.query;
+                const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+                if (alias !== null) {
+                  const matchedItem = prev.items.find(
+                    (item) =>
+                      isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
+                  );
+                  if (matchedItem && prev.command) {
+                    prev.command(matchedItem);
+                    return { ...prev, isOpen: false };
+                  }
+                }
+              }
+
+              const item = prev.items[prev.selectedIndex];
+              if (item && prev.command) {
+                prev.command(item);
+              }
+              return { ...prev, isOpen: false };
+            });
+            return true;
+          }
+          if (event.key === 'Tab') {
+            event.preventDefault();
+            setEmbedSuggestionState((prev) => {
+              if (prev.mode !== 'object') return prev;
+              if (isInAliasMode(prev)) return prev;
+
+              const item = prev.items[prev.selectedIndex];
+              if (!item || !prev.editor || !prev.range || !isRefItem(item)) return prev;
+
+              const title = item.title;
+              const newText = `![[${title}`;
+
+              prev.editor.chain().focus().deleteRange(prev.range).insertContent(newText).run();
+              return prev;
+            });
+            return true;
+          }
+          if (event.key === 'Escape') {
+            setEmbedSuggestionState((prev) => ({ ...prev, isOpen: false }));
+            return true;
+          }
+          return false;
+        },
+        onExit: () => {
+          setEmbedSuggestionState({
+            isOpen: false,
+            items: [],
+            query: '',
+            selectedIndex: 0,
+            position: null,
+            command: null,
+            range: null,
+            editor: null,
+            mode: 'object',
+          });
+        },
+      }),
+      []
+    );
+
     // Create slash command render callbacks
     const allSlashCommands = React.useMemo(() => getSlashCommandItems(slashCommandIcons), []);
 
@@ -552,6 +713,14 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         MathBlock,
         // Block IDs (^block-id syntax)
         BlockIdNode,
+        // Embeds (![[...]] syntax)
+        EmbedNode.configure({
+          onResolve: onEmbedResolve ?? null,
+          onOpen: onEmbedOpen ?? null,
+          onSubscribe: onEmbedSubscribe ?? null,
+          maxDepth: 1,
+          embedDepth: 0,
+        }),
       ];
 
       if (enableRefs) {
@@ -636,6 +805,14 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                   // Check if char at range.from+1 is also `[`
                   // (range.from is already `[` since that's what triggered this)
                   try {
+                    const charBefore = state.doc.textBetween(
+                      range.from - 1,
+                      range.from,
+                      undefined,
+                      '\ufffc'
+                    );
+                    if (charBefore === '!') return false;
+
                     const secondChar = state.doc.textBetween(
                       range.from + 1,
                       range.from + 2,
@@ -793,6 +970,151 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         baseExtensions.push(AtSuggestion, BracketSuggestion);
       }
 
+      if (enableEmbeds) {
+        const EmbedSuggestion = Extension.create({
+          name: 'embedSuggestion',
+          addProseMirrorPlugins() {
+            return [
+              Suggestion({
+                editor: this.editor,
+                pluginKey: new PluginKey('embedSuggestion'),
+                char: '[',
+                allowSpaces: true,
+                startOfLine: false,
+                allow: ({ state, range }) => {
+                  const queryLength = range.to - range.from;
+                  if (queryLength < 1) return false;
+
+                  try {
+                    const charBefore = state.doc.textBetween(
+                      range.from - 1,
+                      range.from,
+                      undefined,
+                      '\ufffc'
+                    );
+                    const secondChar = state.doc.textBetween(
+                      range.from + 1,
+                      range.from + 2,
+                      undefined,
+                      '\ufffc'
+                    );
+                    return charBefore === '!' && secondChar === '[';
+                  } catch {
+                    return false;
+                  }
+                },
+                items: async ({ query }) => {
+                  const search = onRefSearchRef.current;
+                  if (!search) return [];
+
+                  const cleanQuery = query.startsWith('[') ? query.slice(1) : query;
+                  const parsed = parseQueryWithAlias(cleanQuery);
+
+                  if (parsed.mode === 'heading' && onHeadingSearchRef.current) {
+                    const objects = await search(parsed.objectQuery);
+                    const matchedObject = objects.find(
+                      (o) => o.title.toLowerCase() === parsed.objectQuery.toLowerCase()
+                    );
+                    if (matchedObject) {
+                      setEmbedSuggestionState((prev) => ({ ...prev, mode: 'heading' }));
+                      const headings = await onHeadingSearchRef.current(
+                        matchedObject.objectId,
+                        parsed.subQuery
+                      );
+                      return headings.map((h) => ({
+                        ...h,
+                        _parentObject: matchedObject,
+                      })) as unknown as AnySuggestionItem[];
+                    }
+                  }
+
+                  if (parsed.mode === 'block' && onBlockSearchRef.current) {
+                    const objects = await search(parsed.objectQuery);
+                    const matchedObject = objects.find(
+                      (o) => o.title.toLowerCase() === parsed.objectQuery.toLowerCase()
+                    );
+                    if (matchedObject) {
+                      setEmbedSuggestionState((prev) => ({ ...prev, mode: 'block' }));
+                      const blocks = await onBlockSearchRef.current(
+                        matchedObject.objectId,
+                        parsed.subQuery
+                      );
+                      return blocks.map((b) => ({
+                        ...b,
+                        _parentObject: matchedObject,
+                      })) as unknown as AnySuggestionItem[];
+                    }
+                  }
+
+                  setEmbedSuggestionState((prev) => ({ ...prev, mode: 'object' }));
+                  return search(parsed.objectQuery);
+                },
+                command: ({ editor: ed, range, props: item }) => {
+                  const fullQuery = ed.state.doc.textBetween(range.from, range.to);
+                  const cleanQuery = fullQuery.startsWith('[') ? fullQuery.slice(1) : fullQuery;
+                  const { alias } = parseQueryWithAlias(cleanQuery);
+
+                  let attrs: Record<string, unknown>;
+
+                  if (isRefItem(item)) {
+                    attrs = {
+                      objectId: item.objectId,
+                      objectType: item.objectType,
+                      displayTitle: item.title,
+                      alias,
+                    };
+                  } else if (isHeadingItem(item)) {
+                    const parentObject = (
+                      item as HeadingSuggestionItem & { _parentObject?: RefSuggestionItem }
+                    )._parentObject;
+                    if (!parentObject) return;
+                    attrs = {
+                      objectId: parentObject.objectId,
+                      objectType: parentObject.objectType,
+                      displayTitle: parentObject.title,
+                      alias,
+                      headingText: item.text,
+                    };
+                  } else if (isBlockItem(item)) {
+                    const parentObject = (
+                      item as BlockSuggestionItem & { _parentObject?: RefSuggestionItem }
+                    )._parentObject;
+                    if (!parentObject) return;
+
+                    let blockId = item.alias;
+                    if (!blockId) {
+                      blockId = generateBlockId();
+                      if (onBlockIdInsertRef.current) {
+                        onBlockIdInsertRef.current(parentObject.objectId, item.ksuid, blockId);
+                      }
+                    }
+
+                    attrs = {
+                      objectId: parentObject.objectId,
+                      objectType: parentObject.objectType,
+                      displayTitle: parentObject.title,
+                      alias,
+                      blockId,
+                    };
+                  } else {
+                    return;
+                  }
+
+                  ed.chain()
+                    .focus()
+                    .deleteRange(range)
+                    .insertContent([{ type: 'embedNode', attrs }, { type: 'paragraph' }])
+                    .run();
+                },
+                render: createEmbedSuggestionRender,
+              }),
+            ];
+          },
+        });
+
+        baseExtensions.push(EmbedSuggestion);
+      }
+
       // Slash commands (when enabled and not readOnly)
       if (enableSlashCommands && !readOnly) {
         const SlashCommandExtension = Extension.create({
@@ -879,6 +1201,11 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       enableRefs,
       onRefClick,
       createRefSuggestionRender,
+      enableEmbeds,
+      onEmbedResolve,
+      onEmbedOpen,
+      onEmbedSubscribe,
+      createEmbedSuggestionRender,
       enableSlashCommands,
       readOnly,
       allSlashCommands,
@@ -989,6 +1316,15 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
         }
       },
       [refSuggestionState.command]
+    );
+
+    const handleEmbedSelect = React.useCallback(
+      (item: AnySuggestionItem) => {
+        if (embedSuggestionState.command) {
+          embedSuggestionState.command(item);
+        }
+      },
+      [embedSuggestionState.command]
     );
 
     // Handle create new from ref suggestion
@@ -1135,6 +1471,47 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
                   selectedIndex={refSuggestionState.selectedIndex}
                   onSelect={handleRefSelect}
                   onCreate={onRefCreate ? handleRefCreate : undefined}
+                  aliasMode={aliasMode}
+                />
+              </div>
+            );
+          })()}
+
+        {/* Embed suggestion popup */}
+        {embedSuggestionState.isOpen &&
+          embedSuggestionState.position &&
+          (() => {
+            const cleanQuery = embedSuggestionState.query.startsWith('[')
+              ? embedSuggestionState.query.slice(1)
+              : embedSuggestionState.query;
+
+            const { objectQuery, alias } = parseQueryWithAlias(cleanQuery);
+            let aliasMode: AliasMode | null = null;
+
+            if (alias !== null && embedSuggestionState.mode === 'object') {
+              const matchedItem = embedSuggestionState.items.find(
+                (item) => isRefItem(item) && item.title.toLowerCase() === objectQuery.toLowerCase()
+              );
+              if (matchedItem && isRefItem(matchedItem)) {
+                aliasMode = { targetItem: matchedItem, alias };
+              }
+            }
+
+            return (
+              <div
+                className="fixed z-50"
+                style={{
+                  top: embedSuggestionState.position.top,
+                  left: embedSuggestionState.position.left,
+                }}
+              >
+                <RefSuggestionList
+                  mode={embedSuggestionState.mode}
+                  items={embedSuggestionState.items}
+                  query={cleanQuery}
+                  selectedIndex={embedSuggestionState.selectedIndex}
+                  onSelect={handleEmbedSelect}
+                  onCreate={undefined}
                   aliasMode={aliasMode}
                 />
               </div>

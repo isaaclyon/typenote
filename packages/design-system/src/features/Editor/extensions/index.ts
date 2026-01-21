@@ -68,3 +68,11 @@ export { MathBlockView } from './MathBlockView.js';
 
 export { renderMath } from './katex-utils.js';
 export type { MathRenderResult } from './katex-utils.js';
+
+export { BlockIdNode } from './BlockIdNode.js';
+export type { BlockIdAttributes, BlockIdNodeOptions } from './BlockIdNode.js';
+export { BlockIdNodeView } from './BlockIdNodeView.js';
+
+export { EmbedNode } from './EmbedNode.js';
+export type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.js';
+export { EmbedNodeView } from './EmbedNodeView.js';

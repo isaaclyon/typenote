@@ -7,6 +7,7 @@ import type {
 } from './extensions/RefSuggestion.js';
 import type { TagNodeAttributes } from './extensions/TagNode.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
+import type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
 
 /**
  * Editor component props.
@@ -96,6 +97,34 @@ export interface EditorProps {
   onBlockIdInsert?: (objectId: string, blockKsuid: string, newAlias: string) => void;
 
   // ============================================================================
+  // Embeds (Phase 2d)
+  // ============================================================================
+
+  /**
+   * Enable embed suggestions via `![[` trigger.
+   * When true, onRefSearch must be provided.
+   */
+  enableEmbeds?: boolean;
+
+  /**
+   * Resolve embed content as TipTap JSONContent.
+   */
+  onEmbedResolve?: (target: EmbedNodeAttributes) => Promise<JSONContent>;
+
+  /**
+   * Called when the user clicks "Open" on an embed.
+   */
+  onEmbedOpen?: (target: EmbedNodeAttributes) => void;
+
+  /**
+   * Optional live update subscription for embeds.
+   */
+  onEmbedSubscribe?: (
+    target: EmbedNodeAttributes,
+    onUpdate: (content: JSONContent) => void
+  ) => () => void;
+
+  // ============================================================================
   // Tag Support (Phase 2b)
   // ============================================================================
 
@@ -141,3 +170,4 @@ export type { RefNodeAttributes } from './extensions/RefNode.js';
 export type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 export type { TagNodeAttributes } from './extensions/TagNode.js';
 export type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
+export type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
