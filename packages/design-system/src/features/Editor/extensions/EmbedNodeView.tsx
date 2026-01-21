@@ -29,6 +29,9 @@ import { MathBlock } from './MathBlock.js';
 import { BlockIdNode } from './BlockIdNode.js';
 import { RefNode } from './RefNode.js';
 import { TagNode } from './TagNode.js';
+import { FootnoteRefNode } from './FootnoteRefNode.js';
+import { FootnoteDefNode } from './FootnoteDefNode.js';
+import { FootnoteSeparator } from './FootnoteSeparator.js';
 
 // ============================================================================
 // Types
@@ -80,6 +83,9 @@ function buildPreviewExtensions() {
     BlockIdNode,
     RefNode.configure({ onRefClick: undefined }),
     TagNode.configure({ onTagClick: undefined }),
+    FootnoteRefNode,
+    FootnoteDefNode,
+    FootnoteSeparator,
   ];
 }
 

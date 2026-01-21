@@ -76,3 +76,14 @@ export { BlockIdNodeView } from './BlockIdNodeView.js';
 export { EmbedNode } from './EmbedNode.js';
 export type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.js';
 export { EmbedNodeView } from './EmbedNodeView.js';
+
+export { FootnoteRefNode } from './FootnoteRefNode.js';
+export type { FootnoteRefAttributes } from './FootnoteRefNode.js';
+export { FootnoteRefNodeView } from './FootnoteRefNodeView.js';
+
+export { FootnoteDefNode } from './FootnoteDefNode.js';
+export type { FootnoteDefAttributes } from './FootnoteDefNode.js';
+export { FootnoteDefNodeView } from './FootnoteDefNodeView.js';
+
+export { FootnoteSeparator } from './FootnoteSeparator.js';
+export { FootnoteManager } from './FootnoteManager.js';

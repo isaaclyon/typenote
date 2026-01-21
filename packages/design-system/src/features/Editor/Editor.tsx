@@ -67,6 +67,10 @@ import { InlineMath } from './extensions/InlineMath.js';
 import { MathBlock } from './extensions/MathBlock.js';
 import { BlockIdNode } from './extensions/BlockIdNode.js';
 import { EmbedNode } from './extensions/EmbedNode.js';
+import { FootnoteRefNode } from './extensions/FootnoteRefNode.js';
+import { FootnoteDefNode } from './extensions/FootnoteDefNode.js';
+import { FootnoteSeparator } from './extensions/FootnoteSeparator.js';
+import { FootnoteManager } from './extensions/FootnoteManager.js';
 
 // Editor typography styles
 import './editor.css';
@@ -721,6 +725,11 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
           maxDepth: 1,
           embedDepth: 0,
         }),
+        // Footnotes
+        FootnoteRefNode,
+        FootnoteDefNode,
+        FootnoteSeparator,
+        FootnoteManager,
       ];
 
       if (enableRefs) {
