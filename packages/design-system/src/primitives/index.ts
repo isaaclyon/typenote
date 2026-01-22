@@ -188,3 +188,17 @@ export type {
   TableCellPinned,
   TableCaptionProps,
 } from './Table/index.js';
+
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverClose,
+} from './Popover/index.js';
+export type {
+  PopoverContentProps,
+  PopoverTriggerProps,
+  PopoverAnchorProps,
+  PopoverCloseProps,
+} from './Popover/index.js';
