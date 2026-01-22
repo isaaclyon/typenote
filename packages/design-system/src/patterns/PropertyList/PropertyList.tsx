@@ -5,11 +5,32 @@ import { cn } from '../../lib/utils.js';
 // Types
 // ============================================================================
 
+export type PropertyType =
+  | 'text'
+  | 'number'
+  | 'boolean'
+  | 'date'
+  | 'datetime'
+  | 'select'
+  | 'multiselect';
+
 export interface PropertyListItem {
+  /** Unique identifier for onPropertyChange callback */
+  key: string;
   /** Label for the property */
   label: string;
   /** Value to display (can be any React node for badges, dates, etc.) */
   value: React.ReactNode;
+  /** Property type for editing - required when editable */
+  type?: PropertyType;
+  /** Raw value for editing (string, number, boolean, Date, string[]) */
+  rawValue?: unknown;
+  /** Options for select/multiselect types */
+  options?: string[];
+  /** Placeholder text for empty values */
+  placeholder?: string;
+  /** Disable editing for this row */
+  disabled?: boolean;
   /** Optional additional CSS class for the row */
   className?: string;
 }
@@ -19,6 +40,10 @@ export interface PropertyListProps {
   items: PropertyListItem[];
   /** Additional CSS classes for the container */
   className?: string;
+  /** Enable inline editing */
+  editable?: boolean;
+  /** Callback when a property value changes */
+  onPropertyChange?: (key: string, value: unknown) => void;
 }
 
 // ============================================================================
@@ -33,9 +58,9 @@ const PropertyList = React.forwardRef<HTMLDListElement, PropertyListProps>(
         className={cn('tn-property-list grid gap-3', className)}
         data-component="property-list"
       >
-        {items.map((item, index) => (
+        {items.map((item) => (
           <div
-            key={`${item.label}-${index}`}
+            key={item.key}
             className={cn(
               'tn-property-list-item grid grid-cols-[120px_1fr] items-start gap-4',
               item.className
