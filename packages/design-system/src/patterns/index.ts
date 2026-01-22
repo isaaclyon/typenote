@@ -69,3 +69,6 @@ export type { DatePickerProps } from './DatePicker/index.js';
 
 export { DismissibleTag, dismissibleTagVariants } from './DismissibleTag/index.js';
 export type { DismissibleTagProps } from './DismissibleTag/index.js';
+
+export { RelationPicker } from './RelationPicker/index.js';
+export type { RelationPickerProps, RelationOption } from './RelationPicker/index.js';
