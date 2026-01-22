@@ -63,3 +63,6 @@ export type {
 
 export { Calendar } from './Calendar/index.js';
 export type { CalendarProps } from './Calendar/index.js';
+
+export { DatePicker } from './DatePicker/index.js';
+export type { DatePickerProps } from './DatePicker/index.js';
