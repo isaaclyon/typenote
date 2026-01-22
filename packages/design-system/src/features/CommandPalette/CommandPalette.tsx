@@ -58,6 +58,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
     ref
   ) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
     const isSearching = searchQuery.length > 0;
 
     // Flatten all visible items for keyboard navigation
@@ -76,6 +77,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
       items: flatItems,
       onSelect,
       onClose: handleClose,
+      listRef,
     });
 
     // Focus input when dialog opens
@@ -101,6 +103,13 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
       inputRef.current?.focus();
     }, [onSearchChange]);
 
+    // Forward wheel events to the list for trackpad scrolling
+    const handleWheel = useCallback((event: React.WheelEvent) => {
+      if (listRef.current) {
+        listRef.current.scrollTop += event.deltaY;
+      }
+    }, []);
+
     // Calculate selected index within each section for proper highlighting
     const getItemIndex = (sectionStartIndex: number, itemIndex: number): number => {
       return sectionStartIndex + itemIndex;
@@ -113,6 +122,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
         return (
           <CommandPaletteItem
             key={item.id}
+            data-index={globalIndex}
             icon={item.icon}
             title={item.title}
             badge={item.objectType}
@@ -126,6 +136,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
       return (
         <CommandPaletteItem
           key={item.id}
+          data-index={globalIndex}
           icon={item.icon}
           title={item.title}
           shortcut={item.shortcut}
@@ -148,7 +159,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
             aria-modal="true"
             aria-label="Command palette"
             className={cn(
-              'fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%]',
+              'fixed left-[50%] top-[50%] z-50 flex max-h-[85vh] w-full max-w-lg flex-col translate-x-[-50%] translate-y-[-50%]',
               'rounded-lg border border-border bg-background shadow-lg',
               'data-[state=open]:animate-in data-[state=closed]:animate-out',
               'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -158,6 +169,7 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
             )}
             data-state={open ? 'open' : 'closed'}
             onKeyDown={handleKeyDown}
+            onWheel={handleWheel}
           >
             {/* Search Input */}
             <div className="border-b border-border p-3">
@@ -171,11 +183,14 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
+                className="border-none focus-visible:outline-none"
               />
             </div>
 
             {/* Results List */}
             <CommandPaletteList
+              ref={listRef}
+              className="px-1 pt-1 pb-2"
               isEmpty={isEmpty}
               emptyState={
                 <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type RefObject } from 'react';
 
 import type { CommandPaletteItemData } from './types.js';
 
@@ -6,6 +6,7 @@ interface UseKeyboardListNavigationOptions {
   items: CommandPaletteItemData[];
   onSelect: (item: CommandPaletteItemData) => void;
   onClose: () => void;
+  listRef?: RefObject<HTMLDivElement | null>;
 }
 
 interface UseKeyboardListNavigationReturn {
@@ -17,11 +18,13 @@ interface UseKeyboardListNavigationReturn {
 /**
  * Hook for managing keyboard navigation in a list of items.
  * Handles arrow key navigation, Enter to select, and Escape to close.
+ * Automatically scrolls the selected item into view.
  */
 export function useKeyboardListNavigation({
   items,
   onSelect,
   onClose,
+  listRef,
 }: UseKeyboardListNavigationOptions): UseKeyboardListNavigationReturn {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -29,6 +32,20 @@ export function useKeyboardListNavigation({
   useEffect(() => {
     setSelectedIndex(0);
   }, [items]);
+
+  // Scroll selected item into view when selection changes
+  useEffect(() => {
+    if (!listRef?.current) return;
+
+    const selectedElement = listRef.current.querySelector(`[data-index="${selectedIndex}"]`);
+
+    if (selectedElement) {
+      selectedElement.scrollIntoView({
+        block: 'nearest',
+        behavior: 'smooth',
+      });
+    }
+  }, [selectedIndex, listRef]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
