@@ -1,61 +1,85 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - NotateDoc Converters)
+## Latest Session (2026-01-21 - Table Primitive)
 
 ### What was accomplished
 
-- **NotateDoc converters** — Built TipTap JSONContent ↔ NotateDoc converters in `packages/core`
-- **tiptapToNotateDoc** — Converts editor content to storage format (drops UI-only attrs)
-- **notateDocToTiptap** — Converts storage format back to editor (with RefResolver callback for UI metadata)
-- **62 unit tests** — Full coverage for all block/inline types, marks, refs, embeds, tables, math, footnotes
+- **Table primitive shipped** — Compound components + TableContainer wrapper with stories
+- **Row state styling tuned** — Hover, selected/active tinting, indeterminate header selection
+- **Pinned column experiments** — Tested scroll-aware shadows and reverted to baseline sticky behavior
 
-### Key files created
+### Key files changed
 
-- `packages/core/src/converter/types.ts` — TipTap JSONContent type definitions
-- `packages/core/src/converter/tiptapToNotateDoc.ts` — Editor → Storage converter (310 lines)
-- `packages/core/src/converter/notateDocToTiptap.ts` — Storage → Editor converter (365 lines)
-- `packages/core/src/converter/index.ts` — Module exports
-- `packages/core/src/converter/*.test.ts` — 62 tests
+- `packages/design-system/src/primitives/Table/Table.tsx`
+- `packages/design-system/src/primitives/Table/Table.stories.tsx`
+- `packages/design-system/src/primitives/Table/index.ts`
+- `packages/design-system/src/primitives/index.ts`
 
 ### Commits
 
-- (uncommitted) feat(core): add NotateDoc ↔ TipTap converters
+- None (local changes)
 
 ---
 
-## Earlier Session (2026-01-21 - Editor.tsx refactoring)
+## Earlier Session (2026-01-21 - Fix /image Slash Insert)
 
-- **Editor.tsx god file refactoring** — Reduced from 1,893 lines to 562 lines (70% reduction)
-- **Extracted hooks** — `useCallbackRef`, `useImageUpload`, `useSuggestionState`, `useEditorExtensions`
-- **Commit:** `0bc2577`
+### What was accomplished
+
+- **Restored /image slash insert flow** — Slash command opens the image insert popover, removes the trigger text, and inserts at the original cursor
+- **Read-only guard for image insert** — Popover closes and does not open when the editor is read-only
+
+### Key files changed
+
+- `packages/design-system/src/features/Editor/Editor.tsx`
+
+### Commits
+
+- `4e792bc` fix(design-system): restore /image slash insert flow
 
 ---
 
-## Earlier Sessions (2026-01-21) — Collapsed
+## Earlier Session (2026-01-21 - Markdown Export/Import Design)
 
-- **Image upload UX** (`efd96d5`) — `/image` popover, drag/drop, paste, progress states
-- **Design-system unit tests** (`611493c`) — 77 tests for editor helpers
-- **Embeds + Footnotes** (`6501991`, `352b859`) — `![[...]]` + `[^key]` support
+### What was accomplished
+
+- **NotateDoc converters committed** — `57822b2` feat(core): add NotateDoc ↔ TipTap converters
+- **Markdown export/import requirements** — Brainstormed via skill, clarified all design decisions
+- **Architecture designed** — Two code-architect agents converged on unified/remark approach
+
+### Key decisions documented
+
+- Export link format: `[[id|Title]]` (roundtrip-safe)
+- Import link resolution: Create new objects (merge duplicates later)
+- Frontmatter: Parse YAML to object properties
+- Folder structure: Flatten on import
+- Attachments: Keep as external refs (MVP)
+- Build order: Export first, then import
+
+### Architecture summary
+
+- Location: `packages/core/src/markdown/`
+- Parser: `unified` + `remark` ecosystem
+- APIs: `notateDocToMarkdown()`, `markdownToNotateDoc()`
+- ~3,500 lines estimated (similar scope to TipTap converters)
+
+### Commits
+
+- `57822b2` feat(core): add NotateDoc ↔ TipTap converters
 
 ---
 
-## Earlier Sessions (2026-01-20/19) — Collapsed
+## Earlier Session (2026-01-21 - NotateDoc Converters)
 
-- **Block IDs + heading/block references** (`cf4b70f`)
-- **Wiki-link trigger fix + alias UX** (`342d296`)
-- **Math support (KaTeX)** (`fa68e93`)
-- **Wiki-link alias context menu** (`e680d99`)
-- **Image resize + story reorg** (`ccb0261`)
-- **Highlight + images** (`43699d8`)
-- **Tables** (`cf7287a`)
-- **Callouts** (`ae98f89`)
-- **CodeBlock** (`7d3d04b`)
-- **TaskList** (`fb84e66`)
-- **TagNode** (`38ebbb5`)
-- **SlashCommand** (`19b0551`)
-- **RefNode** (`507aba8`)
-- **Editor Phase 1** (`437af80`)
-- **Primitives + patterns** (`3fdbd5d`)
+- **tiptapToNotateDoc** — Editor → Storage converter (310 lines)
+- **notateDocToTiptap** — Storage → Editor with RefResolver callback (365 lines)
+- **62 unit tests** — All block/inline types, marks, refs, embeds, tables, math, footnotes
+- **Commit:** `57822b2`
+
+---
+
+## Earlier Sessions (2026-01-19–21) — Collapsed
+
+Editor features: Editor.tsx refactor (`0bc2577`), Image upload UX (`efd96d5`), design-system tests (`611493c`), embeds (`6501991`), footnotes (`352b859`), block IDs (`cf4b70f`), wiki-link UX (`342d296`), math (`fa68e93`), images (`ccb0261`), tables (`cf7287a`), callouts (`ae98f89`), code blocks (`7d3d04b`), task lists (`fb84e66`), tags (`38ebbb5`), slash command (`19b0551`), RefNode (`507aba8`), Editor Phase 1 (`437af80`), primitives+patterns (`3fdbd5d`).
 
 ---
 

@@ -12,6 +12,15 @@
 - ✅ Features complete: Sidebar, TitleBar, HeaderBar, AppShell, Editor (Phase 1 + 2a-2g)
 - ❌ Renderer placeholder only (no editor wiring, no navigation)
 
+### MVP Design System Gaps (Active)
+
+- [x] Table primitive — compound components + stories
+- [ ] Dialog primitive
+- [ ] Data grid patterns — DataGridHeaderCell, Selection, RowActions, PropertyList
+- [ ] Data grid features — ObjectDataGrid, ObjectDetailHeader, ObjectPropertiesSection
+- [ ] CommandPalette feature
+- [ ] Pinned column edge styling (scroll-aware) — deferred until pattern work
+
 ### Build Sequence
 
 Primitives → patterns → features (see `agent-docs/rules/design-system.md`)
@@ -66,7 +75,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 ### Features (Future)
 
-- [ ] Markdown export (in addition to JSON)
+- [ ] Markdown export/import — Architecture designed, ready to implement (see recent_work.md)
 - [ ] Relations semantics finalization
 - [ ] Unlinked mentions (design spec: `docs/plans/2026-01-10-unlinked-mentions-design.md`)
 
@@ -74,19 +83,20 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 ## Recently Completed
 
-| Feature                                                      | Date       | Commits     |
-| ------------------------------------------------------------ | ---------- | ----------- |
-| NotateDoc converters (tiptapToNotateDoc + notateDocToTiptap) | 2026-01-21 | uncommitted |
-| Editor.tsx refactoring (1893→562 lines, 5 hooks extracted)   | 2026-01-21 | `0bc2577`   |
-| Image upload UX (`/image`)                                   | 2026-01-21 | `efd96d5`   |
-| Embeds (`![[...]]`)                                          | 2026-01-21 | `6501991`   |
-| Footnotes (`[^key]`)                                         | 2026-01-21 | `352b859`   |
-| Block IDs + Heading/Block references                         | 2026-01-20 | `cf4b70f`   |
-| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX  | 2026-01-20 | `342d296`   |
-| Image resize + story reorg                                   | 2026-01-20 | `ccb0261`   |
-| Math support (inline + block with KaTeX)                     | 2026-01-19 | `fa68e93`   |
-| Table toolbar with row/column/delete controls                | 2026-01-19 | `15fddf5`   |
-| Primitives + patterns complete                               | 2026-01-18 | `3fdbd5d`   |
+| Feature                                                      | Date       | Commits   |
+| ------------------------------------------------------------ | ---------- | --------- |
+| Image slash insert flow fix (`/image`)                       | 2026-01-21 | `4e792bc` |
+| NotateDoc converters (tiptapToNotateDoc + notateDocToTiptap) | 2026-01-21 | `57822b2` |
+| Editor.tsx refactoring (1893→562 lines, 5 hooks extracted)   | 2026-01-21 | `0bc2577` |
+| Image upload UX (`/image`)                                   | 2026-01-21 | `efd96d5` |
+| Embeds (`![[...]]`)                                          | 2026-01-21 | `6501991` |
+| Footnotes (`[^key]`)                                         | 2026-01-21 | `352b859` |
+| Block IDs + Heading/Block references                         | 2026-01-20 | `cf4b70f` |
+| Wiki-link `[[` trigger fix + Tab completion + Alias Mode UX  | 2026-01-20 | `342d296` |
+| Image resize + story reorg                                   | 2026-01-20 | `ccb0261` |
+| Math support (inline + block with KaTeX)                     | 2026-01-19 | `fa68e93` |
+| Table toolbar with row/column/delete controls                | 2026-01-19 | `15fddf5` |
+| Primitives + patterns complete                               | 2026-01-18 | `3fdbd5d` |
 
 Note: All features completed before 2026-01-18 were deleted in the full reset.
 See `recent_work.md` for historical milestones.
