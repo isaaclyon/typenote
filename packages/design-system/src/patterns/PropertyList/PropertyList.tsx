@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '../../lib/utils.js';
+import { EditableValue } from './EditableValue.js';
 
 // ============================================================================
 // Types
@@ -51,7 +52,11 @@ export interface PropertyListProps {
 // ============================================================================
 
 const PropertyList = React.forwardRef<HTMLDListElement, PropertyListProps>(
-  ({ items, className }, ref) => {
+  ({ items, className, editable = false, onPropertyChange }, ref) => {
+    const handlePropertyChange = (key: string, value: unknown) => {
+      onPropertyChange?.(key, value);
+    };
+
     return (
       <dl
         ref={ref}
@@ -68,7 +73,16 @@ const PropertyList = React.forwardRef<HTMLDListElement, PropertyListProps>(
             data-property={item.label.toLowerCase().replace(/\s+/g, '-')}
           >
             <dt className="text-sm font-medium text-fg-secondary">{item.label}</dt>
-            <dd className="text-sm text-foreground">{item.value}</dd>
+            <dd className="text-sm text-foreground">
+              {editable && item.type ? (
+                <EditableValue
+                  item={item}
+                  onSave={(value) => handlePropertyChange(item.key, value)}
+                />
+              ) : (
+                item.value
+              )}
+            </dd>
           </div>
         ))}
       </dl>

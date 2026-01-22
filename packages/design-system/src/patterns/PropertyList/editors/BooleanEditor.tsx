@@ -4,7 +4,7 @@ import { Checkbox } from '../../../primitives/Checkbox/Checkbox.js';
 export interface BooleanEditorProps {
   value: boolean;
   onSave: (value: boolean) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 const BooleanEditor: React.FC<BooleanEditorProps> = ({ value, onSave, disabled }) => {

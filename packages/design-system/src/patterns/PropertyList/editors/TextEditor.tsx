@@ -6,8 +6,8 @@ export interface TextEditorProps {
   onSave: (value: string) => void;
   onCancel: () => void;
   type?: 'text' | 'number';
-  placeholder?: string;
-  className?: string;
+  placeholder?: string | undefined;
+  className?: string | undefined;
 }
 
 const TextEditor = React.forwardRef<HTMLInputElement, TextEditorProps>(

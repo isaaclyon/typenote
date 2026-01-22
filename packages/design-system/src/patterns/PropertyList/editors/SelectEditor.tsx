@@ -12,8 +12,8 @@ export interface SelectEditorProps {
   options: string[];
   onSave: (value: string) => void;
   onCancel: () => void;
-  placeholder?: string;
-  disabled?: boolean;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
 }
 
 const SelectEditor: React.FC<SelectEditorProps> = ({
