@@ -1,8 +1,21 @@
+---
+name: end-session
+description: Wrap up session and update agent-docs
+---
+
 # End Session
 
-Wrap up work and update `agent-docs/` for the next session. The context files were auto-loaded at session start; do not re-read them unless you need to validate changes.
+Wrap up work and update `agent-docs/` for the next session.
 
-## Safety Check: Parallel Work
+## Step 1: Read Current Context
+
+Read the current state of these files before updating:
+
+- `agent-docs/current_project.md` — Current phase, milestones, and focus
+- `agent-docs/up_next.md` — Active workstreams, blockers, and tasks
+- `agent-docs/recent_work.md` — Recent sessions and accomplishments
+
+## Step 2: Safety Check for Parallel Work
 
 Before updating context files, verify:
 
@@ -14,7 +27,7 @@ Before updating context files, verify:
 - Preserve completed checkmarks `[x]` — another agent may have added them
 - When uncertain, append rather than replace
 
-## Step 1: Summarize This Session
+## Step 3: Summarize This Session
 
 Update `agent-docs/recent_work.md` with:
 
@@ -23,25 +36,25 @@ Update `agent-docs/recent_work.md` with:
 - Key files changed (if significant)
 - Commits made (hash + message)
 
-## Step 2: Update `agent-docs/up_next.md`
+## Step 4: Update `agent-docs/up_next.md`
 
 - Check off tasks you completed
 - Add new tasks discovered
 - Update workstream status (Active/Paused/Blocked/Complete)
 - Note blockers clearly
 
-## Step 3: Update `agent-docs/current_project.md` (If Needed)
+## Step 5: Update `agent-docs/current_project.md` (If Needed)
 
 Only update if a phase/milestone completed, or a major architecture decision was made.
 
-## Step 4: Compact Old Content (Carefully)
+## Step 6: Compact Old Content (Carefully)
 
 - Keep 3-4 detailed sessions in `recent_work.md`
 - Collapse older sessions into milestone summaries
 - Keep all active workstreams in `up_next.md`
 - Delete completed workstreams only if fully merged and documented elsewhere
 
-## Step 5: Verify Updates
+## Step 7: Verify Updates
 
 - Re-read modified files to ensure coherence
 - Avoid duplicate sections

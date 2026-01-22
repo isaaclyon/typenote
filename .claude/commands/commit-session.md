@@ -1,3 +1,8 @@
+---
+name: commit-session
+description: Prepare an atomic commit for current changes
+---
+
 # Commit Session
 
 Prepare an atomic commit for current changes.

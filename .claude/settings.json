@@ -1,8 +1,21 @@
 {
   "enabledPlugins": {
-    "claude-code-setup@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "model-agents@claude-tools": true,
+    "superpowers-developing-for-claude-code@superpowers-marketplace": true,
     "double-shot-latte@superpowers-marketplace": true,
-    "superpowers@claude-plugins-official": true
+    "claude-code-setup@claude-plugins-official": true,
+    "vercel-agent-browser@claude-tools": true,
+    "skill-evaluation@claude-tools": true,
+    "terminal-title@claude-tools": true,
+    "superpowers@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "git-workflow@claude-tools": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "brainstorming@claude-tools": false,
+    "claude-md-management@claude-plugins-official": true,
+    "test-driven-development@claude-tools": true,
+    "code-simplifier@claude-plugins-official": true
   }
 }
