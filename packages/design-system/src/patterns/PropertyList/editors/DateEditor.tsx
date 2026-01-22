@@ -14,9 +14,9 @@ export interface DateEditorProps {
   value: Date | null;
   onSave: (value: Date | null) => void;
   onCancel: () => void;
-  includeTime?: boolean;
-  placeholder?: string;
-  disabled?: boolean;
+  includeTime?: boolean | undefined;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
 }
 
 const DateEditor: React.FC<DateEditorProps> = ({

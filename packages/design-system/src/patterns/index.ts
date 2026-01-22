@@ -60,3 +60,6 @@ export type {
   DataGridHeaderCellProps,
   DataGridHeaderMenuItem,
 } from './DataGridHeaderCell/index.js';
+
+export { Calendar } from './Calendar/index.js';
+export type { CalendarProps } from './Calendar/index.js';
