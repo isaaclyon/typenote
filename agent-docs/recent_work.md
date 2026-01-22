@@ -1,6 +1,28 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - Table Primitive)
+## Latest Session (2026-01-21 - Dialog Primitive)
+
+### What was accomplished
+
+- **Dialog primitive shipped** — Radix-based compound component with sm/md/lg size variants
+- **Ladle stories** — Overview (sizes, form, scrollable) + Controlled story
+- **Review fixes applied** — Focus-visible outline, backdrop-blur-sm token, scroll container in story
+
+### Key files changed
+
+- `packages/design-system/src/primitives/Dialog/Dialog.tsx`
+- `packages/design-system/src/primitives/Dialog/Dialog.stories.tsx`
+- `packages/design-system/src/primitives/Dialog/index.ts`
+- `packages/design-system/src/primitives/index.ts`
+
+### Commits
+
+- `a2d1171` chore(design-system): add @radix-ui/react-dialog dependency
+- `cddb98e` feat(design-system): add Dialog primitive with size variants
+
+---
+
+## Earlier Session (2026-01-21 - Table Primitive)
 
 ### What was accomplished
 

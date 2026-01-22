@@ -15,7 +15,7 @@
 ### MVP Design System Gaps (Active)
 
 - [x] Table primitive — compound components + stories
-- [ ] Dialog primitive
+- [x] Dialog primitive — Radix-based with sm/md/lg size variants
 - [ ] Data grid patterns — DataGridHeaderCell, Selection, RowActions, PropertyList
 - [ ] Data grid features — ObjectDataGrid, ObjectDetailHeader, ObjectPropertiesSection
 - [ ] CommandPalette feature
@@ -85,6 +85,7 @@ Current E2E tests expect UI elements that no longer exist (sidebar navigation, T
 
 | Feature                                                      | Date       | Commits   |
 | ------------------------------------------------------------ | ---------- | --------- |
+| Dialog primitive (sm/md/lg sizes)                            | 2026-01-21 | `cddb98e` |
 | Image slash insert flow fix (`/image`)                       | 2026-01-21 | `4e792bc` |
 | NotateDoc converters (tiptapToNotateDoc + notateDocToTiptap) | 2026-01-21 | `57822b2` |
 | Editor.tsx refactoring (1893→562 lines, 5 hooks extracted)   | 2026-01-21 | `0bc2577` |
