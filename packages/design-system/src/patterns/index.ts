@@ -33,3 +33,12 @@ export type { ThemeToggleProps, Theme } from './ThemeToggle/index.js';
 
 export { PlaceholderAction } from './PlaceholderAction/index.js';
 export type { PlaceholderActionProps } from './PlaceholderAction/index.js';
+
+export { CommandPaletteItem, commandPaletteItemVariants } from './CommandPaletteItem/index.js';
+export type { CommandPaletteItemProps } from './CommandPaletteItem/index.js';
+
+export { CommandPaletteSection } from './CommandPaletteSection/index.js';
+export type { CommandPaletteSectionProps } from './CommandPaletteSection/index.js';
+
+export { CommandPaletteList } from './CommandPaletteList/index.js';
+export type { CommandPaletteListProps } from './CommandPaletteList/index.js';
