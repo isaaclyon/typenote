@@ -72,6 +72,30 @@ export { Link, linkVariants } from './Link/index.js';
 export type { LinkProps, LinkVariant } from './Link/index.js';
 
 export {
+  Dialog,
+  DialogTrigger,
+  DialogPortal,
+  DialogOverlay,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogFooter,
+  dialogContentVariants,
+} from './Dialog/index.js';
+export type {
+  DialogOverlayProps,
+  DialogContentProps,
+  DialogHeaderProps,
+  DialogTitleProps,
+  DialogDescriptionProps,
+  DialogCloseProps,
+  DialogFooterProps,
+  DialogSize,
+} from './Dialog/index.js';
+
+export {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
