@@ -3,3 +3,6 @@ export type { TextEditorProps } from './TextEditor.js';
 
 export { BooleanEditor } from './BooleanEditor.js';
 export type { BooleanEditorProps } from './BooleanEditor.js';
+
+export { SelectEditor } from './SelectEditor.js';
+export type { SelectEditorProps } from './SelectEditor.js';
