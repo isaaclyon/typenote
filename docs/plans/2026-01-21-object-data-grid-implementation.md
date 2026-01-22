@@ -15,11 +15,13 @@
 ## Task 1: Install Dependencies
 
 **Files:**
+
 - Modify: `packages/design-system/package.json`
 
 **Step 1: Install Radix Popover**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system add @radix-ui/react-popover
 ```
@@ -27,6 +29,7 @@ pnpm --filter @typenote/design-system add @radix-ui/react-popover
 **Step 2: Install react-day-picker and date-fns**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system add react-day-picker date-fns
 ```
@@ -34,6 +37,7 @@ pnpm --filter @typenote/design-system add react-day-picker date-fns
 **Step 3: Verify installation**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -52,6 +56,7 @@ git commit -m "deps(design-system): add popover, react-day-picker, date-fns"
 ## Task 2: Popover Primitive
 
 **Files:**
+
 - Create: `packages/design-system/src/primitives/Popover/Popover.tsx`
 - Create: `packages/design-system/src/primitives/Popover/Popover.stories.tsx`
 - Create: `packages/design-system/src/primitives/Popover/index.ts`
@@ -110,13 +115,7 @@ export type { PopoverContentProps, PopoverTriggerProps, PopoverAnchorProps, Popo
 Create `packages/design-system/src/primitives/Popover/index.ts`:
 
 ```ts
-export {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverAnchor,
-  PopoverClose,
-} from './Popover.js';
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverClose } from './Popover.js';
 
 export type {
   PopoverContentProps,
@@ -233,6 +232,7 @@ export type {
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -242,6 +242,7 @@ Expected: No errors
 **Step 6: Test in Ladle**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system sandbox
 ```
@@ -260,6 +261,7 @@ git commit -m "feat(design-system): add Popover primitive"
 ## Task 3: Calendar Pattern
 
 **Files:**
+
 - Create: `packages/design-system/src/patterns/Calendar/Calendar.tsx`
 - Create: `packages/design-system/src/patterns/Calendar/Calendar.stories.tsx`
 - Create: `packages/design-system/src/patterns/Calendar/index.ts`
@@ -426,6 +428,7 @@ export type { CalendarProps } from './Calendar/index.js';
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -448,6 +451,7 @@ git commit -m "feat(design-system): add Calendar pattern with react-day-picker"
 ## Task 4: DatePicker Pattern
 
 **Files:**
+
 - Create: `packages/design-system/src/patterns/DatePicker/DatePicker.tsx`
 - Create: `packages/design-system/src/patterns/DatePicker/DatePicker.stories.tsx`
 - Create: `packages/design-system/src/patterns/DatePicker/index.ts`
@@ -558,12 +562,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             </IconButton>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              value={value}
-              onChange={handleCalendarSelect}
-              min={min}
-              max={max}
-            />
+            <Calendar value={value} onChange={handleCalendarSelect} min={min} max={max} />
           </PopoverContent>
         </Popover>
       </div>
@@ -672,6 +671,7 @@ export type { DatePickerProps } from './DatePicker/index.js';
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -681,6 +681,7 @@ Expected: No errors
 **Step 6: Test in Ladle**
 
 Open http://localhost:61000, navigate to Patterns/DatePicker:
+
 - Verify calendar opens when clicking icon
 - Verify typing dates works (try "Jan 15, 2026")
 - Verify selecting from calendar updates input
@@ -697,6 +698,7 @@ git commit -m "feat(design-system): add DatePicker pattern with text parsing"
 ## Task 5: DismissibleTag Pattern
 
 **Files:**
+
 - Create: `packages/design-system/src/patterns/DismissibleTag/DismissibleTag.tsx`
 - Create: `packages/design-system/src/patterns/DismissibleTag/DismissibleTag.stories.tsx`
 - Create: `packages/design-system/src/patterns/DismissibleTag/index.ts`
@@ -738,7 +740,8 @@ const dismissibleTagVariants = cva(
 );
 
 export interface DismissibleTagProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'>,
     VariantProps<typeof dismissibleTagVariants> {
   label: string;
   onRemove?: () => void;
@@ -909,6 +912,7 @@ export type { DismissibleTagProps } from './DismissibleTag/index.js';
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -918,6 +922,7 @@ Expected: No errors
 **Step 6: Test in Ladle**
 
 Open http://localhost:61000, navigate to Patterns/DismissibleTag:
+
 - Verify clicking X removes tag
 - Verify keyboard removal (Backspace/Delete)
 - Verify custom colors work
@@ -934,6 +939,7 @@ git commit -m "feat(design-system): add DismissibleTag pattern for relation chip
 ## Task 6: RelationPicker Pattern
 
 **Files:**
+
 - Create: `packages/design-system/src/patterns/RelationPicker/RelationPicker.tsx`
 - Create: `packages/design-system/src/patterns/RelationPicker/RelationPicker.stories.tsx`
 - Create: `packages/design-system/src/patterns/RelationPicker/index.ts`
@@ -1161,11 +1167,41 @@ export default {
 };
 
 const mockOptions: RelationOption[] = [
-  { id: '1', title: 'Project Roadmap', typeKey: 'Page', typeName: 'Page', icon: <File className="h-4 w-4" /> },
-  { id: '2', title: 'Meeting Notes', typeKey: 'Page', typeName: 'Page', icon: <File className="h-4 w-4" /> },
-  { id: '3', title: 'John Smith', typeKey: 'Person', typeName: 'Person', icon: <User className="h-4 w-4" /> },
-  { id: '4', title: 'Jane Doe', typeKey: 'Person', typeName: 'Person', icon: <User className="h-4 w-4" /> },
-  { id: '5', title: 'Team Standup', typeKey: 'Event', typeName: 'Event', icon: <CalendarBlank className="h-4 w-4" /> },
+  {
+    id: '1',
+    title: 'Project Roadmap',
+    typeKey: 'Page',
+    typeName: 'Page',
+    icon: <File className="h-4 w-4" />,
+  },
+  {
+    id: '2',
+    title: 'Meeting Notes',
+    typeKey: 'Page',
+    typeName: 'Page',
+    icon: <File className="h-4 w-4" />,
+  },
+  {
+    id: '3',
+    title: 'John Smith',
+    typeKey: 'Person',
+    typeName: 'Person',
+    icon: <User className="h-4 w-4" />,
+  },
+  {
+    id: '4',
+    title: 'Jane Doe',
+    typeKey: 'Person',
+    typeName: 'Person',
+    icon: <User className="h-4 w-4" />,
+  },
+  {
+    id: '5',
+    title: 'Team Standup',
+    typeKey: 'Event',
+    typeName: 'Event',
+    icon: <CalendarBlank className="h-4 w-4" />,
+  },
 ];
 
 export const SingleSelect: Story = () => {
@@ -1173,9 +1209,7 @@ export const SingleSelect: Story = () => {
   const [value, setValue] = React.useState<string>('');
   const [search, setSearch] = React.useState('');
 
-  const filtered = mockOptions.filter((o) =>
-    o.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = mockOptions.filter((o) => o.title.toLowerCase().includes(search.toLowerCase()));
 
   const selected = mockOptions.find((o) => o.id === value);
 
@@ -1191,9 +1225,7 @@ export const SingleSelect: Story = () => {
         onSearchChange={setSearch}
         placeholder="Search objects..."
       >
-        <Button variant="outline">
-          {selected ? selected.title : 'Select object...'}
-        </Button>
+        <Button variant="outline">{selected ? selected.title : 'Select object...'}</Button>
       </RelationPicker>
     </div>
   );
@@ -1204,9 +1236,7 @@ export const MultiSelect: Story = () => {
   const [value, setValue] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState('');
 
-  const filtered = mockOptions.filter((o) =>
-    o.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = mockOptions.filter((o) => o.title.toLowerCase().includes(search.toLowerCase()));
 
   const selectedOptions = mockOptions.filter((o) => value.includes(o.id));
 
@@ -1246,9 +1276,7 @@ export const WithCreate: Story = () => {
   const [value, setValue] = React.useState<string>('');
   const [search, setSearch] = React.useState('');
 
-  const filtered = options.filter((o) =>
-    o.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = options.filter((o) => o.title.toLowerCase().includes(search.toLowerCase()));
 
   const handleCreate = (title: string) => {
     const newOption: RelationOption = {
@@ -1278,9 +1306,7 @@ export const WithCreate: Story = () => {
         onCreate={handleCreate}
         placeholder="Search or create..."
       >
-        <Button variant="outline">
-          {selected ? selected.title : 'Select or create...'}
-        </Button>
+        <Button variant="outline">{selected ? selected.title : 'Select or create...'}</Button>
       </RelationPicker>
     </div>
   );
@@ -1335,6 +1361,7 @@ export type { RelationPickerProps, RelationOption } from './RelationPicker/index
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -1344,6 +1371,7 @@ Expected: No errors
 **Step 6: Test in Ladle**
 
 Open http://localhost:61000, navigate to Patterns/RelationPicker:
+
 - Verify single select works (closes on selection)
 - Verify multi-select works (checkmarks, stays open)
 - Verify keyboard navigation
@@ -1363,6 +1391,7 @@ git commit -m "feat(design-system): add RelationPicker pattern for object refere
 This task creates the type definitions. The next tasks will create the components.
 
 **Files:**
+
 - Create: `packages/design-system/src/features/ObjectDataGrid/types.ts`
 
 **Step 1: Create types.ts**
@@ -1438,6 +1467,7 @@ export interface EditingCell {
 **Step 2: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -1449,6 +1479,7 @@ Expected: No errors
 ## Task 8: ObjectDataGrid Feature (Cell Component)
 
 **Files:**
+
 - Create: `packages/design-system/src/features/ObjectDataGrid/ObjectDataGridCell.tsx`
 
 **Step 1: Create ObjectDataGridCell.tsx**
@@ -1493,7 +1524,9 @@ export function ObjectDataGridCell<T extends { id: string }>({
   onValueChange,
   onRowOpen,
 }: ObjectDataGridCellProps<T>) {
-  const value = column.getValue ? column.getValue(row) : (row as Record<string, unknown>)[column.key];
+  const value = column.getValue
+    ? column.getValue(row)
+    : (row as Record<string, unknown>)[column.key];
 
   // Custom render
   if (column.render) {
@@ -1510,10 +1543,7 @@ export function ObjectDataGridCell<T extends { id: string }>({
       <TableCell
         align={column.align}
         pinned={column.pinned}
-        className={cn(
-          'cursor-pointer',
-          column.editable && 'hover:bg-gray-50'
-        )}
+        className={cn('cursor-pointer', column.editable && 'hover:bg-gray-50')}
         onClick={column.editable ? onStartEdit : undefined}
       >
         <div className="group flex items-center gap-2">
@@ -1566,9 +1596,7 @@ function renderDisplayValue(
     case 'date':
     case 'datetime':
       if (value instanceof Date) {
-        return type === 'datetime'
-          ? value.toLocaleString()
-          : value.toLocaleDateString();
+        return type === 'datetime' ? value.toLocaleString() : value.toLocaleDateString();
       }
       return String(value);
     case 'select':
@@ -1704,6 +1732,7 @@ function CellEditor({ type, value, options, onChange, onBlur }: CellEditorProps)
 **Step 2: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -1715,6 +1744,7 @@ Expected: No errors (may have some issues to fix based on exact API)
 ## Task 9: ObjectDataGrid Feature (Main Component)
 
 **Files:**
+
 - Create: `packages/design-system/src/features/ObjectDataGrid/ObjectDataGrid.tsx`
 - Create: `packages/design-system/src/features/ObjectDataGrid/index.ts`
 - Create: `packages/design-system/src/features/ObjectDataGrid/ObjectDataGrid.stories.tsx`
@@ -1788,8 +1818,7 @@ export function ObjectDataGrid<T extends { id: string }>({
 
   const handleSort = (column: DataGridColumn<T>) => {
     if (!column.sortable || !onSortChange) return;
-    const newDirection =
-      sortColumn === column.key && sortDirection === 'asc' ? 'desc' : 'asc';
+    const newDirection = sortColumn === column.key && sortDirection === 'asc' ? 'desc' : 'asc';
     onSortChange(column.key, newDirection);
   };
 
@@ -1835,26 +1864,22 @@ export function ObjectDataGrid<T extends { id: string }>({
                   label={column.header}
                   sortable={column.sortable}
                   sort={
-                    sortColumn === column.key
-                      ? sortDirection === 'asc'
-                        ? 'asc'
-                        : 'desc'
-                      : 'none'
+                    sortColumn === column.key ? (sortDirection === 'asc' ? 'asc' : 'desc') : 'none'
                   }
                   onSort={() => handleSort(column)}
                 />
               </TableHead>
             ))}
-            {allActions.length > 0 && (
-              <TableHead className="w-10" align="center" />
-            )}
+            {allActions.length > 0 && <TableHead className="w-10" align="center" />}
           </TableRow>
         </TableHeader>
         <TableBody>
           {loading ? (
             <TableRow>
               <td
-                colSpan={columns.length + (onSelectionChange ? 1 : 0) + (allActions.length > 0 ? 1 : 0)}
+                colSpan={
+                  columns.length + (onSelectionChange ? 1 : 0) + (allActions.length > 0 ? 1 : 0)
+                }
                 className="py-8 text-center text-muted-foreground"
               >
                 Loading...
@@ -1863,7 +1888,9 @@ export function ObjectDataGrid<T extends { id: string }>({
           ) : data.length === 0 ? (
             <TableRow>
               <td
-                colSpan={columns.length + (onSelectionChange ? 1 : 0) + (allActions.length > 0 ? 1 : 0)}
+                colSpan={
+                  columns.length + (onSelectionChange ? 1 : 0) + (allActions.length > 0 ? 1 : 0)
+                }
                 className="py-8 text-center text-muted-foreground"
               >
                 {emptyMessage}
@@ -1871,11 +1898,7 @@ export function ObjectDataGrid<T extends { id: string }>({
             </TableRow>
           ) : (
             data.map((row) => (
-              <TableRow
-                key={row.id}
-                hover
-                selected={selectedIds.has(row.id)}
-              >
+              <TableRow key={row.id} hover selected={selectedIds.has(row.id)}>
                 {onSelectionChange && (
                   <td className="w-10 px-2 text-center">
                     <DataGridRowCheckbox
@@ -1890,16 +1913,11 @@ export function ObjectDataGrid<T extends { id: string }>({
                     row={row}
                     column={column}
                     isEditing={
-                      editingCell?.rowId === row.id &&
-                      editingCell?.columnKey === column.key
+                      editingCell?.rowId === row.id && editingCell?.columnKey === column.key
                     }
-                    onStartEdit={() =>
-                      setEditingCell({ rowId: row.id, columnKey: column.key })
-                    }
+                    onStartEdit={() => setEditingCell({ rowId: row.id, columnKey: column.key })}
                     onEndEdit={() => setEditingCell(null)}
-                    onValueChange={(value) =>
-                      handleCellChange(row.id, column.key, value)
-                    }
+                    onValueChange={(value) => handleCellChange(row.id, column.key, value)}
                     onRowOpen={onRowOpen ? () => onRowOpen(row) : undefined}
                   />
                 ))}
@@ -1970,17 +1988,63 @@ interface MockObject {
 }
 
 const mockData: MockObject[] = [
-  { id: '1', title: 'Project Roadmap', type: 'Page', status: 'Active', createdAt: new Date('2026-01-15'), count: 42, active: true },
-  { id: '2', title: 'Meeting Notes', type: 'Page', status: 'Draft', createdAt: new Date('2026-01-14'), count: 15, active: false },
-  { id: '3', title: 'John Smith', type: 'Person', status: 'Active', createdAt: new Date('2026-01-10'), count: 8, active: true },
-  { id: '4', title: 'Q1 Planning', type: 'Event', status: 'Completed', createdAt: new Date('2026-01-05'), count: 23, active: false },
-  { id: '5', title: 'Office HQ', type: 'Place', status: 'Active', createdAt: new Date('2026-01-01'), count: 5, active: true },
+  {
+    id: '1',
+    title: 'Project Roadmap',
+    type: 'Page',
+    status: 'Active',
+    createdAt: new Date('2026-01-15'),
+    count: 42,
+    active: true,
+  },
+  {
+    id: '2',
+    title: 'Meeting Notes',
+    type: 'Page',
+    status: 'Draft',
+    createdAt: new Date('2026-01-14'),
+    count: 15,
+    active: false,
+  },
+  {
+    id: '3',
+    title: 'John Smith',
+    type: 'Person',
+    status: 'Active',
+    createdAt: new Date('2026-01-10'),
+    count: 8,
+    active: true,
+  },
+  {
+    id: '4',
+    title: 'Q1 Planning',
+    type: 'Event',
+    status: 'Completed',
+    createdAt: new Date('2026-01-05'),
+    count: 23,
+    active: false,
+  },
+  {
+    id: '5',
+    title: 'Office HQ',
+    type: 'Place',
+    status: 'Active',
+    createdAt: new Date('2026-01-01'),
+    count: 5,
+    active: true,
+  },
 ];
 
 const columns: DataGridColumn<MockObject>[] = [
   { key: 'title', header: 'Title', type: 'title', isTitle: true, sortable: true, editable: true },
   { key: 'type', header: 'Type', type: 'text', sortable: true },
-  { key: 'status', header: 'Status', type: 'select', options: ['Active', 'Draft', 'Completed'], editable: true },
+  {
+    key: 'status',
+    header: 'Status',
+    type: 'select',
+    options: ['Active', 'Draft', 'Completed'],
+    editable: true,
+  },
   { key: 'createdAt', header: 'Created', type: 'date', sortable: true, editable: true },
   { key: 'count', header: 'Count', type: 'number', align: 'right', editable: true },
   { key: 'active', header: 'Active', type: 'boolean', align: 'center', editable: true },
@@ -1993,11 +2057,7 @@ export const Default: Story = () => {
   const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
 
   const handleCellChange = (rowId: string, columnKey: string, value: unknown) => {
-    setData((prev) =>
-      prev.map((row) =>
-        row.id === rowId ? { ...row, [columnKey]: value } : row
-      )
-    );
+    setData((prev) => prev.map((row) => (row.id === rowId ? { ...row, [columnKey]: value } : row)));
   };
 
   const handleSort = (column: string, direction: 'asc' | 'desc') => {
@@ -2033,39 +2093,26 @@ export const Default: Story = () => {
         }}
         onCellChange={handleCellChange}
       />
-      <p className="mt-4 text-sm text-muted-foreground">
-        Selected: {selectedIds.size} rows
-      </p>
+      <p className="mt-4 text-sm text-muted-foreground">Selected: {selectedIds.size} rows</p>
     </div>
   );
 };
 
 export const Empty: Story = () => (
   <div className="p-6">
-    <ObjectDataGrid
-      data={[]}
-      columns={columns}
-      emptyMessage="No objects found"
-    />
+    <ObjectDataGrid data={[]} columns={columns} emptyMessage="No objects found" />
   </div>
 );
 
 export const Loading: Story = () => (
   <div className="p-6">
-    <ObjectDataGrid
-      data={[]}
-      columns={columns}
-      loading
-    />
+    <ObjectDataGrid data={[]} columns={columns} loading />
   </div>
 );
 
 export const ReadOnly: Story = () => (
   <div className="p-6">
-    <ObjectDataGrid
-      data={mockData}
-      columns={columns.map((c) => ({ ...c, editable: false }))}
-    />
+    <ObjectDataGrid data={mockData} columns={columns.map((c) => ({ ...c, editable: false }))} />
   </div>
 );
 ```
@@ -2087,6 +2134,7 @@ export type {
 **Step 5: Verify**
 
 Run:
+
 ```bash
 pnpm --filter @typenote/design-system typecheck
 ```
@@ -2096,6 +2144,7 @@ Expected: No errors (fix any issues)
 **Step 6: Test in Ladle**
 
 Open http://localhost:61000, navigate to Features/ObjectDataGrid:
+
 - Verify table renders with data
 - Verify selection checkboxes work
 - Verify sorting works
@@ -2152,15 +2201,15 @@ git commit -m "fix(design-system): address review feedback"
 
 ## Summary
 
-| Task | Component | Type |
-|------|-----------|------|
-| 1 | Dependencies | Setup |
-| 2 | Popover | Primitive |
-| 3 | Calendar | Pattern |
-| 4 | DatePicker | Pattern |
-| 5 | DismissibleTag | Pattern |
-| 6 | RelationPicker | Pattern |
-| 7-9 | ObjectDataGrid | Feature |
-| 10 | Final verification | QA |
+| Task | Component          | Type      |
+| ---- | ------------------ | --------- |
+| 1    | Dependencies       | Setup     |
+| 2    | Popover            | Primitive |
+| 3    | Calendar           | Pattern   |
+| 4    | DatePicker         | Pattern   |
+| 5    | DismissibleTag     | Pattern   |
+| 6    | RelationPicker     | Pattern   |
+| 7-9  | ObjectDataGrid     | Feature   |
+| 10   | Final verification | QA        |
 
 Total: 10 tasks, ~6 new components
