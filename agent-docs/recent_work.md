@@ -1,55 +1,54 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - ObjectDataGrid Design + Inline Editors)
+## Latest Session (2026-01-21 - Editable PropertyList Complete)
 
 ### What was accomplished
 
-- **ObjectDataGrid brainstorm complete** — Full design spec for data grid with inline cell editing
-- **Implementation plan written** — 10-task step-by-step plan for Popover, Calendar, DatePicker, DismissibleTag, RelationPicker, ObjectDataGrid
-- **Inline editors started** — TextEditor, BooleanEditor, SelectEditor patterns for PropertyList
-- **PropertyListItem extended** — Added editable mode with edit state management
+- **Editable PropertyList fully implemented** — All 11 tasks from implementation plan complete
+- **6 inline editors** — TextEditor, BooleanEditor, SelectEditor, MultiselectEditor, DateEditor, EditableValue orchestrator
+- **New primitives** — Popover (Radix-based), Calendar (react-day-picker v9)
+- **New patterns** — DatePicker (hybrid text + calendar), DismissibleTag (for relation chips)
+- **Comprehensive stories** — 10 new editable stories covering all property types
 
-### Key decisions
+### Commits (this session)
 
-- Columns as props array (not JSX children) for dynamic configs
-- Cell click enters edit mode; title column has separate "open" button
-- Checkbox-only selection (clean separation from editing)
-- Using react-day-picker for Calendar (headless, handles edge cases)
-- Hybrid DatePicker: text input + calendar popover
+- `3bb7e90` docs: add editable PropertyList implementation plan
+- `706d9bb` feat(design-system): add DismissibleTag pattern for relation chips
+- `8cce0cb` feat(design-system): add DatePicker pattern with text parsing
+- `fbeb3f6` feat(design-system): integrate editable PropertyList with comprehensive stories
+- `bdab04d` feat(design-system): add Calendar pattern with react-day-picker v9
+- `afffa9c` feat(design-system): add EditableValue orchestrator component
+- `57a4aa3` feat(design-system): add Popover primitive
+- `6a289c1` feat(design-system): add DateEditor for inline property editing
+- `3a6daba` deps(design-system): add popover, react-day-picker, date-fns
+- `cc806b2` feat(design-system): add MultiselectEditor for inline property editing
 
-### Commits
+### Key patterns
 
-- `785ff95` docs: add ObjectDataGrid feature design
-- `e7290b9` docs: add ObjectDataGrid implementation plan
-- `4327965` feat(design-system): extend PropertyListItem types for editing
-- `d072a9e` feat(design-system): add TextEditor for inline property editing
-- `1508230` feat(design-system): add BooleanEditor for inline property editing
-- `2d138a3` feat(design-system): add SelectEditor for inline property editing
-
-### Next session
-
-Execute implementation plan: `docs/plans/2026-01-21-object-data-grid-implementation.md`
-Use `superpowers:executing-plans` skill to run tasks 1-10.
+- Click-to-edit UX (Notion-style): value display → click → editor → blur/Enter saves
+- Boolean special case: checkbox toggles immediately (no edit mode)
+- `exactOptionalPropertyTypes` compliance: all optional props use `| undefined`
 
 ---
 
-## Earlier Session (2026-01-21 - Data Grid Patterns + Setup)
+## Earlier Session (2026-01-21 - ObjectDataGrid Design)
 
-- **Data grid patterns committed** — DataGridHeaderCell, Selection, RowActions, PropertyList
-- **Plans documented** — data-grid-pattern-contract.md, mvp-design-system-gaps.md
-- **Skills migrated** — Session skills moved to commands format
-- **Commits:** `2dbe5cc`, `40fa137`, `babda63`
-
----
-
-## Earlier Session (2026-01-21 - CommandPalette Feature)
-
-- **CommandPalette feature complete** — Design spec + full implementation with patterns
-- **3 patterns built** — CommandPaletteItem, CommandPaletteSection, CommandPaletteList
-- **Commits:** `f6bd41d`, `da80c99`, `c88d97e`
+- **ObjectDataGrid design + implementation plan** — 10-task step-by-step plan
+- **Started inline editors** — TextEditor, BooleanEditor, SelectEditor
+- **PropertyListItem extended** — Added editable mode types
+- **Commits:** `785ff95`, `e7290b9`, `4327965`, `d072a9e`, `1508230`, `2d138a3`
 
 ---
 
-## Historical (Pre-2026-01-21) — Collapsed
+## Earlier Session (2026-01-21 - Data Grid Patterns + CommandPalette)
 
-Dialog primitive, Table primitive, Editor features, Backend packages stable.
+- Data grid patterns: DataGridHeaderCell, Selection, RowActions, PropertyList
+- CommandPalette feature complete with 3 patterns
+- Dialog and Table primitives
+- **Commits:** `2dbe5cc`, `f6bd41d`, `da80c99`, `c88d97e`, `cddb98e`, `0159329`
+
+---
+
+## Historical — Collapsed
+
+Editor features, Backend packages stable, Pre-design-system-rebuild work.
