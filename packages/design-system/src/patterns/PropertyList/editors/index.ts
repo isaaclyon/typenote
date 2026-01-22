@@ -9,3 +9,6 @@ export type { SelectEditorProps } from './SelectEditor.js';
 
 export { MultiselectEditor } from './MultiselectEditor.js';
 export type { MultiselectEditorProps } from './MultiselectEditor.js';
+
+export { DateEditor } from './DateEditor.js';
+export type { DateEditorProps } from './DateEditor.js';
