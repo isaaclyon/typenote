@@ -14,6 +14,7 @@ import { SlashCommandList } from './extensions/SlashCommandList.js';
 import { TagSuggestionList } from './extensions/TagSuggestionList.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
 import { TableToolbar } from './extensions/TableToolbar.js';
+import { ImageInsertPopover } from './extensions/ImageInsertPopover.js';
 import { isRasterImageFile } from './extensions/image-utils.js';
 import { slashCommandIcons } from './extensions/slash-icons.js';
 import type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
@@ -104,6 +105,7 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     // -------------------------------------------------------------------------
     const {
       insertImageFiles,
+      insertImageFromUrl,
       handleRetryUpload,
       handleImageRemove,
       syncImageUploadIds,
@@ -131,6 +133,18 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       top: number;
       left: number;
     } | null>(null);
+
+    const [imageInsertState, setImageInsertState] = React.useState<{
+      isOpen: boolean;
+      mode: 'upload' | 'url';
+      position: { top: number; left: number } | null;
+      insertPos: number | null;
+    }>({
+      isOpen: false,
+      mode: 'upload',
+      position: null,
+      insertPos: null,
+    });
 
     // -------------------------------------------------------------------------
     // Wrap callbacks for extension compatibility
@@ -349,11 +363,30 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
     const handleSlashCommandSelect = React.useCallback(
       (item: SlashCommandItem) => {
         if (editor && slashCommand.state.range) {
+          if (item.id === 'image') {
+            if (readOnly) return;
+            const { from, to } = slashCommand.state.range;
+            editor.chain().focus().deleteRange({ from, to }).run();
+            const fallback = editor.view.coordsAtPos(from);
+            const position = slashCommand.state.position ?? {
+              top: fallback.bottom + 4,
+              left: fallback.left,
+            };
+            setImageInsertState({
+              isOpen: true,
+              mode: 'upload',
+              position,
+              insertPos: from,
+            });
+            slashCommand.setState((prev) => ({ ...prev, isOpen: false }));
+            return;
+          }
+
           item.command(editor, slashCommand.state.range);
           slashCommand.setState((prev) => ({ ...prev, isOpen: false }));
         }
       },
-      [editor, slashCommand]
+      [editor, readOnly, slashCommand]
     );
 
     const handleTagSelect = React.useCallback(
@@ -389,6 +422,35 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       [onTagCreate, editor, tagSuggestion]
     );
 
+    const handleImageInsertModeChange = React.useCallback((mode: 'upload' | 'url') => {
+      setImageInsertState((prev) => ({ ...prev, mode }));
+    }, []);
+
+    const handleImageInsertClose = React.useCallback(() => {
+      setImageInsertState((prev) => ({
+        ...prev,
+        isOpen: false,
+        position: null,
+        insertPos: null,
+      }));
+    }, []);
+
+    const handleImageInsertUpload = React.useCallback(
+      (file: File, meta: { alt?: string | null; caption?: string | null }) => {
+        insertImageFiles([file], meta, imageInsertState.insertPos);
+        handleImageInsertClose();
+      },
+      [handleImageInsertClose, imageInsertState.insertPos, insertImageFiles]
+    );
+
+    const handleImageInsertUrl = React.useCallback(
+      (url: string, meta: { alt?: string | null; caption?: string | null }) => {
+        insertImageFromUrl(url, meta, imageInsertState.insertPos);
+        handleImageInsertClose();
+      },
+      [handleImageInsertClose, imageInsertState.insertPos, insertImageFromUrl]
+    );
+
     // Handle Enter key for slash commands
     React.useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -404,6 +466,12 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
       document.addEventListener('keydown', handleKeyDown, true);
       return () => document.removeEventListener('keydown', handleKeyDown, true);
     }, [slashCommand.state, handleSlashCommandSelect]);
+
+    React.useEffect(() => {
+      if (readOnly && imageInsertState.isOpen) {
+        handleImageInsertClose();
+      }
+    }, [handleImageInsertClose, imageInsertState.isOpen, readOnly]);
 
     // -------------------------------------------------------------------------
     // Render
@@ -514,6 +582,25 @@ const Editor = React.forwardRef<EditorRef, EditorProps>(
               items={slashCommand.state.filteredItems}
               selectedIndex={slashCommand.state.selectedIndex}
               onSelect={handleSlashCommandSelect}
+            />
+          </div>
+        )}
+
+        {/* Image insert popover */}
+        {imageInsertState.isOpen && imageInsertState.position && (
+          <div
+            className="fixed z-50"
+            style={{
+              top: imageInsertState.position.top,
+              left: imageInsertState.position.left,
+            }}
+          >
+            <ImageInsertPopover
+              mode={imageInsertState.mode}
+              onModeChange={handleImageInsertModeChange}
+              onUploadFile={handleImageInsertUpload}
+              onInsertUrl={handleImageInsertUrl}
+              onClose={handleImageInsertClose}
             />
           </div>
         )}
