@@ -42,3 +42,21 @@ export type { CommandPaletteSectionProps } from './CommandPaletteSection/index.j
 
 export { CommandPaletteList } from './CommandPaletteList/index.js';
 export type { CommandPaletteListProps } from './CommandPaletteList/index.js';
+
+export { PropertyList } from './PropertyList/index.js';
+export type { PropertyListProps, PropertyListItem } from './PropertyList/index.js';
+
+export { DataGridHeaderCheckbox, DataGridRowCheckbox } from './DataGridSelection/index.js';
+export type {
+  DataGridHeaderCheckboxProps,
+  DataGridRowCheckboxProps,
+} from './DataGridSelection/index.js';
+
+export { DataGridRowActions, rowActionsVariants } from './DataGridRowActions/index.js';
+export type { DataGridRowActionsProps, DataGridRowAction } from './DataGridRowActions/index.js';
+
+export { DataGridHeaderCell, headerCellVariants } from './DataGridHeaderCell/index.js';
+export type {
+  DataGridHeaderCellProps,
+  DataGridHeaderMenuItem,
+} from './DataGridHeaderCell/index.js';
