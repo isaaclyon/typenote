@@ -1,6 +1,29 @@
 # Recent Work
 
-## Latest Session (2026-01-21 - Editable PropertyList Complete)
+## Latest Session (2026-01-22 - Unified TitleBar Chrome)
+
+### What was accomplished
+
+- **Unified chrome layout** — Breadcrumbs moved into TitleBar; HeaderBar removed
+- **AppShell simplified** — Single-row TitleBar + content; breadcrumbs routed into TitleBar
+- **Story updates** — TitleBar/AppShell/pattern contexts updated for 36px chrome row
+- **Docs archived** — Unified TitleBar plan moved to archived after completion
+
+### Key files changed
+
+- `packages/design-system/src/features/TitleBar/TitleBar.tsx` + stories
+- `packages/design-system/src/features/AppShell/AppShell.tsx` + stories
+- `packages/design-system/src/features/HeaderBar/*` (removed)
+- `packages/design-system/src/patterns/Breadcrumbs/Breadcrumbs.stories.tsx`
+- `docs/plans/archived/2026-01-22-unified-titlebar-breadcrumbs-implementation.md`
+
+### Commits (this session)
+
+- None (uncommitted)
+
+---
+
+## Earlier Session (2026-01-21 - Editable PropertyList Complete)
 
 ### What was accomplished
 

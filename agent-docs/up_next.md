@@ -9,7 +9,8 @@
 
 - ✅ Foundation preserved: tokens.css, fonts.css, cn() utility
 - ✅ Primitives (22) + patterns (25+) complete; interactive primitives use shadcn/Radix
-- ✅ Features complete: Sidebar, TitleBar, HeaderBar, AppShell, Editor, CommandPalette
+- ✅ Features complete: Sidebar, TitleBar (breadcrumbs), AppShell, Editor, CommandPalette
+- ✅ Unified chrome: breadcrumbs in TitleBar; HeaderBar removed
 - ✅ Data grid patterns: DataGridHeaderCell, Selection, RowActions, PropertyList
 - ✅ **Editable PropertyList complete** — All 6 editors, EditableValue orchestrator, stories
 - ✅ New primitives: Popover, Calendar, DatePicker, DismissibleTag
@@ -39,7 +40,7 @@
 
 - `src/primitives/` — 22 atoms with stories (added Popover)
 - `src/patterns/` — 25+ molecules with stories (added Calendar, DatePicker, DismissibleTag, editors)
-- `src/features/` — 6 features (Sidebar, TitleBar, HeaderBar, AppShell, Editor, CommandPalette)
+- `src/features/` — 6 features (Sidebar, TitleBar, AppShell, Editor, CommandPalette, ObjectDataGrid)
 
 ### Reference
 
