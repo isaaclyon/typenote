@@ -75,8 +75,11 @@ const MultiselectEditor: React.FC<MultiselectEditorProps> = ({
             key={option}
             checked={localValue.includes(option)}
             onCheckedChange={(checked) => handleToggle(option, checked === true)}
+            className="py-1.5"
           >
-            {option}
+            <Badge variant="solid" size="sm">
+              {option}
+            </Badge>
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>
