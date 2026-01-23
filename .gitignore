@@ -25,6 +25,10 @@ out/
 # Claude Code
 .claude/settings.lock
 
+# OpenCode
+.opencode/bun.lock
+.opencode/package.json
+
 # Logs
 logs/
 *.log
