@@ -18,20 +18,20 @@ export interface RelationOption {
 }
 
 export interface RelationPickerProps {
-  value?: string | string[];
-  onChange?: (value: string | string[]) => void;
-  multiple?: boolean;
+  value?: string | string[] | undefined;
+  onChange?: ((value: string | string[]) => void) | undefined;
+  multiple?: boolean | undefined;
   options: RelationOption[];
-  loading?: boolean;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  onCreate?: (title: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  loading?: boolean | undefined;
+  searchQuery?: string | undefined;
+  onSearchChange?: ((query: string) => void) | undefined;
+  onCreate?: ((title: string) => void | Promise<void>) | undefined;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
+  open?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
   children: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 const RelationPicker = React.forwardRef<HTMLDivElement, RelationPickerProps>(
