@@ -25,6 +25,8 @@ export interface SidebarHeaderProps {
   onNewClick?: () => void;
   /** Label for new note button */
   newLabel?: string;
+  /** Callback when search is clicked (opens command palette) */
+  onSearchClick?: () => void;
   /** Additional CSS classes */
   className?: string;
 }

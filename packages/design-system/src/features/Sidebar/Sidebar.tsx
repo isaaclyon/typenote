@@ -16,7 +16,12 @@ const SIDEBAR_WIDTH_COLLAPSED = 56;
 // Sidebar
 // ============================================================================
 
-export function Sidebar({ collapsed, onCollapsedChange, children, className }: SidebarProps) {
+export function Sidebar({
+  collapsed,
+  onCollapsedChange: _onCollapsedChange,
+  children,
+  className,
+}: SidebarProps) {
   const contextValue = React.useMemo(() => ({ collapsed }), [collapsed]);
 
   // Extract header, sections, and footer from children
@@ -48,12 +53,8 @@ export function Sidebar({ collapsed, onCollapsedChange, children, className }: S
           'SidebarFooter')
   );
 
-  // Clone header with onCollapseToggle prop
-  const headerWithToggle = header
-    ? React.cloneElement(header as React.ReactElement<{ onCollapseToggle?: () => void }>, {
-        onCollapseToggle: () => onCollapsedChange(!collapsed),
-      })
-    : null;
+  // Note: Header no longer needs collapse toggle prop injection
+  // The collapse toggle has moved to TitleBar
 
   return (
     <SidebarContext.Provider value={contextValue}>
@@ -68,7 +69,7 @@ export function Sidebar({ collapsed, onCollapsedChange, children, className }: S
         }}
       >
         {/* Header (fixed) */}
-        {headerWithToggle}
+        {header}
 
         {/* Scrollable content area */}
         <ScrollArea className="flex-1" orientation="vertical">

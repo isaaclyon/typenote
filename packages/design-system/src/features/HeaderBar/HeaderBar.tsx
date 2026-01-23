@@ -1,30 +1,15 @@
 import * as React from 'react';
-import { Gear } from '@phosphor-icons/react/dist/ssr/Gear';
 
 import { cn } from '../../lib/utils.js';
-import { IconButton } from '../../primitives/IconButton/IconButton.js';
-import { Tooltip } from '../../primitives/Tooltip/Tooltip.js';
 import { Breadcrumbs, type BreadcrumbItem } from '../../patterns/Breadcrumbs/Breadcrumbs.js';
-import { SearchTrigger } from '../../patterns/SearchTrigger/SearchTrigger.js';
-import { ThemeToggle, type Theme } from '../../patterns/ThemeToggle/ThemeToggle.js';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface HeaderBarProps {
-  /** Click handler for search trigger (opens command palette) */
-  onSearchClick?: () => void;
   /** Breadcrumb items for navigation path */
   breadcrumbs?: BreadcrumbItem[];
-  /** Click handler for settings button */
-  onSettingsClick?: () => void;
-  /** Current theme */
-  theme?: Theme;
-  /** Theme toggle handler */
-  onThemeToggle?: () => void;
-  /** Custom keyboard shortcut for search (e.g., "Ctrl+K" on Windows) */
-  searchShortcut?: string;
   /** Additional CSS classes */
   className?: string;
 }
@@ -34,26 +19,19 @@ export interface HeaderBarProps {
 // ============================================================================
 
 /**
- * App-level toolbar that sits above the content area (not spanning the sidebar).
+ * Simplified header bar that displays only breadcrumbs.
+ *
+ * Controls (search, theme toggle, settings) have been moved to TitleBar.
  *
  * Layout:
- * - Center: Breadcrumbs (absolutely centered)
- * - Right: Search trigger, Theme toggle, Settings button
+ * - Center: Breadcrumbs (absolutely centered, full width available)
  *
  * Specs:
  * - Height: 40px (compact)
  * - No bottom border (seamless with content)
  * - Background: bg-background
  */
-export function HeaderBar({
-  onSearchClick,
-  breadcrumbs = [],
-  onSettingsClick,
-  theme = 'light',
-  onThemeToggle,
-  searchShortcut,
-  className,
-}: HeaderBarProps) {
+export function HeaderBar({ breadcrumbs = [], className }: HeaderBarProps) {
   return (
     <header
       className={cn(
@@ -70,24 +48,6 @@ export function HeaderBar({
           <Breadcrumbs items={breadcrumbs} />
         </div>
       )}
-
-      {/* Right: Search + Actions */}
-      <div className="ml-auto flex items-center gap-2">
-        <SearchTrigger
-          {...(onSearchClick && { onClick: onSearchClick })}
-          {...(searchShortcut && { shortcut: searchShortcut })}
-        />
-
-        {onThemeToggle && <ThemeToggle theme={theme} onToggle={onThemeToggle} />}
-
-        {onSettingsClick && (
-          <Tooltip content="Settings" side="bottom">
-            <IconButton variant="ghost" size="sm" aria-label="Settings" onClick={onSettingsClick}>
-              <Gear className="h-4 w-4" weight="regular" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
     </header>
   );
 }

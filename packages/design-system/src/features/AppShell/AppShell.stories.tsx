@@ -96,7 +96,7 @@ function SidebarContent({ activeItem, onItemClick, collapsed = false }: SidebarC
 // ============================================================================
 
 /**
- * Default AppShell with expanded sidebar, breadcrumbs, and all HeaderBar elements.
+ * Default AppShell with expanded sidebar, breadcrumbs, and controls in TitleBar.
  */
 export const Default: Story = () => {
   const [collapsed, setCollapsed] = React.useState(false);
@@ -127,6 +127,9 @@ export const Default: Story = () => {
           </p>
           <p className="text-xs text-muted-foreground mt-2">
             Sidebar collapsed: {collapsed ? 'Yes' : 'No'}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Note: Controls (search, theme, settings) are now in the TitleBar at the top.
           </p>
         </div>
       </AppShell>
@@ -292,8 +295,9 @@ export const Interactive: Story = () => {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Click sidebar items to navigate</li>
               <li>Toggle sidebar collapse with the button in sidebar header</li>
-              <li>Click the sun/moon icon to toggle theme (visual only in Ladle)</li>
-              <li>Click search to log to console</li>
+              <li>Click the sun/moon icon in the TitleBar to toggle theme</li>
+              <li>Click search in the TitleBar to log to console</li>
+              <li>Breadcrumbs are now in the HeaderBar, controls are in TitleBar</li>
             </ul>
           </div>
         </div>

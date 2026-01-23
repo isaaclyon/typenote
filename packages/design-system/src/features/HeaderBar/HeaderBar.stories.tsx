@@ -1,11 +1,9 @@
-import * as React from 'react';
 import type { Story } from '@ladle/react';
 import { File } from '@phosphor-icons/react/dist/ssr/File';
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
 import { User } from '@phosphor-icons/react/dist/ssr/User';
 
 import { HeaderBar } from './HeaderBar.js';
-import type { Theme } from '../../patterns/ThemeToggle/ThemeToggle.js';
 
 export default {
   title: 'Features / HeaderBar',
@@ -45,193 +43,111 @@ const personBreadcrumbs = [
 // Stories
 // ============================================================================
 
-export const Default: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="space-y-6 p-6">
-      <div className="rounded-md border border-border overflow-hidden">
-        <HeaderBar
-          onSearchClick={() => console.log('Search clicked')}
-          breadcrumbs={pageBreadcrumbs}
-          onSettingsClick={() => console.log('Settings clicked')}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        Full HeaderBar: breadcrumbs (center), search + theme toggle + settings (right).
-      </p>
-    </div>
-  );
-};
-
-export const DailyNote: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="space-y-6 p-6">
-      <div className="rounded-md border border-border overflow-hidden">
-        <HeaderBar
-          onSearchClick={() => console.log('Search clicked')}
-          breadcrumbs={dailyNoteBreadcrumbs}
-          onSettingsClick={() => console.log('Settings clicked')}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        HeaderBar showing a Daily Note with blue calendar icons.
-      </p>
-    </div>
-  );
-};
-
-export const PersonObject: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="space-y-6 p-6">
-      <div className="rounded-md border border-border overflow-hidden">
-        <HeaderBar
-          onSearchClick={() => console.log('Search clicked')}
-          breadcrumbs={personBreadcrumbs}
-          onSettingsClick={() => console.log('Settings clicked')}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        HeaderBar showing a Person object with orange user icons.
-      </p>
-    </div>
-  );
-};
-
-export const NoBreadcrumbs: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="space-y-6 p-6">
-      <div className="rounded-md border border-border overflow-hidden">
-        <HeaderBar
-          onSearchClick={() => console.log('Search clicked')}
-          onSettingsClick={() => console.log('Settings clicked')}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        HeaderBar without breadcrumbs — right-side actions only.
-      </p>
-    </div>
-  );
-};
-
-export const MinimalActions: Story = () => (
+/**
+ * Default HeaderBar with breadcrumbs centered.
+ * Controls (search, theme, settings) are now in TitleBar.
+ */
+export const Default: Story = () => (
   <div className="space-y-6 p-6">
     <div className="rounded-md border border-border overflow-hidden">
-      <HeaderBar
-        onSearchClick={() => console.log('Search clicked')}
-        breadcrumbs={pageBreadcrumbs}
-      />
+      <HeaderBar breadcrumbs={pageBreadcrumbs} />
     </div>
     <p className="text-xs text-muted-foreground">
-      HeaderBar with breadcrumbs and search only (no settings or theme toggle).
+      Simplified HeaderBar: only breadcrumbs (centered). Controls moved to TitleBar.
     </p>
   </div>
 );
 
-export const WindowsShortcut: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="space-y-6 p-6">
-      <div className="rounded-md border border-border overflow-hidden">
-        <HeaderBar
-          onSearchClick={() => console.log('Search clicked')}
-          breadcrumbs={pageBreadcrumbs}
-          searchShortcut="Ctrl+K"
-          onSettingsClick={() => console.log('Settings clicked')}
-          theme={theme}
-          onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        HeaderBar with Windows-style keyboard shortcut (Ctrl+K).
-      </p>
+export const DailyNote: Story = () => (
+  <div className="space-y-6 p-6">
+    <div className="rounded-md border border-border overflow-hidden">
+      <HeaderBar breadcrumbs={dailyNoteBreadcrumbs} />
     </div>
-  );
-};
+    <p className="text-xs text-muted-foreground">
+      HeaderBar showing a Daily Note with blue calendar icons.
+    </p>
+  </div>
+);
 
-export const InAppContext: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
+export const PersonObject: Story = () => (
+  <div className="space-y-6 p-6">
+    <div className="rounded-md border border-border overflow-hidden">
+      <HeaderBar breadcrumbs={personBreadcrumbs} />
+    </div>
+    <p className="text-xs text-muted-foreground">
+      HeaderBar showing a Person object with orange user icons.
+    </p>
+  </div>
+);
 
-  return (
-    <div className="p-6">
-      <div className="flex h-[400px] rounded-md border border-border overflow-hidden">
-        {/* Simulated Sidebar */}
+export const NoBreadcrumbs: Story = () => (
+  <div className="space-y-6 p-6">
+    <div className="rounded-md border border-border overflow-hidden">
+      <HeaderBar />
+    </div>
+    <p className="text-xs text-muted-foreground">
+      HeaderBar without breadcrumbs — empty bar (40px height preserved).
+    </p>
+  </div>
+);
+
+export const InAppContext: Story = () => (
+  <div className="p-6">
+    <div className="flex h-[400px] rounded-md border border-border overflow-hidden">
+      {/* Simulated Sidebar */}
+      <div className="w-[240px] shrink-0 border-r border-border bg-background p-4">
+        <p className="text-xs text-muted-foreground">Sidebar</p>
+      </div>
+
+      {/* Main content area */}
+      <div className="flex flex-1 flex-col">
+        <HeaderBar breadcrumbs={pageBreadcrumbs} />
+        <div className="flex-1 bg-muted/30 p-4">
+          <p className="text-sm text-muted-foreground">Content area</p>
+        </div>
+      </div>
+    </div>
+    <p className="mt-4 text-xs text-muted-foreground">
+      HeaderBar in context: spans content area only, not the sidebar.
+    </p>
+  </div>
+);
+
+export const FullAppLayout: Story = () => (
+  <div className="p-6">
+    <div className="flex h-[500px] flex-col rounded-md border border-border overflow-hidden">
+      {/* TitleBar simulation with controls */}
+      <div className="h-7 w-full shrink-0 bg-background border-b border-border flex items-center px-4">
+        <div className="flex gap-2">
+          <div className="h-3 w-3 rounded-full bg-red-400" />
+          <div className="h-3 w-3 rounded-full bg-yellow-400" />
+          <div className="h-3 w-3 rounded-full bg-green-400" />
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">[Search] [☀] [⚙]</span>
+        </div>
+      </div>
+
+      {/* Below TitleBar */}
+      <div className="flex flex-1">
+        {/* Sidebar */}
         <div className="w-[240px] shrink-0 border-r border-border bg-background p-4">
           <p className="text-xs text-muted-foreground">Sidebar</p>
         </div>
 
         {/* Main content area */}
         <div className="flex flex-1 flex-col">
-          <HeaderBar
-            onSearchClick={() => console.log('Search clicked')}
-            breadcrumbs={pageBreadcrumbs}
-            onSettingsClick={() => console.log('Settings clicked')}
-            theme={theme}
-            onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-          />
+          <HeaderBar breadcrumbs={pageBreadcrumbs} />
           <div className="flex-1 bg-muted/30 p-4">
-            <p className="text-sm text-muted-foreground">Content area</p>
+            <p className="text-sm text-muted-foreground">
+              New layout: Controls in TitleBar (top), breadcrumbs in HeaderBar (here).
+            </p>
           </div>
         </div>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
-        HeaderBar in context: spans content area only, not the sidebar.
-      </p>
     </div>
-  );
-};
-
-export const FullAppLayout: Story = () => {
-  const [theme, setTheme] = React.useState<Theme>('light');
-
-  return (
-    <div className="p-6">
-      <div className="flex h-[500px] flex-col rounded-md border border-border overflow-hidden">
-        {/* TitleBar simulation */}
-        <div className="h-7 w-full shrink-0 bg-background border-b border-border">
-          <p className="pl-20 text-xs text-muted-foreground leading-7">TitleBar (28px)</p>
-        </div>
-
-        {/* Below TitleBar */}
-        <div className="flex flex-1">
-          {/* Sidebar */}
-          <div className="w-[240px] shrink-0 border-r border-border bg-background p-4">
-            <p className="text-xs text-muted-foreground">Sidebar</p>
-          </div>
-
-          {/* Main content area */}
-          <div className="flex flex-1 flex-col">
-            <HeaderBar
-              onSearchClick={() => console.log('Search clicked')}
-              breadcrumbs={pageBreadcrumbs}
-              onSettingsClick={() => console.log('Settings clicked')}
-              theme={theme}
-              onThemeToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            />
-            <div className="flex-1 bg-muted/30 p-4">
-              <p className="text-sm text-muted-foreground">Editor / Content</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p className="mt-4 text-xs text-muted-foreground">
-        Complete layout: TitleBar (top) + Sidebar (left) + HeaderBar (content) + Content
-      </p>
-    </div>
-  );
-};
+    <p className="mt-4 text-xs text-muted-foreground">
+      Complete layout: TitleBar with controls (top) + Sidebar (left) + HeaderBar with breadcrumbs
+    </p>
+  </div>
+);
