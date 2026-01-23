@@ -1,6 +1,6 @@
 # Markdown Contract Adherence
 
-**Status:** Active
+**Status:** Archived
 **Owner:** Design System
 
 ## Goal
@@ -65,7 +65,7 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 
 ### Not Implemented Yet
 
-- Image upload + attachments (Phase 3, design-system UX + callbacks only)
+- None
 
 ### Recently Completed
 
@@ -75,6 +75,7 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 - Inline math ($...$) + block math ($$) with KaTeX rendering ✅ (2026-01-19)
 - Embeds (![[Page]] / ![[file]]) ✅ (2026-01-21)
 - Footnotes (refs + definitions) ✅ (2026-01-21)
+- Image upload + attachments (Phase 3, design-system UX + callbacks only) ✅ (2026-01-22)
 
 ## Export Notes
 
@@ -93,7 +94,7 @@ Define the supported Markdown contract (CommonMark + GFM + Obsidian extras) for 
 7. ~~Implement heading targets ([[Page#Heading]]).~~ ✅
 8. ~~Implement block references ([[Page#^block-id]]).~~ ✅
 9. Implement remaining contract gaps (priority order):
-   - **Image upload UX (design-system)** — /image slash command, URL/file chooser, drag/drop + paste, async upload callbacks with progress, error placeholders, alt + caption attrs
+   - None
 
 ## Out of Scope (Other Packages)
 
