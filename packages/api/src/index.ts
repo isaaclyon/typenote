@@ -157,6 +157,19 @@ export {
 // Query Results
 export { type DocumentBlock, type GetDocumentResult, type ObjectSummary } from './queries.js';
 
+// Markdown Export
+export {
+  MarkdownWarningCodeSchema,
+  MarkdownWarningSchema,
+  MarkdownAssetSchema,
+  MarkdownExportInputSchema,
+  MarkdownExportResultSchema,
+  type MarkdownWarning,
+  type MarkdownAsset,
+  type MarkdownExportInput,
+  type MarkdownExportResult,
+} from './markdownExport.js';
+
 // Templates
 export {
   TemplateBlockSchema,
