@@ -21,7 +21,7 @@ export interface HeaderBarProps {
 /**
  * Simplified header bar that displays only breadcrumbs.
  *
- * Controls (search, theme toggle, settings) have been moved to TitleBar.
+ * Controls (search, theme toggle, settings) have been moved to the sidebar.
  *
  * Layout:
  * - Center: Breadcrumbs (absolutely centered, full width available)

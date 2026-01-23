@@ -45,7 +45,7 @@ const personBreadcrumbs = [
 
 /**
  * Default HeaderBar with breadcrumbs centered.
- * Controls (search, theme, settings) are now in TitleBar.
+ * Controls (search, theme, settings) live in the sidebar.
  */
 export const Default: Story = () => (
   <div className="space-y-6 p-6">
@@ -53,7 +53,7 @@ export const Default: Story = () => (
       <HeaderBar breadcrumbs={pageBreadcrumbs} />
     </div>
     <p className="text-xs text-muted-foreground">
-      Simplified HeaderBar: only breadcrumbs (centered). Controls moved to TitleBar.
+      Simplified HeaderBar: only breadcrumbs (centered). Controls moved to the sidebar.
     </p>
   </div>
 );
@@ -116,15 +116,12 @@ export const InAppContext: Story = () => (
 export const FullAppLayout: Story = () => (
   <div className="p-6">
     <div className="flex h-[500px] flex-col rounded-md border border-border overflow-hidden">
-      {/* TitleBar simulation with controls */}
+      {/* TitleBar simulation */}
       <div className="h-7 w-full shrink-0 bg-background border-b border-border flex items-center px-4">
         <div className="flex gap-2">
           <div className="h-3 w-3 rounded-full bg-red-400" />
           <div className="h-3 w-3 rounded-full bg-yellow-400" />
           <div className="h-3 w-3 rounded-full bg-green-400" />
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">[Search] [☀] [⚙]</span>
         </div>
       </div>
 
@@ -140,14 +137,14 @@ export const FullAppLayout: Story = () => (
           <HeaderBar breadcrumbs={pageBreadcrumbs} />
           <div className="flex-1 bg-muted/30 p-4">
             <p className="text-sm text-muted-foreground">
-              New layout: Controls in TitleBar (top), breadcrumbs in HeaderBar (here).
+              New layout: Controls in the sidebar, breadcrumbs in HeaderBar (here).
             </p>
           </div>
         </div>
       </div>
     </div>
     <p className="mt-4 text-xs text-muted-foreground">
-      Complete layout: TitleBar with controls (top) + Sidebar (left) + HeaderBar with breadcrumbs
+      Complete layout: TitleBar (top) + Sidebar (left) + HeaderBar with breadcrumbs
     </p>
   </div>
 );

@@ -24,8 +24,20 @@ export function Sidebar({
 }: SidebarProps) {
   const contextValue = React.useMemo(() => ({ collapsed }), [collapsed]);
 
+  const flattenChildren = React.useCallback((nodes: React.ReactNode): React.ReactNode[] => {
+    const items = React.Children.toArray(nodes);
+
+    return items.flatMap((child) => {
+      if (React.isValidElement(child) && child.type === React.Fragment) {
+        return flattenChildren(child.props.children);
+      }
+
+      return [child];
+    });
+  }, []);
+
   // Extract header, sections, and footer from children
-  const childArray = React.Children.toArray(children);
+  const childArray = flattenChildren(children);
 
   // Find header (first child that looks like a header)
   const header = childArray.find(

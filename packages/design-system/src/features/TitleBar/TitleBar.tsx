@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Sidebar as SidebarIcon } from '@phosphor-icons/react/dist/ssr/Sidebar';
+import { SidebarSimple as SidebarIcon } from '@phosphor-icons/react/dist/ssr/SidebarSimple';
 
 import { cn } from '../../lib/utils.js';
 import { IconButton } from '../../primitives/IconButton/IconButton.js';
@@ -70,7 +70,7 @@ export function TitleBar({
 
       {/* Sidebar collapse toggle - positioned after traffic lights area */}
       {onSidebarCollapseToggle && (
-        <div className="ml-[76px] app-region-no-drag">
+        <div className="ml-[76px] self-end app-region-no-drag">
           <Tooltip content={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} side="bottom">
             <IconButton
               variant="ghost"
@@ -78,7 +78,7 @@ export function TitleBar({
               aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               onClick={onSidebarCollapseToggle}
             >
-              <SidebarIcon className="h-3.5 w-3.5" weight="regular" />
+              <SidebarIcon className="h-4 w-4" weight="regular" />
             </IconButton>
           </Tooltip>
         </div>

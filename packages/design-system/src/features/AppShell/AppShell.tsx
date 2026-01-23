@@ -4,7 +4,6 @@ import { cn } from '../../lib/utils.js';
 import { TitleBar } from '../TitleBar/TitleBar.js';
 import { Sidebar } from '../Sidebar/Sidebar.js';
 import { HeaderBar } from '../HeaderBar/HeaderBar.js';
-import type { Theme } from '../../patterns/ThemeToggle/ThemeToggle.js';
 import type { BreadcrumbItem } from '../../patterns/Breadcrumbs/Breadcrumbs.js';
 
 // ============================================================================
@@ -18,18 +17,10 @@ export interface AppShellProps {
   onSidebarCollapsedChange?: (collapsed: boolean) => void;
   /** Content to render inside the sidebar (SidebarHeader, SidebarSection, etc.) */
   sidebarContent?: React.ReactNode;
+  /** Optional custom content inside the TitleBar (e.g., traffic light placeholders) */
+  titleBarChildren?: React.ReactNode;
   /** Breadcrumb items for navigation path (shown in HeaderBar) */
   breadcrumbs?: BreadcrumbItem[];
-  /** Click handler for search trigger (opens command palette) - shown in TitleBar */
-  onSearchClick?: () => void;
-  /** Click handler for settings button - shown in TitleBar */
-  onSettingsClick?: () => void;
-  /** Current theme - used by TitleBar theme toggle */
-  theme?: Theme;
-  /** Theme toggle handler - shown in TitleBar */
-  onThemeToggle?: () => void;
-  /** Custom keyboard shortcut for search (e.g., "Ctrl+K" on Windows) */
-  searchShortcut?: string;
   /** Main content area */
   children: React.ReactNode;
   /** Additional CSS classes for the root element */
@@ -46,7 +37,7 @@ export interface AppShellProps {
  * Layout:
  * ```
  * ┌───────────────────────────────────────────────────────────────────┐
- * │ [traffic lights]    TitleBar (28px)    [Search] [☀] [⚙]         │
+ * │ [traffic lights]               TitleBar (28px)                    │
  * ├────────────┬──────────────────────────────────────────────────────┤
  * │            │         HeaderBar (40px) - breadcrumbs only          │
  * │  Sidebar   ├──────────────────────────────────────────────────────┤
@@ -58,38 +49,39 @@ export interface AppShellProps {
  * ```
  *
  * Features:
- * - TitleBar spans full width with controls on right (search, theme, settings)
+ * - TitleBar spans full width (draggable region + collapse toggle)
  * - Sidebar runs full height below TitleBar, collapsible
- * - HeaderBar shows only breadcrumbs (controls moved to TitleBar)
+ * - HeaderBar shows only breadcrumbs (controls live in sidebar content)
  * - Controlled sidebar state (parent owns collapsed state)
+ * - Optional TitleBar children for platform placeholders or custom controls
  */
 export function AppShell({
   // Sidebar props
   sidebarCollapsed = false,
   onSidebarCollapsedChange,
   sidebarContent,
+  titleBarChildren,
   // HeaderBar props
   breadcrumbs,
-  // TitleBar control props
-  onSearchClick,
-  onSettingsClick,
-  theme,
-  onThemeToggle,
-  searchShortcut,
   // Content
   children,
   className,
 }: AppShellProps) {
+  const handleSidebarCollapseToggle = onSidebarCollapsedChange
+    ? () => onSidebarCollapsedChange(!sidebarCollapsed)
+    : undefined;
+
   return (
     <div className={cn('flex h-full w-full flex-col bg-background', className)}>
-      {/* TitleBar - full width, top, with controls */}
+      {/* TitleBar - full width, top */}
       <TitleBar
-        {...(onSearchClick && { onSearchClick })}
-        {...(onSettingsClick && { onSettingsClick })}
-        {...(theme && { theme })}
-        {...(onThemeToggle && { onThemeToggle })}
-        {...(searchShortcut && { searchShortcut })}
-      />
+        sidebarCollapsed={sidebarCollapsed}
+        {...(handleSidebarCollapseToggle && {
+          onSidebarCollapseToggle: handleSidebarCollapseToggle,
+        })}
+      >
+        {titleBarChildren}
+      </TitleBar>
 
       {/* Below TitleBar: Sidebar + Main area */}
       <div className="flex flex-1 overflow-hidden">

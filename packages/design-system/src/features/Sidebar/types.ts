@@ -27,6 +27,8 @@ export interface SidebarHeaderProps {
   newLabel?: string;
   /** Callback when search is clicked (opens command palette) */
   onSearchClick?: () => void;
+  /** Keyboard shortcut hint for search (e.g., "⌘K" or "Ctrl+K") */
+  searchShortcut?: string;
   /** Additional CSS classes */
   className?: string;
 }

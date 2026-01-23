@@ -1,5 +1,7 @@
 # TitleBar Controls Design
 
+**Status:** Archived - controls kept in sidebar (2026-01-22).
+
 **Goal:** Move search, dark mode toggle, and settings controls from HeaderBar into the TitleBar to eliminate collision with breadcrumbs.
 
 ---

@@ -13,8 +13,8 @@ export default {
 
 /**
  * Default title bar with sidebar collapse toggle.
- * In the Capacities-style layout, the TitleBar is minimal - just a draggable
- * region with the collapse toggle positioned after traffic lights.
+ * In the Capacities-style layout, the TitleBar is a draggable region with the
+ * collapse toggle on the left and controls in the sidebar.
  */
 export const Default: Story = () => {
   const [collapsed, setCollapsed] = React.useState(false);
@@ -30,8 +30,8 @@ export const Default: Story = () => {
           Sidebar collapsed: <strong>{collapsed ? 'Yes' : 'No'}</strong>
         </p>
         <p className="text-xs text-muted-foreground mt-2">
-          The title bar is 28px tall with just a collapse toggle on the left. Search, settings, and
-          theme controls have moved to the sidebar.
+          The title bar is 28px tall with a collapse toggle on the left. Search, settings, and theme
+          controls live in the sidebar.
         </p>
       </div>
     </div>

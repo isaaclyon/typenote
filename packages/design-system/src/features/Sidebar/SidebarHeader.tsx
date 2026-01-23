@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { MagnifyingGlass } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 
 import { cn } from '../../lib/utils.js';
 import { Button } from '../../primitives/Button/Button.js';
 import { IconButton } from '../../primitives/IconButton/IconButton.js';
+import { Keycap } from '../../primitives/Keycap/Keycap.js';
 import { Tooltip } from '../../primitives/Tooltip/Tooltip.js';
 import { useSidebarContext } from './SidebarContext.js';
 import type { SidebarHeaderProps } from './types.js';
@@ -16,8 +18,8 @@ import type { SidebarHeaderProps } from './types.js';
  * Sidebar header with "New note" button and search trigger.
  *
  * In the Capacities-style layout:
- * - Expanded: [New note] + [🔍] buttons in a row
- * - Collapsed: [+] and [🔍] stacked vertically with tooltips
+ * - Expanded: Search + New note full-width buttons stacked vertically
+ * - Collapsed: [🔍] and [+] stacked vertically with tooltips
  *
  * Note: The collapse toggle has moved to TitleBar.
  */
@@ -25,22 +27,30 @@ function SidebarHeaderComponent({
   onNewClick,
   newLabel = 'New note',
   onSearchClick,
+  searchShortcut,
   className,
 }: SidebarHeaderProps) {
   const { collapsed } = useSidebarContext();
+  const resolveSearchShortcut = React.useCallback((value?: string) => {
+    if (value !== undefined) {
+      return value;
+    }
+
+    if (typeof navigator === 'undefined') {
+      return 'Ctrl+K';
+    }
+
+    return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? '⌘K' : 'Ctrl+K';
+  }, []);
+
+  const resolvedSearchShortcut = resolveSearchShortcut(searchShortcut);
+  const showShortcut = Boolean(resolvedSearchShortcut);
 
   // Collapsed mode: stack icon buttons vertically
-  // Order: New note (top) → Search
+  // Order: Search (top) → New note
   if (collapsed) {
     return (
       <div className={cn('flex flex-col items-center gap-1 px-2 py-2', className)}>
-        {/* New note action */}
-        <Tooltip content={newLabel} side="right">
-          <Button variant="secondary" size="sm" onClick={onNewClick} aria-label={newLabel}>
-            +
-          </Button>
-        </Tooltip>
-
         {/* Search trigger */}
         {onSearchClick && (
           <Tooltip content="Search" side="right">
@@ -49,26 +59,50 @@ function SidebarHeaderComponent({
             </IconButton>
           </Tooltip>
         )}
+
+        {/* New note action */}
+        <Tooltip content={newLabel} side="right">
+          <IconButton variant="secondary" size="sm" aria-label={newLabel} onClick={onNewClick}>
+            <Plus className="h-4 w-4" weight="regular" />
+          </IconButton>
+        </Tooltip>
       </div>
     );
   }
 
-  // Expanded mode: single row with new note button + search
+  // Expanded mode: full-width buttons stacked vertically
   return (
-    <div className={cn('flex items-center gap-2 px-2 py-2', className)}>
-      {/* New note button */}
-      <Button variant="secondary" size="sm" className="flex-1" onClick={onNewClick}>
-        {newLabel}
-      </Button>
-
-      {/* Search trigger */}
+    <div className={cn('flex flex-col gap-1 px-2 py-2', className)}>
       {onSearchClick && (
-        <Tooltip content="Search ⌘K" side="bottom">
-          <IconButton variant="ghost" size="sm" aria-label="Search" onClick={onSearchClick}>
+        <Button
+          variant="ghost"
+          size="sm"
+          fullWidth
+          className="justify-between border border-border/40 bg-transparent text-muted-foreground hover:text-foreground"
+          onClick={onSearchClick}
+        >
+          <span className="flex items-center gap-2">
             <MagnifyingGlass className="h-4 w-4" weight="regular" />
-          </IconButton>
-        </Tooltip>
+            <span>Search</span>
+          </span>
+          {showShortcut && (
+            <Keycap size="xs" className="text-muted-foreground">
+              {resolvedSearchShortcut}
+            </Keycap>
+          )}
+        </Button>
       )}
+
+      <Button
+        variant="ghost"
+        size="sm"
+        fullWidth
+        className="justify-start bg-transparent"
+        onClick={onNewClick}
+      >
+        <Plus className="h-4 w-4" weight="regular" />
+        <span>{newLabel}</span>
+      </Button>
     </div>
   );
 }
