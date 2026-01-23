@@ -37,6 +37,11 @@ export const Overview: Story = () => {
         <h2 className="text-sm font-semibold text-gray-600">Sizes</h2>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
+            <Keycap size="xs">⌘</Keycap>
+            <Keycap size="xs">K</Keycap>
+            <span className="ml-2 text-sm text-gray-500">Extra Small</span>
+          </div>
+          <div className="flex items-center gap-1">
             <Keycap size="sm">⌘</Keycap>
             <Keycap size="sm">K</Keycap>
             <span className="ml-2 text-sm text-gray-500">Small</span>

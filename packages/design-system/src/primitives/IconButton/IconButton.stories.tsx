@@ -7,6 +7,7 @@ export default {
 };
 
 const sizeIconMap = {
+  xs: 'h-3.5 w-3.5',
   sm: 'h-3.5 w-3.5',
   md: 'h-4 w-4',
   lg: 'h-5 w-5',
@@ -44,6 +45,9 @@ export const Overview: Story = () => (
     <section className="space-y-4">
       <h2 className="text-sm font-semibold text-gray-600">Sizes</h2>
       <div className="flex flex-wrap items-center gap-3">
+        <IconButton aria-label="Extra small add" size="xs" variant="secondary">
+          <Plus className={sizeIconMap.xs} weight="bold" />
+        </IconButton>
         <IconButton aria-label="Small add" size="sm" variant="secondary">
           <Plus className={sizeIconMap.sm} weight="bold" />
         </IconButton>

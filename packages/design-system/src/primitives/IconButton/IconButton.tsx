@@ -13,7 +13,7 @@ type IconButtonVariant =
   | 'neutral'
   | 'success';
 
-type IconButtonSize = 'sm' | 'md' | 'lg';
+type IconButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 const iconButtonVariants = cva(
   [
@@ -35,6 +35,7 @@ const iconButtonVariants = cva(
         success: 'bg-success text-white hover:bg-success/90 active:bg-success/80',
       },
       size: {
+        xs: 'h-6 w-6 text-xs',
         sm: 'h-8 w-8 text-sm',
         md: 'h-9 w-9 text-base',
         lg: 'h-10 w-10 text-base',

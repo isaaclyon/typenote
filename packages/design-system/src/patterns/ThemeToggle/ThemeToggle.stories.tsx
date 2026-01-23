@@ -45,6 +45,28 @@ export const Overview: Story = () => {
       </section>
 
       <section className="space-y-4">
+        <h2 className="text-sm font-semibold text-gray-600">Sizes</h2>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme="light" onToggle={() => {}} size="xs" showTooltip={false} />
+            <span className="text-xs text-muted-foreground">xs</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme="light" onToggle={() => {}} size="sm" showTooltip={false} />
+            <span className="text-xs text-muted-foreground">sm</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme="light" onToggle={() => {}} size="md" showTooltip={false} />
+            <span className="text-xs text-muted-foreground">md</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme="light" onToggle={() => {}} size="lg" showTooltip={false} />
+            <span className="text-xs text-muted-foreground">lg</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-4">
         <h2 className="text-sm font-semibold text-gray-600">Without Tooltip</h2>
         <div className="flex items-center gap-4">
           <ThemeToggle theme="light" onToggle={() => {}} showTooltip={false} />
@@ -79,7 +101,26 @@ export const InHeaderContext: Story = () => {
         />
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        ThemeToggle positioned on the right side of the HeaderBar
+        Default size (sm) ThemeToggle in a HeaderBar context (40px tall)
+      </p>
+    </div>
+  );
+};
+
+export const InTitleBarContext: Story = () => {
+  const [theme, setTheme] = React.useState<Theme>('light');
+
+  return (
+    <div className="p-6">
+      <div className="flex h-7 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
+        <ThemeToggle
+          theme={theme}
+          size="xs"
+          onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        />
+      </div>
+      <p className="mt-4 text-xs text-muted-foreground">
+        Extra small (xs) ThemeToggle in a TitleBar context (28px tall)
       </p>
     </div>
   );

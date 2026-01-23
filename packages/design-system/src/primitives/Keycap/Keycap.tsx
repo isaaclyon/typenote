@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../lib/utils.js';
 
-type KeycapSize = 'sm' | 'md';
+type KeycapSize = 'xs' | 'sm' | 'md';
 
 const keycapVariants = cva(
   [
@@ -14,6 +14,7 @@ const keycapVariants = cva(
   {
     variants: {
       size: {
+        xs: 'min-w-4 h-4 px-0.5 text-[10px]',
         sm: 'min-w-5 h-5 px-1 text-xs',
         md: 'min-w-6 h-6 px-1.5 text-xs',
       },

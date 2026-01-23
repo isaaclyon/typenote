@@ -9,8 +9,13 @@ export default {
 export const Overview: Story = () => (
   <div className="space-y-10 p-6">
     <section className="space-y-4">
-      <h2 className="text-sm font-semibold text-gray-600">Default</h2>
+      <h2 className="text-sm font-semibold text-gray-600">Default Size</h2>
       <SearchTrigger onClick={() => alert('Opening command palette...')} />
+    </section>
+
+    <section className="space-y-4">
+      <h2 className="text-sm font-semibold text-gray-600">Compact Size (for TitleBar)</h2>
+      <SearchTrigger size="compact" onClick={() => alert('Opening command palette...')} />
     </section>
 
     <section className="space-y-4">
@@ -49,7 +54,18 @@ export const InHeaderContext: Story = () => (
       <SearchTrigger onClick={() => console.log('Search clicked')} />
     </div>
     <p className="mt-4 text-xs text-muted-foreground">
-      SearchTrigger positioned on the left side of the HeaderBar
+      Default size SearchTrigger in a HeaderBar context (40px tall)
+    </p>
+  </div>
+);
+
+export const InTitleBarContext: Story = () => (
+  <div className="p-6">
+    <div className="flex h-7 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
+      <SearchTrigger size="compact" onClick={() => console.log('Search clicked')} />
+    </div>
+    <p className="mt-4 text-xs text-muted-foreground">
+      Compact size SearchTrigger in a TitleBar context (28px tall)
     </p>
   </div>
 );

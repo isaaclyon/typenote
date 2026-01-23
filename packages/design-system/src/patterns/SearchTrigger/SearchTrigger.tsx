@@ -8,6 +8,8 @@ import { Keycap } from '../../primitives/Keycap/Keycap.js';
 // Types
 // ============================================================================
 
+export type SearchTriggerSize = 'default' | 'compact';
+
 export interface SearchTriggerProps {
   /** Click handler (opens command palette) */
   onClick?: () => void;
@@ -15,6 +17,8 @@ export interface SearchTriggerProps {
   placeholder?: string;
   /** Keyboard shortcut hint (e.g., "⌘K" or "Ctrl+K") */
   shortcut?: string;
+  /** Size variant: 'default' (200px, h-8) or 'compact' (120px, h-6) */
+  size?: SearchTriggerSize;
   /** Additional CSS classes */
   className?: string;
 }
@@ -26,25 +30,34 @@ export interface SearchTriggerProps {
 /**
  * A button styled like an input field that triggers the command palette.
  * Displays a placeholder, search icon, and keyboard shortcut hint.
+ *
+ * Size variants:
+ * - 'default': 200px wide, 32px tall (h-8) - for HeaderBar
+ * - 'compact': 120px wide, 24px tall (h-6) - for TitleBar
  */
 export function SearchTrigger({
   onClick,
-  placeholder = 'Search...',
+  placeholder,
   shortcut = '⌘K',
+  size = 'default',
   className,
 }: SearchTriggerProps) {
+  const isCompact = size === 'compact';
+  const displayPlaceholder = placeholder ?? (isCompact ? 'Search' : 'Search...');
+
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        // Layout
-        'inline-flex h-8 w-[200px] items-center gap-2 rounded-md px-2.5',
+        // Layout - size-dependent
+        'inline-flex items-center rounded-md',
+        isCompact ? 'h-6 w-[120px] gap-1.5 px-2' : 'h-8 w-[200px] gap-2 px-2.5',
         // Input-like appearance
         'bg-muted/50 border border-transparent',
         'hover:border-border hover:bg-muted',
-        // Text styling
-        'text-sm text-muted-foreground',
+        // Text styling - size-dependent
+        isCompact ? 'text-xs text-muted-foreground' : 'text-sm text-muted-foreground',
         // Transitions
         'transition-colors duration-150 ease-out',
         // Focus
@@ -54,13 +67,16 @@ export function SearchTrigger({
       )}
     >
       {/* Search icon */}
-      <MagnifyingGlass className="h-3.5 w-3.5 shrink-0 text-muted-foreground" weight="regular" />
+      <MagnifyingGlass
+        className={cn('shrink-0 text-muted-foreground', isCompact ? 'h-3 w-3' : 'h-3.5 w-3.5')}
+        weight="regular"
+      />
 
       {/* Placeholder text */}
-      <span className="flex-1 text-left">{placeholder}</span>
+      <span className="flex-1 text-left truncate">{displayPlaceholder}</span>
 
       {/* Keyboard shortcut hint */}
-      <Keycap size="sm" className="text-muted-foreground">
+      <Keycap size={isCompact ? 'xs' : 'sm'} className="text-muted-foreground">
         {shortcut}
       </Keycap>
     </button>
