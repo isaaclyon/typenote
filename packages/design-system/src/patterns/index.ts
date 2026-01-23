@@ -72,3 +72,6 @@ export type { DismissibleTagProps } from './DismissibleTag/index.js';
 
 export { RelationPicker } from './RelationPicker/index.js';
 export type { RelationPickerProps, RelationOption } from './RelationPicker/index.js';
+
+export { BadgeSelect } from './BadgeSelect/index.js';
+export type { BadgeSelectProps } from './BadgeSelect/index.js';

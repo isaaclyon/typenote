@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '../../../primitives/Select/Select.js';
+import { BadgeSelect } from '../../BadgeSelect/BadgeSelect.js';
 
 export interface SelectEditorProps {
   value: string;
@@ -26,7 +20,7 @@ const SelectEditor: React.FC<SelectEditorProps> = ({
 }) => {
   const [open, setOpen] = React.useState(true);
 
-  const handleValueChange = (newValue: string) => {
+  const handleChange = (newValue: string) => {
     onSave(newValue);
     setOpen(false);
   };
@@ -40,24 +34,15 @@ const SelectEditor: React.FC<SelectEditorProps> = ({
   };
 
   return (
-    <Select
+    <BadgeSelect
       value={value}
-      onValueChange={handleValueChange}
+      options={options}
+      onChange={handleChange}
+      placeholder={placeholder}
+      disabled={disabled}
       open={open}
       onOpenChange={handleOpenChange}
-      disabled={disabled === true}
-    >
-      <SelectTrigger className="h-7 text-sm">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option} value={option}>
-            {option}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    />
   );
 };
 
