@@ -121,9 +121,9 @@ export const LongPath: Story = () => (
   </div>
 );
 
-export const InHeaderContext: Story = () => (
+export const InTitleBarContext: Story = () => (
   <div className="p-6">
-    <div className="flex h-10 items-center justify-center rounded-md border border-dashed border-border bg-muted/30">
+    <div className="flex h-9 items-center justify-center rounded-md border border-dashed border-border bg-muted/30">
       <Breadcrumbs
         items={[
           { label: 'Pages', icon: File, iconColor: '#78716c', onClick: () => console.log('Pages') },
@@ -132,7 +132,7 @@ export const InHeaderContext: Story = () => (
       />
     </div>
     <p className="mt-4 text-xs text-muted-foreground">
-      Breadcrumbs will be absolutely centered in the HeaderBar
+      Breadcrumbs will be absolutely centered in the TitleBar
     </p>
   </div>
 );

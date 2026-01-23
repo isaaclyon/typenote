@@ -3,7 +3,6 @@ import * as React from 'react';
 import { cn } from '../../lib/utils.js';
 import { TitleBar } from '../TitleBar/TitleBar.js';
 import { Sidebar } from '../Sidebar/Sidebar.js';
-import { HeaderBar } from '../HeaderBar/HeaderBar.js';
 import type { BreadcrumbItem } from '../../patterns/Breadcrumbs/Breadcrumbs.js';
 
 // ============================================================================
@@ -19,7 +18,7 @@ export interface AppShellProps {
   sidebarContent?: React.ReactNode;
   /** Optional custom content inside the TitleBar (e.g., traffic light placeholders) */
   titleBarChildren?: React.ReactNode;
-  /** Breadcrumb items for navigation path (shown in HeaderBar) */
+  /** Breadcrumb items for navigation path (shown in TitleBar) */
   breadcrumbs?: BreadcrumbItem[];
   /** Main content area */
   children: React.ReactNode;
@@ -32,15 +31,14 @@ export interface AppShellProps {
 // ============================================================================
 
 /**
- * Root layout composition that combines TitleBar, Sidebar, HeaderBar, and content.
+ * Root layout composition that combines TitleBar, Sidebar, and content.
  *
  * Layout:
  * ```
  * ┌───────────────────────────────────────────────────────────────────┐
- * │ [traffic lights]               TitleBar (28px)                    │
+ * │ [traffic lights]               TitleBar (36px)                    │
  * ├────────────┬──────────────────────────────────────────────────────┤
- * │            │         HeaderBar (40px) - breadcrumbs only          │
- * │  Sidebar   ├──────────────────────────────────────────────────────┤
+ * │            │                                                      │
  * │ (240/56px) │                                                      │
  * │            │                    Content                           │
  * │            │                  (children)                          │
@@ -51,7 +49,7 @@ export interface AppShellProps {
  * Features:
  * - TitleBar spans full width (draggable region + collapse toggle)
  * - Sidebar runs full height below TitleBar, collapsible
- * - HeaderBar shows only breadcrumbs (controls live in sidebar content)
+ * - Breadcrumbs render in TitleBar (controls live in sidebar content)
  * - Controlled sidebar state (parent owns collapsed state)
  * - Optional TitleBar children for platform placeholders or custom controls
  */
@@ -61,7 +59,7 @@ export function AppShell({
   onSidebarCollapsedChange,
   sidebarContent,
   titleBarChildren,
-  // HeaderBar props
+  // Breadcrumb props
   breadcrumbs,
   // Content
   children,
@@ -79,6 +77,7 @@ export function AppShell({
         {...(handleSidebarCollapseToggle && {
           onSidebarCollapseToggle: handleSidebarCollapseToggle,
         })}
+        {...(breadcrumbs && { breadcrumbs })}
       >
         {titleBarChildren}
       </TitleBar>
@@ -93,11 +92,8 @@ export function AppShell({
           {sidebarContent}
         </Sidebar>
 
-        {/* Main area: HeaderBar + Content */}
+        {/* Main area */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          {/* HeaderBar - breadcrumbs only */}
-          <HeaderBar {...(breadcrumbs && { breadcrumbs })} />
-
           {/* Content area */}
           <main className="flex-1 overflow-auto">{children}</main>
         </div>

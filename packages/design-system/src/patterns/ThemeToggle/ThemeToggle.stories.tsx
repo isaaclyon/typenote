@@ -89,19 +89,19 @@ export const DarkMode: Story = () => (
   </div>
 );
 
-export const InHeaderContext: Story = () => {
+export const InChromeContext: Story = () => {
   const [theme, setTheme] = React.useState<Theme>('light');
 
   return (
     <div className="p-6">
-      <div className="flex h-10 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
+      <div className="flex h-9 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
         <ThemeToggle
           theme={theme}
           onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
         />
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        Default size (sm) ThemeToggle in a HeaderBar context (40px tall)
+        Default size (sm) ThemeToggle in a chrome row context (36px tall)
       </p>
     </div>
   );
@@ -112,7 +112,7 @@ export const InTitleBarContext: Story = () => {
 
   return (
     <div className="p-6">
-      <div className="flex h-7 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
+      <div className="flex h-9 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
         <ThemeToggle
           theme={theme}
           size="xs"
@@ -120,7 +120,7 @@ export const InTitleBarContext: Story = () => {
         />
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        Extra small (xs) ThemeToggle in a TitleBar context (28px tall)
+        Extra small (xs) ThemeToggle in a TitleBar context (36px tall)
       </p>
     </div>
   );

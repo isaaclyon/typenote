@@ -119,8 +119,8 @@ function renderSidebarContent({
     <>
       <SidebarHeader
         onNewClick={() => console.log('New note clicked')}
-        onSearchClick={onSearchClick}
-        searchShortcut={searchShortcut}
+        {...(onSearchClick && { onSearchClick })}
+        {...(searchShortcut && { searchShortcut })}
       />
       <SidebarSection label="Types">
         {typeItems.map((item) => (
@@ -185,7 +185,8 @@ export const Default: Story = () => {
             Sidebar collapsed: {collapsed ? 'Yes' : 'No'}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Note: Controls (search, theme, settings) live in the sidebar header/footer.
+            Note: Controls (search, theme, settings) live in the sidebar header/footer. Breadcrumbs
+            render in the TitleBar.
           </p>
         </div>
       </AppShell>
@@ -358,7 +359,7 @@ export const Interactive: Story = () => {
               <li>Click search in the sidebar header to log to console</li>
               <li>Click the theme action in the sidebar footer to toggle theme</li>
               <li>Click settings in the sidebar footer to log to console</li>
-              <li>Breadcrumbs are in the HeaderBar, controls are in the sidebar</li>
+              <li>Breadcrumbs are in the TitleBar, controls are in the sidebar</li>
             </ul>
           </div>
         </div>

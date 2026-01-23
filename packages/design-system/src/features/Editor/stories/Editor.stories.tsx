@@ -139,9 +139,9 @@ export const InAppContext: Story = () => {
 
         {/* Main content area */}
         <div className="flex flex-1 flex-col">
-          {/* Simulated HeaderBar */}
-          <div className="h-10 shrink-0 border-b border-border bg-background px-4 flex items-center">
-            <p className="text-xs text-muted-foreground">HeaderBar</p>
+          {/* Simulated TitleBar */}
+          <div className="h-9 shrink-0 border-b border-border bg-background px-4 flex items-center">
+            <p className="text-xs text-muted-foreground">TitleBar</p>
           </div>
 
           {/* Editor fills the content area - click anywhere to focus */}

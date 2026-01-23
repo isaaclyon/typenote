@@ -32,8 +32,8 @@ export interface SearchTriggerProps {
  * Displays a placeholder, search icon, and keyboard shortcut hint.
  *
  * Size variants:
- * - 'default': 200px wide, 32px tall (h-8) - for HeaderBar
- * - 'compact': 120px wide, 24px tall (h-6) - for TitleBar
+ * - 'default': 200px wide, 32px tall (h-8) - for primary chrome rows
+ * - 'compact': 120px wide, 24px tall (h-6) - for tight chrome areas
  */
 export function SearchTrigger({
   onClick,

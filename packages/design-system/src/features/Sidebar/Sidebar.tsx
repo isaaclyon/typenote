@@ -28,7 +28,10 @@ export function Sidebar({
     const items = React.Children.toArray(nodes);
 
     return items.flatMap((child) => {
-      if (React.isValidElement(child) && child.type === React.Fragment) {
+      if (
+        React.isValidElement<{ children?: React.ReactNode }>(child) &&
+        child.type === React.Fragment
+      ) {
         return flattenChildren(child.props.children);
       }
 

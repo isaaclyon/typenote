@@ -48,24 +48,24 @@ export const Default: Story = () => (
   </div>
 );
 
-export const InHeaderContext: Story = () => (
+export const InChromeContext: Story = () => (
   <div className="p-6">
-    <div className="flex h-10 items-center rounded-md border border-dashed border-border bg-muted/30 px-4">
+    <div className="flex h-9 items-center rounded-md border border-dashed border-border bg-muted/30 px-4">
       <SearchTrigger onClick={() => console.log('Search clicked')} />
     </div>
     <p className="mt-4 text-xs text-muted-foreground">
-      Default size SearchTrigger in a HeaderBar context (40px tall)
+      Default size SearchTrigger in a chrome row context (36px tall)
     </p>
   </div>
 );
 
 export const InTitleBarContext: Story = () => (
   <div className="p-6">
-    <div className="flex h-7 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
+    <div className="flex h-9 items-center justify-end rounded-md border border-dashed border-border bg-muted/30 px-4">
       <SearchTrigger size="compact" onClick={() => console.log('Search clicked')} />
     </div>
     <p className="mt-4 text-xs text-muted-foreground">
-      Compact size SearchTrigger in a TitleBar context (28px tall)
+      Compact size SearchTrigger in a TitleBar context (36px tall)
     </p>
   </div>
 );
