@@ -1,52 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-23 - Wire Editor to NotesView)
+## Latest Session (2026-01-24 - Commit & cleanup)
 
 ### What was accomplished
 
-- **Editor wiring complete** — TipTap Editor connected to NotesView with full data flow
-- **New hooks** — `useDocument` (fetch + convert) and `useDocumentMutation` (autosave with 750ms debounce)
-- **Converter improvements** — Modified `@typenote/core` converters to preserve block IDs through TipTap round-trip
-- **RefResolver implementation** — Full resolver pre-fetches all objects for reference display titles/colors
-- **Bug fixes from code review** — Stale docVersion race condition, nested block parent tracking, sibling ordering
-
-### Key files changed
-
-- `packages/core/src/converter/tiptapToNotateDoc.ts` — Added `blockId` to ConvertedBlock
-- `packages/core/src/converter/notateDocToTiptap.ts` — Embed blockId in TipTap attrs
-- `apps/desktop/src/renderer/hooks/useDocument.ts` — New hook
-- `apps/desktop/src/renderer/hooks/useDocumentMutation.ts` — New hook
-- `apps/desktop/src/renderer/routes/NotesView.tsx` — Full Editor integration
-- `apps/desktop/src/renderer/utils/useDebouncedCallback.ts` — New debounce utility
+- **Committed pending work** — Organized and committed ~2,150 lines of uncommitted changes
+- **Test fixes** — Fixed timezone flakes in dailyNote/calendar tests (UTC vs local time)
+- **TypeScript fixes** — Fixed `exactOptionalPropertyTypes` issues in storage tests and routes
+- **4 atomic commits** created covering: settings REST, test fixes, renderer hooks, docs
 
 ### Commits
 
-- No commits yet — changes uncommitted
-
-### Tests run
-
-- `pnpm --filter @typenote/core test` — 160/160 passing (converters verified)
-
----
-
-## Earlier Session (2026-01-24 - REST Coverage: Object Types)
-
-Object types REST endpoints complete. Commit: `8bc76a1`.
+- `f85eab1` feat(rest): add settings REST coverage
+- `9e7ffd4` fix: resolve timezone flakes and typecheck issues
+- `457cb46` refactor(renderer): modularize document hooks
+- `f58e2dd` docs: update REST API coverage tracking
 
 ---
 
-## Earlier Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
+## Earlier Session (2026-01-23 - Document autosave robustness)
 
-Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, +8 more.
+- Block patch ops — emit `block.move` on reorders, skip no-op updates
+- Conflict handling — retry on `CONFLICT_VERSION`, update query cache
+- Ref resolver caching — use TanStack Query cached objects for ref resolution
+- Commits: uncommitted → now in `457cb46`
 
 ---
 
-## Earlier Session (2026-01-23 - AppShell Renderer Wiring)
+## Earlier Session (2026-01-24 - REST API Coverage Audit)
 
-Wired AppShell to renderer, created test infrastructure, built hooks (usePinnedObjects, useSidebarData). Commits: `1d6aa54`, `bdfee34`, +5 more.
+- Settings (5/5) — complete
+- Pinned/Templates/Attachments — contracts + storage complete, routes added
+- Commits: `afeea5d` feat(rest): finish pinned/templates/attachments coverage
 
 ---
 
 ## Historical — Collapsed
 
-REST API plan + docs archive cleanup (2026-01-22). PropertyList + ObjectDataGrid (2026-01-21). Earlier backend/UI sessions.
+Editor wiring to NotesView (2026-01-23). REST API object types (2026-01-24). Export/attachments/calendar coverage (2026-01-24). AppShell renderer wiring (2026-01-23). PropertyList + ObjectDataGrid (2026-01-21).
