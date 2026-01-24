@@ -68,8 +68,3 @@ _reference/
 shadcn_resources.md
 shadcn_references/
 
-# Ralph runtime files (keep source PRDs tracked)
-scripts/ralph/prd.json
-scripts/ralph/progress.txt
-scripts/ralph/archive/
-scripts/ralph/.last-branch

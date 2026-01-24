@@ -133,27 +133,3 @@ pkg package *args:
 audit-design-system:
     pnpm exec tsx scripts/audit-design-system.ts
 
-# ─────────────────────────────────────────────────
-# Ralph (Autonomous Agent Loop)
-# ─────────────────────────────────────────────────
-
-# Run ralph autonomous agent loop
-ralph max_iterations="10":
-    @scripts/ralph/ralph.sh --tool claude {{max_iterations}}
-
-# Show ralph progress log
-ralph-progress:
-    @cat scripts/ralph/progress.txt 2>/dev/null || echo "No progress log yet"
-
-# View current PRD status
-ralph-status:
-    @cat scripts/ralph/prd.json 2>/dev/null | jq '.' || echo "No PRD loaded"
-
-# Generate new PRD (use /prd skill in Claude Code)
-ralph-prd:
-    @echo "Use: /prd skill in Claude Code session"
-
-# Clean ralph runtime files (archives preserved)
-ralph-clean:
-    @rm -f scripts/ralph/prd.json scripts/ralph/progress.txt scripts/ralph/.last-branch
-    @echo "Cleaned runtime files (archives preserved)"
