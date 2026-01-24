@@ -93,9 +93,9 @@ describe('RootLayout', () => {
   });
 
   it('creates a Page when clicking new note', () => {
-    const { getAllByTestId } = render(<RootLayout />);
+    const { getByTestId } = render(<RootLayout />);
 
-    fireEvent.click(getAllByTestId('new-note')[0]);
+    fireEvent.click(getByTestId('new-note'));
 
     expect(mockCreateObject).toHaveBeenCalledWith('Page', 'Untitled', {});
   });
