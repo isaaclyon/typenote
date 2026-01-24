@@ -4,6 +4,7 @@ import { File } from '@phosphor-icons/react/dist/ssr/File';
 import { Editor } from '@typenote/design-system';
 import type { JSONContent } from '@tiptap/core';
 import { useDocument, useDocumentMutation } from '../hooks/index.js';
+import { useRecordView } from '../hooks/useRecordView.js';
 
 /** Empty document structure for Editor initialization */
 const EMPTY_DOC: JSONContent = { type: 'doc', content: [] };
@@ -21,11 +22,21 @@ export function NotesView() {
   // Save mutations with autosave
   const { autosave, isSaving, error: saveError } = useDocumentMutation();
 
+  // Record view for recent objects tracking
+  const recordView = useRecordView();
+
   // Keep ref to latest docVersion to avoid stale closure in onChange callback
   const docVersionRef = useRef<number | undefined>(docVersion);
   useEffect(() => {
     docVersionRef.current = docVersion;
   }, [docVersion]);
+
+  // Auto-track view when document loads
+  useEffect(() => {
+    if (objectId && !isLoading && !error) {
+      recordView.mutate(objectId);
+    }
+  }, [objectId, isLoading, error, recordView]);
 
   // Empty state (no object selected)
   if (!objectId) {

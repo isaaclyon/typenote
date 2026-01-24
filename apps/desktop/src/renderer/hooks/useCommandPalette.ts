@@ -9,6 +9,7 @@ import type {
 import { useRecentObjects } from './useRecentObjects.js';
 import { useSearchObjects } from './useSearchObjects.js';
 import { useTypesMetadata } from './useTypesMetadata.js';
+import { useCreateObject } from './useCreateObject.js';
 import { getTypeIcon } from '../lib/getTypeIcon.js';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
@@ -27,6 +28,7 @@ export function useCommandPalette() {
   const { recentObjects } = useRecentObjects(10);
   const { searchResults } = useSearchObjects(debouncedQuery);
   const { typesMetadata } = useTypesMetadata();
+  const { createObject } = useCreateObject();
 
   // Debounce search input (300ms)
   const debouncedSetQuery = useDebouncedCallback((query: string) => {
@@ -100,10 +102,7 @@ export function useCommandPalette() {
     async (actionId: string) => {
       switch (actionId) {
         case 'new-page': {
-          const result = await window.typenoteAPI.createObject('Page', 'Untitled', {});
-          if (result.success) {
-            navigate(`/notes/${result.result.id}`);
-          }
+          await createObject('page', 'Untitled', {});
           break;
         }
         case 'new-daily': {
@@ -118,7 +117,7 @@ export function useCommandPalette() {
           break;
       }
     },
-    [navigate]
+    [createObject, navigate]
   );
 
   const handleSelect = useCallback(

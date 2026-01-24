@@ -5,3 +5,4 @@ export { useSettings } from './useSettings.js';
 export { useDocument } from './useDocument.js';
 export { useDocumentMutation } from './useDocumentMutation.js';
 export { useObjectsForDataGrid } from './useObjectsForDataGrid.js';
+export { useCreateObject } from './useCreateObject.js';

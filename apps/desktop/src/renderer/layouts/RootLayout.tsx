@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import {
   AppShell,
@@ -6,6 +6,7 @@ import {
   SidebarSection,
   SidebarItem,
   SidebarFooter,
+  CommandPalette,
 } from '@typenote/design-system';
 import { File } from '@phosphor-icons/react/dist/ssr/File';
 import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
@@ -13,6 +14,8 @@ import { Gear } from '@phosphor-icons/react/dist/ssr/Gear';
 import { PushPin } from '@phosphor-icons/react/dist/ssr/PushPin';
 import { Trash } from '@phosphor-icons/react/dist/ssr/Trash';
 import { useSidebarData } from '../hooks/useSidebarData.js';
+import { useCommandPalette } from '../hooks/useCommandPalette.js';
+import { useCreateObject } from '../hooks/useCreateObject.js';
 
 /** Map type keys to Phosphor icons */
 function getTypeIcon(_iconName: string | null): typeof File {
@@ -26,19 +29,32 @@ export function RootLayout() {
   const { objectId, typeKey } = useParams();
   const { typeCounts, pinnedObjects, isLoading } = useSidebarData();
   const [collapsed, setCollapsed] = useState(false);
+  const commandPalette = useCommandPalette();
+  const { createObject, isCreating } = useCreateObject();
 
   // Determine which route is active
   const isCalendarActive = location.pathname === '/calendar';
   const activeTypeKey = typeKey ?? (location.pathname.startsWith('/notes') ? 'page' : null);
 
-  const handleNewClick = () => {
-    // TODO: Open command palette or create new page
-    console.log('New clicked');
+  // Global keyboard shortcut (⌘K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        commandPalette.setIsOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [commandPalette]);
+
+  const handleNewClick = async () => {
+    await createObject('page', 'Untitled', {});
   };
 
   const handleSearchClick = () => {
-    // TODO: Open command palette
-    console.log('Search clicked');
+    commandPalette.setIsOpen(true);
   };
 
   // Build a map of typeKey -> typeColor for pinned objects
@@ -50,6 +66,7 @@ export function RootLayout() {
       <SidebarHeader
         onNewClick={handleNewClick}
         newLabel="New"
+        newLoading={isCreating}
         onSearchClick={handleSearchClick}
         searchShortcut="⌘K"
       />
@@ -120,12 +137,26 @@ export function RootLayout() {
   );
 
   return (
-    <AppShell
-      sidebarCollapsed={collapsed}
-      onSidebarCollapsedChange={setCollapsed}
-      sidebarContent={sidebarContent}
-    >
-      <Outlet />
-    </AppShell>
+    <>
+      <AppShell
+        sidebarCollapsed={collapsed}
+        onSidebarCollapsedChange={setCollapsed}
+        sidebarContent={sidebarContent}
+      >
+        <Outlet />
+      </AppShell>
+
+      {/* CommandPalette rendered at root level */}
+      <CommandPalette
+        open={commandPalette.isOpen}
+        onOpenChange={commandPalette.setIsOpen}
+        recentItems={commandPalette.recentItems}
+        actions={commandPalette.actions}
+        searchResults={commandPalette.searchResultsItems}
+        searchQuery={commandPalette.searchQuery}
+        onSearchChange={commandPalette.handleSearchChange}
+        onSelect={commandPalette.handleSelect}
+      />
+    </>
   );
 }

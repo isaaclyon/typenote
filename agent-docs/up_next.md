@@ -15,14 +15,17 @@
 - ✅ **Editor wired to NotesView** — document loading, editing, autosave with block ID tracking
 - ✅ Editor autosave robustness — move ops, conflict retry, cached ref resolver
 - ✅ Test infrastructure for renderer hooks (mocked IPC)
-- ❌ ObjectDataGrid not wired (basic list placeholder in TypesView)
-- ❌ CommandPalette not wired (search/actions not connected)
+- ✅ **ObjectDataGrid wired to TypesView** — table view with dynamic columns, sorting, delete
+- ✅ **Search enrichment complete** — SearchResult includes object titles, type metadata
+- ✅ Depcruise cycles resolved in design-system (PropertyList + editor extensions)
+- ⏳ CommandPalette wired but not opened yet (hook exists, needs UI trigger)
 
 ### MVP Renderer Gaps (Remaining)
 
 - [x] Wire Editor component to NotesView for document editing
-- [ ] Wire ObjectDataGrid to TypesView for table view
-- [ ] Wire CommandPalette for search + quick actions
+- [x] Wire ObjectDataGrid to TypesView for table view
+- [x] Enrich search results with object metadata (titles, type info)
+- [ ] Wire CommandPalette UI trigger (⌘K shortcut + AppShell integration)
 - [ ] Connect "New" button to create object flow
 
 ### Renderer Follow-ups
@@ -32,6 +35,7 @@
 ### DX Improvements
 
 - [ ] Add `electron-vite` or `vite-plugin-electron` for main/preload HMR
+- [ ] Resolve depcruise orphan warnings (.ladle/config.mjs, renderer App.tsx, typeMetadata)
 
 ### Reference
 
@@ -72,10 +76,8 @@ All REST API endpoints are now fully covered:
 
 | Feature                  | Date       | Commits      |
 | ------------------------ | ---------- | ------------ |
-| Document autosave fixes  | 2026-01-23 | uncommitted  |
-| Editor wiring            | 2026-01-23 | uncommitted  |
+| Search enrichment        | 2026-01-24 | `e61ac60`    |
+| ObjectDataGrid wiring    | 2026-01-24 | `86daf59`    |
+| REST API coverage        | 2026-01-24 | `7454e64` +9 |
 | AppShell renderer wiring | 2026-01-23 | `1d6aa54` +6 |
-| Settings REST coverage   | 2026-01-23 | uncommitted  |
-| REST API object types    | 2026-01-24 | `8bc76a1`    |
-| REST API batch           | 2026-01-24 | `7454e64` +9 |
 | ObjectDataGrid feature   | 2026-01-22 | `7fa7ba0`    |

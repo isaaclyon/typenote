@@ -26,6 +26,8 @@ import type { SidebarHeaderProps } from './types.js';
 function SidebarHeaderComponent({
   onNewClick,
   newLabel = 'New note',
+  newDisabled = false,
+  newLoading = false,
   onSearchClick,
   searchShortcut,
   className,
@@ -62,7 +64,13 @@ function SidebarHeaderComponent({
 
         {/* New note action */}
         <Tooltip content={newLabel} side="right">
-          <IconButton variant="secondary" size="sm" aria-label={newLabel} onClick={onNewClick}>
+          <IconButton
+            variant="secondary"
+            size="sm"
+            aria-label={newLabel}
+            onClick={onNewClick}
+            disabled={newDisabled || newLoading}
+          >
             <Plus className="h-4 w-4" weight="regular" />
           </IconButton>
         </Tooltip>
@@ -99,6 +107,8 @@ function SidebarHeaderComponent({
         fullWidth
         className="justify-start bg-transparent"
         onClick={onNewClick}
+        disabled={newDisabled}
+        loading={newLoading}
       >
         <Plus className="h-4 w-4" weight="regular" />
         <span>{newLabel}</span>

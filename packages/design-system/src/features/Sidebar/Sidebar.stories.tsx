@@ -310,3 +310,112 @@ export const MinimalLayout: Story = () => {
     </div>
   );
 };
+
+export const NewButtonLoading: Story = () => {
+  const [collapsed, setCollapsed] = React.useState(false);
+  const [isCreating, setIsCreating] = React.useState(false);
+
+  const handleNewClick = () => {
+    setIsCreating(true);
+    setTimeout(() => setIsCreating(false), 2000);
+  };
+
+  return (
+    <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
+      <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
+        <SidebarHeader onNewClick={handleNewClick} newLabel="New note" newLoading={isCreating} />
+        <SidebarSection label="Types">
+          {typeItems.slice(0, 3).map((item) => (
+            <SidebarItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              count={item.count}
+              iconColor={item.iconColor}
+            />
+          ))}
+        </SidebarSection>
+        <SidebarFooter actions={footerActions} />
+      </Sidebar>
+      <div className="flex-1 p-4 bg-muted/30">
+        <p className="text-sm text-muted-foreground">
+          Click "New note" button to see loading state. Button is disabled while loading.
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Loading state: <strong>{isCreating ? 'Yes' : 'No'}</strong>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const NewButtonDisabled: Story = () => {
+  const [collapsed, setCollapsed] = React.useState(false);
+
+  return (
+    <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
+      <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
+        <SidebarHeader
+          onNewClick={() => console.log('Should not fire')}
+          newLabel="New note"
+          newDisabled={true}
+        />
+        <SidebarSection label="Types">
+          {typeItems.slice(0, 3).map((item) => (
+            <SidebarItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              count={item.count}
+              iconColor={item.iconColor}
+            />
+          ))}
+        </SidebarSection>
+        <SidebarFooter actions={footerActions} />
+      </Sidebar>
+      <div className="flex-1 p-4 bg-muted/30">
+        <p className="text-sm text-muted-foreground">
+          "New note" button is disabled. Clicking should have no effect.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const NewButtonLoadingCollapsed: Story = () => {
+  const [collapsed, setCollapsed] = React.useState(true);
+  const [isCreating, setIsCreating] = React.useState(false);
+
+  const handleNewClick = () => {
+    setIsCreating(true);
+    setTimeout(() => setIsCreating(false), 2000);
+  };
+
+  return (
+    <div className="flex h-[600px] border border-border rounded-md overflow-hidden">
+      <Sidebar collapsed={collapsed} onCollapsedChange={setCollapsed}>
+        <SidebarHeader onNewClick={handleNewClick} newLabel="New note" newLoading={isCreating} />
+        <SidebarSection>
+          {typeItems.slice(0, 3).map((item) => (
+            <SidebarItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              count={item.count}
+              iconColor={item.iconColor}
+            />
+          ))}
+        </SidebarSection>
+        <SidebarFooter actions={footerActions} />
+      </Sidebar>
+      <div className="flex-1 p-4 bg-muted/30">
+        <p className="text-sm text-muted-foreground">
+          Collapsed mode with loading state. IconButton should be disabled while loading.
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Loading state: <strong>{isCreating ? 'Yes' : 'No'}</strong>
+        </p>
+      </div>
+    </div>
+  );
+};

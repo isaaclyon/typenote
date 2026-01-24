@@ -12,7 +12,8 @@
     "./tokens.css": "./src/lib/tokens.css"
   },
   "scripts": {
-    "build": "pnpm clean && tsc --build",
+    "build": "pnpm clean && tsc --build && pnpm build:copy-css",
+    "build:copy-css": "find src -name '*.css' -exec sh -c 'mkdir -p \"dist/$(dirname {})\" && cp {} \"dist/{}\"' \\;",
     "clean": "rm -rf dist *.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",

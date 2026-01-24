@@ -25,6 +25,10 @@ export interface SidebarHeaderProps {
   onNewClick?: () => void;
   /** Label for new note button */
   newLabel?: string;
+  /** Whether the new note button is disabled */
+  newDisabled?: boolean;
+  /** Whether the new note button is in loading state */
+  newLoading?: boolean;
   /** Callback when search is clicked (opens command palette) */
   onSearchClick?: () => void;
   /** Keyboard shortcut hint for search (e.g., "⌘K" or "Ctrl+K") */

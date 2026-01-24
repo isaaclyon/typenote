@@ -2,6 +2,7 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, type RenderHookOptions } from '@testing-library/react';
 import type { ObjectType, ObjectSummary, GetDocumentResult } from '@typenote/api';
+import type { RecentObjectSummary } from '@typenote/storage';
 
 /**
  * Creates a fresh QueryClient for testing with no retries.
@@ -76,6 +77,23 @@ export function createMockObjectSummary(overrides: Partial<ObjectSummary> = {}):
 }
 
 /**
+ * Creates a complete mock RecentObjectSummary for testing.
+ */
+export function createMockRecentObject(
+  overrides: Partial<RecentObjectSummary> = {}
+): RecentObjectSummary {
+  return {
+    id: '01ABC123456789DEFGHIJK0002',
+    title: 'Recent Object',
+    typeId: '01ABC123456789DEFGHIJK0001',
+    typeKey: 'Page',
+    updatedAt: new Date(),
+    viewedAt: new Date(),
+    ...overrides,
+  };
+}
+
+/**
  * Creates a mock typenoteAPI that returns success outcomes.
  */
 export function createMockTypenoteAPI(overrides: Partial<typeof window.typenoteAPI> = {}) {
@@ -92,6 +110,10 @@ export function createMockTypenoteAPI(overrides: Partial<typeof window.typenoteA
     getPinnedObjects: async () => ({
       success: true as const,
       result: [],
+    }),
+    getRecentObjects: async () => ({
+      success: true as const,
+      result: [] as RecentObjectSummary[],
     }),
     getDocument: async () => ({
       success: true as const,
