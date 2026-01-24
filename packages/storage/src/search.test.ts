@@ -61,6 +61,10 @@ describe('searchBlocks', () => {
     expect(result[0]).toEqual({
       blockId: 'block1',
       objectId: 'obj1',
+      objectTitle: 'Object 1',
+      typeKey: 'Page',
+      typeIcon: null,
+      typeColor: null,
     });
   });
 
@@ -104,6 +108,8 @@ describe('searchBlocks', () => {
     const result = searchBlocks(db, 'Hello', { objectId: 'obj1' });
     expect(result).toHaveLength(1);
     expect(result[0]?.objectId).toBe('obj1');
+    expect(result[0]?.objectTitle).toBe('Object 1');
+    expect(result[0]?.typeKey).toBe('Page');
   });
 
   it('respects limit filter', () => {
@@ -178,5 +184,6 @@ describe('searchBlocks', () => {
     const result = searchBlocks(db, 'Hell*');
     expect(result).toHaveLength(1);
     expect(result[0]?.blockId).toBe('block1');
+    expect(result[0]?.objectTitle).toBe('Object 1');
   });
 });

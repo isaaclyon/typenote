@@ -245,6 +245,10 @@ describe('IPC Handlers', () => {
           {
             blockId,
             objectId: dailyNote.id,
+            objectTitle: '2026-01-24',
+            typeKey: 'DailyNote',
+            typeIcon: 'calendar',
+            typeColor: '#F59E0B',
           },
         ],
       });
