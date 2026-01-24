@@ -59,6 +59,8 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 ### Calendar
 
+**Status:** Complete (2026-01-24)
+
 **Routes**
 
 - `GET /calendar?startDate&endDate&typeKeys[]`
@@ -70,7 +72,7 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 - Queries use `CalendarQueryOptions`.
 - Responses use `CalendarItem[]`.
-- Add `CalendarTypeMetadata` schema:
+- `CalendarTypeMetadata` schema implemented:
   `{ typeId, typeKey, primaryDateProp, secondaryDateProp?, isDateOnly }`.
 
 **Backed by** `calendarService.ts` queries and metadata helpers.
@@ -176,7 +178,6 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 ## API Contract Gaps
 
 - `TaskSummary` + task action result schemas.
-- `CalendarTypeMetadata` schema.
 
 ## Open Questions
 
