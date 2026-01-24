@@ -75,10 +75,19 @@ Only update CLAUDE.md if you have **genuinely reusable knowledge** that would he
 
 ## Quality Requirements
 
-- ALL commits must pass your project's quality checks (typecheck, lint, test)
+- ALL commits must pass TypeNote's quality checks
 - Do NOT commit broken code
 - Keep changes focused and minimal
 - Follow existing code patterns
+
+**TypeNote Quality Commands (run in this order):**
+
+```bash
+pnpm typecheck  # Must pass - strict TypeScript
+pnpm test       # Must pass - unit tests
+```
+
+Only commit if BOTH commands pass successfully.
 
 ## Browser Testing (If Available)
 
@@ -105,3 +114,29 @@ If there are still stories with `passes: false`, end your response normally (ano
 - Commit frequently
 - Keep CI green
 - Read the Codebase Patterns section in progress.txt before starting
+
+## TypeNote Context
+
+This is a **TypeScript monorepo** with strict package boundaries:
+
+- `packages/api` — API contracts (no deps)
+- `packages/core` — Domain logic (imports api only)
+- `packages/storage` — SQLite layer (imports api, core)
+- `packages/design-system` — UI components + Ladle stories
+- `apps/desktop` — Electron app (imports all)
+- `apps/cli` — CLI tool (imports all)
+
+**CRITICAL RULES:**
+
+- Never violate package boundaries (see `agent-docs/rules/architecture.md`)
+- Use strict TypeScript (no `any`, no non-null assertions)
+- Renderer cannot import storage directly (use IPC only)
+- All UI components built in `packages/design-system` first (Ladle-first workflow)
+
+**Before each commit, you MUST:**
+
+1. Run `pnpm typecheck` (must pass)
+2. Run `pnpm test` (must pass)
+3. Only then commit changes
+
+See `agent-docs/` for full architecture details and `CLAUDE.md` at repo root for project conventions.

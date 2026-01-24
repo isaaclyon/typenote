@@ -6,16 +6,36 @@ default:
     @just --list
 
 # ─────────────────────────────────────────────────
-# Development
+# Development – Desktop
 # ─────────────────────────────────────────────────
 
-# Start desktop app with full rebuild (use after pulling changes)
+# Start Electron desktop app with full rebuild
 dev:
     pnpm dev
 
-# Start desktop app quickly (skip package rebuild)
+# Start Electron desktop app quickly (skip rebuild)
 dq:
     pnpm dev:quick
+
+# ─────────────────────────────────────────────────
+# Development – Web
+# ─────────────────────────────────────────────────
+
+# Start HTTP API server (port 3000)
+server:
+    pnpm --filter @typenote/http-server dev
+
+# Start web frontend dev server (port 5173)
+web:
+    pnpm --filter @typenote/desktop dev:web
+
+# Start HTTP server + web frontend together
+web-dev:
+    pnpm dev:all
+
+# ─────────────────────────────────────────────────
+# Development – Design System
+# ─────────────────────────────────────────────────
 
 # Start Ladle component sandbox
 ladle:
@@ -26,7 +46,7 @@ ladle-build:
     pnpm --filter @typenote/design-system sandbox:build
 
 # ─────────────────────────────────────────────────
-# Quality checks
+# Quality
 # ─────────────────────────────────────────────────
 
 # Run all quality checks (typecheck + lint)
@@ -66,24 +86,24 @@ test-watch package:
     pnpm --filter @typenote/{{package}} test:watch
 
 # Run integration tests
-test-int:
+integration:
     pnpm test:integration
 
+# Run all unit + integration tests (no E2E)
+test-all:
+    pnpm test:all
+
 # Run E2E tests (rebuilds desktop app)
-test-e2e:
+e2e:
     pnpm test:e2e
 
 # Run E2E tests quickly (skip rebuild)
-test-e2e-quick:
+e2e-quick:
     pnpm test:e2e:quick
 
 # Run E2E tests with visible browser
-test-e2e-headed:
+e2e-headed:
     pnpm test:e2e:headed
-
-# Run all tests (unit + integration, excludes E2E)
-test-all:
-    pnpm test:all
 
 # ─────────────────────────────────────────────────
 # Building
@@ -102,53 +122,38 @@ rebuild:
     pnpm rebuild:electron
 
 # ─────────────────────────────────────────────────
-# Package-specific
+# Utilities
 # ─────────────────────────────────────────────────
 
 # Run command in specific package (e.g., just pkg api test)
 pkg package *args:
     pnpm --filter @typenote/{{package}} {{args}}
 
-# ─────────────────────────────────────────────────
-# Audit & Analysis
-# ─────────────────────────────────────────────────
-
 # Audit design system migration status
 audit-design-system:
     pnpm exec tsx scripts/audit-design-system.ts
 
 # ─────────────────────────────────────────────────
-# Hook Metrics
+# Ralph (Autonomous Agent Loop)
 # ─────────────────────────────────────────────────
 
-# Show hook metrics summary (runs, violations, timing)
-metrics:
-    ./.claude/scripts/show-metrics.sh summary
+# Run ralph autonomous agent loop
+ralph max_iterations="10":
+    @scripts/ralph/ralph.sh --tool claude {{max_iterations}}
 
-# Show recent violations caught by hooks
-metrics-violations:
-    ./.claude/scripts/show-metrics.sh violations
+# Show ralph progress log
+ralph-progress:
+    @cat scripts/ralph/progress.txt 2>/dev/null || echo "No progress log yet"
 
-# Show slowest hook executions
-metrics-slowest:
-    ./.claude/scripts/show-metrics.sh slowest
+# View current PRD status
+ralph-status:
+    @cat scripts/ralph/prd.json 2>/dev/null | jq '.' || echo "No PRD loaded"
 
-# Show recent hook activity
-metrics-recent:
-    ./.claude/scripts/show-metrics.sh recent
+# Generate new PRD (use /prd skill in Claude Code)
+ralph-prd:
+    @echo "Use: /prd skill in Claude Code session"
 
-# Reset hook metrics database
-metrics-reset:
-    ./.claude/scripts/show-metrics.sh reset
-
-# ─────────────────────────────────────────────────
-# Git shortcuts
-# ─────────────────────────────────────────────────
-
-# Quick status
-st:
-    git status -sb
-
-# Show recent commits
-log:
-    git log --oneline -15
+# Clean ralph runtime files (archives preserved)
+ralph-clean:
+    @rm -f scripts/ralph/prd.json scripts/ralph/progress.txt scripts/ralph/.last-branch
+    @echo "Cleaned runtime files (archives preserved)"
