@@ -34,7 +34,7 @@
 
 ## REST API Coverage
 
-**Status:** Active — export/import + attachments download + calendar complete; remaining gaps in object types/settings/pinned/templates/attachments upload
+**Status:** Active — export/import + attachments download + calendar + object types complete; remaining gaps in settings/pinned/templates/attachments upload
 
 ### Completed
 
@@ -43,10 +43,10 @@
 - [x] Markdown export route
 - [x] Attachment download endpoints
 - [x] Calendar routes + metadata schema
+- [x] Object types REST coverage
 
 ### Remaining
 
-- [ ] Object types REST coverage (CRUD routes + schemas)
 - [ ] Settings REST coverage (read/update/reset)
 - [ ] Pinned objects REST coverage (list/pin/unpin/reorder)
 - [ ] Templates REST coverage (CRUD + default template)
@@ -69,10 +69,11 @@
 
 ## Recently Completed
 
-| Feature                   | Date       | Commits      |
-| ------------------------- | ---------- | ------------ |
-| AppShell renderer wiring  | 2026-01-23 | `1d6aa54` +6 |
-| REST API coverage (batch) | 2026-01-24 | `7454e64` +9 |
-| ObjectDataGrid feature    | 2026-01-22 | `7fa7ba0`    |
-| RelationPicker pattern    | 2026-01-21 | `9429a99`    |
-| Editable PropertyList     | 2026-01-21 | `3bb7e90` +9 |
+| Feature                          | Date       | Commits      |
+| -------------------------------- | ---------- | ------------ |
+| AppShell renderer wiring         | 2026-01-23 | `1d6aa54` +6 |
+| REST API coverage (batch)        | 2026-01-24 | `7454e64` +9 |
+| REST API coverage (object types) | 2026-01-24 | `8bc76a1`    |
+| ObjectDataGrid feature           | 2026-01-22 | `7fa7ba0`    |
+| RelationPicker pattern           | 2026-01-21 | `9429a99`    |
+| Editable PropertyList            | 2026-01-21 | `3bb7e90` +9 |

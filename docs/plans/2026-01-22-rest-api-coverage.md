@@ -79,6 +79,8 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 ### Object Types
 
+**Status:** Complete (2026-01-24)
+
 **Routes**
 
 - `GET /object-types?builtInOnly&customOnly`

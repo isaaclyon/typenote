@@ -1,6 +1,40 @@
 # Recent Work
 
-## Latest Session (2026-01-23 - AppShell Renderer Wiring)
+## Latest Session (2026-01-24 - REST Coverage: Object Types)
+
+### What was accomplished
+
+- **Object types REST endpoints** — list/get by id/key, create/update/delete
+- **Error mapping updated** — HTTP status mapping for TYPE\_\* and NOT_FOUND_OBJECT_TYPE
+- **Tests added** — http-server coverage for object type routes
+- **Plan updates** — REST coverage plan + remaining list updated
+
+### Key files changed
+
+- `packages/http-server/src/routes/object-types.ts`
+- `packages/http-server/src/routes/object-types.test.ts`
+- `packages/http-server/src/router.ts`
+- `packages/http-server/src/middleware/errorHandler.ts`
+- `docs/plans/2026-01-22-rest-api-coverage.md`
+- `docs/plans/2026-01-24-rest-api-coverage-remaining.md`
+
+### Commits (this session)
+
+- `8bc76a1` feat(rest): add object types endpoints
+
+### Tests run
+
+- `pnpm --filter @typenote/http-server test -- object-types.test.ts`
+
+---
+
+## Earlier Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
+
+Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, `d48dab9`, `33a3034`, `ee496b5`, `da398c7`, `ba4b2ad`, `fe28986`, `9a5bb1d`, `990d0a1`.
+
+---
+
+## Earlier Session (2026-01-23 - AppShell Renderer Wiring)
 
 ### What was accomplished
 
@@ -32,12 +66,6 @@
 ### Tests run
 
 - `pnpm --filter @typenote/desktop test -- src/renderer` — 10/10 passing
-
----
-
-## Previous Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
-
-Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, `d48dab9`, `33a3034`, `ee496b5`, `da398c7`, `ba4b2ad`, `fe28986`, `9a5bb1d`, `990d0a1`.
 
 ---
 
