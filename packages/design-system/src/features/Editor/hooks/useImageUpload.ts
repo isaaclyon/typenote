@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Editor as TiptapEditor } from '@tiptap/core';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import type { ImageUploadHandler, ImageUploadRequest } from '../types.js';
-import type { ImageNodeAttributes } from '../extensions/ResizableImage.js';
+import type { ImageNodeAttributes } from '../extensions/ResizableImage.types.js';
 import {
   createImageUploadId,
   isRasterImageFile,

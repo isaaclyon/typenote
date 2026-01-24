@@ -7,34 +7,10 @@
 
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
-import type { JSONContent } from '@tiptap/core';
 import { EmbedNodeView } from './EmbedNodeView.js';
+import type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.types.js';
 
-export interface EmbedNodeAttributes {
-  objectId: string;
-  objectType: string;
-  displayTitle: string;
-  alias?: string | null;
-  headingText?: string | null;
-  blockId?: string | null;
-}
-
-export interface EmbedNodeOptions {
-  /** HTML attributes to add to the rendered element. */
-  HTMLAttributes: Record<string, unknown>;
-  /** Resolve embed content to TipTap JSON. */
-  onResolve: ((target: EmbedNodeAttributes) => Promise<JSONContent>) | null;
-  /** Open the source object. */
-  onOpen: ((target: EmbedNodeAttributes) => void) | null;
-  /** Subscribe to live updates. */
-  onSubscribe:
-    | ((target: EmbedNodeAttributes, onUpdate: (content: JSONContent) => void) => () => void)
-    | null;
-  /** Max embed depth before suppression. */
-  maxDepth: number;
-  /** Current embed depth (root = 0). */
-  embedDepth: number;
-}
+export type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.types.js';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {

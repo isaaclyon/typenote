@@ -7,7 +7,7 @@ import type {
 } from './extensions/RefSuggestion.js';
 import type { TagNodeAttributes } from './extensions/TagNode.js';
 import type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
-import type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
+import type { EmbedNodeAttributes } from './extensions/EmbedNode.types.js';
 
 /**
  * Editor component props.
@@ -185,8 +185,8 @@ export type { RefNodeAttributes } from './extensions/RefNode.js';
 export type { RefSuggestionItem } from './extensions/RefSuggestion.js';
 export type { TagNodeAttributes } from './extensions/TagNode.js';
 export type { TagSuggestionItem } from './extensions/TagSuggestionList.js';
-export type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
-export type { ImageNodeAttributes } from './extensions/ResizableImage.js';
+export type { EmbedNodeAttributes } from './extensions/EmbedNode.types.js';
+export type { ImageNodeAttributes } from './extensions/ResizableImage.types.js';
 
 export interface ImageUploadRequest {
   uploadId: string;

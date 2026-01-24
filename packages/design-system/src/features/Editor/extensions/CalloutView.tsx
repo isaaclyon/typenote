@@ -24,7 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '../../../primitives/DropdownMenu/index.js';
-import type { CalloutType } from './Callout.js';
+import type { CalloutType } from './Callout.types.js';
 
 // ============================================================================
 // Callout Type Configuration

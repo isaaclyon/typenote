@@ -17,7 +17,7 @@ import { TableToolbar } from './extensions/TableToolbar.js';
 import { ImageInsertPopover } from './extensions/ImageInsertPopover.js';
 import { isRasterImageFile } from './extensions/image-utils.js';
 import { slashCommandIcons } from './extensions/slash-icons.js';
-import type { EmbedNodeAttributes } from './extensions/EmbedNode.js';
+import type { EmbedNodeAttributes } from './extensions/EmbedNode.types.js';
 
 // Hooks
 import {

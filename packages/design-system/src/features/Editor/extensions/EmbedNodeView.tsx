@@ -18,7 +18,7 @@ import { CaretUp } from '@phosphor-icons/react/dist/ssr/CaretUp';
 import { ArrowSquareOut } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
 
 import { cn } from '../../../lib/utils.js';
-import type { EmbedNodeAttributes } from './EmbedNode.js';
+import type { EmbedNodeAttributes } from './EmbedNode.types.js';
 import { buildEmbedSyntax, formatEmbedDisplayTitle, suppressNestedEmbeds } from './embed-utils.js';
 import { CodeBlock } from './CodeBlock.js';
 import { Callout } from './Callout.js';

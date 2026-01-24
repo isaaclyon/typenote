@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from '../../lib/utils.js';
-import type { PropertyListItem } from './PropertyList.js';
+import type { PropertyListItem } from './PropertyList.types.js';
 import { TextEditor } from './editors/TextEditor.js';
 import { BooleanEditor } from './editors/BooleanEditor.js';
 import { SelectEditor } from './editors/SelectEditor.js';

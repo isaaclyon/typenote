@@ -13,7 +13,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 
 import { cn } from '../../../lib/utils.js';
-import type { ImageNodeAttributes, ResizableImageOptions } from './ResizableImage.js';
+import type { ImageNodeAttributes, ResizableImageOptions } from './ResizableImage.types.js';
 
 // Minimum width for images
 const MIN_WIDTH = 100;

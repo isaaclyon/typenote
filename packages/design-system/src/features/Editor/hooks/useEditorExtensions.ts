@@ -32,7 +32,7 @@ import type { SlashCommandItem } from '../extensions/SlashCommand.js';
 import { TagNode } from '../extensions/TagNode.js';
 import type { TagNodeAttributes } from '../extensions/TagNode.js';
 import type { TagSuggestionItem } from '../extensions/TagSuggestionList.js';
-import type { EmbedNodeAttributes } from '../extensions/EmbedNode.js';
+import type { EmbedNodeAttributes } from '../extensions/EmbedNode.types.js';
 import { CodeBlock } from '../extensions/CodeBlock.js';
 import { Callout } from '../extensions/Callout.js';
 import { TableExtensions } from '../extensions/Table.js';

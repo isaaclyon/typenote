@@ -14,21 +14,12 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { CalloutView } from './CalloutView.js';
+import type { CalloutAttributes, CalloutOptions, CalloutType } from './Callout.types.js';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-export type CalloutType = 'info' | 'warning' | 'tip' | 'error';
-
-export interface CalloutAttributes {
-  calloutType: CalloutType;
-}
-
-export interface CalloutOptions {
-  /** HTML attributes to add to the callout element */
-  HTMLAttributes: Record<string, unknown>;
-}
+export type { CalloutType, CalloutAttributes, CalloutOptions } from './Callout.types.js';
 
 // ============================================================================
 // Extension

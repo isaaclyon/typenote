@@ -46,7 +46,7 @@ export { CodeBlock } from './CodeBlock.js';
 export { CodeBlockView } from './CodeBlockView.js';
 
 export { Callout } from './Callout.js';
-export type { CalloutType, CalloutAttributes, CalloutOptions } from './Callout.js';
+export type { CalloutType, CalloutAttributes, CalloutOptions } from './Callout.types.js';
 export { CalloutView } from './CalloutView.js';
 
 export {
@@ -74,7 +74,7 @@ export type { BlockIdAttributes, BlockIdNodeOptions } from './BlockIdNode.js';
 export { BlockIdNodeView } from './BlockIdNodeView.js';
 
 export { EmbedNode } from './EmbedNode.js';
-export type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.js';
+export type { EmbedNodeAttributes, EmbedNodeOptions } from './EmbedNode.types.js';
 export { EmbedNodeView } from './EmbedNodeView.js';
 
 export { FootnoteRefNode } from './FootnoteRefNode.js';
