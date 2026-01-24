@@ -70,7 +70,16 @@ export const httpAPI: TypenoteAPI = {
   getOrCreateDailyNoteByDate: (dateKey) =>
     fetchAPI(`/api/v1/daily-notes/${dateKey}`, { method: 'POST' }),
 
-  listObjects: (_options) => fetchAPI('/api/v1/objects', { method: 'GET' }),
+  listObjects: (options) => {
+    const params = new URLSearchParams();
+    if (options?.typeKey) params.set('typeKey', options.typeKey);
+    if (options?.includeProperties) params.set('includeProperties', 'true');
+    if (options?.createdOnDate) params.set('createdOnDate', options.createdOnDate);
+    if (options?.sortBy) params.set('sortBy', options.sortBy);
+    if (options?.sortDirection) params.set('sortDirection', options.sortDirection);
+    const query = params.toString();
+    return fetchAPI(`/api/v1/objects${query ? `?${query}` : ''}`, { method: 'GET' });
+  },
 
   getObjectsCreatedOnDate: (dateKey) =>
     fetchAPI(`/api/v1/calendar/created/${dateKey}`, { method: 'GET' }),

@@ -19,10 +19,35 @@ const objects = new Hono<ServerContext>();
 
 /**
  * GET /objects - List all objects
+ *
+ * Query params:
+ * - typeKey?: string - Filter by object type
+ * - includeProperties?: boolean - Include object properties
+ * - createdOnDate?: string - Filter by creation date (YYYY-MM-DD)
+ * - sortBy?: string - Column to sort by
+ * - sortDirection?: 'asc' | 'desc' - Sort direction
  */
 objects.get('/', (c) => {
   const db = c.var.db;
-  const objectList = listObjects(db);
+  const query = c.req.query();
+
+  const options: {
+    typeKey?: string;
+    includeProperties?: boolean;
+    createdOnDate?: string;
+    sortBy?: string;
+    sortDirection?: 'asc' | 'desc';
+  } = {};
+
+  if (query['typeKey']) options.typeKey = query['typeKey'];
+  if (query['includeProperties'] === 'true') options.includeProperties = true;
+  if (query['createdOnDate']) options.createdOnDate = query['createdOnDate'];
+  if (query['sortBy']) options.sortBy = query['sortBy'];
+  if (query['sortDirection'] === 'asc' || query['sortDirection'] === 'desc') {
+    options.sortDirection = query['sortDirection'];
+  }
+
+  const objectList = listObjects(db, options);
 
   return c.json({
     success: true,
