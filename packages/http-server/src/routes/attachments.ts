@@ -46,7 +46,13 @@ attachments.get('/', (c) => {
     }
   }
 
-  const attachmentsList = listAttachments(c.var.db, parsed.data);
+  // Build storage options with explicit undefined handling for exactOptionalPropertyTypes
+  const storageOptions: Parameters<typeof listAttachments>[1] = {};
+  if (parsed.data.objectId !== undefined) {
+    storageOptions.objectId = parsed.data.objectId;
+  }
+
+  const attachmentsList = listAttachments(c.var.db, storageOptions);
   return c.json({
     success: true,
     data: { attachments: attachmentsList },

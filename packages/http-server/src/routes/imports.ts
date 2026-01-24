@@ -19,9 +19,8 @@ imports.post('/folder', async (c) => {
     };
   }
 
-  const result = importFromFolder(c.var.db, parsed.data.inputDir, {
-    mode: parsed.data.mode,
-  });
+  const options = parsed.data.mode ? { mode: parsed.data.mode } : {};
+  const result = importFromFolder(c.var.db, parsed.data.inputDir, options);
 
   return c.json({
     success: true,

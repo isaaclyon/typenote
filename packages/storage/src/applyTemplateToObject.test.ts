@@ -48,6 +48,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -103,6 +104,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -147,6 +149,7 @@ describe('applyTemplateToObject', () => {
         name: 'Empty Template',
         content: { blocks: [] },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -186,6 +189,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -229,6 +233,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -277,6 +282,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -327,6 +333,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -372,6 +379,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -433,6 +441,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -495,6 +504,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -558,6 +568,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -622,6 +633,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -666,6 +678,7 @@ describe('applyTemplateToObject', () => {
           ],
         },
         isDefault: true,
+        deletedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

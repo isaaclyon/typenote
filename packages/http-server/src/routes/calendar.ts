@@ -60,7 +60,7 @@ calendar.get('/', (c) => {
   const items = getAllCalendarItems(c.var.db, {
     startDate: normalizedStart,
     endDate: normalizedEnd,
-    typeKeys: parsed.data.typeKeys,
+    ...(parsed.data.typeKeys ? { typeKeys: parsed.data.typeKeys } : {}),
   });
 
   return c.json({ success: true, data: items });

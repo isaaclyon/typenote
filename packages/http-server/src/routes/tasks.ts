@@ -71,19 +71,19 @@ function getDateKeyFromToday(days: number): string {
   return `${year}-${month}-${day}`;
 }
 
-function parseBaseOptions(query: Record<string, string>): GetTasksOptions {
-  const options: GetTasksOptions = {
-    status: query.status,
-    priority: query.priority,
-    dueDateKey: parseDateKey(query.dueDateKey, 'dueDateKey'),
-    dueBefore: query.dueBefore,
-    dueAfter: query.dueAfter,
-    completedAfter: query.completedAfter,
-    completedBefore: query.completedBefore,
-    includeCompleted: parseBooleanParam(query.includeCompleted, 'includeCompleted'),
-    hasDueDate: parseBooleanParam(query.hasDueDate, 'hasDueDate'),
-    limit: parseNumberParam(query.limit, 'limit'),
-    offset: parseNumberParam(query.offset, 'offset'),
+function parseBaseOptions(query: Record<string, string | undefined>): GetTasksOptions {
+  const options: Record<string, unknown> = {
+    status: query['status'],
+    priority: query['priority'],
+    dueDateKey: parseDateKey(query['dueDateKey'], 'dueDateKey'),
+    dueBefore: query['dueBefore'],
+    dueAfter: query['dueAfter'],
+    completedAfter: query['completedAfter'],
+    completedBefore: query['completedBefore'],
+    includeCompleted: parseBooleanParam(query['includeCompleted'], 'includeCompleted'),
+    hasDueDate: parseBooleanParam(query['hasDueDate'], 'hasDueDate'),
+    limit: parseNumberParam(query['limit'], 'limit'),
+    offset: parseNumberParam(query['offset'], 'offset'),
   };
 
   const parsed = GetTasksOptionsSchema.safeParse(options);
@@ -135,10 +135,12 @@ function toTaskSummary(object: ObjectDetails): TaskSummary {
   };
 }
 
-function parsePagination(query: Record<string, string>): Pick<GetTasksOptions, 'limit' | 'offset'> {
+function parsePagination(
+  query: Record<string, string | undefined>
+): Pick<GetTasksOptions, 'limit' | 'offset'> {
   return {
-    limit: parseNumberParam(query.limit, 'limit'),
-    offset: parseNumberParam(query.offset, 'offset'),
+    limit: parseNumberParam(query['limit'], 'limit'),
+    offset: parseNumberParam(query['offset'], 'offset'),
   };
 }
 
@@ -184,12 +186,12 @@ tasks.get('/overdue', (c) => {
 tasks.get('/upcoming', (c) => {
   const query = c.req.query();
   const pagination = parsePagination(query);
-  const daysParam = parseNumberParam(query.days, 'days');
+  const daysParam = parseNumberParam(query['days'], 'days');
   if (daysParam !== undefined && daysParam < 0) {
     throw {
       code: 'VALIDATION',
       message: 'Query parameter "days" must be a non-negative number',
-      details: { name: 'days', value: query.days },
+      details: { name: 'days', value: query['days'] },
     };
   }
 
@@ -209,10 +211,10 @@ tasks.get('/upcoming', (c) => {
 tasks.get('/completed', (c) => {
   const query = c.req.query();
   const pagination = parsePagination(query);
-  const options: GetTasksOptions = {
+  const options: Record<string, unknown> = {
     ...pagination,
-    completedAfter: query.from,
-    completedBefore: query.to,
+    completedAfter: query['from'],
+    completedBefore: query['to'],
   };
 
   const parsed = GetTasksOptionsSchema.safeParse(options);
