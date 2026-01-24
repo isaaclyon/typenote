@@ -44,10 +44,28 @@
 
 ### Reference
 
-- Editable PropertyList plan: `docs/plans/2026-01-21-editable-property-list.md`
-- ObjectDataGrid design: `docs/plans/2026-01-21-object-data-grid-design.md`
-- ObjectDataGrid implementation: `docs/plans/2026-01-21-object-data-grid-implementation.md`
+- Editable PropertyList plan: `docs/archive/2026-01-21-editable-property-list.md`
+- ObjectDataGrid design: `docs/archive/2026-01-21-object-data-grid-design.md`
+- ObjectDataGrid implementation: `docs/archive/2026-01-21-object-data-grid-implementation.md`
 - Token reference: `/docs/system/QUICK_REFERENCE.md`
+
+---
+
+## REST API Coverage
+
+**Status:** Active — export/import endpoints started (plan: `docs/plans/2026-01-22-rest-api-coverage.md`)
+
+### Completed
+
+- [x] Add export/import API schemas (ExportAll/ImportFolder)
+- [x] Add `/export/all` + `/import/folder` routes with tests (`ca974d5`)
+- [x] Fix `applyBlockPatch` timestamp precision (seconds vs ms)
+
+### In Progress / Next
+
+- [ ] Commit markdown export route + core markdown serializer + tests (untracked in working tree)
+- [ ] Add remaining export endpoints (`/export/object`, `/export/type`) and JSON export/import contracts
+- [ ] Define attachment download response contract + headers
 
 ---
 
@@ -64,9 +82,10 @@
 
 ### Features (Future)
 
-- [ ] Markdown export/import — Architecture designed, ready to implement
+- [ ] Markdown export/import — export/import endpoints landed; markdown export + object/type export pending
+- [ ] REST API coverage expansion — in progress (see REST API Coverage section)
 - [ ] Relations semantics finalization
-- [ ] Unlinked mentions (design spec: `docs/plans/2026-01-10-unlinked-mentions-design.md`)
+- [ ] Unlinked mentions (design spec: `docs/archive/2026-01-10-unlinked-mentions-design.md`)
 
 ---
 

@@ -1,6 +1,47 @@
 # Recent Work
 
-## Latest Session (2026-01-22 - Unified TitleBar Chrome)
+## Latest Session (2026-01-24 - REST Export/Import + Timestamp Fix)
+
+### What was accomplished
+
+- **REST export/import endpoints added** — `/export/all` + `/import/folder` with API schemas and http-server tests
+- **Timestamp precision fix** — normalized `applyBlockPatch` to seconds to stop future-dated `updatedAt` values
+- **Live smoke tests run** — export/all + markdown export confirmed file outputs and sane timestamps after rebuild
+
+### Key files changed
+
+- `packages/api/src/exportImport.ts`, `packages/api/src/index.ts`
+- `packages/http-server/src/routes/export.ts`, `packages/http-server/src/routes/imports.ts`, tests, router
+- `packages/storage/src/applyBlockPatch.ts`, `packages/storage/src/applyBlockPatch.update.test.ts`
+
+### Commits (this session)
+
+- `ca974d5` feat(http-server): add export/import routes
+
+---
+
+## Earlier Session (2026-01-22 - REST API Plan + Docs Archive)
+
+### What was accomplished
+
+- **REST API coverage plan drafted** — mapped missing REST endpoints to existing backend services
+- **Docs archive consolidated** — merged plan archives into `docs/archive` for cleaner searches
+- **Plans archived** — moved completed plans out of `docs/plans`
+
+### Key files changed
+
+- `docs/plans/2026-01-22-rest-api-coverage.md`
+- `docs/archive/2026-01-19-markdown-contract-adherence.md`
+- `docs/archive/2026-01-21-object-data-grid-implementation.md`
+- `docs/archive/2026-01-22-markdown-export.md`
+
+### Commits (this session)
+
+- None
+
+---
+
+## Earlier Session (2026-01-22 - Unified TitleBar Chrome)
 
 ### What was accomplished
 
@@ -15,7 +56,7 @@
 - `packages/design-system/src/features/AppShell/AppShell.tsx` + stories
 - `packages/design-system/src/features/HeaderBar/*` (removed)
 - `packages/design-system/src/patterns/Breadcrumbs/Breadcrumbs.stories.tsx`
-- `docs/plans/archived/2026-01-22-unified-titlebar-breadcrumbs-implementation.md`
+- `docs/archive/2026-01-22-unified-titlebar-breadcrumbs-implementation.md`
 
 ### Commits (this session)
 
@@ -54,24 +95,6 @@
 
 ---
 
-## Earlier Session (2026-01-21 - ObjectDataGrid Design)
-
-- **ObjectDataGrid design + implementation plan** — 10-task step-by-step plan
-- **Started inline editors** — TextEditor, BooleanEditor, SelectEditor
-- **PropertyListItem extended** — Added editable mode types
-- **Commits:** `785ff95`, `e7290b9`, `4327965`, `d072a9e`, `1508230`, `2d138a3`
-
----
-
-## Earlier Session (2026-01-21 - Data Grid Patterns + CommandPalette)
-
-- Data grid patterns: DataGridHeaderCell, Selection, RowActions, PropertyList
-- CommandPalette feature complete with 3 patterns
-- Dialog and Table primitives
-- **Commits:** `2dbe5cc`, `f6bd41d`, `da80c99`, `c88d97e`, `cddb98e`, `0159329`
-
----
-
 ## Historical — Collapsed
 
-Editor features, Backend packages stable, Pre-design-system-rebuild work.
+ObjectDataGrid design plan + data grid patterns + CommandPalette (2026-01-21), editor features, backend packages stable, pre-design-system-rebuild work.
