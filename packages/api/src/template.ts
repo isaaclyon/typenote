@@ -60,11 +60,44 @@ export const TemplateSchema = z.object({
   name: z.string().min(1).max(128),
   content: TemplateContentSchema,
   isDefault: z.boolean(),
+  deletedAt: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
 
 export type Template = z.infer<typeof TemplateSchema>;
+
+// ============================================================================
+// API Operations - List + Default
+// =========================================================================
+
+/**
+ * Query options for listing templates.
+ */
+export const ListTemplatesOptionsSchema = z.object({
+  objectTypeId: z.string().length(26).optional(),
+  includeDeleted: z.boolean().optional(),
+});
+
+export type ListTemplatesOptions = z.infer<typeof ListTemplatesOptionsSchema>;
+
+/**
+ * Result for listing templates.
+ */
+export const ListTemplatesResultSchema = z.object({
+  templates: z.array(TemplateSchema),
+});
+
+export type ListTemplatesResult = z.infer<typeof ListTemplatesResultSchema>;
+
+/**
+ * Result for fetching the default template.
+ */
+export const GetDefaultTemplateResultSchema = z.object({
+  template: TemplateSchema,
+});
+
+export type GetDefaultTemplateResult = z.infer<typeof GetDefaultTemplateResultSchema>;
 
 // ============================================================================
 // API Operations
@@ -93,3 +126,12 @@ export const UpdateTemplateInputSchema = z.object({
 });
 
 export type UpdateTemplateInput = z.infer<typeof UpdateTemplateInputSchema>;
+
+/**
+ * Input for setting the default template.
+ */
+export const SetDefaultTemplateInputSchema = z.object({
+  templateId: z.string().length(26),
+});
+
+export type SetDefaultTemplateInput = z.infer<typeof SetDefaultTemplateInputSchema>;

@@ -175,8 +175,7 @@ describe('templateService', () => {
       const result = getDefaultTemplateForType(db, dailyNoteTypeId);
       expect(result).not.toBeNull();
       if (result === null) throw new Error('Expected template');
-      // Either default template is valid
-      expect(['First Default', 'Second Default']).toContain(result.name);
+      expect(result.name).toBe('Second Default');
       expect(result.isDefault).toBe(true);
     });
   });
@@ -221,11 +220,34 @@ describe('templateService', () => {
         isDefault: true,
       });
 
-      const dailyTemplates = listTemplates(db, dailyNoteTypeId);
+      const dailyTemplates = listTemplates(db, { objectTypeId: dailyNoteTypeId });
       expect(dailyTemplates).toHaveLength(1);
       const firstTemplate = dailyTemplates[0];
       if (!firstTemplate) throw new Error('Expected template');
       expect(firstTemplate.name).toBe('Daily Template');
+    });
+
+    it('excludes deleted templates by default and includes with flag', () => {
+      const created = createTemplate(db, {
+        objectTypeId: dailyNoteTypeId,
+        name: 'To Delete',
+        content: { blocks: [] },
+        isDefault: true,
+      });
+
+      deleteTemplate(db, created.id);
+
+      const defaultList = listTemplates(db, { objectTypeId: dailyNoteTypeId });
+      expect(defaultList).toHaveLength(0);
+
+      const includeDeleted = listTemplates(db, {
+        objectTypeId: dailyNoteTypeId,
+        includeDeleted: true,
+      });
+      expect(includeDeleted).toHaveLength(1);
+      const deleted = includeDeleted[0];
+      if (!deleted) throw new Error('Expected template');
+      expect(deleted.deletedAt).not.toBeNull();
     });
 
     it('returns empty array when no templates exist', () => {
@@ -296,6 +318,32 @@ describe('templateService', () => {
       expect(updated.isDefault).toBe(false);
     });
 
+    it('clears other defaults when setting isDefault true', () => {
+      const first = createTemplate(db, {
+        objectTypeId: dailyNoteTypeId,
+        name: 'First',
+        content: { blocks: [] },
+        isDefault: true,
+      });
+
+      const second = createTemplate(db, {
+        objectTypeId: dailyNoteTypeId,
+        name: 'Second',
+        content: { blocks: [] },
+        isDefault: false,
+      });
+
+      const updated = updateTemplate(db, second.id, { isDefault: true });
+      expect(updated).not.toBeNull();
+      if (updated === null) throw new Error('Expected template');
+      expect(updated.isDefault).toBe(true);
+
+      const refreshed = getTemplate(db, first.id);
+      expect(refreshed).not.toBeNull();
+      if (refreshed === null) throw new Error('Expected template');
+      expect(refreshed.isDefault).toBe(false);
+    });
+
     it('returns null for non-existent template', () => {
       const input: UpdateTemplateInput = { name: 'New Name' };
       const result = updateTemplate(db, '01ARZ3NDEKTSV4RRFFQ69G5FAV', input);
@@ -320,7 +368,7 @@ describe('templateService', () => {
   });
 
   describe('deleteTemplate', () => {
-    it('deletes an existing template', () => {
+    it('soft-deletes an existing template', () => {
       const created = createTemplate(db, {
         objectTypeId: dailyNoteTypeId,
         name: 'To Delete',
@@ -332,6 +380,11 @@ describe('templateService', () => {
 
       expect(deleted).toBe(true);
       expect(getTemplate(db, created.id)).toBeNull();
+      const deletedTemplate = getTemplate(db, created.id, true);
+      expect(deletedTemplate).not.toBeNull();
+      if (deletedTemplate === null) throw new Error('Expected template');
+      expect(deletedTemplate.deletedAt).not.toBeNull();
+      expect(deletedTemplate.isDefault).toBe(false);
     });
 
     it('returns false for non-existent template', () => {

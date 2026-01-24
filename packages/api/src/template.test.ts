@@ -11,11 +11,19 @@ import {
   TemplateSchema,
   CreateTemplateInputSchema,
   UpdateTemplateInputSchema,
+  ListTemplatesOptionsSchema,
+  ListTemplatesResultSchema,
+  GetDefaultTemplateResultSchema,
+  SetDefaultTemplateInputSchema,
   type TemplateBlock,
   type TemplateContent,
   type Template,
   type CreateTemplateInput,
   type UpdateTemplateInput,
+  type ListTemplatesOptions,
+  type ListTemplatesResult,
+  type GetDefaultTemplateResult,
+  type SetDefaultTemplateInput,
 } from './template.js';
 
 // Valid 26-character ULID test values
@@ -153,6 +161,22 @@ describe('TemplateSchema', () => {
         ],
       },
       isDefault: true,
+      deletedAt: null,
+      createdAt: new Date('2026-01-06T00:00:00Z'),
+      updatedAt: new Date('2026-01-06T00:00:00Z'),
+    };
+    const result = TemplateSchema.safeParse(template);
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts deletedAt date when soft-deleted', () => {
+    const template: Template = {
+      id: VALID_ULID_1,
+      objectTypeId: VALID_ULID_2,
+      name: 'Deleted Template',
+      content: { blocks: [] },
+      isDefault: false,
+      deletedAt: new Date('2026-01-07T00:00:00Z'),
       createdAt: new Date('2026-01-06T00:00:00Z'),
       updatedAt: new Date('2026-01-06T00:00:00Z'),
     };
@@ -167,6 +191,7 @@ describe('TemplateSchema', () => {
       name: 'Test',
       content: { blocks: [] },
       isDefault: true,
+      deletedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -181,10 +206,93 @@ describe('TemplateSchema', () => {
       name: '',
       content: { blocks: [] },
       isDefault: true,
+      deletedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     const result = TemplateSchema.safeParse(template);
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// ListTemplatesOptionsSchema
+// ============================================================================
+
+describe('ListTemplatesOptionsSchema', () => {
+  it('accepts empty options', () => {
+    const result = ListTemplatesOptionsSchema.safeParse({});
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts objectTypeId and includeDeleted', () => {
+    const result = ListTemplatesOptionsSchema.safeParse({
+      objectTypeId: VALID_ULID_1,
+      includeDeleted: true,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid objectTypeId', () => {
+    const result = ListTemplatesOptionsSchema.safeParse({
+      objectTypeId: 'invalid',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// ListTemplatesResultSchema
+// ============================================================================
+
+describe('ListTemplatesResultSchema', () => {
+  it('validates list result with templates array', () => {
+    const result = ListTemplatesResultSchema.safeParse({
+      templates: [
+        {
+          id: VALID_ULID_1,
+          objectTypeId: VALID_ULID_2,
+          name: 'Template',
+          content: { blocks: [] },
+          isDefault: false,
+          deletedAt: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing templates field', () => {
+    const result = ListTemplatesResultSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// GetDefaultTemplateResultSchema
+// ============================================================================
+
+describe('GetDefaultTemplateResultSchema', () => {
+  it('validates default template result', () => {
+    const result = GetDefaultTemplateResultSchema.safeParse({
+      template: {
+        id: VALID_ULID_1,
+        objectTypeId: VALID_ULID_2,
+        name: 'Default Template',
+        content: { blocks: [] },
+        isDefault: true,
+        deletedAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing template field', () => {
+    const result = GetDefaultTemplateResultSchema.safeParse({});
     expect(result.success).toBe(false);
   });
 });
@@ -324,5 +432,70 @@ describe('UpdateTemplateInputSchema', () => {
     };
     const result = UpdateTemplateInputSchema.safeParse(input);
     expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// SetDefaultTemplateInputSchema
+// ============================================================================
+
+describe('SetDefaultTemplateInputSchema', () => {
+  it('validates templateId input', () => {
+    const input: SetDefaultTemplateInput = {
+      templateId: VALID_ULID_1,
+    };
+    const result = SetDefaultTemplateInputSchema.safeParse(input);
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid templateId', () => {
+    const result = SetDefaultTemplateInputSchema.safeParse({
+      templateId: 'invalid',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// Type Inference Tests
+// ============================================================================
+
+describe('Type inference', () => {
+  it('ListTemplatesOptions type has correct structure', () => {
+    const options: ListTemplatesOptions = {
+      objectTypeId: VALID_ULID_1,
+      includeDeleted: true,
+    };
+    expect(options.objectTypeId).toBeDefined();
+  });
+
+  it('ListTemplatesResult type has correct structure', () => {
+    const result: ListTemplatesResult = {
+      templates: [],
+    };
+    expect(result.templates).toBeDefined();
+  });
+
+  it('GetDefaultTemplateResult type has correct structure', () => {
+    const result: GetDefaultTemplateResult = {
+      template: {
+        id: VALID_ULID_1,
+        objectTypeId: VALID_ULID_2,
+        name: 'Default',
+        content: { blocks: [] },
+        isDefault: true,
+        deletedAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    };
+    expect(result.template.id).toBeDefined();
+  });
+
+  it('SetDefaultTemplateInput type has correct structure', () => {
+    const input: SetDefaultTemplateInput = {
+      templateId: VALID_ULID_1,
+    };
+    expect(input.templateId).toBeDefined();
   });
 });

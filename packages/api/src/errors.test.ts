@@ -13,6 +13,7 @@ import {
   idempotencyConflict,
   internalError,
   notFoundTag,
+  notFoundTemplate,
   tagSlugConflict,
   tagInUse,
   dailyNoteNotDuplicable,
@@ -26,6 +27,7 @@ describe('ApiErrorCodeSchema', () => {
     'NOT_FOUND_BLOCK',
     'NOT_FOUND_TAG',
     'NOT_FOUND_OBJECT_TYPE',
+    'NOT_FOUND_TEMPLATE',
     'VALIDATION',
     'CONFLICT_VERSION',
     'CONFLICT_ORDERING',
@@ -197,6 +199,17 @@ describe('Error factory functions', () => {
       expect(error.code).toBe('NOT_FOUND_TAG');
       expect(error.message).toContain('01ARZ3NDEKTSV4RRFFQ69G5FAV');
       expect(error.details).toEqual({ tagId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' });
+    });
+  });
+
+  describe('notFoundTemplate', () => {
+    it('creates NOT_FOUND_TEMPLATE error', () => {
+      const error = notFoundTemplate('01ARZ3NDEKTSV4RRFFQ69G5FAV');
+
+      expect(error.apiVersion).toBe('v1');
+      expect(error.code).toBe('NOT_FOUND_TEMPLATE');
+      expect(error.message).toContain('01ARZ3NDEKTSV4RRFFQ69G5FAV');
+      expect(error.details).toEqual({ templateId: '01ARZ3NDEKTSV4RRFFQ69G5FAV' });
     });
   });
 

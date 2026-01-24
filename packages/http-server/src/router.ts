@@ -14,6 +14,9 @@ import { tasks } from './routes/tasks.js';
 import { attachments } from './routes/attachments.js';
 import { calendar } from './routes/calendar.js';
 import { objectTypes } from './routes/object-types.js';
+import { settings } from './routes/settings.js';
+import { pinned } from './routes/pinned.js';
+import { templates } from './routes/templates.js';
 import type { ServerContext } from './types.js';
 
 /**
@@ -36,8 +39,11 @@ export function createRouter() {
   router.route('/trash', trash);
   router.route('/tasks', tasks);
   router.route('/attachments', attachments);
+  router.route('/pinned', pinned);
+  router.route('/templates', templates);
   router.route('/calendar', calendar);
   router.route('/object-types', objectTypes);
+  router.route('/settings', settings);
 
   return router;
 }

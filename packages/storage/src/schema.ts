@@ -160,8 +160,12 @@ export const templates = sqliteTable(
     isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(true),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+    deletedAt: integer('deleted_at', { mode: 'timestamp' }),
   },
-  (table) => [index('templates_object_type_id_idx').on(table.objectTypeId)]
+  (table) => [
+    index('templates_object_type_id_idx').on(table.objectTypeId),
+    index('templates_deleted_at_idx').on(table.deletedAt),
+  ]
 );
 
 // ============================================================================

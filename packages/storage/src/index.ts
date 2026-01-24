@@ -192,6 +192,7 @@ export {
   getBlockAttachments,
   getAttachmentBlocks,
   listAttachments,
+  previewOrphanedAttachments,
   cleanupOrphanedAttachments,
   AttachmentServiceError,
   type AttachmentServiceErrorCode,

@@ -11,6 +11,7 @@ import {
   PinObjectResultSchema,
   UnpinObjectResultSchema,
   ReorderPinnedObjectsResultSchema,
+  ListPinnedObjectsResultSchema,
   PinningErrorCodeSchema,
   type PinnedObjectSummary,
   type PinObjectInput,
@@ -19,6 +20,7 @@ import {
   type PinObjectResult,
   type UnpinObjectResult,
   type ReorderPinnedObjectsResult,
+  type ListPinnedObjectsResult,
 } from './pinning.js';
 
 // Valid 26-character ULID test values
@@ -340,6 +342,35 @@ describe('ReorderPinnedObjectsResultSchema', () => {
   it('rejects missing updated object IDs field', () => {
     const result = {};
     const parsed = ReorderPinnedObjectsResultSchema.safeParse(result);
+    expect(parsed.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// ListPinnedObjectsResultSchema
+// ============================================================================
+
+describe('ListPinnedObjectsResultSchema', () => {
+  it('validates list result with pinned objects', () => {
+    const result: ListPinnedObjectsResult = {
+      pinnedObjects: [
+        {
+          id: VALID_ULID_1,
+          title: 'Important Document',
+          typeId: VALID_ULID_2,
+          typeKey: 'page',
+          updatedAt: new Date(),
+          pinnedAt: new Date(),
+          order: 0,
+        },
+      ],
+    };
+    const parsed = ListPinnedObjectsResultSchema.safeParse(result);
+    expect(parsed.success).toBe(true);
+  });
+
+  it('rejects missing pinnedObjects field', () => {
+    const parsed = ListPinnedObjectsResultSchema.safeParse({});
     expect(parsed.success).toBe(false);
   });
 });

@@ -96,6 +96,15 @@ export const ReorderPinnedObjectsResultSchema = z.object({
 
 export type ReorderPinnedObjectsResult = z.infer<typeof ReorderPinnedObjectsResultSchema>;
 
+/**
+ * Result for listing pinned objects.
+ */
+export const ListPinnedObjectsResultSchema = z.object({
+  pinnedObjects: z.array(PinnedObjectSummarySchema),
+});
+
+export type ListPinnedObjectsResult = z.infer<typeof ListPinnedObjectsResultSchema>;
+
 // ============================================================================
 // Error Codes (specific to Pinning operations)
 // ============================================================================

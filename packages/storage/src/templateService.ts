@@ -4,7 +4,7 @@
  * Templates define initial content (blocks) that auto-apply when creating new objects.
  */
 
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, isNull, ne } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
 import type {
   Template,
@@ -26,6 +26,7 @@ function rowToTemplate(row: typeof templates.$inferSelect): Template {
     name: row.name,
     content: JSON.parse(row.content) as TemplateContent,
     isDefault: row.isDefault,
+    deletedAt: row.deletedAt,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -40,6 +41,13 @@ export function createTemplate(db: TypenoteDb, input: CreateTemplateInput): Temp
   const id = generateId();
   const now = new Date();
 
+  if (input.isDefault) {
+    db.update(templates)
+      .set({ isDefault: false })
+      .where(and(eq(templates.objectTypeId, input.objectTypeId), isNull(templates.deletedAt)))
+      .run();
+  }
+
   db.insert(templates)
     .values({
       id,
@@ -47,6 +55,7 @@ export function createTemplate(db: TypenoteDb, input: CreateTemplateInput): Temp
       name: input.name,
       content: JSON.stringify(input.content),
       isDefault: input.isDefault,
+      deletedAt: null,
       createdAt: now,
       updatedAt: now,
     })
@@ -58,6 +67,7 @@ export function createTemplate(db: TypenoteDb, input: CreateTemplateInput): Temp
     name: input.name,
     content: input.content,
     isDefault: input.isDefault,
+    deletedAt: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -68,8 +78,15 @@ export function createTemplate(db: TypenoteDb, input: CreateTemplateInput): Temp
  *
  * @returns The template or null if not found
  */
-export function getTemplate(db: TypenoteDb, id: string): Template | null {
-  const row = db.select().from(templates).where(eq(templates.id, id)).limit(1).all()[0];
+export function getTemplate(db: TypenoteDb, id: string, includeDeleted = false): Template | null {
+  const row = db
+    .select()
+    .from(templates)
+    .where(
+      includeDeleted ? eq(templates.id, id) : and(eq(templates.id, id), isNull(templates.deletedAt))
+    )
+    .limit(1)
+    .all()[0];
 
   return row ? rowToTemplate(row) : null;
 }
@@ -85,7 +102,13 @@ export function getDefaultTemplateForType(db: TypenoteDb, objectTypeId: string):
   const row = db
     .select()
     .from(templates)
-    .where(and(eq(templates.objectTypeId, objectTypeId), eq(templates.isDefault, true)))
+    .where(
+      and(
+        eq(templates.objectTypeId, objectTypeId),
+        eq(templates.isDefault, true),
+        isNull(templates.deletedAt)
+      )
+    )
     .orderBy(desc(templates.createdAt))
     .limit(1)
     .all()[0];
@@ -99,11 +122,23 @@ export function getDefaultTemplateForType(db: TypenoteDb, objectTypeId: string):
  * @param objectTypeId - If provided, only return templates for this type
  * @returns Array of templates
  */
-export function listTemplates(db: TypenoteDb, objectTypeId?: string): Template[] {
+export interface ListTemplatesOptions {
+  objectTypeId?: string | undefined;
+  includeDeleted?: boolean | undefined;
+}
+
+export function listTemplates(db: TypenoteDb, options?: ListTemplatesOptions): Template[] {
+  const { objectTypeId, includeDeleted = false } = options ?? {};
   let query = db.select().from(templates);
 
-  if (objectTypeId !== undefined) {
+  if (objectTypeId !== undefined && !includeDeleted) {
+    query = query.where(
+      and(eq(templates.objectTypeId, objectTypeId), isNull(templates.deletedAt))
+    ) as typeof query;
+  } else if (objectTypeId !== undefined) {
     query = query.where(eq(templates.objectTypeId, objectTypeId)) as typeof query;
+  } else if (!includeDeleted) {
+    query = query.where(isNull(templates.deletedAt)) as typeof query;
   }
 
   const rows = query.orderBy(desc(templates.createdAt)).all();
@@ -137,10 +172,26 @@ export function updateTemplate(
   }
   if (input.isDefault !== undefined) {
     updates.isDefault = input.isDefault;
+
+    if (input.isDefault) {
+      db.update(templates)
+        .set({ isDefault: false })
+        .where(
+          and(
+            eq(templates.objectTypeId, existing.objectTypeId),
+            isNull(templates.deletedAt),
+            ne(templates.id, id)
+          )
+        )
+        .run();
+    }
   }
 
   // Perform update
-  db.update(templates).set(updates).where(eq(templates.id, id)).run();
+  db.update(templates)
+    .set(updates)
+    .where(and(eq(templates.id, id), isNull(templates.deletedAt)))
+    .run();
 
   // Return updated template
   return getTemplate(db, id);
@@ -152,7 +203,12 @@ export function updateTemplate(
  * @returns true if deleted, false if not found
  */
 export function deleteTemplate(db: TypenoteDb, id: string): boolean {
-  const result = db.delete(templates).where(eq(templates.id, id)).run();
+  const now = new Date();
+  const result = db
+    .update(templates)
+    .set({ deletedAt: now, updatedAt: now, isDefault: false })
+    .where(and(eq(templates.id, id), isNull(templates.deletedAt)))
+    .run();
 
   return result.changes > 0;
 }
@@ -202,7 +258,7 @@ export function seedDailyNoteTemplate(db: TypenoteDb): Template | null {
   }
 
   // Check if any template already exists for DailyNote type
-  const existingTemplates = listTemplates(db, dailyNoteType.id);
+  const existingTemplates = listTemplates(db, { objectTypeId: dailyNoteType.id });
   if (existingTemplates.length > 0) {
     // Return the existing default, or first template if no default
     return getDefaultTemplateForType(db, dailyNoteType.id) ?? existingTemplates[0] ?? null;

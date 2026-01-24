@@ -101,6 +101,17 @@ export const UploadAttachmentInputSchema = z.object({
 export type UploadAttachmentInput = z.infer<typeof UploadAttachmentInputSchema>;
 
 /**
+ * Upload request metadata (used by HTTP multipart uploads).
+ */
+export const UploadAttachmentRequestSchema = UploadAttachmentInputSchema.extend({
+  objectId: z.string().length(26),
+  alt: z.string().optional(),
+  caption: z.string().optional(),
+});
+
+export type UploadAttachmentRequest = z.infer<typeof UploadAttachmentRequestSchema>;
+
+/**
  * Result from uploading an attachment.
  */
 export const UploadAttachmentResultSchema = z.object({
@@ -109,6 +120,51 @@ export const UploadAttachmentResultSchema = z.object({
 });
 
 export type UploadAttachmentResult = z.infer<typeof UploadAttachmentResultSchema>;
+
+// ============================================================================
+// API Operations - List
+// ============================================================================
+
+/**
+ * Query options for listing attachments.
+ */
+export const ListAttachmentsOptionsSchema = z.object({
+  objectId: z.string().length(26).optional(),
+});
+
+export type ListAttachmentsOptions = z.infer<typeof ListAttachmentsOptionsSchema>;
+
+/**
+ * Result for listing attachments.
+ */
+export const ListAttachmentsResultSchema = z.object({
+  attachments: z.array(AttachmentSchema),
+});
+
+export type ListAttachmentsResult = z.infer<typeof ListAttachmentsResultSchema>;
+
+// ============================================================================
+// API Operations - Cleanup
+// ============================================================================
+
+/**
+ * Cleanup options for orphaned attachments.
+ */
+export const CleanupAttachmentsOptionsSchema = z.object({
+  graceDays: z.number().int().positive().optional(),
+});
+
+export type CleanupAttachmentsOptions = z.infer<typeof CleanupAttachmentsOptionsSchema>;
+
+/**
+ * Result for cleanup dry-run.
+ */
+export const CleanupAttachmentsResultSchema = z.object({
+  count: z.number().int().nonnegative(),
+  attachmentIds: z.array(z.string().length(26)),
+});
+
+export type CleanupAttachmentsResult = z.infer<typeof CleanupAttachmentsResultSchema>;
 
 // ============================================================================
 // Block Content Schema

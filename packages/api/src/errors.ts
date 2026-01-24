@@ -8,6 +8,7 @@ export const ApiErrorCodeSchema = z.enum([
   'NOT_FOUND_BLOCK',
   'NOT_FOUND_TAG',
   'NOT_FOUND_OBJECT_TYPE',
+  'NOT_FOUND_TEMPLATE',
   'NOT_FOUND_ATTACHMENT',
   'VALIDATION',
   'CONFLICT_VERSION',
@@ -138,6 +139,15 @@ export function notFoundTag(tagId: string): ApiError {
     code: 'NOT_FOUND_TAG',
     message: `Tag not found: ${tagId}`,
     details: { tagId },
+  };
+}
+
+export function notFoundTemplate(templateId: string): ApiError {
+  return {
+    apiVersion: 'v1',
+    code: 'NOT_FOUND_TEMPLATE',
+    message: `Template not found: ${templateId}`,
+    details: { templateId },
   };
 }
 

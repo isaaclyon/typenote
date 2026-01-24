@@ -9,8 +9,13 @@ import { describe, it, expect } from 'vitest';
 import {
   AttachmentSchema,
   UploadAttachmentInputSchema,
+  UploadAttachmentRequestSchema,
   UploadAttachmentResultSchema,
   AttachmentContentSchema,
+  ListAttachmentsOptionsSchema,
+  ListAttachmentsResultSchema,
+  CleanupAttachmentsOptionsSchema,
+  CleanupAttachmentsResultSchema,
   AttachmentErrorCodeSchema,
   AttachmentDownloadHeadersSchema,
   Sha256Schema,
@@ -19,8 +24,11 @@ import {
   type Attachment,
   type AttachmentDownloadHeaders,
   type UploadAttachmentInput,
+  type UploadAttachmentRequest,
   type UploadAttachmentResult,
   type AttachmentContent,
+  type ListAttachmentsOptions,
+  type CleanupAttachmentsResult,
 } from './attachment.js';
 
 // ============================================================================
@@ -277,6 +285,40 @@ describe('UploadAttachmentInputSchema', () => {
 });
 
 // ============================================================================
+// UploadAttachmentRequestSchema Tests (HTTP metadata)
+// ============================================================================
+
+describe('UploadAttachmentRequestSchema', () => {
+  const validRequest = {
+    objectId: '01HZX12345678901234567ABCD',
+    filename: 'photo.png',
+    mimeType: 'image/png',
+    sizeBytes: 1024,
+  };
+
+  it('accepts required metadata fields', () => {
+    const result = UploadAttachmentRequestSchema.safeParse(validRequest);
+    expect(result.success).toBe(true);
+  });
+
+  it('allows optional alt and caption', () => {
+    const result = UploadAttachmentRequestSchema.safeParse({
+      ...validRequest,
+      alt: 'Alt text',
+      caption: 'Caption text',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing objectId', () => {
+    const missing: Record<string, unknown> = { ...validRequest };
+    delete missing['objectId'];
+    const result = UploadAttachmentRequestSchema.safeParse(missing);
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
 // UploadAttachmentResultSchema Tests
 // ============================================================================
 
@@ -315,6 +357,103 @@ describe('UploadAttachmentResultSchema', () => {
     const result = UploadAttachmentResultSchema.safeParse({
       attachmentId: '01HZX12345678901234567ABCD',
       // missing wasDeduped
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// ListAttachmentsOptionsSchema Tests
+// ============================================================================
+
+describe('ListAttachmentsOptionsSchema', () => {
+  it('accepts empty options', () => {
+    const result = ListAttachmentsOptionsSchema.safeParse({});
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts objectId filter', () => {
+    const result = ListAttachmentsOptionsSchema.safeParse({
+      objectId: '01HZX12345678901234567ABCD',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid objectId', () => {
+    const result = ListAttachmentsOptionsSchema.safeParse({
+      objectId: 'invalid',
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// ListAttachmentsResultSchema Tests
+// ============================================================================
+
+describe('ListAttachmentsResultSchema', () => {
+  it('validates list result with attachments array', () => {
+    const result = ListAttachmentsResultSchema.safeParse({
+      attachments: [
+        {
+          id: '01HZX12345678901234567ABCD',
+          sha256: 'a'.repeat(64),
+          filename: 'photo.png',
+          mimeType: 'image/png',
+          sizeBytes: 1024,
+          lastReferencedAt: new Date(),
+          orphanedAt: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing attachments field', () => {
+    const result = ListAttachmentsResultSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// CleanupAttachmentsOptionsSchema Tests
+// ============================================================================
+
+describe('CleanupAttachmentsOptionsSchema', () => {
+  it('accepts empty options', () => {
+    const result = CleanupAttachmentsOptionsSchema.safeParse({});
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts graceDays', () => {
+    const result = CleanupAttachmentsOptionsSchema.safeParse({ graceDays: 30 });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects negative graceDays', () => {
+    const result = CleanupAttachmentsOptionsSchema.safeParse({ graceDays: -1 });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// CleanupAttachmentsResultSchema Tests
+// ============================================================================
+
+describe('CleanupAttachmentsResultSchema', () => {
+  it('validates dry-run cleanup result', () => {
+    const result = CleanupAttachmentsResultSchema.safeParse({
+      count: 2,
+      attachmentIds: ['01HZX12345678901234567ABCD', '01HZX12345678901234567ABCE'],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing fields', () => {
+    const result = CleanupAttachmentsResultSchema.safeParse({
+      count: 1,
     });
     expect(result.success).toBe(false);
   });
@@ -454,6 +593,16 @@ describe('Type inference', () => {
     expect(input.filename).toBeDefined();
   });
 
+  it('UploadAttachmentRequest type has correct structure', () => {
+    const input: UploadAttachmentRequest = {
+      objectId: '01HZX12345678901234567ABCD',
+      filename: 'test.png',
+      mimeType: 'image/png',
+      sizeBytes: 1024,
+    };
+    expect(input.objectId).toBeDefined();
+  });
+
   it('UploadAttachmentResult type has correct structure', () => {
     const result: UploadAttachmentResult = {
       attachmentId: '01HZX12345678901234567ABCD',
@@ -469,6 +618,21 @@ describe('Type inference', () => {
       caption: 'Caption',
     };
     expect(content.attachmentId).toBeDefined();
+  });
+
+  it('CleanupAttachmentsResult type has correct structure', () => {
+    const result: CleanupAttachmentsResult = {
+      count: 1,
+      attachmentIds: ['01HZX12345678901234567ABCD'],
+    };
+    expect(result.count).toBeDefined();
+  });
+
+  it('ListAttachmentsOptions type has correct structure', () => {
+    const options: ListAttachmentsOptions = {
+      objectId: '01HZX12345678901234567ABCD',
+    };
+    expect(options.objectId).toBeDefined();
   });
 });
 

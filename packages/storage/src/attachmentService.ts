@@ -14,7 +14,7 @@ import {
   type UploadAttachmentResult,
   type SupportedMimeType,
 } from '@typenote/api';
-import { attachments, blockAttachments } from './schema.js';
+import { attachments, blockAttachments, blocks } from './schema.js';
 import type { TypenoteDb } from './db.js';
 import type { FileService } from './fileService.js';
 import { createServiceError } from './errors.js';
@@ -45,7 +45,8 @@ export interface UploadAttachmentInput {
 }
 
 export interface ListAttachmentsOptions {
-  orphanedOnly?: boolean;
+  orphanedOnly?: boolean | undefined;
+  objectId?: string | undefined;
 }
 
 // ============================================================================
@@ -382,7 +383,36 @@ export function getAttachmentBlocks(db: TypenoteDb, attachmentId: string): strin
  * @returns Array of attachments
  */
 export function listAttachments(db: TypenoteDb, options?: ListAttachmentsOptions): Attachment[] {
-  const { orphanedOnly = false } = options ?? {};
+  const { orphanedOnly = false, objectId } = options ?? {};
+
+  if (objectId !== undefined) {
+    const conditions = [eq(blocks.objectId, objectId)];
+    if (orphanedOnly) {
+      conditions.push(sql`${attachments.orphanedAt} IS NOT NULL`);
+    }
+
+    const whereClause = conditions.length === 1 ? conditions[0] : and(conditions[0], conditions[1]);
+
+    const rows = db
+      .select({
+        id: attachments.id,
+        sha256: attachments.sha256,
+        filename: attachments.filename,
+        mimeType: attachments.mimeType,
+        sizeBytes: attachments.sizeBytes,
+        lastReferencedAt: attachments.lastReferencedAt,
+        orphanedAt: attachments.orphanedAt,
+        createdAt: attachments.createdAt,
+        updatedAt: attachments.updatedAt,
+      })
+      .from(blockAttachments)
+      .innerJoin(attachments, eq(blockAttachments.attachmentId, attachments.id))
+      .innerJoin(blocks, eq(blockAttachments.blockId, blocks.id))
+      .where(whereClause)
+      .groupBy(attachments.id)
+      .all();
+    return rows.map(mapRowToAttachment);
+  }
 
   let query = db.select().from(attachments);
 
@@ -392,6 +422,38 @@ export function listAttachments(db: TypenoteDb, options?: ListAttachmentsOptions
 
   const rows = query.all();
   return rows.map(mapRowToAttachment);
+}
+
+// ============================================================================
+// Cleanup Preview
+// ============================================================================
+
+/**
+ * Preview orphaned attachments eligible for cleanup.
+ */
+export function previewOrphanedAttachments(db: TypenoteDb, graceDays: number): Attachment[] {
+  const cutoffDate = new Date(Date.now() - graceDays * 24 * 60 * 60 * 1000);
+  const orphanedRows = db
+    .select()
+    .from(attachments)
+    .where(and(sql`${attachments.orphanedAt} IS NOT NULL`, lt(attachments.orphanedAt, cutoffDate)))
+    .all();
+
+  const eligible: Attachment[] = [];
+
+  for (const row of orphanedRows) {
+    const refCount = db
+      .select({ count: sql<number>`count(*)` })
+      .from(blockAttachments)
+      .where(eq(blockAttachments.attachmentId, row.id))
+      .get();
+
+    if (!refCount || refCount.count === 0) {
+      eligible.push(mapRowToAttachment(row));
+    }
+  }
+
+  return eligible;
 }
 
 // ============================================================================
