@@ -310,6 +310,9 @@ export {
   // Error codes
   AttachmentErrorCodeSchema,
   type AttachmentErrorCode,
+  // Download headers
+  AttachmentDownloadHeadersSchema,
+  type AttachmentDownloadHeaders,
 } from './attachment.js';
 
 // Events

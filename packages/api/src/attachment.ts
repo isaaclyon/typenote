@@ -140,3 +140,21 @@ export const AttachmentErrorCodeSchema = z.enum([
 ]);
 
 export type AttachmentErrorCode = z.infer<typeof AttachmentErrorCodeSchema>;
+
+// ============================================================================
+// Download Response Contract
+// ============================================================================
+
+/**
+ * Canonical download headers for attachment content responses.
+ */
+export const AttachmentDownloadHeadersSchema = z.object({
+  contentType: z.string().min(1),
+  contentLength: z.number().int().nonnegative(),
+  contentDisposition: z.string().min(1),
+  etag: z.string().min(1),
+  cacheControl: z.string().min(1),
+  xContentTypeOptions: z.literal('nosniff'),
+});
+
+export type AttachmentDownloadHeaders = z.infer<typeof AttachmentDownloadHeadersSchema>;

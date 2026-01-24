@@ -12,10 +12,12 @@ import {
   UploadAttachmentResultSchema,
   AttachmentContentSchema,
   AttachmentErrorCodeSchema,
+  AttachmentDownloadHeadersSchema,
   Sha256Schema,
   SUPPORTED_MIME_TYPES,
   MAX_FILE_SIZE_BYTES,
   type Attachment,
+  type AttachmentDownloadHeaders,
   type UploadAttachmentInput,
   type UploadAttachmentResult,
   type AttachmentContent,
@@ -511,5 +513,32 @@ describe('AttachmentErrorCodeSchema', () => {
 
   it('rejects invalid error codes', () => {
     expect(AttachmentErrorCodeSchema.safeParse('INVALID_CODE').success).toBe(false);
+  });
+});
+
+// ============================================================================
+// AttachmentDownloadHeadersSchema
+// ============================================================================
+
+describe('AttachmentDownloadHeadersSchema', () => {
+  it('validates download header metadata', () => {
+    const headers: AttachmentDownloadHeaders = {
+      contentType: 'image/png',
+      contentLength: 1024,
+      contentDisposition: 'inline; filename="image.png"',
+      etag: '"' + 'a'.repeat(64) + '"',
+      cacheControl: 'private, max-age=31536000, immutable',
+      xContentTypeOptions: 'nosniff',
+    };
+
+    const result = AttachmentDownloadHeadersSchema.safeParse(headers);
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects missing headers', () => {
+    const result = AttachmentDownloadHeadersSchema.safeParse({
+      contentType: 'image/png',
+    });
+    expect(result.success).toBe(false);
   });
 });
