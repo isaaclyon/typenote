@@ -10,6 +10,11 @@ import {
   WeekStartDaySchema,
   DateFormatSchema,
   TimeFormatSchema,
+  SettingKeySchema,
+  SettingValueSchema,
+  UpdateSettingsInputSchema,
+  SettingKeyValueSchema,
+  UpdateSettingInputSchema,
   UserSettingsSchema,
   type UserSettings,
 } from './settings.js';
@@ -234,6 +239,97 @@ describe('UserSettingsSchema', () => {
       timeFormat: 'military',
     };
     const result = UserSettingsSchema.safeParse(settings);
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// SettingKeySchema
+// ============================================================================
+
+describe('SettingKeySchema', () => {
+  it('includes expected keys', () => {
+    expect(SettingKeySchema.options).toContain('colorMode');
+    expect(SettingKeySchema.options).toContain('weekStartDay');
+    expect(SettingKeySchema.options).toContain('spellcheck');
+    expect(SettingKeySchema.options).toContain('dateFormat');
+    expect(SettingKeySchema.options).toContain('timeFormat');
+  });
+
+  it('rejects unknown keys', () => {
+    const result = SettingKeySchema.safeParse('unknown');
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// SettingValueSchema
+// ============================================================================
+
+describe('SettingValueSchema', () => {
+  it('accepts valid setting values', () => {
+    expect(SettingValueSchema.safeParse('dark').success).toBe(true);
+    expect(SettingValueSchema.safeParse('monday').success).toBe(true);
+    expect(SettingValueSchema.safeParse(true).success).toBe(true);
+    expect(SettingValueSchema.safeParse('iso').success).toBe(true);
+    expect(SettingValueSchema.safeParse('24h').success).toBe(true);
+  });
+
+  it('rejects invalid setting values', () => {
+    expect(SettingValueSchema.safeParse('invalid').success).toBe(false);
+    expect(SettingValueSchema.safeParse(123).success).toBe(false);
+  });
+});
+
+// ============================================================================
+// UpdateSettingsInputSchema
+// ============================================================================
+
+describe('UpdateSettingsInputSchema', () => {
+  it('accepts partial settings', () => {
+    const result = UpdateSettingsInputSchema.safeParse({ colorMode: 'dark' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects empty input', () => {
+    const result = UpdateSettingsInputSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects unknown keys', () => {
+    const result = UpdateSettingsInputSchema.safeParse({ unknown: 'value' });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// SettingKeyValueSchema
+// ============================================================================
+
+describe('SettingKeyValueSchema', () => {
+  it('accepts valid key/value pairs', () => {
+    const result = SettingKeyValueSchema.safeParse({ key: 'colorMode', value: 'dark' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid values', () => {
+    const result = SettingKeyValueSchema.safeParse({ key: 'colorMode', value: 'invalid' });
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// UpdateSettingInputSchema
+// ============================================================================
+
+describe('UpdateSettingInputSchema', () => {
+  it('accepts valid value payload', () => {
+    const result = UpdateSettingInputSchema.safeParse({ value: 'dark' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid value payload', () => {
+    const result = UpdateSettingInputSchema.safeParse({ value: 'invalid' });
     expect(result.success).toBe(false);
   });
 });
