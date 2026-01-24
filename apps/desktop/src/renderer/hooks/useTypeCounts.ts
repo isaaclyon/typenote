@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 
-interface TypeCount {
+export interface TypeCount {
   typeKey: string;
   typeName: string;
   typeIcon: string | null;
