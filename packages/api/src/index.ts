@@ -170,6 +170,22 @@ export {
   type MarkdownExportResult,
 } from './markdownExport.js';
 
+// Export/Import
+export {
+  ExportManifestSchema,
+  ExportAllInputSchema,
+  ExportAllResultSchema,
+  ImportModeSchema,
+  ImportFolderInputSchema,
+  ImportFolderResultSchema,
+  type ExportManifest,
+  type ExportAllInput,
+  type ExportAllResult,
+  type ImportMode,
+  type ImportFolderInput,
+  type ImportFolderResult,
+} from './exportImport.js';
+
 // Templates
 export {
   TemplateBlockSchema,

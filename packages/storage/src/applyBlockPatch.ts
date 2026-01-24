@@ -77,6 +77,10 @@ export type ApplyBlockPatchOutcome =
  */
 const ULID_PATTERN = /^[0-9A-HJKMNP-TV-Z]{26}$/;
 
+function nowTimestamp(): number {
+  return Math.floor(Date.now() / 1000);
+}
+
 /**
  * Apply a block patch to a document.
  *
@@ -240,7 +244,7 @@ export function applyBlockPatch(
       // 7. Increment version
       db.run('UPDATE objects SET doc_version = ?, updated_at = ? WHERE id = ?', [
         newDocVersion,
-        Date.now(),
+        nowTimestamp(),
         input.objectId,
       ]);
 
@@ -510,7 +514,7 @@ function applyUpdate(
 
   // Always update updatedAt
   updates.push('updated_at = ?');
-  values.push(Date.now());
+  values.push(nowTimestamp());
 
   // Add blockId for WHERE clause
   values.push(op.blockId);
@@ -639,7 +643,7 @@ function applyMove(
   db.run('UPDATE blocks SET parent_block_id = ?, order_key = ?, updated_at = ? WHERE id = ?', [
     op.newParentBlockId,
     orderKey,
-    Date.now(),
+    nowTimestamp(),
     op.blockId,
   ]);
 
@@ -681,7 +685,7 @@ function applyDelete(
 
   // 4. Collect blocks to delete
   const deletedIds: string[] = [];
-  const now = Date.now();
+  const now = nowTimestamp();
 
   if (op.subtree) {
     // Recursively collect all descendants

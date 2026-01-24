@@ -1,6 +1,9 @@
 import { Hono } from 'hono';
 import { objects } from './routes/objects.js';
 import { documents } from './routes/documents.js';
+import { exports as exportsRoute } from './routes/exports.js';
+import { exportRoutes } from './routes/export.js';
+import { imports } from './routes/imports.js';
 import { search } from './routes/search.js';
 import { recent } from './routes/recent.js';
 import { health } from './routes/health.js';
@@ -19,6 +22,9 @@ export function createRouter() {
   router.route('/health', health);
   router.route('/objects', objects);
   router.route('/objects', documents); // Document routes are under /objects/:id/document
+  router.route('/objects', exportsRoute);
+  router.route('/export', exportRoutes);
+  router.route('/import', imports);
   router.route('/search', search);
   router.route('/recent', recent);
   router.route('/daily-notes', dailyNotes);

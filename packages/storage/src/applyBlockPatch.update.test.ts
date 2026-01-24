@@ -14,6 +14,7 @@ import {
   applyBlockPatch,
   type ApplyBlockPatchInput,
 } from './applyBlockPatch.test-helpers.js';
+import { getObject } from './objectService.js';
 
 describe('applyBlockPatch - block.update', () => {
   let ctx: TestContext;
@@ -459,6 +460,39 @@ describe('applyBlockPatch - block.update', () => {
       const blockAfter = getBlockById(ctx.db, blockId);
       const updatedAtAfter = blockAfter?.updatedAt?.getTime() ?? 0;
       expect(updatedAtAfter).toBeGreaterThanOrEqual(updatedAtBefore);
+    });
+
+    it('updates the object updatedAt timestamp on patch', () => {
+      const blockId = createTestBlock(ctx.db, ctx.objectId, null, 'a0', 'paragraph', {
+        inline: [],
+      });
+      const objectBefore = getObject(ctx.db, ctx.objectId);
+      const updatedAtBefore = objectBefore?.updatedAt?.getTime() ?? 0;
+
+      const startedAt = Date.now();
+      const input: ApplyBlockPatchInput = {
+        apiVersion: 'v1',
+        objectId: ctx.objectId,
+        ops: [
+          {
+            op: 'block.update',
+            blockId,
+            patch: {
+              content: { inline: [{ t: 'text', text: 'Updated' }] },
+            },
+          },
+        ],
+      };
+
+      const result = applyBlockPatch(ctx.db, input);
+
+      expect(result.success).toBe(true);
+      const objectAfter = getObject(ctx.db, ctx.objectId);
+      const updatedAtAfter = objectAfter?.updatedAt?.getTime() ?? 0;
+
+      expect(updatedAtAfter).toBeGreaterThanOrEqual(updatedAtBefore);
+      expect(updatedAtAfter).toBeGreaterThanOrEqual(startedAt - 2000);
+      expect(updatedAtAfter).toBeLessThanOrEqual(Date.now() + 2000);
     });
   });
 });
