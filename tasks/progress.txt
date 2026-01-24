@@ -10,6 +10,9 @@ Started: 2026-01-24
 - Some TipTap nodes use different field names than expected (e.g., `refNode` requires `mode` and `targetKind`)
 - Code blocks rely on `textContent` property which may not be set in all JSONContent representations
 - Callout blocks use `kind` field instead of `type` in the converter intermediate format
+- Editor features (formatting, headings, slash commands, etc.) are implemented in design-system Editor component
+- Most Editor features were completed before this Ralph iteration - verify in converter tests and NotesView integration
+- StarterKit extension provides core formatting: bold, italic, code, strike, headings, lists, blockquote, horizontal rule
 
 ---
 ## [2026-01-24 17:06] - US-003
@@ -78,4 +81,16 @@ Started: 2026-01-24
   - Debounce set to 750ms (more conservative than 300ms spec) to reduce IPC overhead
   - Status bar shows "Saving..." and error states (NotesView lines 114-118)
   - Cache update on success invalidates type counts for sidebar refresh
+---
+## [2026-01-24 17:19] - US-007 & US-008
+- Verified text formatting and headings (work already completed in Editor component)
+- Files verified:
+  - `packages/design-system/src/features/Editor/hooks/useEditorExtensions.ts` - StarterKit extension loaded
+  - `packages/core/src/converters/tiptapToNotateDoc.test.ts` - Full test coverage for marks and headings
+- **Learnings for future iterations:**
+  - StarterKit extension provides: bold, italic, code, strike, headings (h1-h6), lists, blockquote, horizontal rule
+  - Keyboard shortcuts and markdown input rules come standard with StarterKit
+  - SlashCommand extension (design-system) provides /heading1-6 slash commands
+  - Converter tests verify mark conversion: bold→strong, italic→em, code→code, strike→strike
+  - Heading tests cover all 6 levels with level attribute
 ---

@@ -114,8 +114,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed: Editor StarterKit extension provides bold, italic, code, strike with keyboard shortcuts and markdown input rules. Converters have 100% test coverage for all marks (tiptapToNotateDoc.test.ts lines 65-141). Save/load verified through useDocument/useDocumentMutation integration."
     },
     {
       "id": "US-008",
@@ -130,8 +130,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed: Editor StarterKit provides headings h1-h6 with markdown input rules. SlashCommand extension provides /heading1-6 commands (SlashCommand.ts). Converter tests verify h1-h6 conversion (tiptapToNotateDoc.test.ts line 30)."
     },
     {
       "id": "US-009",
