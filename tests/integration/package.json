@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "pretest": "node ../../scripts/ensure-native-build.mjs node",
     "test": "vitest run",
+    "pretest:watch": "node ../../scripts/ensure-native-build.mjs node",
     "test:watch": "vitest"
   },
   "dependencies": {

@@ -34,6 +34,9 @@
 
 ### DX Improvements
 
+- [x] Sync AGENTS.md to CLAUDE.md and add `.code/` symlinks (remove opencode.json)
+- [x] Add `.code/prompts/` wrappers for session + E2E workflows
+- [x] Port `design-principles` skill into `.code/skills/`
 - [ ] Add `electron-vite` or `vite-plugin-electron` for main/preload HMR
 - [ ] Resolve depcruise orphan warnings (.ladle/config.mjs, renderer App.tsx, typeMetadata)
 

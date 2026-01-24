@@ -6,9 +6,9 @@ TypeNote is a local-first Electron desktop knowledge app with strict package bou
 
 Other agents may work in this tree at the same time. Changes you didn't make are not your responsibility, but keep them in mind when assessing behavior or reasoning about repo state.
 
-## Context Auto-Loaded
+## Initialization Context
 
-These files provide project context and are loaded automatically at session start:
+Read these files at session start to understand the current state:
 
 - `agent-docs/current_project.md` — Current phase, milestones, and focus
 - `agent-docs/up_next.md` — Active workstreams, blockers, and tasks

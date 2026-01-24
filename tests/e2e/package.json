@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "pretest": "node ../../scripts/ensure-native-build.mjs electron",
     "test": "playwright test",
+    "pretest:headed": "node ../../scripts/ensure-native-build.mjs electron",
     "test:headed": "playwright test --headed",
+    "pretest:debug": "node ../../scripts/ensure-native-build.mjs electron",
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report"
   },

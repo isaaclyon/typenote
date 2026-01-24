@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TypeNote</title>
+
+    <!-- FOUC Prevention: Apply theme before CSS loads -->
+    <script>
+      (function() {
+        try {
+          const cached = localStorage.getItem('typenote:colorMode');
+          const colorMode = cached ? JSON.parse(cached) : 'system';
+
+          let theme = colorMode;
+          if (colorMode === 'system') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+          }
+
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          console.error('Theme initialization failed:', e);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-5ZKN1RS-.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-PtkLFHNd.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

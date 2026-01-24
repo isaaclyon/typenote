@@ -5,16 +5,18 @@
   "private": true,
   "main": "dist/main/index.js",
   "scripts": {
-    "build": "tsc --build && pnpm build:preload && vite build",
-    "build:main": "tsc --build",
-    "build:preload": "esbuild src/preload/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/preload/index.js --external:electron",
+    "build": "vite build",
     "clean": "rm -rf dist out *.tsbuildinfo",
+    "pretest": "node ../../scripts/ensure-native-build.mjs node",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
+    "pretest:watch": "node ../../scripts/ensure-native-build.mjs node",
     "test:watch": "vitest",
-    "dev": "pnpm build:main && pnpm build:preload && concurrently -n renderer,electron -c cyan,yellow \"vite\" \"NODE_ENV=development electron .\"",
-    "dev:renderer": "vite",
+    "predev": "node ../../scripts/ensure-native-build.mjs electron",
+    "dev": "vite",
+    "dev:renderer": "vite --mode renderer",
+    "predev:electron": "node ../../scripts/ensure-native-build.mjs electron",
     "dev:electron": "electron .",
     "package": "electron-builder"
   },
@@ -59,6 +61,8 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.7.2",
     "vite": "^6.0.6",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6",
     "vitest": "^2.1.8"
   },
   "build": {

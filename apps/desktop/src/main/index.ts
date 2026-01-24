@@ -45,11 +45,16 @@ function createWindow(): void {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/index.mjs'),
     },
   });
 
-  if (process.env['NODE_ENV'] === 'development') {
+  const devServerUrl = process.env['VITE_DEV_SERVER_URL'];
+
+  if (devServerUrl) {
+    void mainWindow.loadURL(devServerUrl);
+    mainWindow.webContents.openDevTools();
+  } else if (process.env['NODE_ENV'] === 'development') {
     void mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {

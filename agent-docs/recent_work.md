@@ -1,6 +1,55 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - Design-system depcruise cycle fix)
+## Latest Session (2026-01-24 - .code prompts + skills)
+
+### What was accomplished
+
+- **Added .code prompt wrappers** — Added short `.code/prompts/*` wrappers for session commands + E2E skills
+- **Ported design-principles skill** — Copied `.claude/skills/design-principles/` into `.code/skills/`
+- **Clarified initialization context** — Removed auto-load wording from `.code/AGENTS.md`
+
+### Key files changed
+
+- `.code/AGENTS.md`
+- `.code/prompts/*`
+- `.code/skills/design-principles/*`
+
+### Commits
+
+- None
+
+### Uncommitted work preserved
+
+- Left existing renderer/preload/main and package.json edits untouched
+
+---
+
+## Earlier Session (2026-01-24 - Claude/Codex config sync)
+
+### What was accomplished
+
+- **Restored design-principles skill** — Brought back `.claude/skills/design-principles/` files for design references
+- **Synced AGENTS + CLAUDE** — Replaced `AGENTS.md` with a symlink to `CLAUDE.md` for deterministic alignment
+- **Codex parity** — Added `.code/AGENTS.md` + `.code/CLAUDE.md` symlinks and removed `opencode.json`
+
+### Key files changed
+
+- `.claude/skills/design-principles/*`
+- `AGENTS.md` (symlink to `CLAUDE.md`)
+- `.code/AGENTS.md`, `.code/CLAUDE.md`
+- `opencode.json` (deleted)
+
+### Commits
+
+- None
+
+### Uncommitted work preserved
+
+- Left existing renderer/preload/main and package.json edits untouched
+
+---
+
+## Earlier Session (2026-01-24 - Design-system depcruise cycle fix)
 
 ### What was accomplished
 
@@ -58,38 +107,10 @@
 
 ---
 
-## Earlier Session (2026-01-24 - ObjectDataGrid wiring complete)
-
-### What was accomplished
-
-- **ObjectDataGrid wired to TypesView** — Replaced placeholder list with full-featured data grid
-- **Server-side sorting** — Added `sortBy`/`sortDirection` params to `listObjects` in storage + IPC
-- **Soft delete** — Added `softDeleteObject` to storage + IPC for trash functionality
-- **Column builder utility** — `buildDataGridColumns()` generates columns from ObjectType schema (17 tests)
-- **Data fetching hook** — `useObjectsForDataGrid()` manages data, sorting, and deletion (7 tests)
-
-### Key files changed
-
-- `packages/storage/src/objectService.ts` — Sorting + soft delete
-- `apps/desktop/src/main/ipc.ts` — New handlers
-- `apps/desktop/src/renderer/routes/TypesView.tsx` — ObjectDataGrid integration
-- `apps/desktop/src/renderer/lib/buildDataGridColumns.ts` — Column builder (new)
-- `apps/desktop/src/renderer/hooks/useObjectsForDataGrid.ts` — Data hook (new)
-
-### Commit
-
-- `86daf59` feat(renderer): wire ObjectDataGrid to TypesView
-
-### Uncommitted work preserved
-
-- useCommandPalette, useRecentObjects, useSearchObjects, useRecordView hooks (from previous session)
-- Various layout/styling changes in RootLayout.tsx, NotesView.tsx
-
----
-
 ## Historical — Collapsed
 
 - Build fixes + test infra (2026-01-24): TypeScript stub fix, CSS build script, new hooks (useRecentObjects/useSearchObjects/useRecordView/useTypesMetadata)
+- ObjectDataGrid wiring complete (2026-01-24): TypesView integration, sorting, soft delete, column builder, data hook — `86daf59`
 - Commit & cleanup (2026-01-24): 4 atomic commits — `f85eab1`, `9e7ffd4`, `457cb46`, `f58e2dd`
 - Document autosave robustness (2026-01-23)
 - REST API coverage complete (2026-01-24)
