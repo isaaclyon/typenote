@@ -52,11 +52,17 @@ function SidebarHeaderComponent({
   // Order: Search (top) → New note
   if (collapsed) {
     return (
-      <div className={cn('flex flex-col items-center gap-1 px-2 py-2', className)}>
+      <div className={cn('flex flex-col items-center gap-0.5 px-2 py-2', className)}>
         {/* Search trigger */}
         {onSearchClick && (
           <Tooltip content="Search" side="right">
-            <IconButton variant="ghost" size="sm" aria-label="Search" onClick={onSearchClick}>
+            <IconButton
+              variant="ghost"
+              size="sm"
+              aria-label="Search"
+              onClick={onSearchClick}
+              className="h-7 w-full"
+            >
               <MagnifyingGlass className="h-4 w-4" weight="regular" />
             </IconButton>
           </Tooltip>
@@ -70,6 +76,7 @@ function SidebarHeaderComponent({
             aria-label={newLabel}
             onClick={onNewClick}
             disabled={newDisabled || newLoading}
+            className="h-7 w-full"
           >
             <Plus className="h-4 w-4" weight="regular" />
           </IconButton>
@@ -86,7 +93,7 @@ function SidebarHeaderComponent({
           variant="ghost"
           size="sm"
           fullWidth
-          className="justify-between border border-border/40 bg-transparent text-muted-foreground hover:text-foreground"
+          className="justify-between border border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
           onClick={onSearchClick}
         >
           <span className="flex items-center gap-2">

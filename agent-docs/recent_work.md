@@ -1,12 +1,41 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - .code prompts + skills)
+## Latest Session (2026-01-24 - Type alignment + destructive purge)
 
 ### What was accomplished
 
-- **Added .code prompt wrappers** — Added short `.code/prompts/*` wrappers for session commands + E2E skills
-- **Ported design-principles skill** — Copied `.claude/skills/design-principles/` into `.code/skills/`
-- **Clarified initialization context** — Removed auto-load wording from `.code/AGENTS.md`
+- **Aligned type keys + labels** — Renderer now uses PascalCase type keys (e.g., `Page`) and `pluralName` for sidebar labels; metadata queries use `builtInOnly`
+- **Destructive type cleanup** — Added `purgeUnsupportedTypes()` and wired into `seedBuiltInTypes()` to delete unsupported types and related data
+- **Design-system parity** — Added **Tasks** to Sidebar/AppShell stories
+- **New tests** — Added/updated renderer hook tests + storage cleanup test
+
+### Key files changed
+
+- `packages/storage/src/typeCleanup.ts`
+- `packages/storage/src/objectTypeService.ts`
+- `apps/desktop/src/renderer/hooks/useTypeCounts.ts`
+- `apps/desktop/src/renderer/hooks/useTypesMetadata.ts`
+- `apps/desktop/src/renderer/hooks/useDocument.ts`
+- `apps/desktop/src/renderer/layouts/RootLayout.tsx`
+- `packages/design-system/src/features/Sidebar/Sidebar.stories.tsx`
+
+### Commits
+
+- None
+
+### Uncommitted work preserved
+
+- Left existing renderer/preload/main and package.json edits untouched
+
+---
+
+## Earlier Session (2026-01-24 - .code prompts + skills)
+
+### What was accomplished
+
+- Added `.code/prompts/*` wrappers for session commands + E2E skills
+- Ported `design-principles` skill into `.code/skills/`
+- Clarified initialization context in `.code/AGENTS.md`
 
 ### Key files changed
 
@@ -24,38 +53,13 @@
 
 ---
 
-## Earlier Session (2026-01-24 - Claude/Codex config sync)
-
-### What was accomplished
-
-- **Restored design-principles skill** — Brought back `.claude/skills/design-principles/` files for design references
-- **Synced AGENTS + CLAUDE** — Replaced `AGENTS.md` with a symlink to `CLAUDE.md` for deterministic alignment
-- **Codex parity** — Added `.code/AGENTS.md` + `.code/CLAUDE.md` symlinks and removed `opencode.json`
-
-### Key files changed
-
-- `.claude/skills/design-principles/*`
-- `AGENTS.md` (symlink to `CLAUDE.md`)
-- `.code/AGENTS.md`, `.code/CLAUDE.md`
-- `opencode.json` (deleted)
-
-### Commits
-
-- None
-
-### Uncommitted work preserved
-
-- Left existing renderer/preload/main and package.json edits untouched
-
----
-
 ## Earlier Session (2026-01-24 - Design-system depcruise cycle fix)
 
 ### What was accomplished
 
-- **Broke design-system cycles** — Extracted shared types into `.types.ts` modules for PropertyList + editor extensions
-- **Imports aligned** — Updated editor hooks/types and PropertyList to consume the new type modules
-- **Depcruise clean** — `pnpm deps:check` now reports 0 errors (only orphan warnings remain)
+- Broke design-system cycles by extracting shared types
+- Updated editor hooks/types + PropertyList to consume new type modules
+- `pnpm deps:check` clean (orphan warnings only)
 
 ### Key files changed
 
@@ -81,11 +85,9 @@
 
 ### What was accomplished
 
-- **Search results enriched with metadata** — Extended `SearchResult` to include object title, type key, icon, and color
-- **SQL JOIN pattern** — Added JOINs with `objects` and `object_types` tables in `searchBlocks()` query
-- **CommandPalette displays real titles** — Search results now show "Meeting Notes" instead of "01ABC..."
-- **Follows codebase patterns** — Mirrors the JOIN enrichment approach from `getBacklinks()`, `getRecentObjects()`, `getPinnedObjects()`
-- **Comprehensive testing** — Updated 8 test files with new field expectations, all 846 storage tests + 121 desktop tests pass
+- Search results enriched with metadata (title/type/icon/color)
+- JOINs added to `searchBlocks()`; CommandPalette shows real titles
+- Tests updated across storage + renderer
 
 ### Key files changed
 
@@ -98,14 +100,6 @@
 ### Commit
 
 - `e61ac60` feat(search): enrich search results with object metadata
-
-### Uncommitted work preserved
-
-- useRecentObjects, useRecordView, useSearchObjects, useTypesMetadata hooks (from previous sessions)
-- Layout/styling changes in RootLayout.tsx, NotesView.tsx
-- package.json dependency additions
-
----
 
 ## Historical — Collapsed
 

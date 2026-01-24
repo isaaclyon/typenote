@@ -1,17 +1,23 @@
-import { createHashRouter, Navigate } from 'react-router-dom';
+import { createHashRouter, createBrowserRouter, Navigate } from 'react-router-dom';
 import { NotesView, TypesView, CalendarView } from '../routes/index.js';
 import { RootLayout } from '../layouts/RootLayout.js';
 
+// Detect if running in Electron or web browser
+const isElectron = typeof window !== 'undefined' && 'typenoteAPI' in window;
+
 /**
- * Application router using HashRouter for Electron compatibility.
+ * Application router.
+ *
+ * - Electron: Uses HashRouter (required for file:// protocol)
+ * - Web: Uses BrowserRouter (supports clean URLs)
  *
  * Routes:
- * - /#/notes         → Empty notes state
- * - /#/notes/:id     → Document editor
- * - /#/types/:key    → Type browser
- * - /#/calendar      → Calendar view
+ * - /notes         → Empty notes state
+ * - /notes/:id     → Document editor
+ * - /types/:key    → Type browser
+ * - /calendar      → Calendar view
  */
-export const router = createHashRouter([
+const routes = [
   {
     path: '/',
     element: <RootLayout />,
@@ -27,4 +33,6 @@ export const router = createHashRouter([
       { path: 'calendar', element: <CalendarView /> },
     ],
   },
-]);
+];
+
+export const router = isElectron ? createHashRouter(routes) : createBrowserRouter(routes);

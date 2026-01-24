@@ -17,20 +17,34 @@ vi.mock('react-router-dom', () => ({
 
 describe('useCommandPalette', () => {
   let cleanup: () => void;
+  let createObjectMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     mockNavigate.mockClear();
+    createObjectMock = vi.fn().mockResolvedValue({
+      success: true as const,
+      result: {
+        id: '01CREATED123',
+        typeId: '01TYPE123',
+        typeKey: 'Page',
+        title: 'Untitled',
+        properties: {},
+        docVersion: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
 
     const recentPage = createMockRecentObject({
       id: '01ABC123456789DEFGHIJK0001',
       title: 'Recent Page',
-      typeKey: 'page',
+      typeKey: 'Page',
       typeId: '01ABC123456789DEFGHIJK0011',
     });
 
     const pageType = createMockObjectType({
       id: '01ABC123456789DEFGHIJK0011',
-      key: 'page',
+      key: 'Page',
       name: 'Page',
       icon: 'file-text',
       color: '#6B7280',
@@ -42,6 +56,7 @@ describe('useCommandPalette', () => {
           success: true as const,
           result: [recentPage],
         }),
+        createObject: createObjectMock,
         searchBlocks: async (query) => ({
           success: true as const,
           result:
@@ -51,7 +66,7 @@ describe('useCommandPalette', () => {
                     blockId: '01ABC123456789DEFGHIJK0002',
                     objectId: '01ABC123456789DEFGHIJK0003',
                     objectTitle: 'Meeting Notes',
-                    typeKey: 'page',
+                    typeKey: 'Page',
                     typeIcon: 'file-text',
                     typeColor: '#6B7280',
                   },
@@ -179,5 +194,22 @@ describe('useCommandPalette', () => {
 
     // Settings action just logs for now
     expect(result.current.isOpen).toBe(false);
+  });
+
+  it('creates a Page on new-page action', async () => {
+    const { result } = renderHookWithClient(() => useCommandPalette());
+
+    act(() => {
+      result.current.handleSelect({
+        type: 'action',
+        id: 'new-page',
+        icon: () => null,
+        title: 'New Page',
+      });
+    });
+
+    await waitFor(() => {
+      expect(createObjectMock).toHaveBeenCalledWith('Page', 'Untitled', {});
+    });
   });
 });

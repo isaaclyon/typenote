@@ -15,36 +15,38 @@ describe('useTypeCounts', () => {
   beforeEach(() => {
     const pageType = createMockObjectType({
       id: '01ABC123456789DEFGHIJK0001',
-      key: 'page',
+      key: 'Page',
       name: 'Page',
-      icon: 'File',
+      pluralName: 'Pages',
+      icon: 'file-text',
       color: '#6495ED',
       builtIn: true,
     });
     const personType = createMockObjectType({
       id: '01ABC123456789DEFGHIJK0002',
-      key: 'person',
+      key: 'Person',
       name: 'Person',
-      icon: 'User',
+      pluralName: 'People',
+      icon: 'user',
       color: '#32CD32',
       builtIn: false,
     });
     const testPageSummary = createMockObjectSummary({
       id: '01ABC123456789DEFGHIJK0003',
       title: 'Test Page',
-      typeKey: 'page',
+      typeKey: 'Page',
       typeId: '01ABC123456789DEFGHIJK0001',
     });
 
     cleanup = setupMockAPI(
       createMockTypenoteAPI({
-        listObjectTypes: async () => ({
+        listObjectTypes: async (options) => ({
           success: true as const,
-          result: [pageType, personType],
+          result: options?.builtInOnly ? [pageType] : [pageType, personType],
         }),
         listObjects: async (options) => ({
           success: true as const,
-          result: options?.typeKey === 'page' ? [testPageSummary] : [],
+          result: options?.typeKey === 'Page' ? [testPageSummary] : [],
         }),
       })
     );
@@ -63,18 +65,11 @@ describe('useTypeCounts', () => {
 
     expect(result.current.data).toEqual([
       {
-        typeKey: 'page',
-        typeName: 'Page',
-        typeIcon: 'File',
+        typeKey: 'Page',
+        typeName: 'Pages',
+        typeIcon: 'file-text',
         typeColor: '#6495ED',
         count: 1,
-      },
-      {
-        typeKey: 'person',
-        typeName: 'Person',
-        typeIcon: 'User',
-        typeColor: '#32CD32',
-        count: 0,
       },
     ]);
   });

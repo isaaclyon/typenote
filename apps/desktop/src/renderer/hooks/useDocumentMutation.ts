@@ -54,7 +54,7 @@ export function useDocumentMutation(): UseDocumentMutationResult {
       // Cast to TiptapDoc - JSONContent always has type: 'doc' at root level
       const convertedBlocks = tiptapToNotateDoc(content as TiptapDoc);
 
-      const snapshot = await adaptIpcOutcome(window.typenoteAPI.getDocument(objectId));
+      const snapshot = await adaptIpcOutcome(api.getDocument(objectId));
       const ops = buildBlockOps(convertedBlocks, snapshot.blocks);
 
       if (ops.length === 0) {
@@ -66,7 +66,7 @@ export function useDocumentMutation(): UseDocumentMutationResult {
       }
 
       const applyPatch = async (baseDocVersion: number, patchOps: typeof ops) => {
-        const outcome = await window.typenoteAPI.applyBlockPatch({
+        const outcome = await api.applyBlockPatch({
           apiVersion: 'v1',
           objectId,
           baseDocVersion,
@@ -94,7 +94,7 @@ export function useDocumentMutation(): UseDocumentMutationResult {
         };
       }
 
-      const retrySnapshot = await adaptIpcOutcome(window.typenoteAPI.getDocument(objectId));
+      const retrySnapshot = await adaptIpcOutcome(api.getDocument(objectId));
       const retryOps = buildBlockOps(convertedBlocks, retrySnapshot.blocks);
 
       if (retryOps.length === 0) {
@@ -105,7 +105,7 @@ export function useDocumentMutation(): UseDocumentMutationResult {
         };
       }
 
-      const retryOutcome = await window.typenoteAPI.applyBlockPatch({
+      const retryOutcome = await api.applyBlockPatch({
         apiVersion: 'v1',
         objectId,
         baseDocVersion: retrySnapshot.docVersion,

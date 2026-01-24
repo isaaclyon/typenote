@@ -316,6 +316,15 @@ describe('ObjectTypeService', () => {
       expect(types.length).toBe(BUILT_IN_TYPE_KEYS.length);
     });
 
+    it('removes unsupported custom types on seed', () => {
+      createObjectType(db, { key: 'Book', name: 'Book' });
+
+      seedBuiltInTypes(db);
+
+      const customType = getObjectTypeByKey(db, 'Book');
+      expect(customType).toBeNull();
+    });
+
     it('seeds correct configuration for DailyNote', () => {
       seedBuiltInTypes(db);
 

@@ -16,6 +16,8 @@
     "predev": "node ../../scripts/ensure-native-build.mjs electron",
     "dev": "vite",
     "dev:renderer": "vite --mode renderer",
+    "dev:web": "vite --mode web",
+    "dev:server": "pnpm --filter @typenote/http-server dev",
     "predev:electron": "node ../../scripts/ensure-native-build.mjs electron",
     "dev:electron": "electron .",
     "package": "electron-builder"

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
+import { api } from '../lib/api.js';
 
 export interface TypeCount {
   typeKey: string;
@@ -19,17 +20,15 @@ export function useTypeCounts() {
     queryKey: queryKeys.typeCounts(),
     queryFn: async (): Promise<TypeCount[]> => {
       // Get all object types
-      const types = await adaptIpcOutcome(window.typenoteAPI.listObjectTypes());
+      const types = await adaptIpcOutcome(api.listObjectTypes({ builtInOnly: true }));
 
       // Get counts per type by listing objects
       const counts = await Promise.all(
         types.map(async (type) => {
-          const objects = await adaptIpcOutcome(
-            window.typenoteAPI.listObjects({ typeKey: type.key })
-          );
+          const objects = await adaptIpcOutcome(api.listObjects({ typeKey: type.key }));
           return {
             typeKey: type.key,
-            typeName: type.name,
+            typeName: type.pluralName ?? type.name,
             typeIcon: type.icon,
             typeColor: type.color,
             count: Array.isArray(objects) ? objects.length : 0,

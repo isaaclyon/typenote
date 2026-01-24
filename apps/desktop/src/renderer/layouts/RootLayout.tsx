@@ -7,20 +7,42 @@ import {
   SidebarItem,
   SidebarFooter,
   CommandPalette,
+  PlaceholderAction,
 } from '@typenote/design-system';
 import { File } from '@phosphor-icons/react/dist/ssr/File';
+import { FileText } from '@phosphor-icons/react/dist/ssr/FileText';
 import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
+import { CalendarDot } from '@phosphor-icons/react/dist/ssr/CalendarDot';
+import { User } from '@phosphor-icons/react/dist/ssr/User';
+import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
+import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
 import { Gear } from '@phosphor-icons/react/dist/ssr/Gear';
 import { PushPin } from '@phosphor-icons/react/dist/ssr/PushPin';
-import { Trash } from '@phosphor-icons/react/dist/ssr/Trash';
+import { Archive } from '@phosphor-icons/react/dist/ssr/Archive';
+import { Moon } from '@phosphor-icons/react/dist/ssr/Moon';
+import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { useSidebarData } from '../hooks/useSidebarData.js';
 import { useCommandPalette } from '../hooks/useCommandPalette.js';
 import { useCreateObject } from '../hooks/useCreateObject.js';
 
-/** Map type keys to Phosphor icons */
-function getTypeIcon(_iconName: string | null): typeof File {
-  // For now, use File as default. Can expand icon mapping later.
-  return File;
+/** Map type icon names to Phosphor icons */
+function getTypeIcon(iconName: string | null): typeof File {
+  switch (iconName) {
+    case 'calendar':
+      return Calendar;
+    case 'calendar-clock':
+      return CalendarDot;
+    case 'file-text':
+      return FileText;
+    case 'user':
+      return User;
+    case 'map-pin':
+      return MapPin;
+    case 'check-square':
+      return CheckSquare;
+    default:
+      return File;
+  }
 }
 
 export function RootLayout() {
@@ -33,8 +55,7 @@ export function RootLayout() {
   const { createObject, isCreating } = useCreateObject();
 
   // Determine which route is active
-  const isCalendarActive = location.pathname === '/calendar';
-  const activeTypeKey = typeKey ?? (location.pathname.startsWith('/notes') ? 'page' : null);
+  const activeTypeKey = typeKey ?? (location.pathname.startsWith('/notes') ? 'Page' : null);
 
   // Global keyboard shortcut (⌘K)
   useEffect(() => {
@@ -50,7 +71,7 @@ export function RootLayout() {
   }, [commandPalette]);
 
   const handleNewClick = async () => {
-    await createObject('page', 'Untitled', {});
+    await createObject('Page', 'Untitled', {});
   };
 
   const handleSearchClick = () => {
@@ -65,10 +86,8 @@ export function RootLayout() {
     <>
       <SidebarHeader
         onNewClick={handleNewClick}
-        newLabel="New"
         newLoading={isCreating}
         onSearchClick={handleSearchClick}
-        searchShortcut="⌘K"
       />
 
       {/* Pinned Objects */}
@@ -107,24 +126,25 @@ export function RootLayout() {
             />
           ))
         )}
-      </SidebarSection>
-
-      {/* Calendar */}
-      <SidebarSection>
-        <SidebarItem
-          icon={Calendar}
-          label="Calendar"
-          active={isCalendarActive}
-          onClick={() => navigate('/calendar')}
+        <PlaceholderAction
+          icon={Plus}
+          label="Add new type"
+          onClick={() => console.log('Add type')}
+          collapsed={collapsed}
         />
       </SidebarSection>
 
       <SidebarFooter
         actions={[
           {
-            icon: Trash,
-            label: 'Trash',
-            onClick: () => console.log('Trash clicked'),
+            icon: Archive,
+            label: 'Archive',
+            onClick: () => console.log('Archive clicked'),
+          },
+          {
+            icon: Moon,
+            label: 'Dark mode',
+            onClick: () => console.log('Dark mode clicked'),
           },
           {
             icon: Gear,

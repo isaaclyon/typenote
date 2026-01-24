@@ -5,10 +5,12 @@ import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
 import { User } from '@phosphor-icons/react/dist/ssr/User';
 import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
 import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
+import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
 import { Star } from '@phosphor-icons/react/dist/ssr/Star';
 import { Gear } from '@phosphor-icons/react/dist/ssr/Gear';
 import { Moon } from '@phosphor-icons/react/dist/ssr/Moon';
 import { Trash } from '@phosphor-icons/react/dist/ssr/Trash';
+import { Archive } from '@phosphor-icons/react/dist/ssr/Archive';
 import { Copy } from '@phosphor-icons/react/dist/ssr/Copy';
 import { PushPin } from '@phosphor-icons/react/dist/ssr/PushPin';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -35,6 +37,7 @@ const typeItems = [
   { icon: User, label: 'People', count: 18, iconColor: '#ffb74d' },
   { icon: Calendar, label: 'Events', count: 7, iconColor: '#81c784' },
   { icon: MapPin, label: 'Places', count: 12, iconColor: '#e57373' },
+  { icon: CheckSquare, label: 'Tasks', count: 9, iconColor: '#f87171' },
 ];
 
 const favoriteItems = [
@@ -42,11 +45,10 @@ const favoriteItems = [
   { icon: Star, label: 'Project Ideas', iconColor: '#ffb74d' },
 ];
 
-// Note: Settings and theme toggle will be relocated to a different location
-// (e.g., title bar or command palette). Keeping here temporarily for reference.
 const footerActions: SidebarFooterAction[] = [
+  { icon: Archive, label: 'Archive', onClick: () => console.log('Archive') },
+  { icon: Moon, label: 'Dark mode', onClick: () => console.log('Theme') },
   { icon: Gear, label: 'Settings', onClick: () => console.log('Settings') },
-  { icon: Moon, label: 'Toggle theme', onClick: () => console.log('Theme') },
 ];
 
 const itemActions = [
@@ -84,6 +86,7 @@ export const Default: Story = () => {
             icon={Plus}
             label="Add new type"
             onClick={() => console.log('Add type')}
+            collapsed={collapsed}
           />
         </SidebarSection>
         <SidebarSection label="Favorites">
@@ -106,9 +109,6 @@ export const Default: Story = () => {
         </p>
         <p className="text-sm text-muted-foreground mt-2">
           Collapsed: <strong>{collapsed ? 'Yes' : 'No'}</strong>
-        </p>
-        <p className="text-xs text-muted-foreground mt-4 italic">
-          Note: Settings/theme in footer will be relocated elsewhere
         </p>
       </div>
     </div>
@@ -135,6 +135,12 @@ export const Collapsed: Story = () => {
               onClick={() => setActiveItem(item.label)}
             />
           ))}
+          <PlaceholderAction
+            icon={Plus}
+            label="Add new type"
+            onClick={() => console.log('Add type')}
+            collapsed={collapsed}
+          />
         </SidebarSection>
         <SidebarFooter actions={footerActions} />
       </Sidebar>
@@ -171,6 +177,7 @@ export const WithTypesAndFavorites: Story = () => {
             icon={Plus}
             label="Add new type"
             onClick={() => console.log('Add type')}
+            collapsed={collapsed}
           />
         </SidebarSection>
         <SidebarSection label="Favorites">
@@ -190,9 +197,6 @@ export const WithTypesAndFavorites: Story = () => {
       <div className="flex-1 p-4 bg-muted/30">
         <p className="text-sm text-muted-foreground">
           Layout: Header (collapse + new note) → Types → Add type → Favorites → Footer
-        </p>
-        <p className="text-xs text-muted-foreground mt-4 italic">
-          Note: Settings/theme in footer will be relocated elsewhere
         </p>
       </div>
     </div>
@@ -228,6 +232,7 @@ export const WithManyItems: Story = () => {
             icon={Plus}
             label="Add new type"
             onClick={() => console.log('Add type')}
+            collapsed={collapsed}
           />
         </SidebarSection>
         <SidebarFooter actions={footerActions} />

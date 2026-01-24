@@ -15,14 +15,14 @@ describe('useRecentObjects', () => {
     const recentPage1 = createMockRecentObject({
       id: '01ABC123456789DEFGHIJK0001',
       title: 'Recent Page 1',
-      typeKey: 'page',
+      typeKey: 'Page',
       typeId: '01ABC123456789DEFGHIJK0011',
       viewedAt: new Date('2026-01-23T10:00:00Z'),
     });
     const recentPage2 = createMockRecentObject({
       id: '01ABC123456789DEFGHIJK0002',
       title: 'Recent Page 2',
-      typeKey: 'daily',
+      typeKey: 'DailyNote',
       typeId: '01ABC123456789DEFGHIJK0012',
       viewedAt: new Date('2026-01-23T09:00:00Z'),
     });

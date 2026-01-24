@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { api } from '../lib/api.js';
 
 /**
  * Hook to create objects with loading/error state and automatic navigation.
@@ -17,7 +18,7 @@ export function useCreateObject() {
       setIsCreating(true);
       setError(null);
 
-      const result = await window.typenoteAPI.createObject(typeKey, title, properties ?? {});
+      const result = await api.createObject(typeKey, title, properties ?? {});
 
       setIsCreating(false);
 

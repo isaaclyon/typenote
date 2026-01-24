@@ -102,11 +102,11 @@ export function useCommandPalette() {
     async (actionId: string) => {
       switch (actionId) {
         case 'new-page': {
-          await createObject('page', 'Untitled', {});
+          await createObject('Page', 'Untitled', {});
           break;
         }
         case 'new-daily': {
-          const result = await window.typenoteAPI.getOrCreateTodayDailyNote();
+          const result = await api.getOrCreateTodayDailyNote();
           if (result.success) {
             navigate(`/notes/${result.result.dailyNote.id}`);
           }

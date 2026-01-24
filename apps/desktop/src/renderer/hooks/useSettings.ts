@@ -12,13 +12,13 @@ export function useSettings() {
   const query = useQuery({
     queryKey: queryKeys.settings(),
     queryFn: async () => {
-      return await adaptIpcOutcome(window.typenoteAPI.getSettings());
+      return await adaptIpcOutcome(api.getSettings());
     },
   });
 
   const mutation = useMutation({
     mutationFn: async (updates: Partial<UserSettings>) => {
-      await adaptIpcOutcome(window.typenoteAPI.updateSettings(updates));
+      await adaptIpcOutcome(api.updateSettings(updates));
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });

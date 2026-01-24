@@ -6,7 +6,7 @@ TypeNote — A local-first desktop knowledge management app where typed objects 
 
 Key concepts:
 
-- **Objects over pages** — Everything is a typed object (DailyNote, Page, Person, Event, Place)
+- **Objects over pages** — Everything is a typed object (DailyNote, Page, Person, Event, Place, Task)
 - **Block-based editing** — Documents are trees of blocks with stable IDs
 - **Bidirectional linking** — References extracted and indexed automatically
 - **Local-first** — All data in SQLite, offline-capable, no cloud dependency
@@ -57,6 +57,7 @@ apps/
 - **Renderer isolation** — Renderer has no DB access, uses IPC
 - **Content schema is editor-agnostic** — NotateDoc v1 not tied to specific editor
 - **Soft delete** — Blocks marked deleted, not removed
+- **Type enforcement** — Unsupported object types are purged on startup during built-in seeding (destructive)
 - **Mutation testing** — Stryker validates test quality (core 80%, storage 75%, api 45% thresholds)
 
 ## Editor Features

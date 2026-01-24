@@ -12,7 +12,7 @@ export function useTypesMetadata() {
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.typeMetadata(),
     queryFn: async (): Promise<ObjectType[]> => {
-      return adaptIpcOutcome(window.typenoteAPI.listObjectTypes());
+      return adaptIpcOutcome(api.listObjectTypes({ builtInOnly: true }));
     },
     staleTime: 5 * 60 * 1000, // 5 minutes (types rarely change)
   });

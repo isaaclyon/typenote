@@ -20,6 +20,18 @@
 - ✅ Depcruise cycles resolved in design-system (PropertyList + editor extensions)
 - ⏳ CommandPalette wired but not opened yet (hook exists, needs UI trigger)
 
+### Type Alignment (Completed)
+
+- [x] Normalize renderer type keys to PascalCase (`Page`, `DailyNote`, etc.)
+- [x] Use `pluralName` for sidebar labels + type list display
+- [x] Restrict type metadata queries to `builtInOnly`
+- [x] Destructively purge unsupported types on `seedBuiltInTypes()`
+- [x] Add **Tasks** to design-system sidebar/AppShell stories
+
+### Type Alignment Follow-ups
+
+- [ ] Confirm whether destructive purge needs a migration gate or release-note warning
+
 ### MVP Renderer Gaps (Remaining)
 
 - [x] Wire Editor component to NotesView for document editing

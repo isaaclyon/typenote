@@ -16,7 +16,7 @@ describe('usePinnedObjects', () => {
               id: 'pin1',
               title: 'My Pinned Page',
               typeId: '01ABC123456789DEFGHIJK0001',
-              typeKey: 'page',
+              typeKey: 'Page',
               updatedAt: new Date('2026-01-23T10:00:00Z'),
               pinnedAt: new Date('2026-01-23T10:00:00Z'),
               order: 0,
@@ -25,7 +25,7 @@ describe('usePinnedObjects', () => {
               id: 'pin2',
               title: 'Important Note',
               typeId: '01ABC123456789DEFGHIJK0002',
-              typeKey: 'daily-note',
+              typeKey: 'DailyNote',
               updatedAt: new Date('2026-01-22T10:00:00Z'),
               pinnedAt: new Date('2026-01-22T10:00:00Z'),
               order: 1,
@@ -51,7 +51,7 @@ describe('usePinnedObjects', () => {
     expect(result.current.data?.[0]).toMatchObject({
       id: 'pin1',
       title: 'My Pinned Page',
-      typeKey: 'page',
+      typeKey: 'Page',
     });
   });
 

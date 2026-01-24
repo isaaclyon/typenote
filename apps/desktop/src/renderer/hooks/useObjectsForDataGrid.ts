@@ -43,13 +43,13 @@ export function useObjectsForDataGrid(typeKey: string): UseObjectsForDataGridRes
   // Fetch objects with sorting
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.objectsByType(typeKey, sortParams),
-    queryFn: ipcQuery(() => window.typenoteAPI.listObjects(listOptions)),
+    queryFn: ipcQuery(() => api.listObjects(listOptions)),
   });
 
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (objectId: string) => {
-      const result = await window.typenoteAPI.softDeleteObject(objectId);
+      const result = await api.softDeleteObject(objectId);
       if (!result.success) {
         throw new Error(result.error.message);
       }

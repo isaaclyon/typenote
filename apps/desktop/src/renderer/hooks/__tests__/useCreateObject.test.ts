@@ -24,7 +24,7 @@ describe('useCreateObject', () => {
     const mockResult = {
       id: '01CREATED123',
       typeId: '01TYPE123',
-      typeKey: 'page',
+      typeKey: 'Page',
       title: 'Untitled',
       properties: {},
       docVersion: 0,
@@ -51,7 +51,7 @@ describe('useCreateObject', () => {
 
     // Call createObject
     act(() => {
-      void result.current.createObject('page', 'Untitled', {});
+      void result.current.createObject('Page', 'Untitled', {});
     });
 
     // Should be creating
@@ -63,7 +63,7 @@ describe('useCreateObject', () => {
     });
 
     // Verify IPC call
-    expect(createObjectMock).toHaveBeenCalledWith('page', 'Untitled', {});
+    expect(createObjectMock).toHaveBeenCalledWith('Page', 'Untitled', {});
 
     // Verify navigation
     expect(mockNavigate).toHaveBeenCalledWith('/notes/01CREATED123');
@@ -110,7 +110,7 @@ describe('useCreateObject', () => {
     const mockResult = {
       id: '01NEW123',
       typeId: '01TYPE123',
-      typeKey: 'page',
+      typeKey: 'Page',
       title: 'New Page',
       properties: {},
       docVersion: 0,
@@ -137,7 +137,7 @@ describe('useCreateObject', () => {
 
     // Call createObject
     await act(async () => {
-      await result.current.createObject('page', 'New Page', {});
+      await result.current.createObject('Page', 'New Page', {});
     });
 
     // Verify invalidations (should invalidate objects, types/counts, recent-objects)
@@ -158,7 +158,7 @@ describe('useCreateObject', () => {
         result: {
           id: '01SUCCESS123',
           typeId: '01TYPE123',
-          typeKey: 'page',
+          typeKey: 'Page',
           title: 'Success',
           properties: {},
           docVersion: 0,
@@ -177,14 +177,14 @@ describe('useCreateObject', () => {
 
     // First attempt - fails
     await act(async () => {
-      await result.current.createObject('page', 'Test', {});
+      await result.current.createObject('Page', 'Test', {});
     });
 
     expect(result.current.error).toBe('First error');
 
     // Second attempt - succeeds
     await act(async () => {
-      await result.current.createObject('page', 'Success', {});
+      await result.current.createObject('Page', 'Success', {});
     });
 
     // Error should be cleared

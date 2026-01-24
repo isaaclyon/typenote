@@ -6,10 +6,12 @@ import { User } from '@phosphor-icons/react/dist/ssr/User';
 import { Calendar } from '@phosphor-icons/react/dist/ssr/Calendar';
 import { Gear } from '@phosphor-icons/react/dist/ssr/Gear';
 import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
+import { CheckSquare } from '@phosphor-icons/react/dist/ssr/CheckSquare';
 import { Moon } from '@phosphor-icons/react/dist/ssr/Moon';
 import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
 import { NotePencil } from '@phosphor-icons/react/dist/ssr/NotePencil';
 import { Sun } from '@phosphor-icons/react/dist/ssr/Sun';
+import { Archive } from '@phosphor-icons/react/dist/ssr/Archive';
 
 import { AppShell } from './AppShell.js';
 import { SidebarHeader } from '../Sidebar/SidebarHeader.js';
@@ -36,6 +38,7 @@ const typeItems = [
   { icon: User, label: 'People', count: 18, iconColor: '#ffb74d' },
   { icon: Calendar, label: 'Events', count: 7, iconColor: '#81c784' },
   { icon: MapPin, label: 'Places', count: 12, iconColor: '#e57373' },
+  { icon: CheckSquare, label: 'Tasks', count: 9, iconColor: '#f87171' },
 ];
 
 const pageBreadcrumbs: BreadcrumbItem[] = [
@@ -83,14 +86,19 @@ const titleBarTrafficLights = (
 
 const buildFooterActions = (theme: Theme, onToggleTheme: () => void): SidebarFooterAction[] => [
   {
-    icon: Gear,
-    label: 'Settings',
-    onClick: () => console.log('Settings clicked'),
+    icon: Archive,
+    label: 'Archive',
+    onClick: () => console.log('Archive clicked'),
   },
   {
     icon: theme === 'light' ? Moon : Sun,
     label: theme === 'light' ? 'Dark mode' : 'Light mode',
     onClick: onToggleTheme,
+  },
+  {
+    icon: Gear,
+    label: 'Settings',
+    onClick: () => console.log('Settings clicked'),
   },
 ];
 

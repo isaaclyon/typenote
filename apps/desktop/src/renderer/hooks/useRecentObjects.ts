@@ -11,7 +11,7 @@ export function useRecentObjects(limit = 10) {
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.recentObjects(limit),
     queryFn: async (): Promise<RecentObjectSummary[]> => {
-      return adaptIpcOutcome(window.typenoteAPI.getRecentObjects(limit));
+      return adaptIpcOutcome(api.getRecentObjects(limit));
     },
     staleTime: 30 * 1000, // 30 seconds
   });

@@ -15,26 +15,39 @@ describe('useSidebarData', () => {
   beforeEach(() => {
     cleanup = setupMockAPI(
       createMockTypenoteAPI({
-        listObjectTypes: async () => ({
+        listObjectTypes: async (options) => ({
           success: true as const,
-          result: [
-            createMockObjectType({
-              id: '01ABC123456789DEFGHIJK0001',
-              key: 'page',
-              name: 'Page',
-              icon: 'File',
-              color: '#6495ED',
-              builtIn: true,
-            }),
-          ],
+          result: options?.builtInOnly
+            ? [
+                createMockObjectType({
+                  id: '01ABC123456789DEFGHIJK0001',
+                  key: 'Page',
+                  name: 'Page',
+                  pluralName: 'Pages',
+                  icon: 'file-text',
+                  color: '#6495ED',
+                  builtIn: true,
+                }),
+              ]
+            : [
+                createMockObjectType({
+                  id: '01ABC123456789DEFGHIJK0001',
+                  key: 'Page',
+                  name: 'Page',
+                  pluralName: 'Pages',
+                  icon: 'file-text',
+                  color: '#6495ED',
+                  builtIn: true,
+                }),
+              ],
         }),
-        listObjects: async () => ({
+        listObjects: async (_options) => ({
           success: true as const,
           result: [
             createMockObjectSummary({
               id: 'obj1',
               title: 'Test',
-              typeKey: 'page',
+              typeKey: 'Page',
             }),
           ],
         }),
@@ -45,7 +58,7 @@ describe('useSidebarData', () => {
               id: 'pin1',
               title: 'Pinned',
               typeId: '01ABC123456789DEFGHIJK0001',
-              typeKey: 'page',
+              typeKey: 'Page',
               updatedAt: new Date('2026-01-23T10:00:00Z'),
               pinnedAt: new Date('2026-01-23T10:00:00Z'),
               order: 0,
@@ -115,9 +128,9 @@ describe('useSidebarData', () => {
     });
 
     expect(result.current.typeCounts[0]).toMatchObject({
-      typeKey: 'page',
-      typeName: 'Page',
-      typeIcon: 'File',
+      typeKey: 'Page',
+      typeName: 'Pages',
+      typeIcon: 'file-text',
       typeColor: '#6495ED',
       count: 1,
     });
@@ -133,7 +146,7 @@ describe('useSidebarData', () => {
     expect(result.current.pinnedObjects[0]).toMatchObject({
       id: 'pin1',
       title: 'Pinned',
-      typeKey: 'page',
+      typeKey: 'Page',
     });
   });
 });

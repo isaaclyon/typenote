@@ -10,7 +10,7 @@ export function useRecordView() {
 
   return useMutation({
     mutationFn: async (objectId: string) => {
-      return await adaptIpcOutcome(window.typenoteAPI.recordView(objectId));
+      return await adaptIpcOutcome(api.recordView(objectId));
     },
     onSuccess: () => {
       // Invalidate recent objects cache to reflect updated view order

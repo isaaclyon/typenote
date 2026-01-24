@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { serve, type ServerType } from '@hono/node-server';
 import type { FileService, TypenoteDb } from '@typenote/storage';
 import { errorHandler, errorOnError } from './middleware/errorHandler.js';
@@ -43,6 +44,9 @@ export function createHttpServer(config: ServerConfig): HttpServer {
   const { db, fileService, port = 3456, host = '127.0.0.1' } = config;
 
   const app = new Hono<ServerContext>();
+
+  // CORS middleware (allow all origins in dev)
+  app.use('*', cors());
 
   // Error handling middleware
   app.use('*', errorHandler());

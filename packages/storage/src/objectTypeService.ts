@@ -21,6 +21,7 @@ import type { TypenoteDb } from './db.js';
 import { objectTypes, objects } from './schema.js';
 import { BUILT_IN_TYPES } from './builtInTypes.js';
 import { createServiceError } from './errors.js';
+import { purgeUnsupportedTypes } from './typeCleanup.js';
 
 // Re-export for backwards compatibility
 export { BUILT_IN_TYPES } from './builtInTypes.js';
@@ -389,6 +390,8 @@ export function deleteObjectType(db: TypenoteDb, id: string): void {
  */
 export function seedBuiltInTypes(db: TypenoteDb): void {
   const now = new Date();
+
+  purgeUnsupportedTypes(db);
 
   for (const key of BUILT_IN_TYPE_KEYS) {
     const config = BUILT_IN_TYPES[key];

@@ -15,7 +15,7 @@ export function useSearchObjects(query: string) {
       if (!query.trim()) {
         return [];
       }
-      return adaptIpcOutcome(window.typenoteAPI.searchBlocks(query, { limit: 10 }));
+      return adaptIpcOutcome(api.searchBlocks(query, { limit: 10 }));
     },
     enabled: query.trim().length > 0,
     staleTime: 60 * 1000, // 1 minute

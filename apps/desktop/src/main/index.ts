@@ -25,6 +25,16 @@ let db: TypenoteDb | null = null;
 let fileService: FileService | null = null;
 let httpServer: HttpServer | null = null;
 
+process.on('message', (message) => {
+  if (message === 'electron-vite&type=hot-reload') {
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed()) {
+        window.webContents.reload();
+      }
+    }
+  }
+});
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1200,

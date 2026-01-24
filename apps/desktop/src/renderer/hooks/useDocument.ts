@@ -37,14 +37,14 @@ export interface UseDocumentResult {
 export function useDocument(objectId: string): UseDocumentResult {
   const objectsQuery = useQuery({
     queryKey: queryKeys.objects(),
-    queryFn: async () => adaptIpcOutcome(window.typenoteAPI.listObjects({})),
+    queryFn: async () => adaptIpcOutcome(api.listObjects({})),
     staleTime: Number.POSITIVE_INFINITY,
     enabled: !!objectId,
   });
 
   const typesQuery = useQuery({
     queryKey: queryKeys.types(),
-    queryFn: async () => adaptIpcOutcome(window.typenoteAPI.listObjectTypes({})),
+    queryFn: async () => adaptIpcOutcome(api.listObjectTypes({ builtInOnly: true })),
     staleTime: Number.POSITIVE_INFINITY,
     enabled: !!objectId,
   });
@@ -58,7 +58,7 @@ export function useDocument(objectId: string): UseDocumentResult {
     queryKey: queryKeys.document(objectId),
     queryFn: async () => {
       // 1. Fetch document blocks
-      const result = await adaptIpcOutcome(window.typenoteAPI.getDocument(objectId));
+      const result = await adaptIpcOutcome(api.getDocument(objectId));
 
       // 2. Convert DocumentBlock[] to ConvertedBlock[] format
       const convertedBlocks = documentBlocksToConvertedBlocks(result.blocks);
