@@ -14,6 +14,17 @@ export {
   type TiptapDoc,
 } from './converter/index.js';
 
+// Markdown export
+export { notateDocToMarkdown } from './markdown/notateDocToMarkdown.js';
+export type {
+  MarkdownExportInput,
+  MarkdownExportResult,
+  MarkdownExportObject,
+  MarkdownRefLookup,
+  MarkdownAttachmentLookup,
+  MarkdownAttachmentInfo,
+} from './markdown/types.js';
+
 // IDs
 export { generateId, isValidUlid, parseUlid } from './ids.js';
 

@@ -1,4 +1,4 @@
-import type { TypenoteDb } from '@typenote/storage';
+import type { FileService, TypenoteDb } from '@typenote/storage';
 
 /**
  * Hono context variables for dependency injection.
@@ -7,6 +7,7 @@ import type { TypenoteDb } from '@typenote/storage';
 export interface ServerContext {
   Variables: {
     db: TypenoteDb;
-    // Future: fileService, userId (auth)
+    fileService: FileService;
+    // Future: userId (auth)
   };
 }

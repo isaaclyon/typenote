@@ -393,6 +393,9 @@ importers:
       '@typenote/api':
         specifier: workspace:*
         version: link:../api
+      '@typenote/core':
+        specifier: workspace:*
+        version: link:../core
       '@typenote/storage':
         specifier: workspace:*
         version: link:../storage

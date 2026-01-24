@@ -92,11 +92,12 @@ function setupEventBroadcasting(): void {
 }
 
 async function startHttpServer(): Promise<void> {
-  if (!db) throw new Error('Database not initialized');
+  if (!db || !fileService) throw new Error('Database or FileService not initialized');
 
   const port = Number(process.env['TYPENOTE_HTTP_PORT']) || 3456;
   httpServer = createHttpServer({
     db,
+    fileService,
     port,
     host: '127.0.0.1',
   });
