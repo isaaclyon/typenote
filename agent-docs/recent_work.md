@@ -1,44 +1,43 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
+## Latest Session (2026-01-23 - AppShell Renderer Wiring)
 
 ### What was accomplished
 
-- **Export coverage finished** — `/export/object`, `/export/type`, markdown export route + API schemas
-- **Attachment downloads implemented** — headers contract + `/attachments/:id` + `/attachments/:id/content` routes + tests
-- **Calendar coverage complete** — routes, metadata schema, date format validation + tests
-- **Plan updates** — REST coverage context and calendar/attachment checklists refreshed
+- **Wired AppShell to renderer** — Complete integration of design-system components
+- **Created renderer test infrastructure** — Mock IPC utilities for hook testing
+- **Built 3 new hooks** — usePinnedObjects, useSidebarData (composite), tests for useTypeCounts
+- **Updated views** — NotesView empty state, TypesView object listing
+- **Full TDD workflow** — Subagent-driven development with spec + code quality reviews
 
 ### Key files changed
 
-- `packages/http-server/src/routes/export.ts`
-- `packages/http-server/src/routes/attachments.ts`
-- `packages/http-server/src/routes/calendar.ts`
-- `packages/api/src/exportImport.ts`, `packages/api/src/markdownExport.ts`
-- `packages/api/src/attachment.ts`, `packages/api/src/calendar.ts`
-- `docs/plans/2026-01-22-rest-api-coverage.md`
+- `apps/desktop/src/renderer/layouts/RootLayout.tsx` — Full AppShell integration
+- `apps/desktop/src/renderer/hooks/usePinnedObjects.ts` — New hook
+- `apps/desktop/src/renderer/hooks/useSidebarData.ts` — Composite hook
+- `apps/desktop/src/renderer/hooks/__tests__/` — Test infrastructure + 3 test files
+- `apps/desktop/src/renderer/routes/NotesView.tsx` — Empty state + placeholder
+- `apps/desktop/src/renderer/routes/TypesView.tsx` — Object listing via IPC
 
 ### Commits (this session)
 
-- `7454e64` fix(api): enforce calendar date formats
-- `ab2881a` docs(plans): mark calendar REST coverage complete
-- `d48dab9` feat(http-server): add calendar routes
-- `33a3034` docs(plans): mark attachment download contract done
-- `ee496b5` feat(http-server): add attachment download endpoints
-- `da398c7` fix(api): add calendar metadata schema
-- `ba4b2ad` feat(http-server): finish object/type export routes
-- `fe28986` feat(rest): add tasks coverage and summaries
-- `9a5bb1d` feat(markdown): add export serializer and route
-- `990d0a1` docs: update REST API coverage context
+- `1d6aa54` Merge branch 'feat/appshell-renderer-wiring' into main-refactor
+- `bdfee34` feat(renderer): add TypesView with object listing
+- `04d42af` feat(renderer): add NotesView empty state and document placeholder
+- `151f045` feat(renderer): wire AppShell and Sidebar to RootLayout
+- `caec28c` feat(renderer): add useSidebarData composite hook
+- `2e4da86` feat(renderer): add usePinnedObjects hook
+- `b6818ec` test(renderer): add hook testing utilities with mocked IPC
 
 ### Tests run
 
-- `pnpm --filter @typenote/api test -- exportImport.test.ts`
-- `pnpm --filter @typenote/http-server test -- export-all.test.ts`
-- `pnpm --filter @typenote/api test -- attachment.test.ts`
-- `pnpm --filter @typenote/http-server test -- attachments.test.ts`
-- `pnpm --filter @typenote/api test -- calendar.test.ts`
-- `pnpm --filter @typenote/http-server test -- calendar.test.ts`
+- `pnpm --filter @typenote/desktop test -- src/renderer` — 10/10 passing
+
+---
+
+## Previous Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
+
+Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, `d48dab9`, `33a3034`, `ee496b5`, `da398c7`, `ba4b2ad`, `fe28986`, `9a5bb1d`, `990d0a1`.
 
 ---
 
