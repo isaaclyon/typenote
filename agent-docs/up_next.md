@@ -43,26 +43,15 @@
 
 ## REST API Coverage
 
-**Status:** Active — 7/20 remaining endpoints complete (35%)
+**Status:** ✅ COMPLETE — All 20 endpoints implemented
 **Plan:** `docs/plans/2026-01-24-rest-api-coverage-remaining.md`
 
-### Completed (7/20 endpoints)
+All REST API endpoints are now fully covered:
 
-- [x] Export/import API schemas and routes
-- [x] Tasks REST coverage
-- [x] Markdown export route
-- [x] Attachment download endpoints (2/5: metadata + content)
-- [x] Calendar routes + metadata schema
-- [x] Object types REST coverage
-- [x] **Settings REST coverage (5/5 endpoints)** - COMPLETE
-
-### Remaining (13/20 endpoints)
-
-- [ ] Pinned objects REST coverage (0/4: list/pin/unpin/reorder) - storage ready, routes missing
-- [ ] Templates REST coverage (0/6: CRUD + default template) - storage ready, routes missing
-- [ ] Attachments upload/list/cleanup (3/5: upload/list/cleanup) - storage ready, routes missing
-
-**Priority:** Pinned objects > Templates > Attachments (by UI dependency)
+- Settings (5/5)
+- Pinned objects (4/4) — reorder endpoint added this session
+- Templates (7/6) — includes bonus `POST /templates/default`
+- Attachments (5/5)
 
 ---
 
