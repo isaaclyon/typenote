@@ -12,17 +12,21 @@
 - ✅ Features complete: Sidebar, TitleBar (breadcrumbs), AppShell, Editor, CommandPalette
 - ✅ ObjectDataGrid feature complete
 - ✅ **AppShell + Sidebar wired to renderer** — navigation works, type counts display
+- ✅ **Editor wired to NotesView** — document loading, editing, autosave with block ID tracking
 - ✅ Test infrastructure for renderer hooks (mocked IPC)
-- ❌ Editor not wired (document editing placeholder only)
 - ❌ ObjectDataGrid not wired (basic list placeholder in TypesView)
 - ❌ CommandPalette not wired (search/actions not connected)
 
 ### MVP Renderer Gaps (Remaining)
 
-- [ ] Wire Editor component to NotesView for document editing
+- [x] Wire Editor component to NotesView for document editing
 - [ ] Wire ObjectDataGrid to TypesView for table view
 - [ ] Wire CommandPalette for search + quick actions
 - [ ] Connect "New" button to create object flow
+
+### DX Improvements
+
+- [ ] Add `electron-vite` or `vite-plugin-electron` for main/preload HMR
 
 ### Reference
 
@@ -34,7 +38,7 @@
 
 ## REST API Coverage
 
-**Status:** Active — export/import + attachments download + calendar + object types complete; remaining gaps in settings/pinned/templates/attachments upload
+**Status:** Active — remaining gaps in settings/pinned/templates/attachments upload
 
 ### Completed
 
@@ -69,11 +73,10 @@
 
 ## Recently Completed
 
-| Feature                          | Date       | Commits      |
-| -------------------------------- | ---------- | ------------ |
-| AppShell renderer wiring         | 2026-01-23 | `1d6aa54` +6 |
-| REST API coverage (batch)        | 2026-01-24 | `7454e64` +9 |
-| REST API coverage (object types) | 2026-01-24 | `8bc76a1`    |
-| ObjectDataGrid feature           | 2026-01-22 | `7fa7ba0`    |
-| RelationPicker pattern           | 2026-01-21 | `9429a99`    |
-| Editable PropertyList            | 2026-01-21 | `3bb7e90` +9 |
+| Feature                  | Date       | Commits      |
+| ------------------------ | ---------- | ------------ |
+| Editor wiring            | 2026-01-23 | uncommitted  |
+| AppShell renderer wiring | 2026-01-23 | `1d6aa54` +6 |
+| REST API object types    | 2026-01-24 | `8bc76a1`    |
+| REST API batch           | 2026-01-24 | `7454e64` +9 |
+| ObjectDataGrid feature   | 2026-01-22 | `7fa7ba0`    |

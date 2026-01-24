@@ -1,74 +1,52 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - REST Coverage: Object Types)
+## Latest Session (2026-01-23 - Wire Editor to NotesView)
 
 ### What was accomplished
 
-- **Object types REST endpoints** — list/get by id/key, create/update/delete
-- **Error mapping updated** — HTTP status mapping for TYPE\_\* and NOT_FOUND_OBJECT_TYPE
-- **Tests added** — http-server coverage for object type routes
-- **Plan updates** — REST coverage plan + remaining list updated
+- **Editor wiring complete** — TipTap Editor connected to NotesView with full data flow
+- **New hooks** — `useDocument` (fetch + convert) and `useDocumentMutation` (autosave with 750ms debounce)
+- **Converter improvements** — Modified `@typenote/core` converters to preserve block IDs through TipTap round-trip
+- **RefResolver implementation** — Full resolver pre-fetches all objects for reference display titles/colors
+- **Bug fixes from code review** — Stale docVersion race condition, nested block parent tracking, sibling ordering
 
 ### Key files changed
 
-- `packages/http-server/src/routes/object-types.ts`
-- `packages/http-server/src/routes/object-types.test.ts`
-- `packages/http-server/src/router.ts`
-- `packages/http-server/src/middleware/errorHandler.ts`
-- `docs/plans/2026-01-22-rest-api-coverage.md`
-- `docs/plans/2026-01-24-rest-api-coverage-remaining.md`
+- `packages/core/src/converter/tiptapToNotateDoc.ts` — Added `blockId` to ConvertedBlock
+- `packages/core/src/converter/notateDocToTiptap.ts` — Embed blockId in TipTap attrs
+- `apps/desktop/src/renderer/hooks/useDocument.ts` — New hook
+- `apps/desktop/src/renderer/hooks/useDocumentMutation.ts` — New hook
+- `apps/desktop/src/renderer/routes/NotesView.tsx` — Full Editor integration
+- `apps/desktop/src/renderer/utils/useDebouncedCallback.ts` — New debounce utility
 
-### Commits (this session)
+### Commits
 
-- `8bc76a1` feat(rest): add object types endpoints
+- No commits yet — changes uncommitted
 
 ### Tests run
 
-- `pnpm --filter @typenote/http-server test -- object-types.test.ts`
+- `pnpm --filter @typenote/core test` — 160/160 passing (converters verified)
+
+---
+
+## Earlier Session (2026-01-24 - REST Coverage: Object Types)
+
+Object types REST endpoints complete. Commit: `8bc76a1`.
 
 ---
 
 ## Earlier Session (2026-01-24 - REST Coverage: Export, Attachments, Calendar)
 
-Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, `d48dab9`, `33a3034`, `ee496b5`, `da398c7`, `ba4b2ad`, `fe28986`, `9a5bb1d`, `990d0a1`.
+Export routes, attachment downloads, calendar coverage complete. Commits: `7454e64`, `ab2881a`, +8 more.
 
 ---
 
 ## Earlier Session (2026-01-23 - AppShell Renderer Wiring)
 
-### What was accomplished
-
-- **Wired AppShell to renderer** — Complete integration of design-system components
-- **Created renderer test infrastructure** — Mock IPC utilities for hook testing
-- **Built 3 new hooks** — usePinnedObjects, useSidebarData (composite), tests for useTypeCounts
-- **Updated views** — NotesView empty state, TypesView object listing
-- **Full TDD workflow** — Subagent-driven development with spec + code quality reviews
-
-### Key files changed
-
-- `apps/desktop/src/renderer/layouts/RootLayout.tsx` — Full AppShell integration
-- `apps/desktop/src/renderer/hooks/usePinnedObjects.ts` — New hook
-- `apps/desktop/src/renderer/hooks/useSidebarData.ts` — Composite hook
-- `apps/desktop/src/renderer/hooks/__tests__/` — Test infrastructure + 3 test files
-- `apps/desktop/src/renderer/routes/NotesView.tsx` — Empty state + placeholder
-- `apps/desktop/src/renderer/routes/TypesView.tsx` — Object listing via IPC
-
-### Commits (this session)
-
-- `1d6aa54` Merge branch 'feat/appshell-renderer-wiring' into main-refactor
-- `bdfee34` feat(renderer): add TypesView with object listing
-- `04d42af` feat(renderer): add NotesView empty state and document placeholder
-- `151f045` feat(renderer): wire AppShell and Sidebar to RootLayout
-- `caec28c` feat(renderer): add useSidebarData composite hook
-- `2e4da86` feat(renderer): add usePinnedObjects hook
-- `b6818ec` test(renderer): add hook testing utilities with mocked IPC
-
-### Tests run
-
-- `pnpm --filter @typenote/desktop test -- src/renderer` — 10/10 passing
+Wired AppShell to renderer, created test infrastructure, built hooks (usePinnedObjects, useSidebarData). Commits: `1d6aa54`, `bdfee34`, +5 more.
 
 ---
 
 ## Historical — Collapsed
 
-REST API plan + docs archive cleanup (2026-01-22). Editable PropertyList completion + new design-system primitives/patterns + ObjectDataGrid work (2026-01-21). Unified TitleBar chrome and earlier backend/UI sessions.
+REST API plan + docs archive cleanup (2026-01-22). PropertyList + ObjectDataGrid (2026-01-21). Earlier backend/UI sessions.
