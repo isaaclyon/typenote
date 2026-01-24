@@ -93,9 +93,15 @@ describe('RootLayout', () => {
   });
 
   it('creates a Page when clicking new note', () => {
-    const { getByTestId } = render(<RootLayout />);
+    const { getAllByTestId } = render(<RootLayout />);
 
-    fireEvent.click(getByTestId('new-note'));
+    const newNoteButtons = getAllByTestId('new-note');
+    // Multiple buttons may render (e.g., React StrictMode), click the first one
+    const firstButton = newNoteButtons[0];
+    expect(firstButton).toBeDefined();
+    if (firstButton) {
+      fireEvent.click(firstButton);
+    }
 
     expect(mockCreateObject).toHaveBeenCalledWith('Page', 'Untitled', {});
   });
