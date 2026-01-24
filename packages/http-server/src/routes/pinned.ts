@@ -1,6 +1,17 @@
 import { Hono } from 'hono';
-import { PinObjectInputSchema, UnpinObjectInputSchema } from '@typenote/api';
-import { getPinnedObjects, pinObject, unpinObject, isPinned, getObject } from '@typenote/storage';
+import {
+  PinObjectInputSchema,
+  UnpinObjectInputSchema,
+  ReorderPinnedObjectsInputSchema,
+} from '@typenote/api';
+import {
+  getPinnedObjects,
+  pinObject,
+  unpinObject,
+  isPinned,
+  getObject,
+  reorderPinnedObjects,
+} from '@typenote/storage';
 import type { ServerContext } from '../types.js';
 
 const pinned = new Hono<ServerContext>();
@@ -86,6 +97,30 @@ pinned.delete('/:objectId', (c) => {
     data: {
       objectId,
       unpinned: wasPinned,
+    },
+  });
+});
+
+/**
+ * PATCH /pinned/reorder - Reorder pinned objects.
+ */
+pinned.patch('/reorder', async (c) => {
+  const body = await c.req.json();
+  const parsed = ReorderPinnedObjectsInputSchema.safeParse(body);
+  if (!parsed.success) {
+    throw {
+      code: 'VALIDATION',
+      message: 'Invalid reorder payload',
+      details: parsed.error.flatten(),
+    };
+  }
+
+  reorderPinnedObjects(c.var.db, parsed.data.objectIds);
+
+  return c.json({
+    success: true,
+    data: {
+      updatedObjectIds: parsed.data.objectIds,
     },
   });
 });

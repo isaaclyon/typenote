@@ -115,4 +115,50 @@ describe('Pinned Routes', () => {
     expect(body.success).toBe(false);
     expect(body.error.code).toBe('VALIDATION');
   });
+
+  it('PATCH /pinned/reorder reorders pinned objects', async () => {
+    const obj1 = createObject(db, 'Page', 'First', {}, { applyDefaultTemplate: false });
+    const obj2 = createObject(db, 'Page', 'Second', {}, { applyDefaultTemplate: false });
+    const obj3 = createObject(db, 'Page', 'Third', {}, { applyDefaultTemplate: false });
+    pinObject(db, obj1.id);
+    pinObject(db, obj2.id);
+    pinObject(db, obj3.id);
+
+    const res = await app.request('/pinned/reorder', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ objectIds: [obj3.id, obj1.id, obj2.id] }),
+    });
+
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      success: boolean;
+      data: { updatedObjectIds: string[] };
+    };
+    expect(body.success).toBe(true);
+    expect(body.data.updatedObjectIds).toEqual([obj3.id, obj1.id, obj2.id]);
+
+    // Verify the order changed
+    const listRes = await app.request('/pinned');
+    const listBody = (await listRes.json()) as {
+      success: boolean;
+      data: { pinnedObjects: { id: string; order: number }[] };
+    };
+    expect(listBody.data.pinnedObjects[0]?.id).toBe(obj3.id);
+    expect(listBody.data.pinnedObjects[1]?.id).toBe(obj1.id);
+    expect(listBody.data.pinnedObjects[2]?.id).toBe(obj2.id);
+  });
+
+  it('PATCH /pinned/reorder returns validation error for empty array', async () => {
+    const res = await app.request('/pinned/reorder', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ objectIds: [] }),
+    });
+
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { success: boolean; error: { code: string } };
+    expect(body.success).toBe(false);
+    expect(body.error.code).toBe('VALIDATION');
+  });
 });
