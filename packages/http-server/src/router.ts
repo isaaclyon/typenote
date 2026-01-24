@@ -13,6 +13,7 @@ import { trash } from './routes/trash.js';
 import { tasks } from './routes/tasks.js';
 import { attachments } from './routes/attachments.js';
 import { calendar } from './routes/calendar.js';
+import { objectTypes } from './routes/object-types.js';
 import type { ServerContext } from './types.js';
 
 /**
@@ -36,6 +37,7 @@ export function createRouter() {
   router.route('/tasks', tasks);
   router.route('/attachments', attachments);
   router.route('/calendar', calendar);
+  router.route('/object-types', objectTypes);
 
   return router;
 }

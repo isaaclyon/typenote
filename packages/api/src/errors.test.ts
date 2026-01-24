@@ -25,6 +25,7 @@ describe('ApiErrorCodeSchema', () => {
     'NOT_FOUND_OBJECT',
     'NOT_FOUND_BLOCK',
     'NOT_FOUND_TAG',
+    'NOT_FOUND_OBJECT_TYPE',
     'VALIDATION',
     'CONFLICT_VERSION',
     'CONFLICT_ORDERING',

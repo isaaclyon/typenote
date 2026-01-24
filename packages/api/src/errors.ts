@@ -7,6 +7,7 @@ export const ApiErrorCodeSchema = z.enum([
   'NOT_FOUND_OBJECT',
   'NOT_FOUND_BLOCK',
   'NOT_FOUND_TAG',
+  'NOT_FOUND_OBJECT_TYPE',
   'NOT_FOUND_ATTACHMENT',
   'VALIDATION',
   'CONFLICT_VERSION',
