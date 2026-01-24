@@ -159,17 +159,17 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 ### Export / Import
 
-**Routes (proposal)**
+**Routes (complete — 2026-01-24)**
 
 - `POST /export/object` (objectId, outputDir?)
 - `POST /export/type` (typeKey, outputDir?)
 - `POST /export/all` (outputDir?)
 - `POST /import/folder` (inputDir, mode)
 
-**Shapes**
+**Shapes (complete — 2026-01-24)**
 
-- JSON export/import schemas are internal-only today; add API contracts.
-- `MarkdownExportInput` + `MarkdownExportResult` exist but are not wired.
+- JSON export/import schemas now in `@typenote/api` (exported object/type/manifest + inputs).
+- `MarkdownExportInput` + `MarkdownExportResult` wired to markdown export route.
 
 **Backed by** `exportService.ts`.
 
@@ -177,7 +177,6 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 - `TaskSummary` + task action result schemas.
 - `CalendarTypeMetadata` schema.
-- JSON export/import manifest + options schemas.
 - Attachment download response contract.
 
 ## Open Questions
