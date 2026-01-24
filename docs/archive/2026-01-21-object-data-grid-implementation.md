@@ -12,6 +12,25 @@
 
 ---
 
+## Progress Summary
+
+| Task | Component            | Status  | Commits              |
+| ---- | -------------------- | ------- | -------------------- |
+| 1    | Dependencies         | ✅ Done | `3a6daba`            |
+| 2    | Popover              | ✅ Done | `57a4aa3`            |
+| 3    | Calendar             | ✅ Done | `bdab04d`            |
+| 4    | DatePicker           | ✅ Done | `8cce0cb`            |
+| 5    | DismissibleTag       | ✅ Done | `706d9bb`            |
+| 6    | RelationPicker       | ✅ Done | `9429a99`, `8068a77` |
+| 7    | ObjectDataGrid Types | ✅ Done | `7fa7ba0`            |
+| 8    | ObjectDataGrid Cell  | ✅ Done | `7fa7ba0`            |
+| 9    | ObjectDataGrid Main  | ✅ Done | `7fa7ba0`            |
+| 10   | Final verification   | ✅ Done | —                    |
+
+**Implementation complete as of 2026-01-22.**
+
+---
+
 ## Task 1: Install Dependencies
 
 **Files:**

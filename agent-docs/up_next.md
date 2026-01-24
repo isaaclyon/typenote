@@ -14,6 +14,8 @@
 - ✅ Data grid patterns: DataGridHeaderCell, Selection, RowActions, PropertyList
 - ✅ **Editable PropertyList complete** — All 6 editors, EditableValue orchestrator, stories
 - ✅ New primitives: Popover, Calendar, DatePicker, DismissibleTag
+- ✅ **RelationPicker pattern complete** — searchable object picker with create support
+- ✅ **ObjectDataGrid feature complete** — types, cell component, main grid with inline editing
 - ❌ Renderer placeholder only (no editor wiring, no navigation)
 
 ### MVP Design System Gaps (Remaining)
@@ -24,7 +26,8 @@
 - [x] CommandPalette feature — search + action launcher with keyboard nav
 - [x] ObjectDataGrid design + implementation plan
 - [x] Editable PropertyList — all editors + orchestrator + stories
-- [ ] **Execute ObjectDataGrid implementation plan** (remaining tasks: RelationPicker, ObjectDataGrid)
+- [x] RelationPicker pattern — searchable popover with DismissibleTag integration
+- [x] **ObjectDataGrid feature complete** — types, cell component, main grid with stories
 - [ ] Wire AppShell + Editor to desktop renderer
 
 ### Immediate Next Steps
@@ -32,9 +35,8 @@
 **Run this in next session:**
 
 1. `/resume-session` to load context
-2. Build RelationPicker pattern (uses DismissibleTag, Popover)
-3. Build ObjectDataGrid feature (the main data table)
-4. Wire to desktop renderer
+2. Wire AppShell + Editor to desktop renderer
+3. Test full app flow with real data
 
 ### Reference
 
@@ -90,6 +92,8 @@
 
 | Feature                          | Date       | Commits                         |
 | -------------------------------- | ---------- | ------------------------------- |
+| ObjectDataGrid feature           | 2026-01-22 | `7fa7ba0`                       |
+| RelationPicker pattern           | 2026-01-21 | `9429a99`, `8068a77`            |
 | Editable PropertyList (complete) | 2026-01-21 | `3bb7e90` + 9 commits           |
 | DismissibleTag, DatePicker       | 2026-01-21 | `706d9bb`, `8cce0cb`            |
 | Popover, Calendar                | 2026-01-21 | `57a4aa3`, `bdab04d`            |
