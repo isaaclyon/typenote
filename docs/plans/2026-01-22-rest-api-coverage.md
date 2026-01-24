@@ -177,7 +177,6 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 - `TaskSummary` + task action result schemas.
 - `CalendarTypeMetadata` schema.
-- Attachment download response contract.
 
 ## Open Questions
 
