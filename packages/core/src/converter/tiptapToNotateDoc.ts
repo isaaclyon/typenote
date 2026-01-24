@@ -208,6 +208,8 @@ export interface ConvertedBlock {
   type: BlockType;
   content: unknown;
   children?: ConvertedBlock[];
+  /** Block ID preserved from original document (undefined for new blocks) */
+  blockId?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -216,13 +218,18 @@ export interface ConvertedBlock {
 
 function convertBlock(node: TiptapNode): ConvertedBlock | null {
   const attrs = node.attrs ?? {};
+  // Extract blockId if present (preserved from original document)
+  const blockId = attrs['blockId'] as string | undefined;
+  // Helper to include blockId in result
+  const withId = <T extends ConvertedBlock>(result: T): T =>
+    blockId ? { ...result, blockId } : result;
 
   switch (node.type) {
     case 'paragraph': {
       const content: ParagraphContent = {
         inline: convertInlineContent(node.content),
       };
-      return { type: 'paragraph', content };
+      return withId({ type: 'paragraph', content });
     }
 
     case 'heading': {
@@ -231,7 +238,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         level,
         inline: convertInlineContent(node.content),
       };
-      return { type: 'heading', content };
+      return withId({ type: 'heading', content });
     }
 
     case 'bulletList': {
@@ -240,7 +247,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         tight: attrs['tight'] as boolean | undefined,
       };
       const children = convertBlocks(node.content);
-      return { type: 'list', content, children };
+      return withId({ type: 'list', content, children });
     }
 
     case 'orderedList': {
@@ -250,7 +257,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         tight: attrs['tight'] as boolean | undefined,
       };
       const children = convertBlocks(node.content);
-      return { type: 'list', content, children };
+      return withId({ type: 'list', content, children });
     }
 
     case 'taskList': {
@@ -259,7 +266,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         tight: attrs['tight'] as boolean | undefined,
       };
       const children = convertBlocks(node.content);
-      return { type: 'list', content, children };
+      return withId({ type: 'list', content, children });
     }
 
     case 'listItem': {
@@ -272,11 +279,11 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
       // Non-paragraph children become nested blocks
       const nestedContent = node.content?.filter((c) => c.type !== 'paragraph');
       const children = nestedContent ? convertBlocks(nestedContent) : undefined;
-      return {
+      return withId({
         type: 'list_item',
         content,
         ...(children && children.length > 0 ? { children } : {}),
-      };
+      });
     }
 
     case 'taskItem': {
@@ -287,17 +294,17 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
       };
       const nestedContent = node.content?.filter((c) => c.type !== 'paragraph');
       const children = nestedContent ? convertBlocks(nestedContent) : undefined;
-      return {
+      return withId({
         type: 'list_item',
         content,
         ...(children && children.length > 0 ? { children } : {}),
-      };
+      });
     }
 
     case 'blockquote': {
       const content: BlockquoteContent = {};
       const children = convertBlocks(node.content);
-      return { type: 'blockquote', content, children };
+      return withId({ type: 'blockquote', content, children });
     }
 
     case 'callout': {
@@ -307,7 +314,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         collapsed: attrs['collapsed'] as boolean | undefined,
       };
       const children = convertBlocks(node.content);
-      return { type: 'callout', content, children };
+      return withId({ type: 'callout', content, children });
     }
 
     case 'codeBlock': {
@@ -317,12 +324,12 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         language: attrs['language'] as string | undefined,
         code: codeText,
       };
-      return { type: 'code_block', content };
+      return withId({ type: 'code_block', content });
     }
 
     case 'horizontalRule': {
       const content: ThematicBreakContent = {};
-      return { type: 'thematic_break', content };
+      return withId({ type: 'thematic_break', content });
     }
 
     case 'table': {
@@ -345,14 +352,14 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         // TipTap stores alignment in colgroup/col elements, extract if present
         align: attrs['align'] as ('left' | 'center' | 'right' | null)[] | undefined,
       };
-      return { type: 'table', content };
+      return withId({ type: 'table', content });
     }
 
     case 'mathBlock': {
       const content: MathBlockContent = {
         latex: (attrs['latex'] as string | undefined) ?? '',
       };
-      return { type: 'math_block', content };
+      return withId({ type: 'math_block', content });
     }
 
     case 'footnoteDef': {
@@ -360,7 +367,7 @@ function convertBlock(node: TiptapNode): ConvertedBlock | null {
         key: (attrs['key'] as string | undefined) ?? '',
         inline: node.content ? convertInlineContent(node.content) : undefined,
       };
-      return { type: 'footnote_def', content };
+      return withId({ type: 'footnote_def', content });
     }
 
     // Skip nodes that don't map to NotateDoc blocks

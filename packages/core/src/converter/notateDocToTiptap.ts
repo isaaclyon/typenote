@@ -189,10 +189,19 @@ function convertInlineContent(nodes: InlineNode[], resolver: RefResolver): Tipta
 // ─────────────────────────────────────────────────────────────────────────────
 
 function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode | null {
+  // Helper to merge blockId into attrs if present
+  const withBlockId = (attrs: Record<string, unknown> = {}): Record<string, unknown> => {
+    if (block.blockId) {
+      return { ...attrs, blockId: block.blockId };
+    }
+    return attrs;
+  };
+
   switch (block.type) {
     case 'paragraph': {
       const content = block.content as ParagraphContent;
       return buildNode('paragraph', {
+        attrs: withBlockId(),
         content: convertInlineContent(content.inline, resolver),
       });
     }
@@ -200,7 +209,7 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
     case 'heading': {
       const content = block.content as HeadingContent;
       return buildNode('heading', {
-        attrs: { level: content.level },
+        attrs: withBlockId({ level: content.level }),
         content: convertInlineContent(content.inline, resolver),
       });
     }
@@ -229,7 +238,7 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
       if (content.start !== undefined) attrs['start'] = content.start;
       if (content.tight !== undefined) attrs['tight'] = content.tight;
 
-      return buildNode(listType, { attrs, content: children });
+      return buildNode(listType, { attrs: withBlockId(attrs), content: children });
     }
 
     case 'list_item': {
@@ -249,11 +258,11 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
 
       if (isTask) {
         return buildNode('taskItem', {
-          attrs: { checked: content.checked },
+          attrs: withBlockId({ checked: content.checked }),
           content: allContent,
         });
       }
-      return buildNode('listItem', { content: allContent });
+      return buildNode('listItem', { attrs: withBlockId(), content: allContent });
     }
 
     case 'blockquote': {
@@ -261,7 +270,7 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
         block.children
           ?.map((c) => convertBlock(c, resolver))
           .filter((b): b is TiptapNode => b !== null) ?? [];
-      return buildNode('blockquote', { content: children });
+      return buildNode('blockquote', { attrs: withBlockId(), content: children });
     }
 
     case 'callout': {
@@ -274,7 +283,7 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
       if (content.title !== undefined) attrs['title'] = content.title;
       if (content.collapsed !== undefined) attrs['collapsed'] = content.collapsed;
 
-      return buildNode('callout', { attrs, content: children });
+      return buildNode('callout', { attrs: withBlockId(attrs), content: children });
     }
 
     case 'code_block': {
@@ -284,11 +293,11 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
 
       const codeContent = content.code ? [buildNode('text', { text: content.code })] : [];
 
-      return buildNode('codeBlock', { attrs, content: codeContent });
+      return buildNode('codeBlock', { attrs: withBlockId(attrs), content: codeContent });
     }
 
     case 'thematic_break':
-      return buildNode('horizontalRule');
+      return buildNode('horizontalRule', { attrs: withBlockId() });
 
     case 'table': {
       const content = block.content as TableContent;
@@ -315,19 +324,19 @@ function convertBlock(block: ConvertedBlock, resolver: RefResolver): TiptapNode 
       const attrs: Record<string, unknown> = {};
       if (content.align) attrs['align'] = content.align;
 
-      return buildNode('table', { attrs, content: rows });
+      return buildNode('table', { attrs: withBlockId(attrs), content: rows });
     }
 
     case 'math_block': {
       const content = block.content as MathBlockContent;
-      return buildNode('mathBlock', { attrs: { latex: content.latex } });
+      return buildNode('mathBlock', { attrs: withBlockId({ latex: content.latex }) });
     }
 
     case 'footnote_def': {
       const content = block.content as FootnoteDefContent;
       const inlineContent = content.inline ? convertInlineContent(content.inline, resolver) : [];
       return buildNode('footnoteDef', {
-        attrs: { key: content.key },
+        attrs: withBlockId({ key: content.key }),
         content: inlineContent,
       });
     }

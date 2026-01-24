@@ -23,6 +23,9 @@ export const queryKeys = {
   backlinks: (objectId: string) => ['backlinks', objectId] as const,
   unlinkedMentions: (objectId: string) => ['unlinked-mentions', objectId] as const,
 
+  // Documents
+  document: (objectId: string) => ['document', objectId] as const,
+
   // Settings
   settings: () => ['settings'] as const,
 
