@@ -81,8 +81,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed: useDocument hook fetches via api.getDocument, converts NotateDoc to TipTap JSONContent using notateDocToTiptap converter with ref resolution, passes content to Editor. Typecheck and tests passing."
     },
     {
       "id": "US-006",

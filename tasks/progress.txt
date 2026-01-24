@@ -54,3 +54,15 @@ Started: 2026-01-24
   - Typecheck and tests confirm integration works correctly
   - The integration includes autosave functionality via `useDocumentMutation` hook with debouncing
 ---
+## [2026-01-24 17:14] - US-005
+- Verified document loading with NotateDoc to TipTap conversion (work already completed)
+- Files verified:
+  - `apps/desktop/src/renderer/hooks/useDocument.ts` - Fetches document and converts to TipTap JSONContent
+  - `apps/desktop/src/renderer/routes/NotesView.tsx` - Passes content to Editor component
+- **Learnings for future iterations:**
+  - Document loading pipeline: fetch blocks → convert to ConvertedBlock → notateDocToTiptap with ref resolution
+  - useDocument hook builds refResolver from objects/types queries for rich @mention rendering
+  - TanStack Query handles caching with staleTime:0 for fresh content on mount
+  - NotesView passes content directly from useDocument to Editor content prop (line 91)
+  - Empty documents use EMPTY_DOC fallback: {type: 'doc', content: []}
+---
