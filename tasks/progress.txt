@@ -66,3 +66,16 @@ Started: 2026-01-24
   - NotesView passes content directly from useDocument to Editor content prop (line 91)
   - Empty documents use EMPTY_DOC fallback: {type: 'doc', content: []}
 ---
+## [2026-01-24 17:16] - US-006
+- Verified autosave implementation with TipTap to NotateDoc conversion (work already completed)
+- Files verified:
+  - `apps/desktop/src/renderer/hooks/useDocumentMutation.ts` - Autosave with debouncing and patch generation
+  - `apps/desktop/src/renderer/routes/NotesView.tsx` - Editor onChange wired to autosave
+- **Learnings for future iterations:**
+  - useDocumentMutation converts TipTap → NotateDoc via tiptapToNotateDoc (line 56)
+  - buildBlockOps generates differential patch operations by comparing with backend snapshot
+  - Optimistic concurrency control: uses docVersion for conflict detection, automatic retry on version conflict
+  - Debounce set to 750ms (more conservative than 300ms spec) to reduce IPC overhead
+  - Status bar shows "Saving..." and error states (NotesView lines 114-118)
+  - Cache update on success invalidates type counts for sidebar refresh
+---

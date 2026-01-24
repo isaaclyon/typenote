@@ -98,8 +98,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed: Editor onChange wired to useDocumentMutation.autosave, converts TipTap to NotateDoc via tiptapToNotateDoc, calls api.applyBlockPatch with diff. Debounce 750ms (more conservative than 300ms). Save indicator shows saving/error states. Includes version conflict retry logic."
     },
     {
       "id": "US-007",
