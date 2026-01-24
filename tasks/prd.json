@@ -1,0 +1,823 @@
+{
+  "project": "TypeNote",
+  "branchName": "ralph/editor-integration",
+  "description": "Design System Editor Integration - Replace TypeNote's editor with the comprehensive TipTap-based Editor from @typenote/design-system with full feature parity",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "TipTap JSONContent to NotateDoc Converter",
+      "description": "As a developer, I need to convert TipTap's JSONContent to TypeNote's NotateDoc format so the Editor can save to the existing database schema.",
+      "acceptanceCriteria": [
+        "Create packages/core/src/converters/tiptapToNotateDoc.ts",
+        "Support all block types: paragraph, heading (1-6), task-list, code-block, table, callout",
+        "Support all inline marks: bold, italic, code, strikethrough, highlight, link",
+        "Support RefNode, TagNode, EmbedNode, BlockIdNode, FootnoteRef, FootnoteDef, InlineMath, MathBlock, ImageNode",
+        "Handle nested structures (lists, table cells)",
+        "Unit tests cover all node/mark types with 80%+ coverage",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "NotateDoc to TipTap JSONContent Converter",
+      "description": "As a developer, I need to convert NotateDoc to TipTap JSONContent so existing documents can be loaded into the Editor.",
+      "acceptanceCriteria": [
+        "Create packages/core/src/converters/notateDocToTiptap.ts",
+        "Support all NotateDoc block types and map to TipTap equivalents",
+        "Support all NotateDoc inline nodes and marks",
+        "Handle edge cases (empty blocks, missing properties)",
+        "Unit tests cover all conversions with 80%+ coverage",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Converter Round-Trip Tests",
+      "description": "As a developer, I need comprehensive tests to ensure converters preserve content fidelity.",
+      "acceptanceCriteria": [
+        "Test fixtures for complex documents (nested lists, tables, all node types)",
+        "Round-trip tests: NotateDoc → TipTap → NotateDoc (lossless)",
+        "Round-trip tests: TipTap → NotateDoc → TipTap (lossless)",
+        "Test error handling for malformed input",
+        "All tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Import Editor Component into Desktop App",
+      "description": "As a developer, I need the design system Editor available in the desktop app so I can use it in the document view.",
+      "acceptanceCriteria": [
+        "Editor exports correctly from @typenote/design-system",
+        "Editor renders in document view at /notes/:objectId",
+        "Editor CSS imports correctly (editor.css)",
+        "No console errors on mount",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Load Document Content into Editor",
+      "description": "As a user, I want to see my existing document content in the new Editor.",
+      "acceptanceCriteria": [
+        "Fetch document via window.typenoteAPI.getDocument(objectId)",
+        "Convert NotateDoc to TipTap JSONContent using converter",
+        "Pass converted content to Editor content prop",
+        "Document renders correctly (verify with test document containing multiple block types)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Save Editor Changes to Backend",
+      "description": "As a user, I want my edits to persist when I change content in the Editor.",
+      "acceptanceCriteria": [
+        "Hook up Editor onChange callback",
+        "Convert TipTap JSONContent to NotateDoc using converter",
+        "Call window.typenoteAPI.applyBlockPatch with diff",
+        "Implement debounced save (300ms)",
+        "Show save indicator (saving/saved/error states)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Text Formatting (Bold, Italic, Code, Strikethrough)",
+      "description": "As a user, I want to format text with bold, italic, code, and strikethrough using keyboard shortcuts and markdown input rules.",
+      "acceptanceCriteria": [
+        "Keyboard shortcuts work: Cmd+B (bold), Cmd+I (italic), Cmd+E (code), Cmd+Shift+X (strikethrough)",
+        "Markdown input rules work: **bold**, *italic*, `code`, ~~strike~~",
+        "Formatted text saves and loads correctly",
+        "Unit tests for format conversion (TipTap ↔ NotateDoc) with 80%+ coverage",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Headings (H1-H6)",
+      "description": "As a user, I want to create headings using slash commands and markdown input rules.",
+      "acceptanceCriteria": [
+        "Markdown input rules: # H1, ## H2, ..., ###### H6",
+        "Slash commands: /heading1 through /heading6",
+        "Keyboard shortcut: Cmd+Opt+1 through Cmd+Opt+6",
+        "Headings render with correct styling",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Highlight Support",
+      "description": "As a user, I want to highlight text with different colors.",
+      "acceptanceCriteria": [
+        "Keyboard shortcut: Cmd+Shift+H",
+        "Color picker appears with design system colors",
+        "Highlighted text renders correctly",
+        "Highlight color saves and loads",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Task List Block",
+      "description": "As a user, I want to create task lists with checkboxes.",
+      "acceptanceCriteria": [
+        "Slash command: /task creates task list item",
+        "Checkbox toggles on click",
+        "Enter key creates new task item",
+        "Backspace on empty task converts to paragraph",
+        "Task state persists on save/load",
+        "Unit tests for task list conversion and state toggling with 80%+ coverage",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Nested Task Lists",
+      "description": "As a user, I want to indent task items to create hierarchies.",
+      "acceptanceCriteria": [
+        "Tab key indents task (increases nesting)",
+        "Shift+Tab unindents task (decreases nesting)",
+        "Nested tasks render with correct indentation",
+        "Checkbox interactions work at all nesting levels",
+        "Structure persists on save/load",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Code Block Support",
+      "description": "As a user, I want to insert code blocks with syntax highlighting.",
+      "acceptanceCriteria": [
+        "Markdown input rule: ``` creates code block",
+        "Slash command: /code creates code block",
+        "Language dropdown shows common languages",
+        "Syntax highlighting works for selected language",
+        "Long lines scroll horizontally (no wrapping)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Callout Blocks",
+      "description": "As a user, I want to create styled callout boxes for info/warning/success/error messages.",
+      "acceptanceCriteria": [
+        "Slash command: /callout creates callout",
+        "Type selector: info (default), warning, success, error",
+        "Each type renders with correct icon and color",
+        "Callouts can contain nested content (paragraphs, lists, etc.)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Table Block",
+      "description": "As a user, I want to insert and edit tables with rows and columns.",
+      "acceptanceCriteria": [
+        "Slash command: /table creates default 3x3 table",
+        "Tab key moves to next cell, Shift+Tab moves to previous",
+        "Table toolbar appears on selection",
+        "Toolbar actions: add row/column, delete row/column, merge cells",
+        "Tables render correctly with borders and spacing",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Slash Command Menu",
+      "description": "As a user, I want to trigger a command menu with / to quickly insert blocks.",
+      "acceptanceCriteria": [
+        "Typing / shows command menu",
+        "Menu shows all available commands with icons",
+        "Arrow keys navigate menu, Enter selects",
+        "Typing filters commands (e.g., /ta shows task, table)",
+        "Esc closes menu",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Link Support",
+      "description": "As a user, I want to create hyperlinks.",
+      "acceptanceCriteria": [
+        "Keyboard shortcut: Cmd+K opens link input",
+        "Paste URL auto-creates link",
+        "Markdown input rule: [text](url) creates link",
+        "Click link opens URL in external browser",
+        "Links render with correct styling",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Image Node",
+      "description": "As a user, I want to insert images into documents.",
+      "acceptanceCriteria": [
+        "Slash command: /image shows image insert popover",
+        "Popover has URL input and Upload button",
+        "Image renders with correct styling",
+        "Images can be resized by dragging corner handles",
+        "Image size persists on save/load",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Image Upload IPC Handler",
+      "description": "As a developer, I need a backend IPC handler to upload and store images.",
+      "acceptanceCriteria": [
+        "Create typenote:uploadImage IPC handler in main process",
+        "Accept image file data (base64 or buffer)",
+        "Store image in attachments directory",
+        "Return attachment ID and URL",
+        "Handle upload errors gracefully",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Image Upload Integration",
+      "description": "As a user, I want to upload images from my computer.",
+      "acceptanceCriteria": [
+        "Click Upload button opens file picker",
+        "Selected image uploads via window.typenoteAPI.uploadImage",
+        "Uploaded image inserts into document with attachment URL",
+        "Drag-and-drop image file uploads and inserts",
+        "Show upload progress/spinner during upload",
+        "Show error message on upload failure",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Ref Suggestion List IPC Handler",
+      "description": "As a developer, I need a backend IPC handler to search for reference targets.",
+      "acceptanceCriteria": [
+        "Create typenote:searchObjects IPC handler in main process",
+        "Accept search query string",
+        "Return matching objects with id, title, typeKey, typeColor",
+        "Limit results to 10 items",
+        "Sort by relevance (title match, then recent)",
+        "Typecheck passes"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Basic @mention References",
+      "description": "As a user, I want to reference other objects using @mention syntax.",
+      "acceptanceCriteria": [
+        "Typing @ triggers ref suggestion menu",
+        "Menu shows search results from window.typenoteAPI.searchObjects",
+        "Typing filters results (e.g., @daily shows DailyNote objects)",
+        "Arrow keys navigate, Enter selects",
+        "Selected ref inserts as RefNode with object ID",
+        "Refs render with correct styling and type color",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "[[Wiki-link]] Reference Syntax",
+      "description": "As a user, I want to reference objects using [[wiki-link]] syntax.",
+      "acceptanceCriteria": [
+        "Typing [[ triggers ref suggestion menu",
+        "Closing ]] completes the ref",
+        "Suggestion menu behavior same as @mention",
+        "Wiki-link refs render identically to @mentions",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Aliased References",
+      "description": "As a user, I want to create references with custom display text.",
+      "acceptanceCriteria": [
+        "Syntax: @ObjectTitle|alias text or [[ObjectTitle|alias text]]",
+        "Alias text displays instead of object title",
+        "Clicking aliased ref still opens target object",
+        "Editing alias in suggestion menu works",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "Create New Object from Ref",
+      "description": "As a user, I want to create a new object when referencing a non-existent title.",
+      "acceptanceCriteria": [
+        "Ref suggestion menu shows Create new option at bottom",
+        "Selecting Create new calls window.typenoteAPI.createObject",
+        "New object created with typed title as name",
+        "Ref inserts with new object ID",
+        "Clicking ref opens newly created object",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Ref Type Colors",
+      "description": "As a user, I want refs to show their object type color.",
+      "acceptanceCriteria": [
+        "Fetch object type metadata for each ref",
+        "Ref renders with left border in type color",
+        "Type colors match design system palette",
+        "Colors persist across themes (light/dark)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Ref Click Handling",
+      "description": "As a user, I want to click a reference to navigate to that object.",
+      "acceptanceCriteria": [
+        "Click ref calls onRefClick callback with object ID",
+        "Navigate to /notes/:objectId route",
+        "Cmd+Click opens in new tab (if supported)",
+        "Hover shows tooltip with object title",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-027",
+      "title": "Tag Suggestion IPC Handler",
+      "description": "As a developer, I need a backend IPC handler to search and create tags.",
+      "acceptanceCriteria": [
+        "Create typenote:searchTags IPC handler in main process",
+        "Accept search query string",
+        "Return matching tags with id, name, color",
+        "Create typenote:createTag IPC handler",
+        "Create new tag with generated color",
+        "Typecheck passes"
+      ],
+      "priority": 27,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-028",
+      "title": "Tag Support with # Trigger",
+      "description": "As a user, I want to tag objects using #hashtag syntax.",
+      "acceptanceCriteria": [
+        "Typing # triggers tag suggestion menu",
+        "Menu shows search results from window.typenoteAPI.searchTags",
+        "Typing filters tags (e.g., #proj shows project tags)",
+        "Arrow keys navigate, Enter selects",
+        "Selected tag inserts as TagNode",
+        "Tags render with colored pill styling",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 28,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-029",
+      "title": "Create New Tag",
+      "description": "As a user, I want to create new tags inline while editing.",
+      "acceptanceCriteria": [
+        "Tag suggestion menu shows Create new option",
+        "Selecting Create new calls window.typenoteAPI.createTag",
+        "New tag created with typed name",
+        "Tag inserts into document",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 29,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-030",
+      "title": "Tag Click Handling",
+      "description": "As a user, I want to click a tag to see all objects with that tag.",
+      "acceptanceCriteria": [
+        "Click tag calls onTagClick callback with tag ID",
+        "Navigate to tag view (or show tag modal)",
+        "Hover shows tooltip with tag name",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 30,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-031",
+      "title": "Heading Reference Search IPC Handler",
+      "description": "As a developer, I need a backend IPC handler to search heading blocks within objects.",
+      "acceptanceCriteria": [
+        "Create typenote:searchHeadings IPC handler",
+        "Accept search query and object ID (optional)",
+        "Return headings with object title, heading text, block ID",
+        "Typecheck passes"
+      ],
+      "priority": 31,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-032",
+      "title": "Heading References",
+      "description": "As a user, I want to reference specific headings within documents.",
+      "acceptanceCriteria": [
+        "Typing @ then selecting object shows heading submenu",
+        "Typing @ObjectTitle# shows heading suggestions",
+        "Select heading inserts ref with fragment (e.g., @Obj#Heading)",
+        "Clicking heading ref scrolls to that heading",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 32,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-033",
+      "title": "Block References",
+      "description": "As a user, I want to reference specific blocks using block IDs.",
+      "acceptanceCriteria": [
+        "Typing @ then selecting object shows block submenu (if blocks have IDs)",
+        "Typing @ObjectTitle^ shows block suggestions",
+        "Select block inserts ref with block ID",
+        "Clicking block ref scrolls to that block",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 33,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-034",
+      "title": "Block ID Support",
+      "description": "As a user, I want to assign IDs to blocks for referencing and linking.",
+      "acceptanceCriteria": [
+        "Slash command: /block-id assigns unique ID to current block",
+        "Keyboard shortcut: Cmd+Shift+I assigns block ID",
+        "Block ID renders as subtle inline indicator",
+        "Copy block ID to clipboard button",
+        "Block IDs persist on save/load",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 34,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-035",
+      "title": "Embed Resolve IPC Handler",
+      "description": "As a developer, I need a backend IPC handler to fetch embed content.",
+      "acceptanceCriteria": [
+        "Create typenote:resolveEmbed IPC handler",
+        "Accept embed target (object ID or URL)",
+        "Return embed metadata (title, excerpt, object type, URL, etc.)",
+        "Handle missing/deleted objects gracefully",
+        "Typecheck passes"
+      ],
+      "priority": 35,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-036",
+      "title": "Object Embeds with ![[...]]",
+      "description": "As a user, I want to embed other objects inline using ![[wiki-link]] syntax.",
+      "acceptanceCriteria": [
+        "Typing !![[ triggers embed suggestion menu",
+        "Select object inserts embed block",
+        "Embed fetches content via window.typenoteAPI.resolveEmbed",
+        "Embed renders with title, excerpt, and type indicator",
+        "Click embed opens target object",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 36,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-037",
+      "title": "Targeted Embeds (Heading/Block)",
+      "description": "As a user, I want to embed specific headings or blocks.",
+      "acceptanceCriteria": [
+        "Syntax: ![[ObjectTitle#Heading]] embeds heading section",
+        "Syntax: ![[ObjectTitle^blockId]] embeds specific block",
+        "Targeted embeds show only relevant content",
+        "Click navigates to specific heading/block",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 37,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-038",
+      "title": "Embed Live Updates",
+      "description": "As a user, I want embedded content to update when the source changes.",
+      "acceptanceCriteria": [
+        "Create typenote:subscribeEmbed IPC handler with event emitter",
+        "Subscribe to embed target on mount",
+        "Update embed content when source object changes",
+        "Unsubscribe on unmount",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 38,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-039",
+      "title": "Missing Embed Handling",
+      "description": "As a user, I want clear feedback when an embed target doesn't exist.",
+      "acceptanceCriteria": [
+        "Missing embed shows error state",
+        "Error message: Object not found: [title]",
+        "Option to remove broken embed",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 39,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-040",
+      "title": "Inline Math",
+      "description": "As a user, I want to write inline math expressions using LaTeX syntax.",
+      "acceptanceCriteria": [
+        "Markdown input rule: $...$ creates inline math",
+        "Math renders using KaTeX",
+        "Edit math by clicking (opens input)",
+        "Invalid syntax shows error indicator",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 40,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-041",
+      "title": "Math Blocks",
+      "description": "As a user, I want to write display math blocks.",
+      "acceptanceCriteria": [
+        "Markdown input rule: $$ creates math block",
+        "Slash command: /math creates math block",
+        "Math block renders centered with KaTeX",
+        "Edit by clicking math block",
+        "Invalid syntax shows error message",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 41,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-042",
+      "title": "Footnote Support",
+      "description": "As a user, I want to add footnotes to documents.",
+      "acceptanceCriteria": [
+        "Slash command: /footnote inserts footnote reference",
+        "Input rule: [^id] creates footnote ref",
+        "Footnote definition: [^id]: content creates definition block",
+        "Clicking ref scrolls to definition",
+        "Clicking definition scrolls back to ref",
+        "Footnotes render at document end",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 42,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-043",
+      "title": "Footnote Warnings",
+      "description": "As a user, I want warnings when footnote references/definitions are missing.",
+      "acceptanceCriteria": [
+        "Warn if footnote ref has no definition",
+        "Warn if footnote definition has no reference",
+        "Warning styling matches design system",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 43,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-044",
+      "title": "Read-Only Editor Mode",
+      "description": "As a user, I want to view documents without accidentally editing them.",
+      "acceptanceCriteria": [
+        "Pass readOnly={true} to Editor",
+        "Editor disables editing (no cursor, no typing)",
+        "Content renders identically to editable mode",
+        "Refs, tags, links still clickable",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 44,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-045",
+      "title": "Editor Focus Management",
+      "description": "As a user, I want the editor to focus automatically when opening a document.",
+      "acceptanceCriteria": [
+        "Pass autoFocus={true} to Editor when opening document",
+        "Cursor appears at start of document",
+        "Focus works on new documents (empty content)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 45,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-046",
+      "title": "Multiple Editor Instances",
+      "description": "As a developer, I want to support multiple Editor instances on the same page (e.g., split view).",
+      "acceptanceCriteria": [
+        "Create two Editor instances in test page",
+        "Each editor maintains independent state",
+        "Copy/paste between editors works",
+        "No state leakage or conflicts",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 46,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-047",
+      "title": "Long Document Performance",
+      "description": "As a user, I want smooth editing performance even with large documents (1000+ blocks).",
+      "acceptanceCriteria": [
+        "Create test document with 1000+ paragraphs",
+        "Scrolling feels smooth (no jank)",
+        "Typing has no lag",
+        "Search/replace works on large documents",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 47,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-048",
+      "title": "Integration Tests for All Editor Features",
+      "description": "As a developer, I need comprehensive tests to prevent regressions.",
+      "acceptanceCriteria": [
+        "Vitest tests for format converters (NotateDoc ↔ TipTap)",
+        "Playwright E2E tests for key workflows (create document, edit, save, load)",
+        "Test all slash commands in E2E",
+        "Test all markdown input rules in E2E",
+        "Test refs, tags, embeds in E2E",
+        "All tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 48,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-049",
+      "title": "Keyboard Shortcuts Documentation",
+      "description": "As a user, I want to know all available keyboard shortcuts.",
+      "acceptanceCriteria": [
+        "Document all shortcuts in docs/features/editor-shortcuts.md",
+        "Include: formatting, blocks, navigation, search",
+        "Add shortcuts help modal in app (Cmd+/)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 49,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-050",
+      "title": "Editor Styling Verification",
+      "description": "As a developer, I want to ensure Editor styling matches design system exactly across all features.",
+      "acceptanceCriteria": [
+        "Side-by-side comparison with Ladle stories",
+        "Verify typography (font sizes, weights, line heights)",
+        "Verify spacing (margins, padding)",
+        "Verify colors (text, backgrounds, borders)",
+        "Verify all interactive states (hover, focus, active)",
+        "Document any intentional deviations",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 50,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
