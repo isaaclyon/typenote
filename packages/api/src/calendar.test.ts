@@ -9,9 +9,11 @@ import {
   CalendarDateInfoSchema,
   CalendarItemSchema,
   CalendarQueryOptionsSchema,
+  CalendarTypeMetadataSchema,
   type CalendarDateInfo,
   type CalendarItem,
   type CalendarQueryOptions,
+  type CalendarTypeMetadata,
 } from './calendar.js';
 
 // ============================================================================
@@ -99,6 +101,24 @@ describe('CalendarDateInfoSchema', () => {
     const dateInfo = {
       startDate: 'January 15, 2026',
       allDay: true,
+    };
+    const result = CalendarDateInfoSchema.safeParse(dateInfo);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects all-day events with datetime startDate', () => {
+    const dateInfo: CalendarDateInfo = {
+      startDate: '2026-01-15T10:00:00.000Z',
+      allDay: true,
+    };
+    const result = CalendarDateInfoSchema.safeParse(dateInfo);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects timed events with date-only startDate', () => {
+    const dateInfo: CalendarDateInfo = {
+      startDate: '2026-01-15',
+      allDay: false,
     };
     const result = CalendarDateInfoSchema.safeParse(dateInfo);
     expect(result.success).toBe(false);
@@ -432,6 +452,86 @@ describe('CalendarQueryOptionsSchema', () => {
       typeKeys: 'Event',
     };
     const result = CalendarQueryOptionsSchema.safeParse(options);
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// CalendarTypeMetadataSchema
+// ============================================================================
+
+describe('CalendarTypeMetadataSchema', () => {
+  it('validates complete metadata', () => {
+    const metadata: CalendarTypeMetadata = {
+      typeId: '01HZXTYPE00000000000000001',
+      typeKey: 'Event',
+      primaryDateProp: 'start_date',
+      secondaryDateProp: 'end_date',
+      isDateOnly: false,
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.typeKey).toBe('Event');
+      expect(result.data.secondaryDateProp).toBe('end_date');
+      expect(result.data.isDateOnly).toBe(false);
+    }
+  });
+
+  it('validates metadata without secondaryDateProp', () => {
+    const metadata: CalendarTypeMetadata = {
+      typeId: '01HZXTYPE00000000000000002',
+      typeKey: 'Task',
+      primaryDateProp: 'due_date',
+      isDateOnly: false,
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.secondaryDateProp).toBeUndefined();
+    }
+  });
+
+  it('rejects invalid typeId length', () => {
+    const metadata = {
+      typeId: 'short',
+      typeKey: 'Event',
+      primaryDateProp: 'start_date',
+      isDateOnly: false,
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects empty typeKey', () => {
+    const metadata = {
+      typeId: '01HZXTYPE00000000000000003',
+      typeKey: '',
+      primaryDateProp: 'start_date',
+      isDateOnly: false,
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects missing primaryDateProp', () => {
+    const metadata = {
+      typeId: '01HZXTYPE00000000000000004',
+      typeKey: 'Event',
+      isDateOnly: false,
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects non-boolean isDateOnly', () => {
+    const metadata = {
+      typeId: '01HZXTYPE00000000000000005',
+      typeKey: 'DailyNote',
+      primaryDateProp: 'date_key',
+      isDateOnly: 'true',
+    };
+    const result = CalendarTypeMetadataSchema.safeParse(metadata);
     expect(result.success).toBe(false);
   });
 });

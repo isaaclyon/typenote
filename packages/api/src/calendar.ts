@@ -38,18 +38,55 @@ const DateStringSchema = z.string().refine(
 // CalendarDateInfo
 // ============================================================================
 
+function isDateOnly(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function isDateTime(value: string): boolean {
+  return value.includes('T');
+}
+
 /**
  * Date information for a calendar item.
  * Supports both all-day events (date-only) and timed events (datetime).
  */
-export const CalendarDateInfoSchema = z.object({
-  /** Start date/datetime of the calendar item */
-  startDate: DateStringSchema,
-  /** End date/datetime of the calendar item (optional for single-day/point-in-time events) */
-  endDate: DateStringSchema.optional(),
-  /** Whether this is an all-day event (uses date-only format) */
-  allDay: z.boolean(),
-});
+export const CalendarDateInfoSchema = z
+  .object({
+    /** Start date/datetime of the calendar item */
+    startDate: DateStringSchema,
+    /** End date/datetime of the calendar item (optional for single-day/point-in-time events) */
+    endDate: DateStringSchema.optional(),
+    /** Whether this is an all-day event (uses date-only format) */
+    allDay: z.boolean(),
+  })
+  .superRefine((value, ctx) => {
+    const expectsDateOnly = value.allDay;
+    const startDateValid = expectsDateOnly
+      ? isDateOnly(value.startDate)
+      : isDateTime(value.startDate);
+    if (!startDateValid) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['startDate'],
+        message: expectsDateOnly
+          ? 'startDate must be date-only for all-day events'
+          : 'startDate must be datetime for timed events',
+      });
+    }
+
+    if (value.endDate) {
+      const endDateValid = expectsDateOnly ? isDateOnly(value.endDate) : isDateTime(value.endDate);
+      if (!endDateValid) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['endDate'],
+          message: expectsDateOnly
+            ? 'endDate must be date-only for all-day events'
+            : 'endDate must be datetime for timed events',
+        });
+      }
+    }
+  });
 
 export type CalendarDateInfo = z.infer<typeof CalendarDateInfoSchema>;
 
