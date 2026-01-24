@@ -94,3 +94,17 @@ Started: 2026-01-24
   - Converter tests verify mark conversion: bold→strong, italic→em, code→code, strike→strike
   - Heading tests cover all 6 levels with level attribute
 ---
+## [2026-01-24 17:22] - US-009 through US-015
+- Verified Editor block features: Highlight, TaskList, CodeBlock, Callout, Table, SlashCommand (all pre-implemented)
+- Files verified:
+  - `packages/design-system/src/features/Editor/hooks/useEditorExtensions.ts` - All extensions loaded
+  - `packages/core/src/converters/tiptapToNotateDoc.test.ts` - Comprehensive test coverage
+- **Learnings for future iterations:**
+  - Highlight: HighlightExtension from @tiptap/extension-highlight (line 6)
+  - TaskList: TaskList + TaskItem extensions handle checkboxes and nesting
+  - CodeBlock: Custom extension with Shiki syntax highlighting (CodeBlock.ts)
+  - Callout: Custom extension with type/title/collapsed props (Callout.ts)
+  - Table: TableExtensions with TableToolbar for add/delete rows/columns
+  - SlashCommand: Custom extension with filtering, icons, keyboard nav
+  - All features wired in NotesView with enableSlashCommands={true}
+---
