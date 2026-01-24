@@ -64,6 +64,24 @@ export const TaskPropertiesSchema = z.object({
 export type TaskProperties = z.infer<typeof TaskPropertiesSchema>;
 
 // ============================================================================
+// Task Summary
+// ============================================================================
+
+/**
+ * Summary of a task for listings and queries.
+ */
+export const TaskSummarySchema = z.object({
+  id: z.string().length(26), // ULID
+  title: z.string(),
+  typeId: z.string().length(26),
+  typeKey: z.string(),
+  updatedAt: z.date(),
+  properties: TaskPropertiesSchema,
+});
+
+export type TaskSummary = z.infer<typeof TaskSummarySchema>;
+
+// ============================================================================
 // Query Options
 // ============================================================================
 
@@ -82,8 +100,14 @@ export const GetTasksOptionsSchema = z.object({
   dueBefore: z.string().datetime().optional(),
   /** Filter tasks due after this datetime */
   dueAfter: z.string().datetime().optional(),
+  /** Filter completed tasks updated after this datetime */
+  completedAfter: z.string().datetime().optional(),
+  /** Filter completed tasks updated before this datetime */
+  completedBefore: z.string().datetime().optional(),
   /** Include completed tasks (default: false for most queries) */
   includeCompleted: z.boolean().optional(),
+  /** Filter tasks by whether they have a due date */
+  hasDueDate: z.boolean().optional(),
   /** Maximum number of results */
   limit: z.number().int().nonnegative().optional(),
   /** Offset for pagination */

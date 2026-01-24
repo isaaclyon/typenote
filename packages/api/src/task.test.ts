@@ -9,8 +9,10 @@ import {
   TaskStatusSchema,
   TaskPrioritySchema,
   TaskPropertiesSchema,
+  TaskSummarySchema,
   GetTasksOptionsSchema,
   type TaskProperties,
+  type TaskSummary,
   type GetTasksOptions,
 } from './task.js';
 
@@ -298,7 +300,10 @@ describe('GetTasksOptionsSchema', () => {
       dueDateKey: '2026-01-15',
       dueBefore: '2026-01-31T23:59:59.000Z',
       dueAfter: '2026-01-01T00:00:00.000Z',
+      completedAfter: '2026-01-10T00:00:00.000Z',
+      completedBefore: '2026-01-20T23:59:59.000Z',
       includeCompleted: false,
+      hasDueDate: true,
       limit: 50,
       offset: 0,
     };
@@ -336,5 +341,37 @@ describe('GetTasksOptionsSchema', () => {
     };
     const result = GetTasksOptionsSchema.safeParse(options);
     expect(result.success).toBe(false);
+  });
+
+  it('rejects invalid hasDueDate', () => {
+    const options = {
+      hasDueDate: 'yes',
+    };
+    const result = GetTasksOptionsSchema.safeParse(options);
+    expect(result.success).toBe(false);
+  });
+});
+
+// ============================================================================
+// TaskSummarySchema
+// ============================================================================
+
+describe('TaskSummarySchema', () => {
+  it('validates a task summary with properties', () => {
+    const summary: TaskSummary = {
+      id: '01HZX1X5E1G8G5Q2B2V9XG4M2F',
+      title: 'Plan sprint',
+      typeId: '01HZX1X5E1G8G5Q2B2V9XG4M2G',
+      typeKey: 'Task',
+      updatedAt: new Date('2026-01-15T12:00:00.000Z'),
+      properties: {
+        status: 'Todo',
+        due_date: '2026-01-20T09:00:00.000Z',
+        priority: 'High',
+      },
+    };
+
+    const result = TaskSummarySchema.safeParse(summary);
+    expect(result.success).toBe(true);
   });
 });

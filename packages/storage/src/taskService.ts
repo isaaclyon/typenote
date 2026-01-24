@@ -13,9 +13,16 @@
  * - completeTask / reopenTask: Convenience mutations
  */
 
-import { and, eq, isNull, sql, gte, lt } from 'drizzle-orm';
+import { and, desc, eq, isNull, sql, gte, lte, lt } from 'drizzle-orm';
 import { getTodayDateKey } from '@typenote/core';
-import type { TaskStatus, TaskPriority } from '@typenote/api';
+import type {
+  GetTasksOptions,
+  TaskPriority,
+  TaskStatus,
+  TaskSummary,
+  TaskProperties,
+} from '@typenote/api';
+import { TaskPropertiesSchema } from '@typenote/api';
 import type { TypenoteDb } from './db.js';
 import { objects } from './schema.js';
 import { getObjectTypeByKey } from './objectTypeService.js';
@@ -71,6 +78,44 @@ function rowToTaskObject(row: typeof objects.$inferSelect): TaskObject {
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
+}
+
+function parseTaskProperties(raw: string | null): TaskProperties {
+  let parsed: unknown = {};
+  if (raw) {
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = {};
+    }
+  }
+
+  const result = TaskPropertiesSchema.safeParse(parsed);
+  if (result.success) {
+    return result.data;
+  }
+
+  let fallback: TaskProperties = { status: 'Todo' };
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    const record = parsed as Record<string, unknown>;
+    const dueDate = typeof record['due_date'] === 'string' ? record['due_date'] : undefined;
+    if (dueDate) {
+      const dueResult = TaskPropertiesSchema.safeParse({ status: 'Todo', due_date: dueDate });
+      if (dueResult.success) {
+        fallback = dueResult.data;
+      }
+    }
+
+    const priority = typeof record['priority'] === 'string' ? record['priority'] : undefined;
+    if (priority) {
+      const priorityResult = TaskPropertiesSchema.safeParse({ ...fallback, priority });
+      if (priorityResult.success) {
+        fallback = priorityResult.data;
+      }
+    }
+  }
+
+  return fallback;
 }
 
 /**
@@ -304,6 +349,91 @@ export function getTasksByDueDate(db: TypenoteDb, dateKey: string): TaskObject[]
     .all();
 
   return rows.map(rowToTaskObject);
+}
+
+/**
+ * Get tasks using flexible query options.
+ */
+export function getTasks(db: TypenoteDb, options: GetTasksOptions): TaskSummary[] {
+  const taskTypeId = getTaskTypeId(db);
+  const conditions = [eq(objects.typeId, taskTypeId), isNull(objects.deletedAt)];
+  const dueDateExpr = sql`json_extract(${objects.properties}, '$.due_date')`;
+  const statusExpr = sql`json_extract(${objects.properties}, '$.status')`;
+  const priorityExpr = sql`json_extract(${objects.properties}, '$.priority')`;
+
+  if (options.status) {
+    conditions.push(sql`${statusExpr} = ${options.status}`);
+  }
+
+  if (options.priority) {
+    conditions.push(sql`${priorityExpr} = ${options.priority}`);
+  }
+
+  if (options.dueDateKey) {
+    const startOfDay = getStartOfDay(options.dueDateKey);
+    const endOfDay = getEndOfDay(options.dueDateKey);
+    conditions.push(sql`${dueDateExpr} >= ${startOfDay}`);
+    conditions.push(sql`${dueDateExpr} <= ${endOfDay}`);
+  }
+
+  if (options.dueAfter) {
+    conditions.push(sql`${dueDateExpr} IS NOT NULL`);
+    conditions.push(sql`${dueDateExpr} >= ${options.dueAfter}`);
+  }
+
+  if (options.dueBefore) {
+    conditions.push(sql`${dueDateExpr} IS NOT NULL`);
+    conditions.push(sql`${dueDateExpr} <= ${options.dueBefore}`);
+  }
+
+  if (options.hasDueDate === true) {
+    conditions.push(sql`${dueDateExpr} IS NOT NULL`);
+    conditions.push(sql`${dueDateExpr} != ''`);
+  }
+
+  if (options.hasDueDate === false) {
+    conditions.push(sql`(${dueDateExpr} IS NULL OR ${dueDateExpr} = '')`);
+  }
+
+  const hasCompletionRange = options.completedAfter || options.completedBefore;
+  if (hasCompletionRange) {
+    conditions.push(sql`${statusExpr} = 'Done'`);
+    if (options.completedAfter) {
+      conditions.push(gte(objects.updatedAt, new Date(options.completedAfter)));
+    }
+    if (options.completedBefore) {
+      conditions.push(lte(objects.updatedAt, new Date(options.completedBefore)));
+    }
+  } else if (!options.includeCompleted && !options.status) {
+    conditions.push(sql`${statusExpr} != 'Done'`);
+  }
+
+  const limit = options.limit ?? -1;
+  const offset = options.offset ?? 0;
+
+  const rows = db
+    .select({
+      id: objects.id,
+      title: objects.title,
+      typeId: objects.typeId,
+      updatedAt: objects.updatedAt,
+      properties: objects.properties,
+    })
+    .from(objects)
+    .where(and(...conditions))
+    .orderBy(desc(objects.updatedAt))
+    .limit(limit)
+    .offset(offset)
+    .all();
+
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    typeId: row.typeId,
+    typeKey: 'Task',
+    updatedAt: row.updatedAt,
+    properties: parseTaskProperties(row.properties),
+  }));
 }
 
 // ============================================================================

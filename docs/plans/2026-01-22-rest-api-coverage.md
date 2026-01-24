@@ -34,9 +34,12 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 
 ### Tasks
 
+**Status:** Complete (2026-01-24)
+
 **Routes**
 
 - `GET /tasks?status&priority&dueDateKey&dueBefore&dueAfter&includeCompleted&limit&offset`
+- `GET /tasks?completedAfter&completedBefore&hasDueDate`
 - `GET /tasks/inbox`
 - `GET /tasks/today`
 - `GET /tasks/overdue`
@@ -48,9 +51,9 @@ Expose backend capabilities that currently exist only in storage + IPC through t
 **Shapes**
 
 - Query uses `GetTasksOptions` (from `@typenote/api/task`).
-- Responses should include task properties (`status`, `due_date`, `priority`).
-- Recommend new `TaskSummary = ObjectSummary & { properties: TaskProperties }` schema.
-- Action results should return the updated summary or a small `TaskStatusResult` schema.
+- Responses include task properties (`status`, `due_date`, `priority`) via `TaskSummary`.
+- `TaskSummary` schema implemented (`TaskSummarySchema`).
+- Action results return `TaskSummary`.
 
 **Backed by** `taskService.ts` query + action functions.
 

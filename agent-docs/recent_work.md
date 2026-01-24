@@ -1,6 +1,29 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - REST Export/Import + Timestamp Fix)
+## Latest Session (2026-01-24 - REST Tasks Coverage + Actions)
+
+### What was accomplished
+
+- **Task contracts expanded** — `TaskSummarySchema` added; `GetTasksOptions` gained `completedAfter`, `completedBefore`, `hasDueDate`
+- **Unified task query** — `getTasks` in storage handles filters, completion window, and pagination ordering
+- **REST tasks endpoints** — read-only routes plus `/tasks/:id/complete` and `/tasks/:id/reopen`, all returning `TaskSummary`
+- **Tests added** — API/storage/http-server coverage including pagination + actions
+- **Full HTTP server test run** — required port binding (non-sandbox)
+
+### Key files changed
+
+- `packages/api/src/task.ts`, `packages/api/src/task.test.ts`, `packages/api/src/index.ts`
+- `packages/storage/src/taskService.ts`, `packages/storage/src/taskService.test.ts`, `packages/storage/src/index.ts`
+- `packages/http-server/src/routes/tasks.ts`, `packages/http-server/src/routes/tasks.test.ts`, `packages/http-server/src/router.ts`
+- `docs/plans/2026-01-22-rest-api-coverage.md`
+
+### Commits (this session)
+
+- None
+
+---
+
+## Earlier Session (2026-01-24 - REST Export/Import + Timestamp Fix)
 
 ### What was accomplished
 
@@ -41,37 +64,13 @@
 
 ---
 
-## Earlier Session (2026-01-22 - Unified TitleBar Chrome)
-
-### What was accomplished
-
-- **Unified chrome layout** — Breadcrumbs moved into TitleBar; HeaderBar removed
-- **AppShell simplified** — Single-row TitleBar + content; breadcrumbs routed into TitleBar
-- **Story updates** — TitleBar/AppShell/pattern contexts updated for 36px chrome row
-- **Docs archived** — Unified TitleBar plan moved to archived after completion
-
-### Key files changed
-
-- `packages/design-system/src/features/TitleBar/TitleBar.tsx` + stories
-- `packages/design-system/src/features/AppShell/AppShell.tsx` + stories
-- `packages/design-system/src/features/HeaderBar/*` (removed)
-- `packages/design-system/src/patterns/Breadcrumbs/Breadcrumbs.stories.tsx`
-- `docs/archive/2026-01-22-unified-titlebar-breadcrumbs-implementation.md`
-
-### Commits (this session)
-
-- None (uncommitted)
-
----
-
 ## Earlier Session (2026-01-21 - Editable PropertyList Complete)
 
 ### What was accomplished
 
 - **Editable PropertyList fully implemented** — All 11 tasks from implementation plan complete
-- **6 inline editors** — TextEditor, BooleanEditor, SelectEditor, MultiselectEditor, DateEditor, EditableValue orchestrator
-- **New primitives** — Popover (Radix-based), Calendar (react-day-picker v9)
-- **New patterns** — DatePicker (hybrid text + calendar), DismissibleTag (for relation chips)
+- **6 inline editors** — Text/Boolean/Select/Multiselect/Date editors + EditableValue orchestrator
+- **New primitives/patterns** — Popover, Calendar, DatePicker, DismissibleTag
 - **Comprehensive stories** — 10 new editable stories covering all property types
 
 ### Commits (this session)
@@ -87,14 +86,8 @@
 - `3a6daba` deps(design-system): add popover, react-day-picker, date-fns
 - `cc806b2` feat(design-system): add MultiselectEditor for inline property editing
 
-### Key patterns
-
-- Click-to-edit UX (Notion-style): value display → click → editor → blur/Enter saves
-- Boolean special case: checkbox toggles immediately (no edit mode)
-- `exactOptionalPropertyTypes` compliance: all optional props use `| undefined`
-
 ---
 
 ## Historical — Collapsed
 
-ObjectDataGrid design plan + data grid patterns + CommandPalette (2026-01-21), editor features, backend packages stable, pre-design-system-rebuild work.
+Unified TitleBar chrome session (2026-01-22), ObjectDataGrid design plan + data grid patterns + CommandPalette (2026-01-21), editor features, backend packages stable, pre-design-system-rebuild work.

@@ -10,6 +10,7 @@ import { health } from './routes/health.js';
 import { dailyNotes } from './routes/daily-notes.js';
 import { tags } from './routes/tags.js';
 import { trash } from './routes/trash.js';
+import { tasks } from './routes/tasks.js';
 import type { ServerContext } from './types.js';
 
 /**
@@ -30,6 +31,7 @@ export function createRouter() {
   router.route('/daily-notes', dailyNotes);
   router.route('/tags', tags);
   router.route('/trash', trash);
+  router.route('/tasks', tasks);
 
   return router;
 }

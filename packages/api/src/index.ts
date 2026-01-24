@@ -247,6 +247,9 @@ export {
   // Properties schema
   TaskPropertiesSchema,
   type TaskProperties,
+  // Summary
+  TaskSummarySchema,
+  type TaskSummary,
   // Query options
   GetTasksOptionsSchema,
   type GetTasksOptions,

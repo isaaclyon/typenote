@@ -12,6 +12,7 @@ import {
   getTodaysTasks,
   getOverdueTasks,
   getTasksByStatus,
+  getTasks,
   getUpcomingTasks,
   getInboxTasks,
   getTasksByPriority,
@@ -21,6 +22,8 @@ import {
   reopenTask,
   type TaskObject,
 } from './taskService.js';
+import { objects } from './schema.js';
+import { eq } from 'drizzle-orm';
 
 // ============================================================================
 // Test Helpers
@@ -415,6 +418,77 @@ describe('TaskService', () => {
 
       expect(Array.isArray(tasks)).toBe(true);
       expect(tasks).toHaveLength(1);
+    });
+  });
+
+  describe('getTasks', () => {
+    it('excludes completed tasks by default', () => {
+      createTask(db, 'Open task', { status: 'Todo' });
+      createTask(db, 'Done task', { status: 'Done' });
+
+      const tasks = getTasks(db, {});
+
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0]?.title).toBe('Open task');
+    });
+
+    it('includes completed tasks when includeCompleted is true', () => {
+      createTask(db, 'Open task', { status: 'Todo' });
+      createTask(db, 'Done task', { status: 'Done' });
+
+      const tasks = getTasks(db, { includeCompleted: true });
+
+      expect(tasks).toHaveLength(2);
+      expect(tasks.map((task) => task.title)).toContain('Done task');
+    });
+
+    it('filters by dueDateKey', () => {
+      const today = getTodayDateKey();
+      const tomorrow = getDateKey(1);
+      createTask(db, 'Due today', { status: 'Todo', due_date: toDatetime(today) });
+      createTask(db, 'Due tomorrow', { status: 'Todo', due_date: toDatetime(tomorrow) });
+
+      const tasks = getTasks(db, { dueDateKey: today });
+
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0]?.title).toBe('Due today');
+    });
+
+    it('filters by hasDueDate', () => {
+      createTask(db, 'No due date', { status: 'Todo' });
+      createTask(db, 'With due date', {
+        status: 'Todo',
+        due_date: toDatetime(getTodayDateKey()),
+      });
+
+      const tasks = getTasks(db, { hasDueDate: false });
+
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0]?.title).toBe('No due date');
+    });
+
+    it('filters completed tasks by updatedAt range', () => {
+      const doneTask = createTask(db, 'Done in range', { status: 'Done' });
+      const doneOutside = createTask(db, 'Done outside range', { status: 'Done' });
+      createTask(db, 'Todo in range', { status: 'Todo' });
+
+      db.update(objects)
+        .set({ updatedAt: new Date('2026-01-10T12:00:00.000Z') })
+        .where(eq(objects.id, doneTask.id))
+        .run();
+
+      db.update(objects)
+        .set({ updatedAt: new Date('2026-01-20T12:00:00.000Z') })
+        .where(eq(objects.id, doneOutside.id))
+        .run();
+
+      const tasks = getTasks(db, {
+        completedAfter: '2026-01-05T00:00:00.000Z',
+        completedBefore: '2026-01-15T23:59:59.000Z',
+      });
+
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0]?.title).toBe('Done in range');
     });
   });
 

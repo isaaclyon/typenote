@@ -36,12 +36,6 @@
 3. Build ObjectDataGrid feature (the main data table)
 4. Wire to desktop renderer
 
-### Folder Structure
-
-- `src/primitives/` — 22 atoms with stories (added Popover)
-- `src/patterns/` — 25+ molecules with stories (added Calendar, DatePicker, DismissibleTag, editors)
-- `src/features/` — 6 features (Sidebar, TitleBar, AppShell, Editor, CommandPalette, ObjectDataGrid)
-
 ### Reference
 
 - Editable PropertyList plan: `docs/archive/2026-01-21-editable-property-list.md`
@@ -53,19 +47,22 @@
 
 ## REST API Coverage
 
-**Status:** Active — export/import endpoints started (plan: `docs/plans/2026-01-22-rest-api-coverage.md`)
+**Status:** Active — tasks coverage complete; export/markdown work in progress (plan: `docs/plans/2026-01-22-rest-api-coverage.md`)
 
 ### Completed
 
 - [x] Add export/import API schemas (ExportAll/ImportFolder)
 - [x] Add `/export/all` + `/import/folder` routes with tests (`ca974d5`)
 - [x] Fix `applyBlockPatch` timestamp precision (seconds vs ms)
+- [x] Tasks REST coverage: `TaskSummary`, expanded `GetTasksOptions`, unified `getTasks`, `/tasks` + actions, tests
 
 ### In Progress / Next
 
 - [ ] Commit markdown export route + core markdown serializer + tests (untracked in working tree)
+- [ ] Commit Tasks REST coverage changes + plan update
 - [ ] Add remaining export endpoints (`/export/object`, `/export/type`) and JSON export/import contracts
 - [ ] Define attachment download response contract + headers
+- [ ] Start calendar endpoints (`/calendar*`) + `CalendarTypeMetadata` schema
 
 ---
 

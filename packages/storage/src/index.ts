@@ -167,6 +167,7 @@ export {
   getTodaysTasks,
   getOverdueTasks,
   getTasksByStatus,
+  getTasks,
   getUpcomingTasks,
   getInboxTasks,
   getTasksByPriority,
