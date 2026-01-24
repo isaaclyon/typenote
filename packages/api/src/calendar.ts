@@ -101,3 +101,25 @@ export const CalendarQueryOptionsSchema = z.object({
 });
 
 export type CalendarQueryOptions = z.infer<typeof CalendarQueryOptionsSchema>;
+
+// ============================================================================
+// CalendarTypeMetadata
+// ============================================================================
+
+/**
+ * Metadata describing how a type participates in calendar views.
+ */
+export const CalendarTypeMetadataSchema = z.object({
+  /** Object type ID (ULID) */
+  typeId: z.string().length(26),
+  /** Object type key (e.g., 'Event', 'Task') */
+  typeKey: z.string().min(1),
+  /** Primary date property key used for calendar placement */
+  primaryDateProp: z.string().min(1),
+  /** Secondary date property key (optional) */
+  secondaryDateProp: z.string().min(1).optional(),
+  /** Whether the date properties are date-only (no time) */
+  isDateOnly: z.boolean(),
+});
+
+export type CalendarTypeMetadata = z.infer<typeof CalendarTypeMetadataSchema>;

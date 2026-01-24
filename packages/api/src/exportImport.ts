@@ -10,21 +10,31 @@ export const ExportManifestSchema = z.object({
 
 export type ExportManifest = z.infer<typeof ExportManifestSchema>;
 
-export const ExportedBlockSchema = z.object({
-  id: z.string().length(26),
-  parentBlockId: z.string().length(26).nullable(),
-  orderKey: z.string(),
-  blockType: z.string(),
-  content: z.unknown(),
-  meta: z
-    .object({
-      collapsed: z.boolean().optional(),
-    })
-    .nullable(),
-  children: z.array(z.lazy(() => ExportedBlockSchema)),
-});
+export interface ExportedBlock {
+  id: string;
+  parentBlockId: string | null;
+  orderKey: string;
+  blockType: string;
+  content?: unknown;
+  meta: { collapsed?: boolean | undefined } | null;
+  children: ExportedBlock[];
+}
 
-export type ExportedBlock = z.infer<typeof ExportedBlockSchema>;
+export const ExportedBlockSchema: z.ZodType<ExportedBlock> = z
+  .object({
+    id: z.string().length(26),
+    parentBlockId: z.string().length(26).nullable(),
+    orderKey: z.string(),
+    blockType: z.string(),
+    content: z.unknown(),
+    meta: z
+      .object({
+        collapsed: z.boolean().optional(),
+      })
+      .nullable(),
+    children: z.array(z.lazy(() => ExportedBlockSchema)),
+  })
+  .required();
 
 export const ExportedObjectSchema = z.object({
   $schema: z.literal('typenote/object/v1'),

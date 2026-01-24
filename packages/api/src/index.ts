@@ -277,6 +277,9 @@ export {
   // Calendar item
   CalendarItemSchema,
   type CalendarItem,
+  // Calendar type metadata
+  CalendarTypeMetadataSchema,
+  type CalendarTypeMetadata,
   // Query options
   CalendarQueryOptionsSchema,
   type CalendarQueryOptions,
