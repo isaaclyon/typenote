@@ -265,8 +265,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 16,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed: Link extension loaded (useEditorExtensions line 5). Converter tests verify links with formatted text (tiptapToNotateDoc.test.ts line 147). TipTap Link extension provides Cmd+K, markdown rules, paste handling."
     },
     {
       "id": "US-017",

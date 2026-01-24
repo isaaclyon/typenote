@@ -108,3 +108,10 @@ Started: 2026-01-24
   - SlashCommand: Custom extension with filtering, icons, keyboard nav
   - All features wired in NotesView with enableSlashCommands={true}
 ---
+## [2026-01-24 17:24] - US-016
+- Verified Link support (pre-implemented in Editor)
+- **Learnings for future iterations:**
+  - Link extension from @tiptap/extension-link provides Cmd+K shortcut, paste handling, markdown rules
+  - Converter tests verify link nodes with href attribute and nested formatted content
+  - External link opening would require custom handler in Editor component
+---
