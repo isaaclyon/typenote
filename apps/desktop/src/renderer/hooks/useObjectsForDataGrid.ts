@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ObjectSummaryWithProperties } from '@typenote/storage';
 import { queryKeys } from '../lib/queryKeys.js';
 import { ipcQuery } from '../lib/ipcQueryAdapter.js';
+import { api } from '../lib/api.js';
 
 export interface UseObjectsForDataGridResult {
   rows: ObjectSummaryWithProperties[];

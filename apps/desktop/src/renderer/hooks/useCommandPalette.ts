@@ -8,6 +8,7 @@ import type {
 } from '@typenote/design-system';
 import { useRecentObjects } from './useRecentObjects.js';
 import { useSearchObjects } from './useSearchObjects.js';
+import { api } from '../lib/api.js';
 import { useTypesMetadata } from './useTypesMetadata.js';
 import { useCreateObject } from './useCreateObject.js';
 import { getTypeIcon } from '../lib/getTypeIcon.js';

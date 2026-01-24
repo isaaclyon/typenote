@@ -57,11 +57,11 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<Ipc
 export const httpAPI: TypenoteAPI = {
   version: '0.1.0',
 
-  getDocument: (objectId) => fetchAPI(`/api/v1/v1/documents/${objectId}`, { method: 'GET' }),
+  getDocument: (objectId) => fetchAPI(`/api/v1/objects/${objectId}/document`, { method: 'GET' }),
 
   applyBlockPatch: (request) =>
-    fetchAPI('/api/v1/documents/patch', {
-      method: 'POST',
+    fetchAPI(`/api/v1/objects/${request.objectId}/document`, {
+      method: 'PATCH',
       body: JSON.stringify(request),
     }),
 

@@ -35,6 +35,7 @@
     "dev": "pnpm build && pnpm --filter @typenote/desktop dev",
     "predev:quick": "node scripts/ensure-native-build.mjs electron",
     "dev:quick": "pnpm --filter @typenote/desktop dev",
+    "dev:all": "concurrently \"pnpm --filter @typenote/http-server dev\" \"pnpm --filter @typenote/desktop dev:web\"",
     "prestart": "node scripts/ensure-native-build.mjs electron",
     "start": "pnpm --filter @typenote/desktop dev"
   },

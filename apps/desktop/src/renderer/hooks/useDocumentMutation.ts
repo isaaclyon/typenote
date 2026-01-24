@@ -6,6 +6,7 @@ import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 import { useDebouncedCallback } from '../utils/useDebouncedCallback.js';
 import { buildBlockOps } from './documentOps.js';
+import { api } from '../lib/api.js';
 
 /** Debounce delay for autosave in milliseconds */
 const AUTOSAVE_DEBOUNCE_MS = 750;

@@ -2,7 +2,7 @@
 
 ## Design System Rebuild (Fresh Start)
 
-**Status:** Active — Renderer wiring in progress
+**Status:** Active — MVP renderer wiring complete, follow-ups remain
 **Approach:** Ladle-first development (components built in sandbox before desktop app)
 
 ### Current State
@@ -18,7 +18,10 @@
 - ✅ **ObjectDataGrid wired to TypesView** — table view with dynamic columns, sorting, delete
 - ✅ **Search enrichment complete** — SearchResult includes object titles, type metadata
 - ✅ Depcruise cycles resolved in design-system (PropertyList + editor extensions)
-- ⏳ CommandPalette wired but not opened yet (hook exists, needs UI trigger)
+- ✅ **Web mode complete** — HTTP adapter + dev server, runs in browser without Electron (faster iteration)
+- ✅ **UI alignment complete** — Sidebar icons, header label, footer actions per plan
+- ✅ **CommandPalette fully wired** — ⌘K shortcut, search, recent objects, quick actions
+- ✅ **"New" button wired** — Creates Page object + navigates to editor
 
 ### Type Alignment (Completed)
 
@@ -32,13 +35,13 @@
 
 - [ ] Confirm whether destructive purge needs a migration gate or release-note warning
 
-### MVP Renderer Gaps (Remaining)
+### MVP Renderer Gaps (✅ COMPLETE)
 
 - [x] Wire Editor component to NotesView for document editing
 - [x] Wire ObjectDataGrid to TypesView for table view
 - [x] Enrich search results with object metadata (titles, type info)
-- [ ] Wire CommandPalette UI trigger (⌘K shortcut + AppShell integration)
-- [ ] Connect "New" button to create object flow
+- [x] Wire CommandPalette UI trigger (⌘K shortcut + AppShell integration)
+- [x] Connect "New" button to create object flow
 
 ### Renderer Follow-ups
 
@@ -49,12 +52,14 @@
 - [x] Sync AGENTS.md to CLAUDE.md and add `.code/` symlinks (remove opencode.json)
 - [x] Add `.code/prompts/` wrappers for session + E2E workflows
 - [x] Port `design-principles` skill into `.code/skills/`
+- [x] **Web mode** — HTTP server + adapter for browser dev (no Electron rebuild needed)
 - [ ] Add `electron-vite` or `vite-plugin-electron` for main/preload HMR
 - [ ] Resolve depcruise orphan warnings (.ladle/config.mjs, renderer App.tsx, typeMetadata)
 
 ### Reference
 
 - AppShell wiring plan: `docs/plans/2026-01-23-appshell-renderer-wiring.md`
+- UI alignment plan: `docs/plans/2026-01-24-ui-alignment.md` (✅ complete)
 - ObjectDataGrid design: `docs/archive/2026-01-21-object-data-grid-design.md`
 - Token reference: `/docs/system/QUICK_REFERENCE.md`
 
@@ -91,8 +96,10 @@ All REST API endpoints are now fully covered:
 
 | Feature                  | Date       | Commits      |
 | ------------------------ | ---------- | ------------ |
+| MVP renderer wiring      | 2026-01-24 | None (WIP)   |
+| CSS layout fixes         | 2026-01-24 | None (WIP)   |
+| Web mode + UI alignment  | 2026-01-24 | None (WIP)   |
 | Search enrichment        | 2026-01-24 | `e61ac60`    |
 | ObjectDataGrid wiring    | 2026-01-24 | `86daf59`    |
 | REST API coverage        | 2026-01-24 | `7454e64` +9 |
 | AppShell renderer wiring | 2026-01-23 | `1d6aa54` +6 |
-| ObjectDataGrid feature   | 2026-01-22 | `7fa7ba0`    |

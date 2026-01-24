@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
+import { api } from '../lib/api.js';
 
 /**
  * Hook to record a view of an object for recent objects tracking.

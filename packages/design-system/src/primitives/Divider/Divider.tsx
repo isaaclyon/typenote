@@ -16,7 +16,7 @@ const toneMap: Record<DividerTone, string> = {
 };
 
 const orientationMap: Record<DividerOrientation, string> = {
-  horizontal: 'h-px w-full',
+  horizontal: 'h-px',
   vertical: 'h-full w-px',
 };
 

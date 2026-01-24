@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { SearchResult } from '@typenote/storage';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
+import { api } from '../lib/api.js';
 
 /**
  * Hook to search for objects by text query for CommandPalette.

@@ -78,6 +78,12 @@ When your task touches one of these areas, read the matching rule file and follo
 - Create Ladle stories for all variants before desktop integration.
 - Do not add or modify renderer UI components directly without design-system parity.
 
+## Development Notes
+
+- Design system changes require rebuild: `pnpm --filter @typenote/design-system build`
+- CSS `h-full`/`height: 100%` requires all ancestors to have explicit heights
+- Block elements fill available width naturally — avoid `w-full` when using margins
+
 ## Quick Commands (Root)
 
 - Install: `pnpm install`

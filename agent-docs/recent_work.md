@@ -1,113 +1,96 @@
 # Recent Work
 
-## Latest Session (2026-01-24 - Type alignment + destructive purge)
+## Latest Session (2026-01-24 - CSS layout fixes)
 
 ### What was accomplished
 
-- **Aligned type keys + labels** — Renderer now uses PascalCase type keys (e.g., `Page`) and `pluralName` for sidebar labels; metadata queries use `builtInOnly`
-- **Destructive type cleanup** — Added `purgeUnsupportedTypes()` and wired into `seedBuiltInTypes()` to delete unsupported types and related data
-- **Design-system parity** — Added **Tasks** to Sidebar/AppShell stories
-- **New tests** — Added/updated renderer hook tests + storage cleanup test
+- **Full-height layout fix** — App now fills entire window (was cutting off halfway)
+  - Added `height: 100%` to html/body/#root in tokens.css
+  - AppShell's `h-full` now works correctly with proper ancestor heights
+- **Divider overflow fix** — Horizontal dividers no longer overlap sidebar border
+  - Removed `w-full` from Divider primitive (block elements fill naturally)
+  - Added asymmetric margins `ml-2 mr-4` to SidebarFooter divider
+- **CLAUDE.md updates** — Added learnings about CSS height propagation and `w-full` + margins anti-pattern
 
 ### Key files changed
 
-- `packages/storage/src/typeCleanup.ts`
-- `packages/storage/src/objectTypeService.ts`
-- `apps/desktop/src/renderer/hooks/useTypeCounts.ts`
-- `apps/desktop/src/renderer/hooks/useTypesMetadata.ts`
-- `apps/desktop/src/renderer/hooks/useDocument.ts`
-- `apps/desktop/src/renderer/layouts/RootLayout.tsx`
-- `packages/design-system/src/features/Sidebar/Sidebar.stories.tsx`
+- `packages/design-system/src/lib/tokens.css` — Added html/body/#root height chain
+- `packages/design-system/src/primitives/Divider/Divider.tsx` — Removed `w-full` from horizontal
+- `packages/design-system/src/features/Sidebar/SidebarFooter.tsx` — Asymmetric margins
+- `CLAUDE.md` — Development notes section
+- `.claude/rules/design-system.md` — New anti-pattern
+
+### Commits
+
+- None (uncommitted CSS fixes)
+
+---
+
+## Earlier Session (2026-01-24 - Web mode + UI alignment)
+
+### What was accomplished
+
+- **Web mode setup** — Full HTTP-based dev mode (no Electron!) for faster iteration
+  - HTTP adapter implementing TypenoteAPI interface via fetch
+  - Environment auto-detection (Electron vs web)
+  - Router adapts: HashRouter for Electron, BrowserRouter for web
+  - Vite proxy + CORS middleware
+  - Dev server using real database (`~/.typenote/typenote.db`)
+  - Commands: `pnpm --filter @typenote/http-server dev` + `pnpm --filter @typenote/desktop dev:web`
+- **Icon mapping fixed** — Types show correct icons (Calendar, User, MapPin, CheckSquare)
+- **API adapter pattern** — All hooks migrated from `window.typenoteAPI` to `api` (adapter)
+- **UI alignment** — Per `docs/plans/2026-01-24-ui-alignment.md`: header "New note", footer (Archive/Dark mode/Settings), Calendar row removed, spacing
+
+### Key files added
+
+- `apps/desktop/src/renderer/lib/api.ts` — Environment-aware API client
+- `apps/desktop/src/renderer/lib/httpAdapter.ts` — HTTP adapter
+- `packages/http-server/src/dev.ts` — Dev server script
+
+### Key files changed
+
+- All renderer hooks (`useTypeCounts`, `usePinnedObjects`, `useCreateObject`, etc.)
+- `apps/desktop/src/renderer/layouts/RootLayout.tsx` — Icon mapping + footer
+- `apps/desktop/src/renderer/lib/router.tsx` — Hash/Browser router switching
+- `apps/desktop/vite.config.ts` — Web mode + proxy
+- `packages/http-server/src/server.ts` — CORS middleware
+- `packages/design-system/src/features/Sidebar/SidebarHeader.tsx` — Styling
+
+### Commits
+
+- None (experimental DX feature)
+
+---
+
+## Earlier Session (2026-01-24 - Type alignment + destructive purge)
+
+### What was accomplished
+
+- **Type alignment** — PascalCase keys (`Page`), `pluralName` labels, `builtInOnly` queries
+- **Destructive cleanup** — `purgeUnsupportedTypes()` wired to `seedBuiltInTypes()`
+- **Design-system** — Tasks added to Sidebar/AppShell stories
+
+### Key files changed
+
+- `packages/storage/src/{typeCleanup.ts,objectTypeService.ts}`
+- Renderer hooks + `RootLayout.tsx`
+- Sidebar stories
 
 ### Commits
 
 - None
 
-### Uncommitted work preserved
-
-- Left existing renderer/preload/main and package.json edits untouched
-
 ---
-
-## Earlier Session (2026-01-24 - .code prompts + skills)
-
-### What was accomplished
-
-- Added `.code/prompts/*` wrappers for session commands + E2E skills
-- Ported `design-principles` skill into `.code/skills/`
-- Clarified initialization context in `.code/AGENTS.md`
-
-### Key files changed
-
-- `.code/AGENTS.md`
-- `.code/prompts/*`
-- `.code/skills/design-principles/*`
-
-### Commits
-
-- None
-
-### Uncommitted work preserved
-
-- Left existing renderer/preload/main and package.json edits untouched
-
----
-
-## Earlier Session (2026-01-24 - Design-system depcruise cycle fix)
-
-### What was accomplished
-
-- Broke design-system cycles by extracting shared types
-- Updated editor hooks/types + PropertyList to consume new type modules
-- `pnpm deps:check` clean (orphan warnings only)
-
-### Key files changed
-
-- `packages/design-system/src/patterns/PropertyList/{PropertyList.types.ts,PropertyList.tsx,EditableValue.tsx,index.ts}`
-- `packages/design-system/src/features/Editor/extensions/{Callout,EmbedNode,ResizableImage}*.ts*`
-- `packages/design-system/src/features/Editor/extensions/ImageNodeView.tsx`
-- `packages/design-system/src/features/Editor/hooks/{useEditorExtensions.ts,useImageUpload.ts}`
-- `packages/design-system/src/features/Editor/{types.ts,Editor.tsx}`
-
-### Commit
-
-- `860462d` fix(design-system): extract shared types to break cycles
-
-### Uncommitted work preserved
-
-- Renderer hooks/tests + layout changes (RootLayout, NotesView, IPC adapter)
-- Sidebar story + type tweaks in design-system
-- Preload/API typings edits and package.json/lockfile changes
-
----
-
-## Earlier Session (2026-01-24 - Search enrichment)
-
-### What was accomplished
-
-- Search results enriched with metadata (title/type/icon/color)
-- JOINs added to `searchBlocks()`; CommandPalette shows real titles
-- Tests updated across storage + renderer
-
-### Key files changed
-
-- `packages/storage/src/search.ts` — Extended SearchResult type, added SQL JOINs (4 new fields)
-- `packages/storage/src/search.test.ts` — Updated test expectations for enriched results
-- `apps/desktop/src/renderer/hooks/useCommandPalette.ts` — New hook using enriched search data
-- `apps/desktop/src/renderer/hooks/__tests__/*` — Tests for CommandPalette + search hooks
-- `apps/desktop/src/main/ipc.test.ts` — Updated IPC handler test expectations
-
-### Commit
-
-- `e61ac60` feat(search): enrich search results with object metadata
 
 ## Historical — Collapsed
 
-- Build fixes + test infra (2026-01-24): TypeScript stub fix, CSS build script, new hooks (useRecentObjects/useSearchObjects/useRecordView/useTypesMetadata)
-- ObjectDataGrid wiring complete (2026-01-24): TypesView integration, sorting, soft delete, column builder, data hook — `86daf59`
-- Commit & cleanup (2026-01-24): 4 atomic commits — `f85eab1`, `9e7ffd4`, `457cb46`, `f58e2dd`
-- Document autosave robustness (2026-01-23)
-- REST API coverage complete (2026-01-24)
-- Editor wiring to NotesView (2026-01-23)
-- AppShell renderer wiring (2026-01-23)
+- .code prompts + skills (2026-01-24): Added session/E2E wrappers, ported design-principles skill
+- Design-system depcruise fix (2026-01-24): Broke cycles with shared types — `860462d`
+- Search enrichment (2026-01-24): Metadata in search results — `e61ac60`
+- Web mode + UI alignment (2026-01-24): HTTP adapter, icon mapping, footer styling
+- Type alignment + destructive purge (2026-01-24): PascalCase keys, `builtInOnly`, `purgeUnsupportedTypes()`
+- ObjectDataGrid wiring (2026-01-24): TypesView integration — `86daf59`
+- REST API coverage complete (2026-01-24): 20 endpoints — `7454e64` +9
+- Editor + autosave robustness (2026-01-23): Move ops, retry, ref resolver
+- AppShell renderer wiring (2026-01-23): `1d6aa54` +6
 - PropertyList + ObjectDataGrid feature (2026-01-21)

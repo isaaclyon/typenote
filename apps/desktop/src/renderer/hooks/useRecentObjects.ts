@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { RecentObjectSummary } from '@typenote/storage';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
+import { api } from '../lib/api.js';
 
 /**
  * Hook to fetch recently viewed objects for CommandPalette.

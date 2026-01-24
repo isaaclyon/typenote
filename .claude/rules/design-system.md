@@ -433,6 +433,7 @@ const Component = ({ icon: Icon }: Props) => (
 
 ### Styling
 
+- [ ] No `w-full` combined with margins on block elements (causes overflow — use auto width instead)
 - [ ] No inline styles (except dynamic colors from props)
 - [ ] No custom colors outside design tokens
 - [ ] No arbitrary values like `w-[237px]` — use design tokens

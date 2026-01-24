@@ -5,6 +5,7 @@ import type { JSONContent } from '@tiptap/core';
 import { queryKeys } from '../lib/queryKeys.js';
 import { adaptIpcOutcome } from '../lib/ipcQueryAdapter.js';
 import { buildRefResolver, documentBlocksToConvertedBlocks } from './documentConversion.js';
+import { api } from '../lib/api.js';
 
 /**
  * Result of useDocument hook.

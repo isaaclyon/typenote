@@ -15,7 +15,7 @@ function SidebarFooterComponent({ actions, className }: SidebarFooterProps) {
 
   return (
     <div className={cn('mt-auto', className)}>
-      <Divider className="mx-2" />
+      <Divider className="ml-2 mr-4" />
       <div className={cn('flex flex-col gap-0.5 px-2 py-2')}>
         {actions.map((action) => {
           const Icon = action.icon;
