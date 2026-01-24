@@ -14,8 +14,12 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
   getOrCreateDailyNoteByDate: (dateKey: string) =>
     ipcRenderer.invoke('typenote:getOrCreateDailyNoteByDate', dateKey),
 
-  listObjects: (options?: { typeKey?: string; includeProperties?: boolean }) =>
-    ipcRenderer.invoke('typenote:listObjects', options),
+  listObjects: (options?: {
+    typeKey?: string;
+    includeProperties?: boolean;
+    sortBy?: string;
+    sortDirection?: 'asc' | 'desc';
+  }) => ipcRenderer.invoke('typenote:listObjects', options),
 
   getObjectsCreatedOnDate: (dateKey: string) =>
     ipcRenderer.invoke('typenote:getObjectsCreatedOnDate', dateKey),
@@ -200,6 +204,8 @@ contextBridge.exposeInMainWorld('typenoteAPI', {
     ipcRenderer.invoke('typenote:listDeletedObjects', options),
 
   restoreObject: (objectId: string) => ipcRenderer.invoke('typenote:restoreObject', objectId),
+
+  softDeleteObject: (objectId: string) => ipcRenderer.invoke('typenote:softDeleteObject', objectId),
 
   // Event subscription
   onEvent: (callback: (event: TypenoteEvent) => void) => {

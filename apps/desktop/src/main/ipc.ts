@@ -8,6 +8,7 @@ import {
   getOrCreateDailyNoteByDate as getOrCreateDailyNoteByDateStorage,
   listObjects as listObjectsStorage,
   getObject as getObjectStorage,
+  softDeleteObject as softDeleteObjectStorage,
   getObjectTypeByKey as getObjectTypeByKeyStorage,
   searchBlocks as searchBlocksStorage,
   getBacklinks as getBacklinksStorage,
@@ -284,6 +285,7 @@ export interface IpcHandlers {
   // Trash operations
   listDeletedObjects: (options?: ListDeletedObjectsOptions) => IpcOutcome<DeletedObjectSummary[]>;
   restoreObject: (objectId: string) => IpcOutcome<RestoreObjectResult>;
+  softDeleteObject: (objectId: string) => IpcOutcome<void>;
   // Object type operations
   listObjectTypes: (options?: ListObjectTypesOptions) => IpcOutcome<ObjectType[]>;
   createObjectType: (input: CreateObjectTypeInput) => IpcOutcome<ObjectType>;
@@ -647,6 +649,12 @@ export function createIpcHandlers(db: TypenoteDb, fileService: FileService): Ipc
       }
       return outcome;
     },
+
+    softDeleteObject: (objectId) =>
+      handleIpcCall(() => {
+        softDeleteObjectStorage(db, objectId);
+        return undefined;
+      }),
 
     // Object type operations
     listObjectTypes: (options) => handleIpcCall(() => listObjectTypesStorage(db, options)),

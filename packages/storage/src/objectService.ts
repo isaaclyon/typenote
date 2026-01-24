@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, isNull, lte, sql } from 'drizzle-orm';
 import { generateId } from '@typenote/core';
 import type { ObjectSummary, Tag } from '@typenote/api';
 import { objects, objectTypes } from './schema.js';
@@ -27,6 +27,10 @@ export interface ListObjectsOptions {
   includeProperties?: boolean;
   /** Filter objects created on this date (YYYY-MM-DD format, uses local time) */
   createdOnDate?: string;
+  /** Column to sort by: 'title', 'updatedAt', 'createdAt', or a property key */
+  sortBy?: string;
+  /** Sort direction: 'asc' or 'desc'. Defaults to 'desc' for dates, 'asc' otherwise */
+  sortDirection?: 'asc' | 'desc';
 }
 
 /**
@@ -107,7 +111,7 @@ export function listObjects(
   db: TypenoteDb,
   options?: ListObjectsOptions
 ): ObjectSummary[] | ObjectSummaryWithProperties[] {
-  const { typeKey, includeProperties, createdOnDate } = options ?? {};
+  const { typeKey, includeProperties, createdOnDate, sortBy, sortDirection } = options ?? {};
 
   // Build select fields - always include base fields
   const selectFields: {
@@ -151,12 +155,39 @@ export function listObjects(
     }
   }
 
+  // Build ORDER BY clause
+  // System columns use direct column reference, property columns use json_extract
+  const systemColumns = ['title', 'updatedAt', 'createdAt'];
+  const directionFn = sortDirection === 'asc' ? asc : desc;
+
+  let orderByClause;
+  if (sortBy === undefined) {
+    // Default: updatedAt desc
+    orderByClause = desc(objects.updatedAt);
+  } else if (systemColumns.includes(sortBy)) {
+    // System column: direct reference
+    const columnMap = {
+      title: objects.title,
+      updatedAt: objects.updatedAt,
+      createdAt: objects.createdAt,
+    } as const;
+    orderByClause = directionFn(columnMap[sortBy as keyof typeof columnMap]);
+  } else {
+    // Property column: json_extract from properties
+    // Use COALESCE to handle NULLs for consistent ordering:
+    // - ASC: NULLs first (use a value that sorts before any real value)
+    // - DESC: NULLs last (use a value that sorts after any real value)
+    // SQLite json_extract returns NULL for missing keys, which sorts first in ASC
+    const jsonPath = `$.${sortBy}`;
+    orderByClause = directionFn(sql`json_extract(${objects.properties}, ${jsonPath})`);
+  }
+
   const rows = db
     .select(selectFields)
     .from(objects)
     .leftJoin(objectTypes, eq(objects.typeId, objectTypes.id))
     .where(and(...conditions))
-    .orderBy(desc(objects.updatedAt))
+    .orderBy(orderByClause)
     .all();
 
   return rows.map((row) => {
@@ -643,4 +674,25 @@ export function updateObject(db: TypenoteDb, options: UpdateObjectOptions): Upda
   }
 
   return result;
+}
+
+// ============================================================================
+// Soft Delete Object
+// ============================================================================
+
+/**
+ * Soft delete an object by setting its deletedAt timestamp.
+ * This excludes the object from listObjects results.
+ *
+ * @param db - Database connection
+ * @param objectId - The object ID to delete
+ *
+ * @remarks
+ * This function is idempotent - calling it on an already-deleted
+ * or non-existent object will not throw an error.
+ */
+export function softDeleteObject(db: TypenoteDb, objectId: string): void {
+  const now = new Date();
+
+  db.update(objects).set({ deletedAt: now }).where(eq(objects.id, objectId)).run();
 }

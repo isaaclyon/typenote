@@ -6,6 +6,7 @@ import {
   createObject,
   getObject,
   updateObject,
+  softDeleteObject,
   CreateObjectError,
   UpdateObjectError,
   type ObjectSummaryWithProperties,
@@ -472,6 +473,405 @@ describe('ObjectService', () => {
         const result = listObjects(db, { createdOnDate: '2026-01-15' });
 
         expect(result).toHaveLength(3);
+      });
+    });
+
+    describe('with sorting', () => {
+      it('sorts by title ascending', () => {
+        seedBuiltInTypes(db);
+
+        const projectType = createObjectType(db, { key: 'Project', name: 'Project' });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: projectType.id,
+            title: 'Zebra Project',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: projectType.id,
+            title: 'Alpha Project',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: projectType.id,
+            title: 'Middle Project',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, { sortBy: 'title', sortDirection: 'asc' });
+
+        expect(result).toHaveLength(3);
+        expect(result[0]?.title).toBe('Alpha Project');
+        expect(result[1]?.title).toBe('Middle Project');
+        expect(result[2]?.title).toBe('Zebra Project');
+      });
+
+      it('sorts by title descending', () => {
+        seedBuiltInTypes(db);
+
+        const noteType = createObjectType(db, { key: 'Note', name: 'Note' });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'A Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Z Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, { sortBy: 'title', sortDirection: 'desc' });
+
+        expect(result).toHaveLength(2);
+        expect(result[0]?.title).toBe('Z Note');
+        expect(result[1]?.title).toBe('A Note');
+      });
+
+      it('sorts by property value (number)', () => {
+        seedBuiltInTypes(db);
+
+        const taskType = createObjectType(db, {
+          key: 'PriorityTask',
+          name: 'Priority Task',
+          schema: {
+            properties: [{ key: 'priority', name: 'Priority', type: 'number', required: false }],
+          },
+        });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Low Priority',
+            docVersion: 0,
+            properties: JSON.stringify({ priority: 3 }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'High Priority',
+            docVersion: 0,
+            properties: JSON.stringify({ priority: 1 }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Medium Priority',
+            docVersion: 0,
+            properties: JSON.stringify({ priority: 2 }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, {
+          sortBy: 'priority',
+          sortDirection: 'asc',
+          includeProperties: true,
+        });
+
+        expect(result).toHaveLength(3);
+        expect(result[0]?.title).toBe('High Priority');
+        expect(result[1]?.title).toBe('Medium Priority');
+        expect(result[2]?.title).toBe('Low Priority');
+      });
+
+      it('sorts by property value (date)', () => {
+        seedBuiltInTypes(db);
+
+        const eventType = createObjectType(db, {
+          key: 'SortableEvent',
+          name: 'Sortable Event',
+          schema: {
+            properties: [{ key: 'event_date', name: 'Event Date', type: 'date', required: false }],
+          },
+        });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: eventType.id,
+            title: 'Future Event',
+            docVersion: 0,
+            properties: JSON.stringify({ event_date: '2026-12-01' }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: eventType.id,
+            title: 'Past Event',
+            docVersion: 0,
+            properties: JSON.stringify({ event_date: '2026-01-01' }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, {
+          sortBy: 'event_date',
+          sortDirection: 'asc',
+          includeProperties: true,
+        });
+
+        expect(result).toHaveLength(2);
+        expect(result[0]?.title).toBe('Past Event');
+        expect(result[1]?.title).toBe('Future Event');
+      });
+
+      it('sorts by property value (text)', () => {
+        seedBuiltInTypes(db);
+
+        const taskType = createObjectType(db, {
+          key: 'StatusTask',
+          name: 'Status Task',
+          schema: {
+            properties: [
+              {
+                key: 'status',
+                name: 'Status',
+                type: 'select',
+                required: false,
+                options: ['Backlog', 'In Progress', 'Done'],
+              },
+            ],
+          },
+        });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Done Task',
+            docVersion: 0,
+            properties: JSON.stringify({ status: 'Done' }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Backlog Task',
+            docVersion: 0,
+            properties: JSON.stringify({ status: 'Backlog' }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, {
+          sortBy: 'status',
+          sortDirection: 'asc',
+          includeProperties: true,
+        });
+
+        expect(result).toHaveLength(2);
+        expect(result[0]?.title).toBe('Backlog Task');
+        expect(result[1]?.title).toBe('Done Task');
+      });
+
+      it('defaults to updatedAt desc when no sortBy provided', () => {
+        seedBuiltInTypes(db);
+
+        const noteType = createObjectType(db, { key: 'TimeNote', name: 'Time Note' });
+        const earlier = new Date('2026-01-10T10:00:00Z');
+        const later = new Date('2026-01-15T10:00:00Z');
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Earlier Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: earlier,
+            updatedAt: earlier,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: noteType.id,
+            title: 'Later Note',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: later,
+            updatedAt: later,
+          })
+          .run();
+
+        // No sortBy specified - should default to updatedAt desc
+        const result = listObjects(db);
+
+        expect(result).toHaveLength(2);
+        expect(result[0]?.title).toBe('Later Note');
+        expect(result[1]?.title).toBe('Earlier Note');
+      });
+
+      it('handles NULL property values by sorting them first (ASC) or last (DESC)', () => {
+        seedBuiltInTypes(db);
+
+        const taskType = createObjectType(db, {
+          key: 'OptionalTask',
+          name: 'Optional Task',
+          schema: {
+            properties: [{ key: 'due_date', name: 'Due Date', type: 'date', required: false }],
+          },
+        });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Task with date',
+            docVersion: 0,
+            properties: JSON.stringify({ due_date: '2026-06-15' }),
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Task without date',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        // ASC: NULLs first
+        const resultAsc = listObjects(db, {
+          sortBy: 'due_date',
+          sortDirection: 'asc',
+          includeProperties: true,
+        });
+        expect(resultAsc[0]?.title).toBe('Task without date');
+        expect(resultAsc[1]?.title).toBe('Task with date');
+
+        // DESC: NULLs last
+        const resultDesc = listObjects(db, {
+          sortBy: 'due_date',
+          sortDirection: 'desc',
+          includeProperties: true,
+        });
+        expect(resultDesc[0]?.title).toBe('Task with date');
+        expect(resultDesc[1]?.title).toBe('Task without date');
+      });
+
+      it('combines sorting with typeKey filter', () => {
+        seedBuiltInTypes(db);
+
+        const pageType = createObjectType(db, { key: 'SortPage', name: 'Sort Page' });
+        const taskType = createObjectType(db, { key: 'SortTask', name: 'Sort Task' });
+        const now = new Date();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: pageType.id,
+            title: 'Page Z',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: pageType.id,
+            title: 'Page A',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        db.insert(objects)
+          .values({
+            id: generateId(),
+            typeId: taskType.id,
+            title: 'Task B',
+            docVersion: 0,
+            properties: '{}',
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+
+        const result = listObjects(db, {
+          typeKey: 'SortPage',
+          sortBy: 'title',
+          sortDirection: 'asc',
+        });
+
+        expect(result).toHaveLength(2);
+        expect(result[0]?.title).toBe('Page A');
+        expect(result[1]?.title).toBe('Page Z');
       });
     });
   });
@@ -1573,6 +1973,71 @@ describe('ObjectService', () => {
 
         expect(updated.properties).toEqual({ with_default: 'default_value' });
       });
+    });
+  });
+
+  describe('softDeleteObject', () => {
+    it('sets deletedAt timestamp on object', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+
+      // Object should be visible before delete
+      const beforeDelete = listObjects(db);
+      expect(beforeDelete).toHaveLength(1);
+
+      // Soft delete the object
+      softDeleteObject(db, created.id);
+
+      // Object should be excluded from list
+      const afterDelete = listObjects(db);
+      expect(afterDelete).toHaveLength(0);
+    });
+
+    it('is idempotent (no error if already deleted)', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+
+      // Delete once
+      softDeleteObject(db, created.id);
+
+      // Delete again - should not throw
+      expect(() => softDeleteObject(db, created.id)).not.toThrow();
+
+      // Object should still be excluded
+      const afterDelete = listObjects(db);
+      expect(afterDelete).toHaveLength(0);
+    });
+
+    it('returns void', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+
+      const result = softDeleteObject(db, created.id);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('does not hard delete the object (row still exists)', () => {
+      seedBuiltInTypes(db);
+
+      const created = createObject(db, 'Page', 'Test Page');
+
+      softDeleteObject(db, created.id);
+
+      // Verify the row still exists in DB (just has deletedAt set)
+      const row = db.select().from(objects).where(eq(objects.id, created.id)).get();
+      expect(row).not.toBeNull();
+      expect(row?.deletedAt).not.toBeNull();
+    });
+
+    it('handles non-existent object gracefully (no error)', () => {
+      seedBuiltInTypes(db);
+
+      // Try to delete an object that doesn't exist
+      expect(() => softDeleteObject(db, '01JJJJJJJJJJJJJJJJJJJJJJJJ')).not.toThrow();
     });
   });
 });

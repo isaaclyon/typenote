@@ -55,6 +55,8 @@ export interface TypenoteAPI {
   listObjects: (options?: {
     typeKey?: string;
     includeProperties?: boolean;
+    sortBy?: string;
+    sortDirection?: 'asc' | 'desc';
   }) => Promise<IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>>;
   getObjectsCreatedOnDate: (dateKey: string) => Promise<
     IpcOutcome<
@@ -144,6 +146,7 @@ export interface TypenoteAPI {
     options?: ListDeletedObjectsOptions
   ) => Promise<IpcOutcome<DeletedObjectSummary[]>>;
   restoreObject: (objectId: string) => Promise<IpcOutcome<RestoreObjectResult>>;
+  softDeleteObject: (objectId: string) => Promise<IpcOutcome<void>>;
 
   // Events
   onEvent: (callback: (event: TypenoteEvent) => void) => () => void;

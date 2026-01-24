@@ -93,6 +93,7 @@ export {
   getObject,
   createObject,
   updateObject,
+  softDeleteObject,
   CreateObjectError,
   UpdateObjectError,
   type CreateObjectErrorCode,
