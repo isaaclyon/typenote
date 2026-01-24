@@ -168,10 +168,12 @@ describe('IPC Handlers', () => {
     });
 
     it('returns validation error for invalid input', () => {
-      const result = handlers.applyBlockPatch({
+      const invalidRequest = {
         // Missing apiVersion and other required fields
         objectId: 'some-id',
-      });
+      } as unknown as Parameters<IpcHandlers['applyBlockPatch']>[0];
+
+      const result = handlers.applyBlockPatch(invalidRequest);
 
       expect(result).toEqual({
         success: false,
@@ -775,10 +777,12 @@ describe('IPC Handlers', () => {
       });
 
       it('returns validation error for missing required fields', () => {
-        const result = handlers.uploadAttachment({
+        const invalidRequest = {
           filename: 'test.png',
           // missing mimeType, sizeBytes, data
-        });
+        } as unknown as Parameters<IpcHandlers['uploadAttachment']>[0];
+
+        const result = handlers.uploadAttachment(invalidRequest);
 
         expect(result.success).toBe(false);
         if (!result.success) {

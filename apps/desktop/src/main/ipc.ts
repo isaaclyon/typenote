@@ -1,6 +1,9 @@
 import { ipcMain } from 'electron';
 import { z } from 'zod';
+import type { IpcHandlers, IpcOutcome } from '../preload/api.js';
 import { typenoteEvents } from './events.js';
+
+export type { IpcHandlers };
 import {
   getDocument,
   applyBlockPatch as applyBlockPatchStorage,
@@ -49,7 +52,6 @@ import {
   isPinned as isPinnedStorage,
   getPinnedObjects as getPinnedObjectsStorage,
   reorderPinnedObjects as reorderPinnedObjectsStorage,
-  type PinnedObjectSummary,
   // Settings service
   getSettings as getSettingsStorage,
   updateSettings as updateSettingsStorage,
@@ -78,49 +80,11 @@ import {
   TagServiceError,
   type TypenoteDb,
   type FileService,
-  type GetDocumentResult,
   type ApplyBlockPatchOutcome,
-  type GetOrCreateResult,
-  type ObjectSummary,
-  type ObjectSummaryWithProperties,
-  type ListObjectsOptions,
-  type ObjectDetails,
-  type SearchResult,
-  type SearchFilters,
-  type BacklinkResult,
-  type UnlinkedMentionResult,
-  type CreatedObject,
-  type TaskObject,
-  type CompletedTasksOptions,
-  type ListAttachmentsOptions,
-  type CalendarItem,
-  type RecentObjectSummary,
-  type DeletedObjectSummary,
-  type RestoreObjectResult,
-  type ListDeletedObjectsOptions,
 } from '@typenote/storage';
 import {
   ApplyBlockPatchInputSchema,
-  type ApplyBlockPatchResult,
-  type Tag,
-  type TagWithUsage,
-  type CreateTagInput,
-  type UpdateTagInput,
-  type ListTagsOptions,
-  type AssignTagsResult,
-  type RemoveTagsResult,
-  type TaskStatus,
-  type TaskPriority,
-  type Attachment,
-  type UploadAttachmentResult,
-  type UserSettings,
-  type DuplicateObjectResponse,
-  type ObjectType,
-  type ListObjectTypesOptions,
-  type CreateObjectTypeInput,
-  type UpdateObjectTypeInput,
   UpdateObjectRequestSchema,
-  type UpdateObjectRequest,
   type UpdateObjectResponse,
 } from '@typenote/api';
 
@@ -137,21 +101,6 @@ const IpcUploadAttachmentInputSchema = z.object({
   sizeBytes: z.number().int().min(1), // Don't enforce max - let storage layer validate
   data: z.string().min(1, 'Data is required'),
 });
-
-interface IpcSuccess<T> {
-  success: true;
-  result: T;
-}
-
-interface IpcError {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-  };
-}
-
-type IpcOutcome<T> = IpcSuccess<T> | IpcError;
 
 /**
  * Interface for service errors that have a code property.
@@ -208,89 +157,6 @@ function handleIpcCall<T>(
     }
     throw error;
   }
-}
-
-export interface IpcHandlers {
-  getDocument: (objectId: string) => IpcOutcome<GetDocumentResult>;
-  applyBlockPatch: (request: unknown) => IpcOutcome<ApplyBlockPatchResult>;
-  getOrCreateTodayDailyNote: () => IpcOutcome<GetOrCreateResult>;
-  getOrCreateDailyNoteByDate: (dateKey: string) => IpcOutcome<GetOrCreateResult>;
-  listObjects: (
-    options?: ListObjectsOptions
-  ) => IpcOutcome<ObjectSummary[] | ObjectSummaryWithProperties[]>;
-  getObjectsCreatedOnDate: (dateKey: string) => IpcOutcome<
-    Array<{
-      id: string;
-      title: string;
-      typeIcon: string | null;
-      typeColor: string | null;
-    }>
-  >;
-  getObject: (objectId: string) => IpcOutcome<ObjectDetails | null>;
-  getObjectTypeByKey: (typeKey: string) => IpcOutcome<ObjectType | null>;
-  searchBlocks: (query: string, filters?: SearchFilters) => IpcOutcome<SearchResult[]>;
-  getBacklinks: (objectId: string) => IpcOutcome<BacklinkResult[]>;
-  getUnlinkedMentions: (objectId: string) => IpcOutcome<UnlinkedMentionResult[]>;
-  createObject: (
-    typeKey: string,
-    title: string,
-    properties?: Record<string, unknown>
-  ) => IpcOutcome<CreatedObject>;
-  duplicateObject: (objectId: string) => IpcOutcome<DuplicateObjectResponse>;
-  updateObject: (request: UpdateObjectRequest) => IpcOutcome<UpdateObjectResponse>;
-  // Tag operations
-  createTag: (input: CreateTagInput) => IpcOutcome<Tag>;
-  getTag: (tagId: string) => IpcOutcome<Tag | null>;
-  updateTag: (tagId: string, input: UpdateTagInput) => IpcOutcome<Tag>;
-  deleteTag: (tagId: string) => IpcOutcome<void>;
-  listTags: (options?: ListTagsOptions) => IpcOutcome<TagWithUsage[]>;
-  assignTags: (objectId: string, tagIds: string[]) => IpcOutcome<AssignTagsResult>;
-  removeTags: (objectId: string, tagIds: string[]) => IpcOutcome<RemoveTagsResult>;
-  getObjectTags: (objectId: string) => IpcOutcome<Tag[]>;
-  // Task operations
-  getTodaysTasks: () => IpcOutcome<TaskObject[]>;
-  getOverdueTasks: () => IpcOutcome<TaskObject[]>;
-  getTasksByStatus: (status: TaskStatus) => IpcOutcome<TaskObject[]>;
-  getUpcomingTasks: (days: number) => IpcOutcome<TaskObject[]>;
-  getInboxTasks: () => IpcOutcome<TaskObject[]>;
-  getTasksByPriority: (priority: TaskPriority) => IpcOutcome<TaskObject[]>;
-  getCompletedTasks: (options?: CompletedTasksOptions) => IpcOutcome<TaskObject[]>;
-  getTasksByDueDate: (dateKey: string) => IpcOutcome<TaskObject[]>;
-  completeTask: (taskId: string) => IpcOutcome<void>;
-  reopenTask: (taskId: string) => IpcOutcome<void>;
-  // Attachment operations
-  uploadAttachment: (request: unknown) => IpcOutcome<UploadAttachmentResult>;
-  getAttachment: (attachmentId: string) => IpcOutcome<Attachment | null>;
-  listAttachments: (options?: ListAttachmentsOptions) => IpcOutcome<Attachment[]>;
-  linkBlockToAttachment: (blockId: string, attachmentId: string) => IpcOutcome<void>;
-  unlinkBlockFromAttachment: (blockId: string, attachmentId: string) => IpcOutcome<void>;
-  getBlockAttachments: (blockId: string) => IpcOutcome<Attachment[]>;
-  // Calendar operations
-  getEventsInDateRange: (startDate: string, endDate: string) => IpcOutcome<CalendarItem[]>;
-  // Daily note operations
-  getDatesWithDailyNotes: (startDate: string, endDate: string) => IpcOutcome<string[]>;
-  // Recent objects operations
-  recordView: (objectId: string) => IpcOutcome<void>;
-  getRecentObjects: (limit?: number) => IpcOutcome<RecentObjectSummary[]>;
-  // Pinned objects operations
-  pinObject: (objectId: string) => IpcOutcome<void>;
-  unpinObject: (objectId: string) => IpcOutcome<void>;
-  isPinned: (objectId: string) => IpcOutcome<boolean>;
-  getPinnedObjects: () => IpcOutcome<PinnedObjectSummary[]>;
-  reorderPinnedObjects: (orderedIds: string[]) => IpcOutcome<void>;
-  // Settings operations
-  getSettings: () => IpcOutcome<UserSettings>;
-  updateSettings: (updates: Partial<UserSettings>) => IpcOutcome<void>;
-  resetSettings: () => IpcOutcome<void>;
-  // Trash operations
-  listDeletedObjects: (options?: ListDeletedObjectsOptions) => IpcOutcome<DeletedObjectSummary[]>;
-  restoreObject: (objectId: string) => IpcOutcome<RestoreObjectResult>;
-  softDeleteObject: (objectId: string) => IpcOutcome<void>;
-  // Object type operations
-  listObjectTypes: (options?: ListObjectTypesOptions) => IpcOutcome<ObjectType[]>;
-  createObjectType: (input: CreateObjectTypeInput) => IpcOutcome<ObjectType>;
-  updateObjectType: (id: string, input: UpdateObjectTypeInput) => IpcOutcome<ObjectType>;
-  deleteObjectType: (id: string) => IpcOutcome<void>;
 }
 
 export function createIpcHandlers(db: TypenoteDb, fileService: FileService): IpcHandlers {

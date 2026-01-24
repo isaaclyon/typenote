@@ -1,21 +1,4 @@
-/**
- * IPC outcome types matching global.d.ts definitions.
- * Copied here for type safety since global.d.ts doesn't export them.
- */
-interface IpcSuccess<T> {
-  success: true;
-  result: T;
-}
-
-interface IpcError {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-  };
-}
-
-type IpcOutcome<T> = IpcSuccess<T> | IpcError;
+import type { IpcOutcome } from '../../preload/api.js';
 
 /**
  * Adapts IPC outcome to Query's expected format.
