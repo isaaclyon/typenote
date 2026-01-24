@@ -13,6 +13,7 @@
 - ✅ ObjectDataGrid feature complete
 - ✅ **AppShell + Sidebar wired to renderer** — navigation works, type counts display
 - ✅ **Editor wired to NotesView** — document loading, editing, autosave with block ID tracking
+- ✅ Editor autosave robustness — move ops, conflict retry, cached ref resolver
 - ✅ Test infrastructure for renderer hooks (mocked IPC)
 - ❌ ObjectDataGrid not wired (basic list placeholder in TypesView)
 - ❌ CommandPalette not wired (search/actions not connected)
@@ -23,6 +24,10 @@
 - [ ] Wire ObjectDataGrid to TypesView for table view
 - [ ] Wire CommandPalette for search + quick actions
 - [ ] Connect "New" button to create object flow
+
+### Renderer Follow-ups
+
+- [ ] Invalidate object/type queries on mutations (ref resolver cache refresh)
 
 ### DX Improvements
 
@@ -38,23 +43,26 @@
 
 ## REST API Coverage
 
-**Status:** Active — remaining gaps in settings/pinned/templates/attachments upload
+**Status:** Active — 7/20 remaining endpoints complete (35%)
+**Plan:** `docs/plans/2026-01-24-rest-api-coverage-remaining.md`
 
-### Completed
+### Completed (7/20 endpoints)
 
 - [x] Export/import API schemas and routes
 - [x] Tasks REST coverage
 - [x] Markdown export route
-- [x] Attachment download endpoints
+- [x] Attachment download endpoints (2/5: metadata + content)
 - [x] Calendar routes + metadata schema
 - [x] Object types REST coverage
+- [x] **Settings REST coverage (5/5 endpoints)** - COMPLETE
 
-### Remaining
+### Remaining (13/20 endpoints)
 
-- [ ] Settings REST coverage (read/update/reset)
-- [ ] Pinned objects REST coverage (list/pin/unpin/reorder)
-- [ ] Templates REST coverage (CRUD + default template)
-- [ ] Attachments upload/list/cleanup endpoints
+- [ ] Pinned objects REST coverage (0/4: list/pin/unpin/reorder) - storage ready, routes missing
+- [ ] Templates REST coverage (0/6: CRUD + default template) - storage ready, routes missing
+- [ ] Attachments upload/list/cleanup (3/5: upload/list/cleanup) - storage ready, routes missing
+
+**Priority:** Pinned objects > Templates > Attachments (by UI dependency)
 
 ---
 
@@ -75,8 +83,10 @@
 
 | Feature                  | Date       | Commits      |
 | ------------------------ | ---------- | ------------ |
+| Document autosave fixes  | 2026-01-23 | uncommitted  |
 | Editor wiring            | 2026-01-23 | uncommitted  |
 | AppShell renderer wiring | 2026-01-23 | `1d6aa54` +6 |
+| Settings REST coverage   | 2026-01-23 | uncommitted  |
 | REST API object types    | 2026-01-24 | `8bc76a1`    |
 | REST API batch           | 2026-01-24 | `7454e64` +9 |
 | ObjectDataGrid feature   | 2026-01-22 | `7fa7ba0`    |

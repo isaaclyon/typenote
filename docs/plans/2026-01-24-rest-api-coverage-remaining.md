@@ -1,48 +1,73 @@
 # REST API Coverage Remaining
 
-**Status:** Active
+**Status:** Active (7/20 endpoints complete)
 **Related Plan:** `docs/plans/2026-01-22-rest-api-coverage.md`
 
 ## Scope (Already Complete)
 
 - Export/import + markdown export + object/type export
 - Tasks REST coverage
-- Attachment download headers + download routes
+- Attachment download headers + download routes (metadata + content)
 - Calendar routes + metadata contracts
 - Object types REST coverage (CRUD + key lookup)
+- **Settings REST coverage (5/5 endpoints)** - COMPLETE
 
 ## Remaining Coverage
 
-### Settings
+### Settings - COMPLETE (5/5)
 
-- `GET /settings`
-- `GET /settings/:key`
-- `PATCH /settings` (partial UserSettings)
-- `PATCH /settings/:key` (value only)
-- `POST /settings/reset`
+All endpoints implemented and tested:
 
-### Pinned Objects
+- [x] `GET /settings` - implemented
+- [x] `GET /settings/:key` - implemented
+- [x] `PATCH /settings` (partial UserSettings) - implemented
+- [x] `PATCH /settings/:key` (value only) - implemented
+- [x] `POST /settings/reset` - implemented
 
-- `GET /pinned`
-- `POST /pinned` (PinObjectInput)
-- `DELETE /pinned/:objectId`
-- `PATCH /pinned/reorder` (ReorderPinnedObjectsInput)
+Files: `packages/http-server/src/routes/settings.ts`, `settings.test.ts`
+Storage: All functions in `settingsService.ts` wired
 
-### Templates
+### Pinned Objects - NOT STARTED (0/4)
 
-- `GET /templates?objectTypeId`
-- `GET /templates/:id`
-- `GET /templates/default?objectTypeId`
-- `POST /templates` (CreateTemplateInput)
-- `PATCH /templates/:id` (UpdateTemplateInput)
-- `DELETE /templates/:id`
+Storage layer complete (`pinnedObjectsService.ts`), routes missing:
 
-### Attachments (Upload + Maintenance)
+- [ ] `GET /pinned` - missing route
+- [ ] `POST /pinned` (PinObjectInput) - missing route
+- [ ] `DELETE /pinned/:objectId` - missing route
+- [ ] `PATCH /pinned/reorder` (ReorderPinnedObjectsInput) - missing route
 
-- `POST /attachments` (multipart UploadAttachmentInput + file bytes)
-- `GET /attachments?orphaned=true|false`
-- `POST /attachments/cleanup?graceDays=`
+**Action needed:** Create `packages/http-server/src/routes/pinned.ts` and wire to router
+
+### Templates - NOT STARTED (0/6)
+
+Storage layer complete (`templateService.ts`), routes missing:
+
+- [ ] `GET /templates?objectTypeId` - missing route
+- [ ] `GET /templates/:id` - missing route
+- [ ] `GET /templates/default?objectTypeId` - missing route
+- [ ] `POST /templates` (CreateTemplateInput) - missing route
+- [ ] `PATCH /templates/:id` (UpdateTemplateInput) - missing route
+- [ ] `DELETE /templates/:id` - missing route
+
+**Action needed:** Create `packages/http-server/src/routes/templates.ts` and wire to router
+
+### Attachments (Upload + Maintenance) - PARTIAL (2/5)
+
+Download routes complete, upload/maintenance missing:
+
+- [x] `GET /attachments/:id` - metadata (implemented)
+- [x] `GET /attachments/:id/content` - download (implemented)
+- [ ] `POST /attachments` (multipart UploadAttachmentInput + file bytes) - missing
+- [ ] `GET /attachments?orphaned=true|false` - missing list route
+- [ ] `POST /attachments/cleanup?graceDays=` - missing cleanup route
+
+**Action needed:** Add upload/list/cleanup routes to existing `attachments.ts` file
+Storage functions available: `uploadAttachment`, `listAttachments`, `cleanupOrphanedAttachments`
 
 ## Next Up
 
-- Settings REST coverage (read/update/reset)
+Prioritized by dependency/usage:
+
+1. Pinned objects (sidebar feature dependency)
+2. Templates (object creation UX)
+3. Attachments upload/maintenance (editor dependency)
