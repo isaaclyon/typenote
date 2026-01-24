@@ -2,6 +2,10 @@
 
 TypeNote is a local-first Electron desktop knowledge app with strict package boundaries and a rebuilt design system. Treat the rules in `agent-docs/rules/` as authoritative.
 
+## Collaboration Note
+
+Other agents may work in this tree at the same time. Changes you didn't make are not your responsibility, but keep them in mind when assessing behavior or reasoning about repo state.
+
 ## Context Auto-Loaded
 
 These files provide project context and are loaded automatically at session start:
